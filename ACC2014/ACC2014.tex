@@ -1,0 +1,145 @@
+\documentclass[letterpaper, 10pt, conference]{ieeeconf}
+
+\IEEEoverridecommandlockouts  
+\overrideIEEEmargins
+
+% RV: Ugly hack to remove the 'proof' environment defined in ieeeconf.cls because it conflicts with amsthm.
+\makeatletter
+% \let\IEEEproof\proof
+% \let\IEEEendproof\endproof
+\let\proof\@undefined
+\let\endproof\@undefined
+% \let\IEEElabelindent\labelindent
+% \let\labelindent\@undefined
+\makeatother
+
+\usepackage{graphicx}
+\usepackage{bbm}
+% \usepackage{dsfont}
+\usepackage{amsthm} % RV: This package is not compatible with ieeeconf.cls, use with care.
+\usepackage{amsmath} % assumes amsmath package installed. RV: Beautiful recursive reference.
+\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{verbatim}
+%\usepackage[font=small,margin=10pt,format=hang,singlelinecheck=false]{caption}
+% \usepackage[font=scriptsize,caption=false]{subfig}
+% \usepackage{subfigure}
+\usepackage{subfig}
+\usepackage{color}
+% \usepackage[mathscr]{eucal}
+% \usepackage{enumitem}
+% \usepackage{graphics} % for pdf, bitmapped graphics files
+% \usepackage{epsfig} % for postscript graphics files
+% \usepackage{mathptmx} % assumes new font selection scheme installed
+% \usepackage{times} % assumes new font selection scheme installed
+% \usepackage{theorem}
+% \usepackage{mathbbol}
+
+
+% RV: configuration so that 'rubber' compiles with the right page size.
+% rubber: paper letter
+
+\newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\paren}[1]{\left( #1 \right)}
+\newcommand{\td}[1]{\widetilde{#1}}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\pw}[1]{\left\{\begin{array}{ll} #1 \end{array}\right. }
+\newcommand{\mat}[2]{\left(\begin{array}{#1} #2 \end{array}\right)}
+\newcommand{\vf}[1]{\frac{\partial\ }{\partial #1}}
+\newcommand{\bd}{\partial}
+\newcommand{\eqn}[1]{\begin{eqnarray*} #1 \end{eqnarray*}}
+\newcommand{\eqnn}[1]{\begin{eqnarray} #1 \end{eqnarray}}
+\newcommand{\into}{\rightarrow}
+\newcommand{\goesto}{\rightarrow}
+%\newcommand{\rx}[1]{\widetilde{#1}}
+\newcommand{\rx}[1]{#1^\epsilon}
+\newcommand{\Exp}{\beta}
+
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\enq}{\end{equation}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Hb}{\mathbb{H}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\m}{\mathcal}
+\newcommand{\e}{\mathcal}
+\newcommand{\la}{\lambda}
+\newcommand{\al}{\alpha}
+\newcommand{\del}{\delta}
+\newcommand{\eps}{\epsilon}
+\newcommand{\vphi}{\varphi}
+\newcommand{\veps}{\varepsilon}
+\newcommand{\sig}{\sigma}
+\newcommand{\Sig}{\Sigma}
+\newcommand{\inc}{\hookrightarrow}
+\newcommand{\sm}{\setminus}
+
+\newcommand{\tbd}[1]{{\normalsize{\textbf{({\color{blue}TBD:\ }#1)}}}}
+\newcommand{\ram}[1]{{\normalsize{\textbf{({\color{green}RAMBO:\ }#1)}}}}
+\newcommand{\henry}[1]{{\normalsize{\textbf{({\color{red}HJ:\ }#1)}}}}
+
+% RV: Replace phi and epsilon with varphi and varepsilon
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+
+% RV: Makes algorithms look cooler
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+
+% RV: Fixes annoying pdftex bug that doesn't recognize pdftex files. Found in 'grfguide.pdf'.
+\DeclareGraphicsExtensions{.pstex}
+\DeclareGraphicsExtensions{.pdftex}
+\DeclareGraphicsRule{.pstex}{eps}{.pstex}{}
+\DeclareGraphicsRule{.pdftex}{pdf}{.pdftex}{}
+
+% RV: New theorem declaration. It uses less space than the original one.
+\newtheoremstyle{nospace}{2pt}{1.5pt}{\itshape}{}{\bfseries}{:}{.5em}{}
+\theoremstyle{nospace}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{assumption}{Assumption} 
+\newtheorem{component}{Component}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+% RV: Ugly hack to redefine the 'proof' environment on amsthm, only because that one uses too much space.
+\makeatletter
+\let\proof\@undefined
+\let\endproof\@undefined
+\def\proof{\noindent{\itshape Proof. }}
+\def\endproof{\hspace*{\fill}~\QEDopen\par\endtrivlist\unskip}
+\makeatother
+
+%%%%%%%%%%%%%
+%%%%%%%%%%%%%
+
+\title{Time Limited Reachable Set...}
+
+\author{Bob, Lob, Law
+\thanks{This work was supported by the National Science Foundation ....}% <-this % stops a space
+}
+
+\begin{document}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+
+\end{abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{Sections/Introduction}
+\input{Sections/Formulation}
+\input{Sections/Implementation}
+\input{Sections/Examples}
+\input{Sections/Conclusion}
+
+\bibliographystyle{abbrv}
+\bibliography{library}
+
+\end{document}

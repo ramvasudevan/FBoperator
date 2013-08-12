@@ -1,0 +1,197 @@
+(* Content-type: application/mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 7.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       145,          7]
+NotebookDataLength[      5755,        187]
+NotebookOptionsPosition[      5161,        162]
+NotebookOutlinePosition[      5504,        177]
+CellTagsIndexPosition[      5461,        174]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"Integrate", "[", 
+  RowBox[{
+   RowBox[{"Integrate", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"1", "/", "2"}], "*", 
+      RowBox[{"Cos", "[", 
+       RowBox[{"x", "/", "2"}], "]"}], "*", 
+      RowBox[{"Sin", "[", 
+       RowBox[{"x", "/", "2"}], "]"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"y", ",", 
+       RowBox[{"-", "Pi"}], ",", "Pi"}], "}"}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", 
+     RowBox[{"-", "Pi"}], ",", "Pi"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.584885448546383*^9, 3.5848854531736307`*^9}, {
+  3.584885515695623*^9, 3.584885587327649*^9}, {3.5848859147423286`*^9, 
+  3.584885942365416*^9}}],
+
+Cell[BoxData["0"], "Output",
+ CellChangeTimes->{{3.584885570273099*^9, 3.584885590013219*^9}, 
+   3.5848859451041737`*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"Integrate", "[", 
+  RowBox[{
+   RowBox[{"Integrate", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"1", "/", "2"}], "*", 
+         RowBox[{"Cos", "[", 
+          RowBox[{"x", "/", "2"}], "]"}], "*", 
+         RowBox[{"Sin", "[", 
+          RowBox[{"y", "/", "2"}], "]"}]}], "+", 
+        RowBox[{
+         RowBox[{"1", "/", "2"}], "*", 
+         RowBox[{"Sin", "[", 
+          RowBox[{"x", "/", "2"}], "]"}], "*", 
+         RowBox[{"Cos", "[", 
+          RowBox[{"y", "/", "2"}], "]"}]}]}], ")"}], "*", 
+      RowBox[{"Sin", "[", 
+       RowBox[{"x", "/", "2"}], "]"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"y", ",", 
+       RowBox[{"-", "Pi"}], ",", "Pi"}], "}"}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", 
+     RowBox[{"-", "Pi"}], ",", "Pi"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.5848856933334923`*^9, 3.584885698321015*^9}, {
+  3.584885739987315*^9, 3.584885836676798*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{"Integrate", "[", 
+   RowBox[{
+    RowBox[{"Integrate", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Cos", "[", "x", "]"}], "*", 
+            RowBox[{"Sin", "[", 
+             RowBox[{"y", "/", "2"}], "]"}]}], ",", 
+           RowBox[{"{", "x", "}"}]}], "]"}], "+", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Cos", "[", "x", "]"}], "*", 
+            RowBox[{"Sin", "[", 
+             RowBox[{"y", "/", "2"}], "]"}]}], ",", 
+           RowBox[{"{", "y", "}"}]}], "]"}]}], ")"}], "*", 
+       RowBox[{"Cos", "[", "x", "]"}]}], ",", 
+      RowBox[{"{", 
+       RowBox[{"y", ",", 
+        RowBox[{"-", "Pi"}], ",", "Pi"}], "}"}]}], "]"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"x", ",", 
+      RowBox[{"-", "Pi"}], ",", "Pi"}], "}"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.584886265490707*^9, 3.584886271170495*^9}, {
+  3.58488631279515*^9, 3.58488639868629*^9}, {3.584886507698443*^9, 
+  3.584886510120002*^9}}],
+
+Cell[BoxData[
+ RowBox[{"2", " ", "\[Pi]"}]], "Output",
+ CellChangeTimes->{3.584886401314506*^9, 3.5848865137443523`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{"Integrate", "[", 
+   RowBox[{
+    RowBox[{"Integrate", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Cos", "[", "x", "]"}], ",", 
+           RowBox[{"{", "x", "}"}]}], "]"}], "+", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Cos", "[", "x", "]"}], ",", 
+           RowBox[{"{", "y", "}"}]}], "]"}]}], ")"}], "*", 
+       RowBox[{"Sin", "[", 
+        RowBox[{"x", "/", "2"}], "]"}]}], ",", 
+      RowBox[{"{", 
+       RowBox[{"y", ",", 
+        RowBox[{"-", "Pi"}], ",", "Pi"}], "}"}]}], "]"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"x", ",", 
+      RowBox[{"-", "Pi"}], ",", "Pi"}], "}"}]}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.584886545227861*^9, 3.58488657155339*^9}, {
+   3.584886612091729*^9, 3.584886619860537*^9}, {3.5848868184393873`*^9, 
+   3.58488683287145*^9}, {3.584886904017076*^9, 3.584886926800235*^9}, {
+   3.584886992801778*^9, 3.5848870051194963`*^9}, {3.584887048042574*^9, 
+   3.584887058236844*^9}, {3.584887243728018*^9, 3.5848872526144123`*^9}, 
+   3.584893307629978*^9}],
+
+Cell[BoxData[
+ RowBox[{"-", "16.755160819145562`"}]], "Output",
+ CellChangeTimes->{
+  3.5848865741115932`*^9, 3.584886625617383*^9, 3.584886835187909*^9, 
+   3.584886931345869*^9, 3.584887008319481*^9, 3.584887068054184*^9, {
+   3.584887248437252*^9, 3.584887254679154*^9}, 3.584893309926149*^9}]
+}, Open  ]]
+},
+WindowSize->{640, 712},
+WindowMargins->{{167, Automatic}, {-402, Automatic}},
+FrontEndVersion->"7.0 for Mac OS X x86 (32-bit) (February 18, 2009)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[567, 22, 672, 19, 43, "Input"],
+Cell[1242, 43, 122, 2, 27, "Output"]
+}, Open  ]],
+Cell[1379, 48, 987, 29, 58, "Input"],
+Cell[CellGroupData[{
+Cell[2391, 81, 1131, 32, 73, InheritFromParent],
+Cell[3525, 115, 120, 2, 27, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3682, 122, 1164, 30, 43, "Input"],
+Cell[4849, 154, 296, 5, 27, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
