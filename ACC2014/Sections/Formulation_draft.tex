@@ -1,0 +1,62 @@
+
+\documentclass[12pt]{amsart}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+\newtheorem{definition}{Definition}
+\newtheorem{prop}{Proposition}
+\newtheorem{cor}{Corollary}
+
+
+% See the ``Article customise'' template for come common customisations
+
+\title{}
+\author{}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\section{Problem Formulation}\label{sec:Formulation}
+
+\begin{enumerate}
+	\item Define our system and the problem under consideration
+	\item Define our half density advection equation
+	\item Formalize the relationship between half density advection equation and trajectories of the system
+	\item Formalize properties of the advection equation (like mass preserving and anti-hermitian)
+\end{enumerate}
+
+Let $M$ be a volume manifold of dimension $n$ with volume form $\mu \in \Omega^n(M)$.
+\begin{definition}
+	Let $F(M)$ denote the frame-bundle of $M$.  A density is a function $\nu : F(M) \to \mathbb{R}$ such that
+	\[
+		\nu( Ae) = |\det(A)| \nu(e)	
+	\]
+	where $e = (e_1, \dots , e_n)$, $A \in \mathbb{R}^{n \times n}$, and $A e = (A^1_j e_j , \dots , A^i_j e_j , \dots , A^n_j e_j )$.
+	A \emph{half-density} is a funcion $\Psi: F(M) \to \mathbb{C}$ such that $\Psi(Ae) = |\det(A)|^{1/2} \Psi(e)$.
+	We denote the space of half-densities by $| \bigwedge |^{1/2}(M)$.
+\end{definition}
+  Let $\Psi_1$ and $\Psi_2$ be half-densities.  Then we observe that $\Psi_1(Ae)^{\ast} \Psi_2(Ae) = | \det(A) | \Psi_1(e)^{\ast} \Psi_2(e)$.
+  Thus $\Psi_1^{\ast}( \cdot) \Psi_2(\cdot)$ is a complex valued density, which we may integrator over $M$.
+  This yields the complex inner product $\langle \Psi_1 , \Psi_2 \rangle = \int_M \Psi_1^{\ast} \Psi_2$.
+  We call the completion of $| \bigwedge |^{1/2}(M)$ under the norm induced by $\langle \cdot , \cdot \rangle$ the Hilbert space of half-densities, which we denote by $\mathcal{H}$.
+ 
+  ...
+ 
+ The equation of motion is
+ \begin{align}
+ 	\partial_t \psi = \pounds_{X}[\psi] + \frac{1}{2} {\rm div}(X) \psi \label{eq:advection}
+ \end{align}
+ 
+  \begin{prop}
+  	Let $\Psi = \psi \cdot \sqrt{\mu}$ be a time dependent half-density.  If $\psi$ satisfies \eqref{eq:advection}, then $\rho = \| \psi \|^2$ satisfies the Louiville equation.  Conversely, if $\rho$ satisfies the Louiville equation, then there exists a $\psi$ such that $\rho = \| \psi \|^2$ which satisfies the Louiville equation.
+  \end{prop}
+  
+  \begin{cor}
+  	Let $x( \cdot )$ is an orbit of $X$ originating from $x_0 \in M$ if and only if there exists a sequence of time-dependent half-densities $\Psi_1(t) , \Psi_2(t), \dots$ satisfying \eqref{eq:advection} and such that the density $\mu_n(0) = \Psi_n^{\ast}(0) \Psi_n(0)$ converges to a Dirac-delta function centered at $x_0$.
+  \end{cor}
+  
+  Properties to formalize.  I think we have a group homomorphism, mass-preservation=unitarity = anti-hermetian infinitesimal generators.
+
+\end{document}
