@@ -68,7 +68,7 @@ When $t = 0$ we write $l^2$ for the aforementioned weighted space. We are intere
 We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there exists an $\alpha,n \in \N$ such that the wavelets are in $C^{\alpha}$, $\alpha \geq \frac{d}{2} + 1$, and that the wavelets are orthogonal to polynomials of degree $n \geq \alpha - 1$.  Note by Theorem 3.6.1 in \cite{} the norm equivalence between elements in $W^{t,2}$ and the $l_t^2$ norm of the wavelet decomposition of that same element using either wavelet bases for $0\leq t \leq \alpha$. For the sake of convenience, we let $s = \frac{d}{2} + 1$. 
 
 \begin{lemma}
-	Let $x \in W^{s,2}(M)$, then $\norm{x - P_j x}_{W^{s,2}} \leq  2^{-j(\alpha - s)}\norm{x}_{W^{\alpha,2}}$,
+	Let $x \in W^{s,2}(M)$, then $\norm{x - P_j x}_{L^2} \leq  2^{-j(\alpha - s)}\norm{x}_{W^{s,2}}$,
 \end{lemma}
 \begin{proof}
 	This follows from either Theorem 3.3.2 or 3.10.2 in \cite{}.
@@ -122,7 +122,7 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 \end{proof}
 
 \begin{corollary}
-	$\norm{Mx - M^j(P_j x)}_{l^2} \leq C \left( 2^{-sj}\norm{x}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{x}_{W^{s,2}} \right)$.
+	$\norm{Mx - M^j(P_j x)}_{l^2} \leq C \left( 2^{-sj}\norm{x}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)} \right)$.
 \end{corollary}
 \begin{proof}
 	Follows from the Triangle Inequality:
