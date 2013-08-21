@@ -3,7 +3,7 @@
 \geometry{a4paper} % or letter or a5paper or ... etc
 \usepackage{fullpage}
 % \geometry{landscape} % rotated page geometry
-
+\usepackage{todonotes}
 
 \newtheorem{definition}{Definition}
 \newtheorem{prop}{Proposition}
@@ -75,7 +75,7 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 	This follows from either Theorem 3.3.2 or 3.10.2 in \cite{}.
 \end{proof}
 
-\begin{lemma}
+\begin{lemma} \label{lem:matrix_bound}
 	$\abs{m_{\lambda,\mu}} \leq C 2^{-(\frac{d}{2}+\frac{1}{2})\abs{\abs{\lambda}-\abs{\mu}}}2^{\frac{1}{2}(\abs{\lambda}+\abs{\mu})}$
 \end{lemma}
 \begin{proof}
@@ -86,14 +86,14 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 								&\leq C_1 2^{-\card{\mu}\frac{d}{2}}\norm{X\psi_{\lambda}}_{L^{\infty}} = C_1 2^{-\card{\mu}\frac{d}{2}}\norm{ \sum_{\abs{m} \leq 1 } a_m(x) \psi^{(m)}_\lambda(x) }_{L^{\infty}} \\
 								&\leq C_2 2^{-\card{\mu}\frac{d}{2}}\sum_{\card{m}\leq 1}\norm{\psi_{\lambda}^{(m)}(x)}_{L^{\infty}} , \\
 							\intertext{and by the definition of wavelets:}
-								&\leq C_3 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}\frac{d}{2}} \sum_{\card{m}\leq 1} (2^{\card{\lambda}})^m \\
-								&\leq C_3 d 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}(1+\frac{d}{2})} \\
-								&= C_3 d 2^{d/2(\card{\lambda} - \card{\mu})}2^{\card{\lambda}},
+								&\leq C_3 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}\frac{d}{2}} \sum_{\card{m}\leq 1} (2^{\card{\lambda}})^{\abs{m}} \\
+								&\leq C_3 (d+1) 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}(1+\frac{d}{2})} \\
+								&= C_4 2^{d/2(\card{\lambda} - \card{\mu})}2^{\card{\lambda}},
 	\end{align*}
 	%where the second line follows from the fact that $\tilde{\psi}$ is orthogonal to polynomials of degree $n$, 
 	%the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{Cohen1992},
 	%the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets.
-	The desired result follows from a symmetry argument and a rearrangement.
+	The desired result follows from a symmetry argument and a rearrangement. \todo{hoj:  Is the symmetry argument follow from an identity like $\abs{ m_{\lambda , \mu} } = \abs{m_{\mu,\lambda} }$.  It's not obvious to me at the moment. }
 \end{proof}
 
 \begin{lemma}
@@ -102,13 +102,21 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 \begin{proof}
 	Consider $x \in W^{s,2}(M)$ with wavelet expansion $(x_\lambda)_{\lambda \in \nabla}$ such that $\norm{(x_\lambda)}_{l_s^2} = 1$, then:
 	\begin{align}
-		\norm{Mx}_{l^2}^2   &=    \sum_{\mu \in \nabla} \abs{ \sum_{\lambda \in \nabla} m_{\mu,\lambda} x_{\lambda} }^2 \\
-							&\leq C\sum_{\mu \in \nabla} \sum_{\lambda \in \nabla} 2^{-(d+1)\abs{\card{\lambda} - \card{\mu}}} 2^{\card{\lambda}+\card{\mu}} \abs{x_\lambda}^2 \\
-							&\leq C\sum_{\lambda \in \nabla} 2^{\card{\lambda}} \abs{x_\lambda}^2 \sum_{\mu \in \nabla} 2^{-(d+1)\abs{\card{\lambda}-\card{\mu}}}2^\mu \\
-							&\leq C\sum_{\lambda \in \nabla}  2^{\card{\lambda}} \abs{x_\lambda}^2 \left( \sum_{0\leq\mu\leq\lambda} 2^{-(d+1)(\lambda - \mu)}2^{\mu} + \sum_{\mu > \lambda} 2^{-(d+1)(\mu-\lambda)}2^{\mu} \right) \\
-							&\leq C(2^{(d+2)}+2^{-d}) \sum_{\lambda \in \nabla} 2^{2\lambda} \abs{x_{\lambda}}^2 \\
+		\norm{Mx}_{l^2}^2   &=    \sum_{\mu \in \nabla} \abs{ \sum_{\lambda \in \nabla} m_{\mu,\lambda} x_{\lambda} }^2. \nonumber \\
+		\intertext{ Upon invoking Lemma \ref{lem:matrix_bound} we find,}
+							&\leq C\sum_{\mu \in \nabla} \sum_{\lambda \in \nabla} 2^{-(d+1)\abs{\card{\lambda} - \card{\mu}}} 2^{\card{\lambda}+\card{\mu}} \abs{x_\lambda}^2 \nonumber \\
+							&\leq C\sum_{\lambda \in \nabla} 2^{\card{\lambda}} \abs{x_\lambda}^2 \sum_{\mu \in \nabla} 2^{-(d+1)\abs{\card{\lambda}-\card{\mu}}}2^\mu \nonumber \\
+							&\leq C\sum_{\lambda \in \nabla}  2^{\card{\lambda}} \abs{x_\lambda}^2 \left( \underbrace{\sum_{0\leq\mu\leq\lambda} 2^{-(d+1)(\lambda - \mu)}2^{\mu}}_{term_1} + \underbrace{\sum_{\mu > \lambda} 2^{-(d+1)(\mu-\lambda)}2^{\mu} }_{term_2} \right) \label{eq:terms}
+		\end{align}
+		Inspecting $term_1$ by factoring out the terms which are independent of the dummy variable $\mu$ we find
+		\[
+			term_1 = 2^{-(d+1) \lambda }\sum_{0\leq\mu\leq\lambda} 2^{(d+2) \mu} = 2^{-(d+1) \lambda} \left(  \frac{ 1-2^{(d+2)(\lambda + 1)} }{1 - 2^{d+2} } \right) \leq 2^{-(d+1) \lambda} 2^{2(d+2)\lambda}.
+		\]
+		By the same tactic we find $term_2 \leq 2^{\lambda - d}$.  Substituting these pounds into \eqref{eq:terms} we find
+		\begin{align*}	
+			\norm{Mx}_{l^2}^2 	&\leq C(2^{(d+2)}+2^{-d}) \sum_{\lambda \in \nabla} 2^{2\lambda} \abs{x_{\lambda}}^2 \\
 							&\leq C(2^{(d+2)}+2^{-d}).
-	\end{align}
+		\end{align*}
 \end{proof}
 
 \begin{lemma}
