@@ -56,7 +56,7 @@
 
 \section{Convergence Argument}
 
-Let $M$ be a volume manifold of dimension $d$ and consider the case of a partial differential operator $X$ where $X f(x) = \sum_{\abs{m}\leq 1} a_m(x) \partial^m f(x)$ with coefficients $a_m \in C^{\infty}(M)$. Assume that $(\psi_\lambda)_{\lambda \in \nabla}$ and $(\tilde{\psi}_\lambda)_{\lambda \in \nabla}$ are a pair of wavelet bases. We denote by $P_j$ the projection onto the scaling functions associated with $\psi$ of resolution $2^{-j}$. We also let $\card{\lambda}$ denote the resolution level of the index $\lambda$. 
+Let $M$ be a volume manifold of dimension $d$ and consider the case of a partial differential operator $X$ where $(X [f] )(x) = \sum_{\abs{m}\leq 1} a_m(x) \partial^m f(x)$ with coefficients $a_m \in C^{\infty}(M)$. Assume that $(\psi_\lambda)_{\lambda \in \nabla}$ and $(\tilde{\psi}_\lambda)_{\lambda \in \nabla}$ are a pair of wavelet bases. We denote by $P_j$ the projection onto the scaling functions associated with $\psi$ of resolution $2^{-j}$. We also let $\card{\lambda}$ denote the resolution level of the index $\lambda$. 
 
 Define weighted spaces as:
 \begin{equation}
@@ -68,8 +68,8 @@ When $t = 0$ we write $l^2$ for the aforementioned weighted space. We are intere
 \end{equation}
 We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there exists an $\alpha,n \in \N$ such that the wavelets are in $C^{\alpha}$, $\alpha \geq \frac{d}{2} + 1$, and that the wavelets are orthogonal to polynomials of degree $n \geq \alpha - 1$.  Note by Theorem 3.6.1 in \cite{} the norm equivalence between elements in $W^{t,2}$ and the $l_t^2$ norm of the wavelet decomposition of that same element using either wavelet bases for $0\leq t \leq \alpha$. For the sake of convenience, we let $s = \frac{d}{2} + 1$. 
 
-\begin{lemma}
-	Let $x \in W^{s,2}(M)$, then $\norm{x - P_j x}_{L^2} \leq  2^{-sj}\norm{x}_{W^{s,2}}$,
+\begin{lemma} \label{lem:projection_bound}
+	Let $x \in W^{s,2}(M)$ and $j \geq \frac{d}{2}$, then $\norm{x - P_j x}_{L^2} \leq  2^{-sj}\norm{x}_{W^{s,2}}$,
 \end{lemma}
 \begin{proof}
 	This follows from either Theorem 3.3.2 or 3.10.2 in \cite{}.
@@ -79,16 +79,21 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 	$\abs{m_{\lambda,\mu}} \leq C 2^{-(\frac{d}{2}+\frac{1}{2})\abs{\abs{\lambda}-\abs{\mu}}}2^{\frac{1}{2}(\abs{\lambda}+\abs{\mu})}$
 \end{lemma}
 \begin{proof}
-	\begin{align}
+	\begin{align*}
 		\abs{m_{\lambda,\mu}} 	&= \int \abs{X \psi_{\lambda}(x) \tilde{\psi}_{\mu}(x)} dx \\
-								&\leq \norm{\tilde{\psi}_\mu}_{L^1}\inf_{g \in \Pi_n} \norm{X \psi_{\lambda} - g}_{L^{\infty}} \\
-								&\leq C_1 2^{-\card{\mu}\frac{d}{2}}\norm{X\psi_{\lambda}}_{L^{\infty}} \\
-								&\leq C_2 2^{-\card{\mu}\frac{d}{2}}\sum_{\card{m}\leq 1}\norm{\psi_{\lambda}^{(m)}(x)}_{L^{\infty}} \\
+								&\leq \norm{\tilde{\psi}_\mu}_{L^1} \| X \psi_\lambda \|_{L^\infty}, \\ %\inf_{g \in \Pi_n} \norm{X \psi_{\lambda} - g}_{L^{\infty}} \\
+							\intertext{by Theorem 3.3.1 and 3.10.2 of \cite{Cohen1992} we observe: }
+								&\leq C_1 2^{-\card{\mu}\frac{d}{2}}\norm{X\psi_{\lambda}}_{L^{\infty}} = C_1 2^{-\card{\mu}\frac{d}{2}}\norm{ \sum_{\abs{m} \leq 1 } a_m(x) \psi^{(m)}_\lambda(x) }_{L^{\infty}} \\
+								&\leq C_2 2^{-\card{\mu}\frac{d}{2}}\sum_{\card{m}\leq 1}\norm{\psi_{\lambda}^{(m)}(x)}_{L^{\infty}} , \\
+							\intertext{and by the definition of wavelets:}
 								&\leq C_3 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}\frac{d}{2}} \sum_{\card{m}\leq 1} (2^{\card{\lambda}})^m \\
 								&\leq C_3 d 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}(1+\frac{d}{2})} \\
 								&= C_3 d 2^{d/2(\card{\lambda} - \card{\mu})}2^{\card{\lambda}},
-	\end{align}
-	where the second line follows from the fact that $\tilde{\psi}$ is orthogonal to polynomials of degree $n$, the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{}, the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets. The desired result follows from a symmetry argument and a rearrangement.
+	\end{align*}
+	%where the second line follows from the fact that $\tilde{\psi}$ is orthogonal to polynomials of degree $n$, 
+	%the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{Cohen1992},
+	%the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets.
+	The desired result follows from a symmetry argument and a rearrangement.
 \end{proof}
 
 \begin{lemma}
