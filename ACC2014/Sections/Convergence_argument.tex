@@ -66,7 +66,7 @@ When $t = 0$ we write $l^2$ for the aforementioned weighted space. We are intere
 \begin{equation}
 	m_{\lambda,\mu} = \langle X \psi_\lambda, \tilde{\psi}_\mu \rangle.
 \end{equation}
-We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there exists an $\alpha,n \in \N$ such that the wavelets are in $C^{\alpha}$, $\alpha \geq \frac{d}{2} + 1$, and that the wavelets are orthogonal to polynomials of degree $n \geq \alpha - 1$.  Note by Theorem 3.6.1 in \cite{} the norm equivalence between elements in $W^{t,2}$ and the $l_t^2$ norm of the wavelet decomposition of that same element using either wavelet bases for $0\leq t \leq \alpha$. For the sake of convenience, we let $s = \frac{d}{2} + 1$. 
+We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there exists an $\alpha,n \in \N$ such that the wavelets are in $C^{\alpha}$, $\alpha \geq \frac{d}{2} + 1$, and that the wavelets are orthogonal to polynomials of degree $n \geq \alpha - 1$.  Note by Theorem 3.6.1 in \cite{Cohen2003} the norm equivalence between elements in $W^{t,2}$ and the $l_t^2$ norm of the wavelet decomposition of that same element using either wavelet bases for $0\leq t \leq \alpha$. For the sake of convenience, we let $s = \frac{d}{2} + 1$. 
 
 \begin{lemma} \label{lem:projection_bound}
 	Let $x \in W^{s,2}(M)$ and $j \geq \frac{d}{2}$, then $\norm{x - P_j x}_{L^2} \leq  2^{-sj}\norm{x}_{W^{s,2}}$,
@@ -82,7 +82,7 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 	\begin{align*}
 		\abs{m_{\lambda,\mu}} 	&= \int \abs{X \psi_{\lambda}(x) \tilde{\psi}_{\mu}(x)} dx \\
 								&\leq \norm{\tilde{\psi}_\mu}_{L^1} \| X \psi_\lambda \|_{L^\infty}, \\ %\inf_{g \in \Pi_n} \norm{X \psi_{\lambda} - g}_{L^{\infty}} \\
-							\intertext{by Theorem 3.3.1 and 3.10.2 of \cite{Cohen1992} we observe: }
+							\intertext{by Theorem 3.3.1 and 3.10.2 of \cite{Cohen2003} we observe: }
 								&\leq C_1 2^{-\card{\mu}\frac{d}{2}}\norm{X\psi_{\lambda}}_{L^{\infty}} = C_1 2^{-\card{\mu}\frac{d}{2}}\norm{ \sum_{\abs{m} \leq 1 } a_m(x) \psi^{(m)}_\lambda(x) }_{L^{\infty}} \\
 								&\leq C_2 2^{-\card{\mu}\frac{d}{2}}\sum_{\card{m}\leq 1}\norm{\psi_{\lambda}^{(m)}(x)}_{L^{\infty}} , \\
 							\intertext{and by the definition of wavelets:}
@@ -91,12 +91,12 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 								&= C_4 2^{d/2(\card{\lambda} - \card{\mu})}2^{\card{\lambda}},
 	\end{align*}
 	%where the second line follows from the fact that $\tilde{\psi}$ is orthogonal to polynomials of degree $n$, 
-	%the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{Cohen1992},
+	%the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{Cohen2003},
 	%the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets.
 	The desired result follows from a symmetry argument and a rearrangement. \todo{hoj:  Is the symmetry argument follow from an identity like $\abs{ m_{\lambda , \mu} } = \abs{m_{\mu,\lambda} }$.  It's not obvious to me at the moment. }
 \end{proof}
 
-\begin{lemma}
+\begin{lemma} \label{lem:M_bound}
 	$M$ is a bounded linear operator from $W^{s,2}(M)$ to $L^2(M)$.
 \end{lemma}
 \begin{proof}
@@ -119,7 +119,7 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 		\end{align*}
 \end{proof}
 
-\begin{lemma}
+\begin{lemma} 
 	Let $M^j=(m^j_{\lambda,\mu})_{\lambda,\mu \in \nabla}$ be such that $m^j_{\lambda,\mu} = m_{\lambda,\mu}$ if $\card{\lambda}$ and $\card{\mu}$ are both less than or equal to $j$ and $0$ otherwise. Then there exists a $C > 0$ such that for all $x \in W^{s,2}$:
 	\begin{equation}
 		\norm{(M-M^j)(P_jx)}_{l^2} \leq C2^{-(d/2)(j+1)} \norm{x}_{W^{s,2}}.
@@ -127,21 +127,23 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 \end{lemma}
 \begin{proof}
 	\begin{align}
-		\norm{(M-M^j)(P_j x)}_{l^2} &= \sum_{\lambda \in \nabla} \sum_{\card{\mu}\leq j} \abs{m_{\lambda,\mu}-m^k_{\lambda,\mu}}^2 \abs{(P_j x)_\mu}^2 \\
+		\norm{(M-M^j)(P_j x)}_{l^2}^2 &= \sum_{\lambda \in \nabla} \sum_{\card{\mu}\leq j} \abs{m_{\lambda,\mu}-m^j_{\lambda,\mu}}^2 \abs{(P_j x)_\mu}^2 \\
+	\intertext{by the definitions of $M^j = \{ m_{\lambda,\mu}^j \}$ }
 		&= \sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 \sum_{\card{\lambda}>j}\abs{m_{\lambda,\mu}}^2 \\
+	\intertext{by Lemma \ref{lem:M_bound}}
 		&\leq C'\sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 2^{(d+2)\card{\mu}}\sum_{\card{\lambda}>j}2^{-d\card{\lambda}} \\
 		&\leq C' 2^{-2(\frac{d}{2})(j+1)}\norm{P_j x}^2_{l^2_{d/2+1}}
 	\end{align}
-	The result follows by Remark 3.3.1 in \cite{}.
+	The result follows by Remark 3.3.1 in \cite{Cohen2003}.
 \end{proof}
 
 \begin{corollary}
 	$\norm{Mx - M^j(P_j x)}_{l^2} \leq C \left( 2^{-sj}\norm{x}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{x}_{W^{s,2}} \right)$.
 \end{corollary}
 \begin{proof}
-	Follows from the Triangle Inequality:
+	Follows from the triangle inequality:
 	\begin{multline}
-		\norm{Mx - M P_j x + M P_j x - M^j P_j x}_{l^2} \leq \norm{M}_{l^2} \norm{x - P_j x}_{l^2} + \\ + \norm{(M-M^j)(P_jx)}_{l^2}.
+		\norm{Mx - M P_j x + M P_j x - M^j P_j x}_{l^2} \leq \norm{M}_{l^2} \norm{x - P_j x}_{l^2} + \norm{(M-M^j)(P_jx)}_{l^2}.
 	\end{multline}
 \end{proof}
 
