@@ -107,7 +107,7 @@ In normal coordinates
 \[
 	\pounds_X[ \psi \cdot \sqrt{\mu} ] = ( X^k(x) \partial_k \psi(x) + \frac{1}{2} \psi(x) \partial_k X^k(x) ) \sqrt{\mu}
 \]
-(see formula 13.3 of \cite{Meyer1993}) so that
+(see formula 13.3 of \cite{Meyer1998}) so that
 \[
 	X_j^i = \int_{M} ( X^k(x) \partial_k f_j(x) + \frac{1}{2} f_j(x) \partial_k X^k(x) ) f_i(x) \mu
 \]
@@ -119,13 +119,13 @@ In normal coordinates
 	\[
 		0 = \langle \pounds_X [\Psi_1^\dagger] , \Psi_2 \rangle + \langle \Psi_1^\dagger, \pounds_X[\Psi_2] \rangle
 	\]
-	In particular $X^i_j = \langle f_i \sqrt{\mu} , \pounds_X [f_j \sqrt{\mu}]  \rangle =  - \langle f_i \sqrt{\mu} , \pounds_X [f_j \sqrt{\mu}]  \rangle^\dagger = -(X^j_i)^\dagger$.
+	In particular
+	\begin{align*}
+		X^i_j &= \langle f_i \sqrt{\mu} , \pounds_X [f_j \sqrt{\mu}]  \rangle \\
+			&=  - \langle f_i \sqrt{\mu} , \pounds_X [f_j \sqrt{\mu}]  \rangle^\dagger \\
+			&= -(X^j_i)^\dagger.
+	\end{align*}
 \end{proof}
-As a result, $\exp([X])$ is unitary, which implies it is mass-conserving.  This is in contrast to transfer-operator methods which involve diffusion and fail to satisfy mass conservation.
-We can now solve for the truncated Fourier series $\psi_N(x) = c_i f_i(x)$ by  letting $\vec{c} = (c_1, \dots, c_N)$ satisfy
-\[
-	\vec{c}(t) = \exp( [X] ) \cdot \vec{c}(0).
-\]
-Then $\rho_N(x) = \|\psi_N(x) \|^2$ is an approximation of the evolution of the density function.
-
-\bibliography{library}
+Of course, the natural action of $\pounds_X$ on half-densities is a representation of the Lie algebra $\mathfrak{X}(M)$.
+In this paper we will approximate this representation with the finite-dimensional matrix $X_j^i$ obtained from a wavelet basis.
+Moreover, we will approximate the the flow of $\pounds_X$ with the matrix exponential.
