@@ -1,8 +1,129 @@
 \section{Problem Formulation}\label{sec:Formulation}
-
+In this section we will:
 \begin{enumerate}
 	\item Define our system and the problem under consideration
 	\item Define our half density advection equation
 	\item Formalize the relationship between half density advection equation and trajectories of the system
 	\item Formalize properties of the advection equation (like mass preserving and anti-hermitian)
 \end{enumerate}
+
+Let $M$ be a compact Riemannian manifold with volume for $\mu$.  Given a vector field $X \in \mathfrak{X}(M)$ we define the divergence, ${\rm div}(X) \in C^1(M)$ as the unique function such that ${\rm div}(X) \mu = \pounds_X [ \mu ]$.
+A smooth probability density function $\rho \in C^1(M)$ is a non-negative function which satisfies $\int \rho \cdot \mu = 1$.  Given an initial density, $\rho$, the Louiville equation on volume forms states that the volume form $\rho \mu$ is advectied by $X$ via the advection equation
+\[
+	\partial_t (\rho \mu) = - \pounds_X [ \rho \mu]
+\]
+which implies
+\[
+	\partial_t \rho = - {\rm div}( \rho X ).
+\]
+when we try to numerically implement this equation we must ensure that our numerical method respects the non-negativity constraint of $\rho$ and also respects the normalization constraint.
+Alternatively, we can consider replacing the density $\rho \cdot \mu$ with a half-density.
+Such a substitution is analogous to replacing a problem involving some variable $x \in \mathbb{R}^+$ and replacing it with a problem involving a variable $z \in \mathbb{C}$ related to $x$ by $x = z^\dagger z$.
+The problem on $\mathbb{C}$ has no non-negativity constraint.
+
+\section{Half densities}
+A volume form, $\mu \in \bigwedge^n(M)$ can be defined as a function on the $n$-fold Whitney sum, $TM \oplus \cdots \oplus TM$, such that
+\[
+	\mu( \alpha v_1, \dots, \alpha v_n) = \alpha^n \mu( v_1, \dots, v_n).
+\]
+A half density $\Psi \in  \sqrt{ \bigwedge^n(M) }$ is a complex valued function on $TM \oplus \dots \oplus TM$ such that
+\[
+	\Psi( \alpha v_1, \dots, \alpha v_n) = \alpha^{n/2} \Psi( v_1, \dots, v_n).
+\]
+We see that there is a natural Hermitian inner-product on $\sqrt{\bigwedge^n(M)}$ given by
+\begin{align}
+	\langle \Psi_1, \Psi_2 \rangle = \int_M \Psi_1^\dagger \cdot \Psi_2 \label{eq:Hilbert}
+\end{align}
+where $\Psi_1^\dagger \cdot \Psi_2$ is the complex valued $n$-form obtained by scalar multiplication of $\Psi_1^\dagger$ and $\Psi_2$.
+This makes $\sqrt{ \bigwedge^n(M)}$ a pre-Hilbert space, the completion of which we call the \emph{Hilbert space of half-densities}, denoted $\mathcal{H}(M)$.
+Moreover, given a dfifeomophism $\varphi: M \to M$, the pullback of $\Psi \in \sqrt{ \bigwedge^n(M)}$ is
+\[
+	\varphi^* \Psi( v_1, \cdots , v_n) = \Psi( T\varphi \cdot v_1, \dots, T\varphi \cdot v_n).
+\]
+This defines the Lie derivative of $\Psi$ with respect to a vector field $X \in \mathfrak{X}(M)$ as the half-density $\pounds_X[ \Psi] := \left. \frac{d}{dt} \right|_{t=0} \varphi_t^* \Psi$ where $\varphi_t$ is the flow of $X$.
+
+\begin{proposition} \label{prop:half_density}
+	Let $\Psi(t) \in \sqrt{ \bigwedge^n(M)}$ be a curve in the space of half-densities which satisfies the advection equation
+	\[
+		\partial_t \Psi + \pounds_X \Psi = 0.
+	\]
+	Then $\| \Psi(t) \| = \| \Psi(0) \|$.  In other words, the flow of $X$ is a unitary transformation.
+\end{proposition}
+\begin{proof}
+	If $\Psi(t)$ satisfies the advection equation, then $\varphi_t^*\Psi(t) = \Psi(0)$ where $\varphi_t : M \to M$ is the time-$t$ flow map of $X$.  We see that
+	\[
+		\| \Psi(t) \|^2 = \| (\varphi_t^{-1})^* \Psi(0) \|^2 = \int_M (\varphi_t^{-1})^* \Psi(0)^\dagger \cdot (\varphi_t^{-1})^* \Psi(0).
+	\]
+	By the change of variables formula the above is equivalent to $\int_M \Psi(0)^\dagger \Psi(0) = \| \Psi(0) \|^2$.
+\end{proof}
+It is notable that we have not invoked any specific structure of $M$, so that \eqref{eq:Hilbert} is strictly a topological entity.
+
+In any case, on a volume manifold we may consider the half density $\mu^{1/2}$ obtained by taking the square root of $\mu$.
+Then any half-density $\Psi$ can be written as the product of a complex valued function $\psi \in C^{\infty}(M ; \mathbb{C})$ such that $\Psi = \psi \cdot \mu^{1/2}$.
+We then find that the Lie derivative of $\Psi$ along $X$ is given by
+\[
+	\pounds_X[ \Psi] = ( \pounds_X[ \psi] + \frac{1}{2} \psi \cdot {\rm div}(X) ) \cdot \mu^{1/2}.
+\]
+Therefore we can simulate the advection of half densities by solving for the function $\psi$.  This also allows us to simulate densities as follows
+\begin{proposition}
+	Let $\Psi = \psi \cdot \mu^{1/2}$ be a time-dependent half density which satisfies the half-density advection equation
+	\[
+		\partial_t \Psi + \pounds_X [\Psi] = 0
+	\]
+	and let $\rho = \psi^\dagger \psi = \| \psi \|^2$.  Then $\rho$ satisfies the Louiville equaiton $\partial_t \rho + {\rm div}( \rho X ) = 0$.
+	Conversely, if $\rho$ satisfies the Louiville equation, then there exists a half density $\Psi$ such that $\Psi^\dagger \Psi = \rho \cdot \mu$ and $\Psi$ satisfies the half-density advection equation.
+\end{proposition}
+\begin{proof}
+	We see that $\rho \cdot \mu = \Psi^\dagger \cdot \Psi$.  Therefore $\pounds_X[ \rho \cdot \mu] = \pounds_X [\Psi^\dagger \cdot \Psi]$.
+	We find
+	\begin{align*}
+		\pounds_X [\Psi^\dagger \cdot \Psi] &= \pounds_X[ \Psi^\dagger] \cdot \Psi + \Psi^\dagger \cdot \pounds_X [ \Psi ] \\
+			&= (\pounds_X[ \psi^\dagger] + \frac{1}{2} \psi^{\dagger} {\rm div}(X) ) \psi \cdot \mu \\
+			&\quad + \psi^\dagger ( \pounds_X[ \psi] + \frac{1}{2} \psi {\rm div}(X)) \cdot \mu \\
+			&= (\pounds_X[ \psi^\dagger \psi] + \psi^\dagger \psi {\rm div}(X) ) \mu \\
+			&= {\rm div}( \rho X) \mu.
+	\end{align*}
+	Therefore $\partial_t ( \rho \cdot \mu) + {\rm div}( \rho X) = 0$ and the proposition follows in one direction.  Conversely, let $\psi(x) = \sqrt{ \rho(x)}$, then we can verify directly that $\psi \cdot \sqrt{\mu}$ satisfies the half-density advection equation.
+\end{proof}
+%
+%The next proposition shows that stationary solutions of the Louiville equation (such as dirac-deltas centered at fixed points) correspond to
+%\begin{proposition}
+%	Let $X$ be a vector field.  If $\rho$ is a density which satisfies the Louiville equation and $\psi$ is a half-density which satisfies the Louiville equation and $\rho = \psi^{\dagger} \psi$ then $\Re \left( \psi^\dagger \pounds_X[ \psi] \right) = 0$.
+%\end{proposition}
+%
+%\begin{proof}
+%  If $\pounds_X[\rho] = 0$ then $\pounds_X[\psi^\dagger] \psi + \psi^{\dagger} \pounds_X[\psi] = 0$.  However, this is just twice the real part of $\psi^\dagger \pounds_X[\psi]$.
+%\end{proof}
+
+In particular if $x(t)$ is an integral curve of $X$, then we may consider a sequence of time-dependent half densities $\Psi_\alpha(t)$ such that $\lim_{\alpha \to 0}( \Psi_\alpha^\dagger \Psi_\alpha) = \delta( \cdot - x(t) )$.
+Then $\lim_{\alpha \to 0 } \langle \Psi_\alpha^\dagger \Psi_\alpha , f \rangle = f(x (t) )$.
+
+\subsection{Discretization with half-densities}
+Let $f_1, \dots, f_n$ be an orthonormal set of complex-valued functions on $M$.  Then $f_1 \sqrt{\mu} , \dots f_n \sqrt{\mu}$ are an orthonormal set of half-densities.  We can consider the $n \times n$-matrix
+\[
+	X_{j}^{i} = \langle f_i \sqrt{\mu} , \pounds_X [f_j \sqrt{\mu}]  \rangle.
+\]
+In normal coordinates
+\[
+	\pounds_X[ \psi \cdot \sqrt{\mu} ] = ( X^k(x) \partial_k \psi(x) + \frac{1}{2} \psi(x) \partial_k X^k(x) ) \sqrt{\mu}
+\]
+(see formula 13.3 of \cite{Meyer1993}) so that
+\[
+	X_j^i = \int_{M} ( X^k(x) \partial_k f_j(x) + \frac{1}{2} f_j(x) \partial_k X^k(x) ) f_i(x) \mu
+\]
+\begin{proposition}
+	The matrix $X^i_j$ is anti-Hermetian.
+\end{proposition}
+\begin{proof}
+	Let $\Psi_1$ and $\Psi_2$ be half densities.  As diffeomorphisms act unitarily on half-densities we find
+	\[
+		0 = \langle \pounds_X [\Psi_1^\dagger] , \Psi_2 \rangle + \langle \Psi_1^\dagger, \pounds_X[\Psi_2] \rangle
+	\]
+	In particular $X^i_j = \langle f_i \sqrt{\mu} , \pounds_X [f_j \sqrt{\mu}]  \rangle =  - \langle f_i \sqrt{\mu} , \pounds_X [f_j \sqrt{\mu}]  \rangle^\dagger = -(X^j_i)^\dagger$.
+\end{proof}
+As a result, $\exp([X])$ is unitary, which implies it is mass-conserving.  This is in contrast to transfer-operator methods which involve diffusion and fail to satisfy mass conservation.
+We can now solve for the truncated Fourier series $\psi_N(x) = c_i f_i(x)$ by  letting $\vec{c} = (c_1, \dots, c_N)$ satisfy
+\[
+	\vec{c}(t) = \exp( [X] ) \cdot \vec{c}(0).
+\]
+Then $\rho_N(x) = \|\psi_N(x) \|^2$ is an approximation of the evolution of the density function.
