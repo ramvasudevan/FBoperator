@@ -149,4 +149,27 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 
 The only weird thing here is that we use the $L^2$--norm on both the domain and the range, but we only have the rate of convergence for points in the domain that are $W^{s,2}$.
 
+\section{Convergence of the flow map}
+In this section we will find an error bound for the collocation approximation of the flow map.
+
+\begin{lemma}
+Let $A$ and $B$ be anti-Hermetian operators on a Hilbert space.  Let $x(t)$ satisfy $\dot{x} = Ax$ and $y(t)$ satisfy $\dot{y} = By$.  If $x(0) = y(0)$ and $\| A - B \| < \varepsilon$, then $u(t) = \| x(t) - y(t) \|$ satisfies $u(t) < \varepsilon t  \| y(0) \|$.
+\end{lemma}
+
+\begin{proof}
+	We calculate
+	\begin{align*}
+		\frac{du}{dt} &= \frac{1}{2u(t)} \langle Ax(t) - By(t) , x(t) - y(t) \rangle \\
+			&= \frac{1}{2u} \langle A(x(t)-y(t)) + (A-B) y(t) , x(t) - y(t) \rangle \\
+			&= \frac{1}{2u} \langle (A-B)y(t) , x(t) - y(t) \rangle \\
+			&\leq \frac{1}{2u(t)} \| A - B \| \cdot \| y(t) \| \cdot \| x(t) - y(t) \| \\
+			&< \varepsilon \| y(t) \|
+	\end{align*}
+	However $\| y(0) \| = \| y(t)\|$ because the $B$ is anti-Hermetian.  Thus $\frac{du}{dt} < \varepsilon \| y(0)\|$.	The result follows by integration.
+\end{proof}
+As $M$ and $M_j$ are anti-Hermetian operators, the upshot of this Lemma is that the deviation of the time $t$ flow of $\dot{x} = M_j x$ from that of $\dot{x} = Mx$ is bounded by a quantity proportional to
+\[
+ 	t \left( 2^{-sj}\norm{x}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{x}_{W^{s,2}} \right) \| x \|_{\mathcal{H}}
+\]
+
 \end{document}
