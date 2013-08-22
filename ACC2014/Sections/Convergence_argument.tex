@@ -38,7 +38,7 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 	%where the second line follows from the fact that $\tilde{\psi}$ is orthogonal to polynomials of degree $n$, 
 	%the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{Cohen2003},
 	%the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets.
-	The desired result follows from a symmetry argument and a rearrangement. \henry{Is the symmetry argument follow from an identity like $\abs{ m_{\lambda , \mu} } = \abs{m_{\mu,\lambda} }$.  It's not obvious to me at the moment. }
+	The desired result follows from a symmetry argument and a rearrangement. \henry{Is the symmetry argument follow from an identity like $\abs{ m_{\lambda , \mu} } = \abs{m_{\mu,\lambda} }$?  It's not obvious to me at the moment. }
 \end{proof}
 
 \begin{lemma} \label{lem:M_bound}
@@ -60,7 +60,7 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 			&= 2^{-(d+1) \lambda} \left(  \frac{ 1-2^{(d+2)(\lambda + 1)} }{1 - 2^{d+2} } \right) \\
 			&\leq 2^{-(d+1) \lambda} 2^{2(d+2)\lambda}.
 		\end{align*}
-		By the same tactic we find $term_2 \leq 2^{\lambda - d}$.  Substituting these pounds into \eqref{eq:terms} we find
+		By the same tactic we find $term_2 \leq 2^{\lambda - d}$.  Substituting these expressions into our original calculation we find
 		\begin{align*}	
 			\norm{Mx}_{l^2}^2 	&\leq C(2^{(d+2)}+2^{-d}) \sum_{\lambda \in \nabla} 2^{2\lambda} \abs{x_{\lambda}}^2 \\
 							&\leq C(2^{(d+2)}+2^{-d}).
@@ -74,14 +74,14 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 	\end{equation}
 \end{lemma}
 \begin{proof}
-	\begin{align}
+	\begin{align*}
 		\norm{(M-M^j)(P_j x)}_{l^2}^2 &= \sum_{\lambda \in \nabla} \sum_{\card{\mu}\leq j} \abs{m_{\lambda,\mu}-m^j_{\lambda,\mu}}^2 \abs{(P_j x)_\mu}^2 \\
 	\intertext{by the definitions of $M^j = \{ m_{\lambda,\mu}^j \}$ }
-		&= \sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 \sum_{\card{\lambda}>j}\abs{m_{\lambda,\mu}}^2 \\
+		\qquad &= \sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 \sum_{\card{\lambda}>j}\abs{m_{\lambda,\mu}}^2 \\
 	\intertext{by Lemma \ref{lem:M_bound}}
-		&\leq C'\sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 2^{(d+2)\card{\mu}}\sum_{\card{\lambda}>j}2^{-d\card{\lambda}} \\
-		&\leq C' 2^{-2(\frac{d}{2})(j+1)}\norm{P_j x}^2_{l^2_{d/2+1}}
-	\end{align}
+		 \leq& C'\sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 2^{(d+2)\card{\mu}}\sum_{\card{\lambda}>j}2^{-d\card{\lambda}} \\
+		 \leq& C' 2^{-2(\frac{d}{2})(j+1)}\norm{P_j x}^2_{l^2_{d/2+1}}
+	\end{align*}
 	The result follows by Remark 3.3.1 in \cite{Cohen2003}.
 \end{proof}
 
@@ -94,15 +94,14 @@ We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there
 \begin{proof}
 	Follows from the triangle inequality:
 	\begin{align*}
-		\norm{Mx - M P_j x + M P_j x - M^j P_j x}_{l^2} \leq \\
-		 \norm{M}_{l^2} \norm{x - P_j x}_{l^2} + \norm{(M-M^j)(P_jx)}_{l^2}.
+		&\norm{Mx - M P_j x + M P_j x - M^j P_j x}_{l^2} \leq \\
+		&\qquad \norm{M}_{l^2} \norm{x - P_j x}_{l^2} + \norm{(M-M^j)(P_jx)}_{l^2}.
 	\end{align*}
 \end{proof}
 
-The only weird thing here is that we use the $L^2$--norm on both the domain and the range, but we only have the rate of convergence for points in the domain that are $W^{s,2}$.
+\ram{The only weird thing here is that we use the $L^2$--norm on both the domain and the range, but we only have the rate of convergence for points in the domain that are $W^{s,2}$.}
 
-\section{Convergence of the flow map}
-In this section we will find an error bound for the collocation approximation of the flow map.
+Next we will construct an error bound for the collocation approximation of the exponential map.
 
 \begin{lemma}
 Let $A$ and $B$ be anti-Hermetian operators on a Hilbert space.  Let $x(t)$ satisfy $\dot{x} = Ax$ and $y(t)$ satisfy $\dot{y} = By$.  If $x(0) = y(0)$ and $\| A - B \| < \varepsilon$, then $u(t) = \| x(t) - y(t) \|$ satisfies $u(t) < \varepsilon t  \| y(0) \|$.
@@ -121,7 +120,7 @@ Let $A$ and $B$ be anti-Hermetian operators on a Hilbert space.  Let $x(t)$ sati
 \end{proof}
 As $M$ and $M_j$ are anti-Hermetian operators, the upshot of this Lemma is that the deviation of the time $t$ flow of $\dot{x} = M_j x$ from that of $\dot{x} = Mx$ is bounded by a quantity proportional to
 \[
- 	t \left( 2^{-sj}\norm{x}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{x}_{W^{s,2}} \right) \| x \|_{\mathcal{H}}
+ 	t \left( 2^{-sj}\norm{x(0)}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{x(0)}_{W^{s,2}} \right) \| x (0) \|_{\mathcal{H}}
 \]
 
 \end{document}
