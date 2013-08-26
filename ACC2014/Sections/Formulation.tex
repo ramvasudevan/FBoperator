@@ -8,25 +8,26 @@ In this section we will:
 \end{enumerate}
 
 Let $M$ be a compact Riemannian manifold with volume for $\mu$.  Given a vector field $X \in \mathfrak{X}(M)$ we define the divergence, ${\rm div}(X) \in C^1(M)$ as the unique function such that ${\rm div}(X) \mu = \pounds_X [ \mu ]$.
-A smooth probability density function $\rho \in C^1(M)$ is a non-negative function which satisfies $\int \rho \cdot \mu = 1$.  Given an initial density, $\rho$, the Louiville equation on volume forms states that the volume form $\rho \mu$ is advectied by $X$ via the advection equation
-\[
-	\partial_t (\rho \mu) = - \pounds_X [ \rho \mu]
-\]
-which implies
+This induces the advection equation for mass density $\rho \in C^{\infty}(M)$ given by
 \[
 	\partial_t \rho = - {\rm div}( \rho X ).
 \]
-when we try to numerically implement this equation we must ensure that our numerical method respects the non-negativity constraint of $\rho$ and also respects the normalization constraint.
-Alternatively, we can consider replacing the density $\rho \cdot \mu$ with a half-density.
-Such a substitution is analogous to replacing a problem involving some variable $x \in \mathbb{R}^+$ and replacing it with a problem involving a variable $z \in \mathbb{C}$ related to $x$ by $x = z^\dagger z$.
-The problem on $\mathbb{C}$ has no non-negativity constraint.
+In particular, the map $\rho \mapsto - {\rm div}( \rho X)$ is linear in $\rho$, and is the infinitesimal generator of the Perron-Frobenius operator.
+We can hope to find a finite-dimensional approximation of this operator, and use the matrix exponential as an approximation of the Perron-Frobenius operator.
+This perspective is explored in a number of areas areas \cite{FroylandJungeKoltai2013,FroylandPadberg2009}.
+The dual perspective consider the advection equation for a function $f \in C^{\infty}(M)$ given by $\partial_t f = X^i \cdot \partial_i f$ and yields the Koopman operator.
+This perpective has also been explored in many contexts \cite{RowleyMezic2009,Mezic2005}
+
+In this paper we will consider a different representation of vector fields, which can be viewed as a mid-point between the generators of the Koopman operator and the Perron-Frobenius operator.
+This operator in unitary with respect to a canonical inner product as are the finite dimensional approximations which we will use.
+This unitarity allows for convergence proofs and the use of wavelet representations to achieve sufficiently rapid convergence to simulate flows on high dimensional spaces.
 
 \section{Half densities}
-A volume form, $\mu \in \bigwedge^n(M)$ can be defined as a function on the $n$-fold Whitney sum, $TM \oplus \cdots \oplus TM$, such that
+A volume form, $\mu \in \left| \bigwedge^n \right|(M)$ can be defined as a non-negative function on the $n$-fold Whitney sum, $TM \oplus \cdots \oplus TM$, such that
 \[
 	\mu( \alpha v_1, \dots, \alpha v_n) = \alpha^n \mu( v_1, \dots, v_n).
 \]
-A half density $\Psi \in  \sqrt{ \bigwedge^n(M) }$ is a complex valued function on $TM \oplus \dots \oplus TM$ such that
+A half density $\Psi \in  \sqrt{ \left| \bigwedge \right|^n(M) }$ is a complex valued function on $TM \oplus \dots \oplus TM$ such that
 \[
 	\Psi( \alpha v_1, \dots, \alpha v_n) = \alpha^{n/2} \Psi( v_1, \dots, v_n).
 \]
@@ -35,8 +36,8 @@ We see that there is a natural Hermitian inner-product on $\sqrt{\bigwedge^n(M)}
 	\langle \Psi_1, \Psi_2 \rangle = \int_M \Psi_1^\dagger \cdot \Psi_2 \label{eq:Hilbert}
 \end{align}
 where $\Psi_1^\dagger \cdot \Psi_2$ is the complex valued $n$-form obtained by scalar multiplication of $\Psi_1^\dagger$ and $\Psi_2$.
-This makes $\sqrt{ \bigwedge^n(M)}$ a pre-Hilbert space, the completion of which we call the \emph{Hilbert space of half-densities}, denoted $\mathcal{H}(M)$.
-Moreover, given a dfifeomophism $\varphi: M \to M$, the pullback of $\Psi \in \sqrt{ \bigwedge^n(M)}$ is
+This makes $\sqrt{ \bigwedge^n(M)}$ a pre-Hilbert space, the completion of which we call the \emph{Hilbert space of half-densities}, denoted $\mathcal{H}(M)$ \cite[See Appendix A]{BatesWeinstein1997}
+Moreover, given a diffeomophism $\varphi: M \to M$, the pullback of $\Psi \in \sqrt{ \bigwedge^n(M)}$ is
 \[
 	\varphi^* \Psi( v_1, \cdots , v_n) = \Psi( T\varphi \cdot v_1, \dots, T\varphi \cdot v_n).
 \]
