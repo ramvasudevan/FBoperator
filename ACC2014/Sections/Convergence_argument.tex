@@ -1,62 +1,6 @@
-\documentclass[12pt]{amsart}
-\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
-\geometry{a4paper} % or letter or a5paper or ... etc
-\usepackage{fullpage}
-% \geometry{landscape} % rotated page geometry
-
-
-\newtheorem{definition}{Definition}
-\newtheorem{prop}{Proposition}
-\newtheorem{corollary}{Corollary}
-\newtheorem{lemma}{Lemma}
-
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\card}[1]{{\lvert#1\rvert}}
-
-\newcommand{\abs}[1]{\ensuremath{\left\lvert #1\right\rvert}}
-\newcommand{\absb}[1]{\ensuremath{\bigl\lvert #1\bigr\rvert}}
-\newcommand{\absB}[1]{\ensuremath{\Bigl\lvert #1\Bigr\rvert}}
-\newcommand{\absbb}[1]{\ensuremath{\biggl\lvert #1\biggr\rvert}}
-\newcommand{\absBB}[1]{\ensuremath{\Biggl\lvert #1\Biggr\rvert}}
-
-\newcommand{\norm}[1]{\ensuremath{\left\lVert #1\right\rVert}}
-\newcommand{\normb}[1]{\ensuremath{\bigl\lVert #1\bigr\rVert}}
-\newcommand{\normB}[1]{\ensuremath{\Bigl\lVert #1\Bigr\rVert}}
-\newcommand{\normbb}[1]{\ensuremath{\biggl\lVert #1\biggr\rVert}}
-\newcommand{\normBB}[1]{\ensuremath{\Biggl\lVert #1\Biggr\rVert}}
-
-\newcommand{\set}[1]{\ensuremath{\left\{ #1\right\}}}
-\newcommand{\setb}[1]{\ensuremath{\bigl\{ #1\bigr\}}}
-\newcommand{\setB}[1]{\ensuremath{\Bigl\{ #1\Bigr\}}}
-\newcommand{\setbb}[1]{\ensuremath{\biggl\{ #1\biggr\}}}
-\newcommand{\setBB}[1]{\ensuremath{\Biggl\{ #1\Biggr\}}}
-
-\newcommand{\paren}[1]{\!\ensuremath{\left( #1\right)}}
-\newcommand{\parenb}[1]{\ensuremath{\bigl( #1\bigr)}}
-\newcommand{\parenB}[1]{\ensuremath{\Bigl( #1\Bigr)}}
-\newcommand{\parenbb}[1]{\ensuremath{\biggl( #1\biggr)}}
-\newcommand{\parenBB}[1]{\ensuremath{\Biggl( #1\Biggr)}}
-
-\newcommand{\sqparen}[1]{\!\ensuremath{\left[ #1\right]}}
-\newcommand{\sqparenb}[1]{\ensuremath{\bigl[ #1\bigr]}}
-\newcommand{\sqparenB}[1]{\ensuremath{\Bigl[ #1\Bigr]}}
-\newcommand{\sqparenbb}[1]{\ensuremath{\biggl[ #1\biggr]}}
-\newcommand{\sqparenBB}[1]{\ensuremath{\Biggl[ #1\Biggr]}}
-
-
-% See the ``Article customise'' template for come common customisations
-
-\title{}
-\author{}
-\date{} % delete this line to display the current date
-
-%%% BEGIN DOCUMENT
-\begin{document}
-
 \section{Convergence Argument}
 
-Let $M$ be a volume manifold of dimension $d$ and consider the case of a partial differential operator $X$ where $X f(x) = \sum_{\abs{m}\leq 1} a_m(x) \partial^m f(x)$ with coefficients $a_m \in C^{\infty}(M)$. Assume that $(\psi_\lambda)_{\lambda \in \nabla}$ and $(\tilde{\psi}_\lambda)_{\lambda \in \nabla}$ are a pair of wavelet bases. We denote by $P_j$ the projection onto the scaling functions associated with $\psi$ of resolution $2^{-j}$. We also let $\card{\lambda}$ denote the resolution level of the index $\lambda$. 
+Let $M$ be a volume manifold of dimension $d$ and consider the case of a partial differential operator $X$ where $(X [f] )(x) = \sum_{\abs{m}\leq 1} a_m(x) \partial^m f(x)$ with coefficients $a_m \in C^{\infty}(M)$. Assume that $(\psi_\lambda)_{\lambda \in \nabla}$ and $(\tilde{\psi}_\lambda)_{\lambda \in \nabla}$ are a pair of wavelet bases. We denote by $P_j$ the projection onto the scaling functions associated with $\psi$ of resolution $2^{-j}$. We also let $\card{\lambda}$ denote the resolution level of the index $\lambda$. 
 
 Define weighted spaces as:
 \begin{equation}
@@ -66,72 +10,115 @@ When $t = 0$ we write $l^2$ for the aforementioned weighted space. We are intere
 \begin{equation}
 	m_{\lambda,\mu} = \langle X \psi_\lambda, \tilde{\psi}_\mu \rangle.
 \end{equation}
-We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there exists an $\alpha,n \in \N$ such that the wavelets are in $C^{\alpha}$, $\alpha \geq \frac{d}{2} + 1$, and that the wavelets are orthogonal to polynomials of degree $n \geq \alpha - 1$.  Note by Theorem 3.6.1 in \cite{} the norm equivalence between elements in $W^{t,2}$ and the $l_t^2$ norm of the wavelet decomposition of that same element using either wavelet bases for $0\leq t \leq \alpha$. For the sake of convenience, we let $s = \frac{d}{2} + 1$. 
+We let $M=(m_{\lambda,\mu})_{\lambda,\mu \in \nabla}$. Assume further that there exists an $\alpha,n \in \N$ such that the wavelets are in $C^{\alpha}$, $\alpha \geq \frac{d}{2} + 1$, and that the wavelets are orthogonal to polynomials of degree $n \geq \alpha - 1$.  Note by Theorem 3.6.1 in \cite{Cohen2003} the norm equivalence between elements in $W^{t,2}$ and the $l_t^2$ norm of the wavelet decomposition of that same element using either wavelet bases for $0\leq t \leq \alpha$. For the sake of convenience, we let $s = \frac{d}{2} + 1$. 
 
-\begin{lemma}
-	Let $x \in W^{s,2}(M)$, then $\norm{x - P_j x}_{L^2} \leq  2^{-sj}\norm{x}_{W^{s,2}}$,
+\begin{lemma} \label{lem:projection_bound}
+	Let $x \in W^{s,2}(M)$ and $j \geq \frac{d}{2}$, then $\norm{x - P_j x}_{L^2} \leq  2^{-sj}\norm{x}_{W^{s,2}}$,
 \end{lemma}
 \begin{proof}
-	This follows from either Theorem 3.3.2 or 3.10.2 in \cite{}.
+	This follows from either Theorem 3.3.2 or 3.10.2 in \cite{Cohen2003}.
 \end{proof}
 
-\begin{lemma}
+\begin{lemma} \label{lem:matrix_bound}
 	$\abs{m_{\lambda,\mu}} \leq C 2^{-(\frac{d}{2}+\frac{1}{2})\abs{\abs{\lambda}-\abs{\mu}}}2^{\frac{1}{2}(\abs{\lambda}+\abs{\mu})}$
 \end{lemma}
 \begin{proof}
-	\begin{align}
+	\begin{align*}
 		\abs{m_{\lambda,\mu}} 	&= \int \abs{X \psi_{\lambda}(x) \tilde{\psi}_{\mu}(x)} dx \\
-								&\leq \norm{\tilde{\psi}_\mu}_{L^1}\inf_{g \in \Pi_n} \norm{X \psi_{\lambda} - g}_{L^{\infty}} \\
+								&\leq \norm{\tilde{\psi}_\mu}_{L^1} \| X \psi_\lambda \|_{L^\infty}, \\ %\inf_{g \in \Pi_n} \norm{X \psi_{\lambda} - g}_{L^{\infty}} \\
+							\intertext{by Theorem 3.3.1 and 3.10.2 of \cite{Cohen2003} we observe: }
 								&\leq C_1 2^{-\card{\mu}\frac{d}{2}}\norm{X\psi_{\lambda}}_{L^{\infty}} \\
-								&\leq C_2 2^{-\card{\mu}\frac{d}{2}}\sum_{\card{m}\leq 1}\norm{\psi_{\lambda}^{(m)}(x)}_{L^{\infty}} \\
-								&\leq C_3 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}\frac{d}{2}} \sum_{\card{m}\leq 1} (2^{\card{\lambda}})^m \\
-								&\leq C_3 d 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}(1+\frac{d}{2})} \\
-								&= C_3 d 2^{d/2(\card{\lambda} - \card{\mu})}2^{\card{\lambda}},
-	\end{align}
-	where the second line follows from the fact that $\tilde{\psi}$ is orthogonal to polynomials of degree $n$, the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{}, the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets. The desired result follows from a symmetry argument and a rearrangement.
+								&= C_1 2^{-\card{\mu}\frac{d}{2}}\norm{ \sum_{\abs{m} \leq 1 } a_m(x) \psi^{(m)}_\lambda(x) }_{L^{\infty}} \\
+								&\leq C_2 2^{-\card{\mu}\frac{d}{2}}\sum_{\card{m}\leq 1}\norm{\psi_{\lambda}^{(m)}(x)}_{L^{\infty}} , \\
+							\intertext{and by the definition of wavelets:}
+								&\leq C_3 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}\frac{d}{2}} \sum_{\card{m}\leq 1} (2^{\card{\lambda}})^{\abs{m}} \\
+								&\leq C_3 (d+1) 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}(1+\frac{d}{2})} \\
+								&= C_4 2^{d/2(\card{\lambda} - \card{\mu})}2^{\card{\lambda}},
+	\end{align*}
+	%where the second line follows from the fact that $\tilde{\psi}$ is orthogonal to polynomials of degree $n$, 
+	%the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{Cohen2003},
+	%the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets.
+	The desired result follows from a symmetry argument and a rearrangement. \henry{Is the symmetry argument follow from an identity like $\abs{ m_{\lambda , \mu} } = \abs{m_{\mu,\lambda} }$?  It's not obvious to me at the moment. }
 \end{proof}
 
-\begin{lemma}
+\begin{lemma} \label{lem:M_bound}
 	$M$ is a bounded linear operator from $W^{s,2}(M)$ to $L^2(M)$.
 \end{lemma}
 \begin{proof}
 	Consider $x \in W^{s,2}(M)$ with wavelet expansion $(x_\lambda)_{\lambda \in \nabla}$ such that $\norm{(x_\lambda)}_{l_s^2} = 1$, then:
-	\begin{align}
-		\norm{Mx}_{l^2}^2   &=    \sum_{\mu \in \nabla} \abs{ \sum_{\lambda \in \nabla} m_{\mu,\lambda} x_{\lambda} }^2 \\
+	\begin{align*}
+		\norm{Mx}_{l^2}^2   &=    \sum_{\mu \in \nabla} \abs{ \sum_{\lambda \in \nabla} m_{\mu,\lambda} x_{\lambda} }^2. \\
+		\intertext{ Upon invoking Lemma \ref{lem:matrix_bound} we find,}
 							&\leq C\sum_{\mu \in \nabla} \sum_{\lambda \in \nabla} 2^{-(d+1)\abs{\card{\lambda} - \card{\mu}}} 2^{\card{\lambda}+\card{\mu}} \abs{x_\lambda}^2 \\
 							&\leq C\sum_{\lambda \in \nabla} 2^{\card{\lambda}} \abs{x_\lambda}^2 \sum_{\mu \in \nabla} 2^{-(d+1)\abs{\card{\lambda}-\card{\mu}}}2^\mu \\
-							&\leq C\sum_{\lambda \in \nabla}  2^{\card{\lambda}} \abs{x_\lambda}^2 \left( \sum_{0\leq\mu\leq\lambda} 2^{-(d+1)(\lambda - \mu)}2^{\mu} + \sum_{\mu > \lambda} 2^{-(d+1)(\mu-\lambda)}2^{\mu} \right) \\
-							&\leq C(2^{(d+2)}+2^{-d}) \sum_{\lambda \in \nabla} 2^{2\lambda} \abs{x_{\lambda}}^2 \\
+							&\leq C\sum_{\lambda \in \nabla}  2^{\card{\lambda}} \abs{x_\lambda}^2 \Bigg( \underbrace{\sum_{0\leq\mu\leq\lambda} 2^{-(d+1)(\lambda - \mu)}2^{\mu}}_{term_1} \\
+							&\qquad  + \underbrace{\sum_{\mu > \lambda} 2^{-(d+1)(\mu-\lambda)}2^{\mu} }_{term_2} \Bigg) \label{eq:terms}
+		\end{align*}
+		Inspecting $term_1$ by factoring out the terms which are independent of the dummy variable $\mu$ we find
+		\begin{align*}
+			term_1 &= 2^{-(d+1) \lambda }\sum_{0\leq\mu\leq\lambda} 2^{(d+2) \mu} \\
+			&= 2^{-(d+1) \lambda} \left(  \frac{ 1-2^{(d+2)(\lambda + 1)} }{1 - 2^{d+2} } \right) \\
+			&\leq 2^{-(d+1) \lambda} 2^{2(d+2)\lambda}.
+		\end{align*}
+		By the same tactic we find $term_2 \leq 2^{\lambda - d}$.  Substituting these expressions into our original calculation we find
+		\begin{align*}	
+			\norm{Mx}_{l^2}^2 	&\leq C(2^{(d+2)}+2^{-d}) \sum_{\lambda \in \nabla} 2^{2\lambda} \abs{x_{\lambda}}^2 \\
 							&\leq C(2^{(d+2)}+2^{-d}).
-	\end{align}
+		\end{align*}
 \end{proof}
 
-\begin{lemma}
+\begin{lemma} 
 	Let $M^j=(m^j_{\lambda,\mu})_{\lambda,\mu \in \nabla}$ be such that $m^j_{\lambda,\mu} = m_{\lambda,\mu}$ if $\card{\lambda}$ and $\card{\mu}$ are both less than or equal to $j$ and $0$ otherwise. Then there exists a $C > 0$ such that for all $x \in W^{s,2}$:
 	\begin{equation}
 		\norm{(M-M^j)(P_jx)}_{l^2} \leq C2^{-(d/2)(j+1)} \norm{x}_{W^{s,2}}.
 	\end{equation}
 \end{lemma}
 \begin{proof}
-	\begin{align}
-		\norm{(M-M^j)(P_j x)}_{l^2} &= \sum_{\lambda \in \nabla} \sum_{\card{\mu}\leq j} \abs{m_{\lambda,\mu}-m^k_{\lambda,\mu}}^2 \abs{(P_j x)_\mu}^2 \\
-		&= \sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 \sum_{\card{\lambda}>j}\abs{m_{\lambda,\mu}}^2 \\
-		&\leq C'\sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 2^{(d+2)\card{\mu}}\sum_{\card{\lambda}>j}2^{-d\card{\lambda}} \\
-		&\leq C' 2^{-2(\frac{d}{2})(j+1)}\norm{P_j x}^2_{l^2_{d/2+1}}
-	\end{align}
-	The result follows by Remark 3.3.1 in \cite{}.
+	\begin{align*}
+		\norm{(M-M^j)(P_j x)}_{l^2}^2 &= \sum_{\lambda \in \nabla} \sum_{\card{\mu}\leq j} \abs{m_{\lambda,\mu}-m^j_{\lambda,\mu}}^2 \abs{(P_j x)_\mu}^2 \\
+	\intertext{by the definitions of $M^j = \{ m_{\lambda,\mu}^j \}$ }
+		\qquad &= \sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 \sum_{\card{\lambda}>j}\abs{m_{\lambda,\mu}}^2 \\
+	\intertext{by Lemma \ref{lem:M_bound}}
+		 \leq& C'\sum_{\card{\mu}\leq j}\abs{(P_j x)_\mu}^2 2^{(d+2)\card{\mu}}\sum_{\card{\lambda}>j}2^{-d\card{\lambda}} \\
+		 \leq& C' 2^{-2(\frac{d}{2})(j+1)}\norm{P_j x}^2_{l^2_{d/2+1}}
+	\end{align*}
+	The result follows by Remark 3.3.1 in \cite{Cohen2003}.
 \end{proof}
 
 \begin{corollary}
-	$\norm{Mx - M^j(P_j x)}_{l^2} \leq C \left( 2^{-sj}\norm{x}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{x}_{W^{s,2}} \right)$.
+	The difference between $M^j (P_j x)$ and $M x$ is bounded by
+	\[
+		\norm{Mx - M^j(P_j x)}_{l^2} \leq C \left( 2^{-sj}\norm{x}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{x}_{W^{s,2}} \right).
+	\]
 \end{corollary}
 \begin{proof}
-	Follows from the Triangle Inequality:
-	\begin{multline}
-		\norm{Mx - M P_j x + M P_j x - M^j P_j x}_{l^2} \leq \norm{M}_{l^2} \norm{x - P_j x}_{l^2} + \\ + \norm{(M-M^j)(P_jx)}_{l^2}.
-	\end{multline}
+	Follows from the triangle inequality:
+	\begin{align*}
+		&\norm{Mx - M P_j x + M P_j x - M^j P_j x}_{l^2} \leq \\
+		&\qquad \norm{M}_{l^2} \norm{x - P_j x}_{l^2} + \norm{(M-M^j)(P_jx)}_{l^2}.
+	\end{align*}
 \end{proof}
 
-The only weird thing here is that we use the $L^2$--norm on both the domain and the range, but we only have the rate of convergence for points in the domain that are $W^{s,2}$.
+\ram{The only weird thing here is that we use the $L^2$--norm on both the domain and the range, but we only have the rate of convergence for points in the domain that are $W^{s,2}$.}
 
-\end{document}
+Next we will construct an error bound for the collocation approximation of the exponential map.
+
+\begin{lemma}
+Let $A$ and $B$ be anti-Hermetian operators on a Hilbert space.  Let $x(t)$ satisfy $\dot{x} = Ax$ and $y(t)$ satisfy $\dot{y} = By$.  If $x(0) = y(0)$ and $\| A - B \| < \varepsilon$, then $u(t) = \| x(t) - y(t) \|$ satisfies $u(t) < \varepsilon t  \| y(0) \|$.
+\end{lemma}
+
+\begin{proof}
+	We calculate
+	\begin{align*}
+		\frac{du}{dt} &= \frac{1}{2u(t)} \langle Ax(t) - By(t) , x(t) - y(t) \rangle \\
+			&= \frac{1}{2u} \langle A(x(t)-y(t)) + (A-B) y(t) , x(t) - y(t) \rangle \\
+			&= \frac{1}{2u} \langle (A-B)y(t) , x(t) - y(t) \rangle \\
+			&\leq \frac{1}{2u(t)} \| A - B \| \cdot \| y(t) \| \cdot \| x(t) - y(t) \| \\
+			&< \varepsilon \| y(t) \|
+	\end{align*}
+	However $\| y(0) \| = \| y(t)\|$ because the $B$ is anti-Hermetian.  Thus $\frac{du}{dt} < \varepsilon \| y(0)\|$.	The result follows by integration.
+\end{proof}
+As $M$ and $M_j$ are anti-Hermetian operators, the upshot of this Lemma is that the deviation of the time $t$ flow of $\dot{x} = M_j x$ from that of $\dot{x} = Mx$ is bounded by a quantity proportional to
+\[
+ 	t \left( 2^{-sj}\norm{x(0)}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{x(0)}_{W^{s,2}} \right) \| x (0) \|_{\mathcal{H}}
+\]
