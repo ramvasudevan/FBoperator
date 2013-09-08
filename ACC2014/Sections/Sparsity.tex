@@ -4,8 +4,26 @@
   The next theorem gives us a bound on the number of non-zero entries of $[X]$ based upon this observation.
   
   \begin{theorem}
-  we are super sparse.
+  Assume the vector-field $X$ is supported on a subset of $[-L,L]^d \subset \mathbb{R}^d$.
+  Let $\aleph( [X]^{(j)})$ denote the number of non-zero entries of $[X]^{(j)}$.  Then
+  \[
+  	\aleph( [X]^{(j)} ) \leq \frac{2 S }{2^{j+1}L + S}
+  \]
+  where $S$ is the length of the support of the scaling function for our wavelet basis.
   \end{theorem}
   \begin{proof}
+  We will denote the cardinality of a set by $\aleph( \cdot )$.
+  It is simple to verify that
+  \[
+  	\aleph \{ i \in \mathbb{N} \mid {\rm supp}( \phi_{j,k} ) \cap {\rm supp}( \phi_{j,k} ) \neq \null \}
+  \]
+  is bounded by $2M^d$.
+  As we are only interested in functions over the support of $X$, we are curious about the quantity
+  \[
+  	\aleph \{ i \in \mathbb{N} \mid {\rm supp}( \phi_{j,i} ) \cap [-L,L]^d \neq \null \}.
+  \]
+  We can verify that this quantity is bounded by $(2^{j+1}L+S)^d$.
+  We can then consider a matrix of size $(2^{j+1} L + S) \times (2^{j+1} L + S )$.
+  A cap on the proportion of non-zero entries is then given by  $\frac{2 S }{2^{j+1}L + S}$
   
   \end{proof}

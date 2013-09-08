@@ -4,7 +4,7 @@ Let $M$ be a volume manifold of dimension $d$ and for each $X \in \mathfrak{X}(M
 
 Define weighted spaces as:
 \begin{equation}
-	\ell_t^2(\Lambda) = \left\{ (c_\lambda)_{\lambda \in \Lambda}  \mid \norm{(c_\lambda)}_{l^2_t}^2 = \sum_{\lambda \in \Lambda} 2^{2t\card{\lambda}}\abs{c_\lambda}^2 < \infty  \right\}.
+	\ell_t^2(\Lambda) = \left\{ (c_\lambda)_{\lambda \in \Lambda}  \mid \norm{(c_\lambda)}_{\ell^2_t}^2 = \sum_{\lambda \in \Lambda} 2^{2t\card{\lambda}}\abs{c_\lambda}^2 < \infty  \right\}.
 \end{equation}
 When $t = 0$ we write $\ell^2$ for the aforementioned weighted space. We are interested in evaluating the entries:
 \begin{equation}
@@ -48,7 +48,7 @@ We let $[X]=([X]_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$. Assume further that 
 \begin{proof}
 	Consider $f \in W^{s,2}(M)$ with wavelet expansion $(f_\lambda)_{\lambda \in \Lambda}$ such that $\norm{(f_\lambda)}_{l_s^2} = 1$, then:
 	\begin{align*}
-		\norm{[X] f}_{l^2}^2   &=    \sum_{\mu \in \Lambda} \abs{ \sum_{\lambda \in \Lambda} [X]_{\mu,\lambda} f_{\lambda} }^2. \\
+		\norm{[X] f}_{\ell^2}^2   &=    \sum_{\mu \in \Lambda} \abs{ \sum_{\lambda \in \Lambda} [X]_{\mu,\lambda} f_{\lambda} }^2. \\
 		\intertext{ Upon invoking Lemma \ref{lem:matrix_bound} we find,}
 							&\leq C\sum_{\mu \in \Lambda} \sum_{\lambda \in \Lambda} 2^{-(d+1)\abs{\card{\lambda} - \card{\mu}}} 2^{\card{\lambda}+\card{\mu}} \abs{f_\lambda}^2 \\
 							&\leq C\sum_{\lambda \in \Lambda} 2^{\card{\lambda}} \abs{f_\lambda}^2 \sum_{\mu \in \Lambda} 2^{-(d+1)\abs{\card{\lambda}-\card{\mu}}}2^\mu \\
@@ -63,7 +63,7 @@ We let $[X]=([X]_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$. Assume further that 
 		\end{align*}
 		By the same tactic we find $term_2 \leq 2^{\lambda - d}$.  Substituting these expressions into our original calculation we find
 		\begin{align*}	
-			\norm{[X]f}_{l^2}^2 	&\leq C(2^{(d+2)}+2^{-d}) \sum_{\lambda \in \Lambda} 2^{2\lambda} \abs{f_{\lambda}}^2 \\
+			\norm{[X]f}_{\ell^2}^2 	&\leq C(2^{(d+2)}+2^{-d}) \sum_{\lambda \in \Lambda} 2^{2\lambda} \abs{f_{\lambda}}^2 \\
 							&\leq C(2^{(d+2)}+2^{-d}).
 		\end{align*}
 \end{proof}
@@ -71,26 +71,28 @@ We let $[X]=([X]_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$. Assume further that 
 \begin{lemma} 
 	Let $[X]^{(j)}=([X]^{(j)}_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$ be such that $m^{(j)}_{\lambda,\mu} = m_{\lambda,\mu}$ if $\card{\lambda}$ and $\card{\mu}$ are both less than or equal to $j$ and $0$ otherwise. Then there exists a $C > 0$ such that for all $f \in W^{s,2}$:
 	\begin{equation}
-		\norm{( [X]- [X]^{(j)})(P_j f)}_{l^2} \leq C2^{-(d/2)(j+1)} \norm{f}_{W^{s,2}}.
+		\norm{( [X]- [X]^{(j)})(P_j f)}_{\ell^2} \leq C2^{-(d/2)(j+1)} \norm{f}_{W^{s,2}}.
 	\end{equation}
 \end{lemma}
 \begin{proof}
 	\begin{align*}
-		\norm{([X]-[X]^{(j)})(P_j f)}_{\ell^2}^2 &= \sum_{\lambda \in \Lambda} \sum_{\card{\mu}\leq j} \abs{[X]_{\lambda,\mu}-[X]^{(j)}_{\lambda,\mu}}^2 \abs{(P_j f)_\mu}^2 \\
+		&\norm{([X]-[X]^{(j)})(P_j f)}_{\ell^2}^2 = \\
+		&\qquad \sum_{\lambda \in \Lambda} \sum_{\card{\mu}\leq j} \abs{[X]_{\lambda,\mu}-[X]^{(j)}_{\lambda,\mu}}^2 \abs{(P_j f)_\mu}^2 \\
 	\intertext{by the definitions of $[X]^{(j)} = \{ [X]_{\lambda,\mu}^{(j)} \}$ }
-		\qquad &= \sum_{\card{\mu}\leq j}\abs{(P_j f)_\mu}^2 \sum_{\card{\lambda}>j}\abs{[X]_{\lambda,\mu}}^2 \\
+		&\qquad = \sum_{\card{\mu}\leq j}\abs{(P_j f)_\mu}^2 \sum_{\card{\lambda}>j}\abs{[X]_{\lambda,\mu}}^2 \\
 	\intertext{by Lemma \ref{lem:M_bound}}
-		 \leq& C'\sum_{\card{\mu}\leq j}\abs{(P_j f)_\mu}^2 2^{(d+2)\card{\mu}}\sum_{\card{\lambda}>j}2^{-d\card{\lambda}} \\
-		 \leq& C' 2^{-2(\frac{d}{2})(j+1)}\norm{P_j f}^2_{\ell^2_{d/2+1}}
+		 &\leq C'\sum_{\card{\mu}\leq j}\abs{(P_j f)_\mu}^2 2^{(d+2)\card{\mu}}\sum_{\card{\lambda}>j}2^{-d\card{\lambda}} \\
+		 &\leq C' 2^{-2(\frac{d}{2})(j+1)}\norm{P_j f}^2_{\ell^2_{d/2+1}}
 	\end{align*}
 	The result follows by Remark 3.3.1 in \cite{Cohen2003}.
 \end{proof}
 
 \begin{corollary}
 	The difference between $[X]^j (P_j f)$ and $[X] f$ is bounded by
-	\[
-		\norm{[X]f - [X]^{(j)}(P_j f)}_{\ell^2} \leq C \left( 2^{-sj}\norm{f}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{f}_{W^{s,2}} \right).
-	\]
+	\begin{align*}
+		&\norm{[X]f - [X]^{(j)}(P_j f)}_{\ell^2} \leq \\
+		&	\qquad  C \left( 2^{-sj}\norm{f}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{f}_{W^{s,2}} \right).
+	\end{align*}
 \end{corollary}
 \begin{proof}
 	Follows from the triangle inequality:
@@ -99,8 +101,6 @@ We let $[X]=([X]_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$. Assume further that 
 		&\qquad \norm{M}_{\ell^2} \norm{f - P_j f}_{\ell^2} + \norm{([X]-[X]^{(j)})(P_j f)}_{\ell^2}.
 	\end{align*}
 \end{proof}
-
-\ram{The only weird thing here is that we use the $L^2$--norm on both the domain and the range, but we only have the rate of convergence for points in the domain that are $W^{s,2}$.}
 
 Next we will construct an error bound for the collocation approximation of the exponential map.
 
@@ -119,7 +119,11 @@ Let $A$ and $B$ be anti-Hermetian operators on a Hilbert space.  Let $x(t)$ sati
 	\end{align*}
 	However $\| y(0) \| = \| y(t)\|$ because the $B$ is anti-Hermetian.  Thus $\frac{du}{dt} < \varepsilon \| y(0)\|$.	The result follows by integration.
 \end{proof}
-As $[X]$ and $[X]^{(j)}$ are anti-Hermetian operators, the upshot of this Lemma is that the deviation of the time $t$ flow of $\dot{f} = [X]^{(j)} f$ from that of $\dot{f} = [X] f$ is bounded by a quantity proportional to
+As $[X]$ and $[X]^{(j)}$ are anti-Hermetian operators, the upshot of this Lemma is that the deviation of the time $t$ flow of $\dot{f} = [X]^{(j)} f$ from that of $\dot{f} = [X] f$ is bounded.
+
+\begin{theorem}
+The quantity $\norm{ \exp(t [X]) \cdot f - \exp(t [X]^{(j)} f }$ is bounded by a quantity proportional to 
 \[
  	t \left( 2^{-sj}\norm{f(0)}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{f(0)}_{W^{s,2}} \right) \| f (0) \|_{\mathcal{H}}
 \]
+\end{theorem}
