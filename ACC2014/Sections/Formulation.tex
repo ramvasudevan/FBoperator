@@ -91,6 +91,8 @@ Therefore we can simulate the advection of half densities by solving for the fun
 In particular if $x(t)$ is an integral curve of $X$, then we may consider a sequence of time-dependent half densities $\Psi_\alpha(t)$ such that $\lim_{\alpha \to 0}( \Psi_\alpha^\dagger \Psi_\alpha) = \delta( \cdot - x(t) )$.
 Then $\lim_{\alpha \to 0 } \langle \Psi_\alpha^\dagger \Psi_\alpha , f \rangle = f(x (t) )$.
 
+\henry{make this a corrollary}
+
 \subsection{Discretization with half-densities}
 Let $f_1, \dots, f_n$ be an orthonormal set of complex-valued functions on $M$.  Then $f_1 \sqrt{\mu} , \dots f_n \sqrt{\mu}$ are an orthonormal set of half-densities.  We can consider the $n \times n$-matrix
 \[
@@ -105,7 +107,7 @@ In normal coordinates
 	X_j^i = \int_{M} ( X^k(x) \partial_k f_j(x) + \frac{1}{2} f_j(x) \partial_k X^k(x) ) f_i(x) \mu
 \]
 \begin{proposition}
-	The matrix $X^i_j$ is anti-Hermetian.
+	The matrix $X^i_j$ is anti-Hermitian.
 \end{proposition}
 \begin{proof}
 	Let $\Psi_1$ and $\Psi_2$ be half densities.  As diffeomorphisms act unitarily on half-densities we find

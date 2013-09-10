@@ -105,7 +105,7 @@ We let $[X]=([X]_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$. Assume further that 
 Next we will construct an error bound for the collocation approximation of the exponential map.
 
 \begin{lemma}
-Let $A$ and $B$ be anti-Hermetian operators on a Hilbert space.  Let $x(t)$ satisfy $\dot{x} = Ax$ and $y(t)$ satisfy $\dot{y} = By$.  If $x(0) = y(0)$ and $\| A - B \| < \varepsilon$, then $u(t) = \| x(t) - y(t) \|$ satisfies $u(t) < \varepsilon t  \| y(0) \|$.
+Let $A$ and $B$ be anti-Hermitian operators on a Hilbert space.  Let $x(t)$ satisfy $\dot{x} = Ax$ and $y(t)$ satisfy $\dot{y} = By$.  If $x(0) = y(0)$ and $\| A - B \| < \varepsilon$, then $u(t) = \| x(t) - y(t) \|$ satisfies $u(t) < \varepsilon t  \| y(0) \|$.
 \end{lemma}
 
 \begin{proof}
@@ -117,9 +117,9 @@ Let $A$ and $B$ be anti-Hermetian operators on a Hilbert space.  Let $x(t)$ sati
 			&\leq \frac{1}{2u(t)} \| A - B \| \cdot \| y(t) \| \cdot \| x(t) - y(t) \| \\
 			&< \varepsilon \| y(t) \|
 	\end{align*}
-	However $\| y(0) \| = \| y(t)\|$ because the $B$ is anti-Hermetian.  Thus $\frac{du}{dt} < \varepsilon \| y(0)\|$.	The result follows by integration.
+	However $\| y(0) \| = \| y(t)\|$ because the $B$ is anti-Hermitian.  Thus $\frac{du}{dt} < \varepsilon \| y(0)\|$.	The result follows by integration.
 \end{proof}
-As $[X]$ and $[X]^{(j)}$ are anti-Hermetian operators, the upshot of this Lemma is that the deviation of the time $t$ flow of $\dot{f} = [X]^{(j)} f$ from that of $\dot{f} = [X] f$ is bounded.
+As $[X]$ and $[X]^{(j)}$ are anti-Hermitian operators, the upshot of this Lemma is that the deviation of the time $t$ flow of $\dot{f} = [X]^{(j)} f$ from that of $\dot{f} = [X] f$ is bounded.
 
 \begin{theorem}
 The quantity $\norm{ \exp(t [X]) \cdot f - \exp(t [X]^{(j)} f }$ is bounded by a quantity proportional to 
