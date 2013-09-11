@@ -83,10 +83,11 @@ While proposition \ref{prop:advection} allows us to advect smooth densities, one
 The following proposition addresses this concern.
 
 \begin{proposition} \label{prop:sanity_check}
-	The advection equation $\partial_t \rho + \div(\rho \cdot X) = 0$ and the function ${\rm div}(X)$ contain the same information as the the vector field itself.
+	The advection equation $\partial_t \rho + \operatorname{div}(\rho \cdot X) = 0$ contains the same information as the the vector field, $X$, itself.
 \end{proposition}
 \begin{proof}
-Let $\rho_\varepsilon$ be a sequence of functions which approaches a Dirac-Delta function as $\varepsilon \to 0$ centered at $x \in M$.
+Note that the advection equation applied to a uniform density gives us the quantity $\operatorname{div}(X)$.
+Now let $\rho_\varepsilon$ be a sequence of functions which approaches a Dirac-Delta function as $\varepsilon \to 0$ centered at $x \in M$.
 If $\rho_\varepsilon$ satisfies the advection equation, then by direct calculation we find
 \[
 	\lim_{\varepsilon \to 0} \langle \partial_t \rho_\varepsilon , f \rangle_{L^2} = \pounds_X[f] (x)+ {\rm div}(X)(x) f(x).
