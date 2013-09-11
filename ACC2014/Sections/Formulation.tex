@@ -58,7 +58,7 @@ We then find that the Lie derivative of $\Psi$ along $X$ is given by
 	\pounds_X[ \Psi] = ( \pounds_X[ \psi] + \frac{1}{2} \psi \cdot {\rm div}(X) ) \cdot \mu^{1/2}.
 \]
 Therefore we can simulate the advection of half densities by solving for the function $\psi$.  This also allows us to simulate densities as follows
-\begin{proposition}
+\begin{proposition} \label{prop:advection}
 	Let $\Psi = \psi \cdot \mu^{1/2}$ be a time-dependent half density which satisfies the half-density advection equation
 	\[
 		\partial_t \Psi + \pounds_X [\Psi] = 0
@@ -78,20 +78,21 @@ Therefore we can simulate the advection of half densities by solving for the fun
 	\end{align*}
 	Therefore $\partial_t ( \rho \cdot \mu) + {\rm div}( \rho X) = 0$ and the proposition follows in one direction.  Conversely, let $\psi(x) = \sqrt{ \rho(x)}$, then we can verify directly that $\psi \cdot \sqrt{\mu}$ satisfies the half-density advection equation.
 \end{proof}
-%
-%The next proposition shows that stationary solutions of the Louiville equation (such as dirac-deltas centered at fixed points) correspond to
-%\begin{proposition}
-%	Let $X$ be a vector field.  If $\rho$ is a density which satisfies the Louiville equation and $\psi$ is a half-density which satisfies the Louiville equation and $\rho = \psi^{\dagger} \psi$ then $\Re \left( \psi^\dagger \pounds_X[ \psi] \right) = 0$.
-%\end{proposition}
-%
-%\begin{proof}
-%  If $\pounds_X[\rho] = 0$ then $\pounds_X[\psi^\dagger] \psi + \psi^{\dagger} \pounds_X[\psi] = 0$.  However, this is just twice the real part of $\psi^\dagger \pounds_X[\psi]$.
-%\end{proof}
 
-In particular if $x(t)$ is an integral curve of $X$, then we may consider a sequence of time-dependent half densities $\Psi_\alpha(t)$ such that $\lim_{\alpha \to 0}( \Psi_\alpha^\dagger \Psi_\alpha) = \delta( \cdot - x(t) )$.
-Then $\lim_{\alpha \to 0 } \langle \Psi_\alpha^\dagger \Psi_\alpha , f \rangle = f(x (t) )$.
+While proposition \ref{prop:advection} allows us to advect smooth densities, one might be concerned that this does not fully communicate the dynamics.
+The following proposition addresses this concern.
 
-\henry{make this a corrollary}
+\begin{proposition} \label{prop:sanity_check}
+	The advection equation $\partial_t \rho + \div(\rho \cdot X) = 0$ and the function ${\rm div}(X)$ contain the same information as the the vector field itself.
+\end{proposition}
+\begin{proof}
+Let $\rho_\varepsilon$ be a sequence of functions which approaches a Dirac-Delta function as $\varepsilon \to 0$ centered at $x \in M$.
+If $\rho_\varepsilon$ satisfies the advection equation, then by direct calculation we find
+\[
+	\lim_{\varepsilon \to 0} \langle \partial_t \rho_\varepsilon , f \rangle_{L^2} = \pounds_X[f] (x)+ {\rm div}(X)(x) f(x).
+\]
+Thus we may compute the Lie derivative of $f$ with respect to $X$ by computing the quantity $\langle \partial_t \rho_\varepsilon , f \rangle_L^2 - {\rm div}(X) f(x)$.
+\end{proof}
 
 \subsection{Discretization with half-densities}
 Let $f_1, \dots, f_n$ be an orthonormal set of complex-valued functions on $M$.  Then $f_1 \sqrt{\mu} , \dots f_n \sqrt{\mu}$ are an orthonormal set of half-densities.  We can consider the $n \times n$-matrix
