@@ -1,1 +1,55 @@
-Just a place holder for now.
+\documentclass[12pt]{amsart}
+
+% PACKAGES
+\usepackage{amssymb}
+
+% COMMANDS
+\DeclareMathOperator{\Diff}{Diff}
+
+\title{Notes of the detection of ROAs}
+\author{Henry O. Jacobs and Ram Vasudevan}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Forming this as an optimization problem}
+
+We first seek to put this in the form of an optimzation problem as in Henrion-Korda.  Let $u \in \mathfrak{X}(M)$ and we wil denote the flow of $u$ by $\exp(t u)$.  Let $\mu \in \mathrm{Dens}(M)$ be the Lebesgue measure and denote the action of a diffeomorphism, $g \in \Diff(M)$ on a half-density, $\psi \in \mathcal{H}(M)$ by $g \cdot \psi$.  Consider the optimization problem on half-densities
+\begin{align*}
+  q^* = \inf  \left( \langle \mu^{1/2} , \psi_1 \rangle \mid 
+    \begin{array}{l}
+      \psi_1 = \exp (u) \cdot \psi_0 \\
+      \mathrm{support}(\psi_0) = X_0
+    \end{array}
+  \right)
+\end{align*}
+
+We can put this in a more standard form by substituting the constraint 
+``$\mathrm{support}(\psi_0) = X_0$'' with the constraint
+``$\langle \phi , \left. \psi_0 \right|_{X_0^c} \rangle = 0$'' for all
+$\phi \in \mathcal{H}( X_0^c )$ where $X_0^c = M \backslash X_0$.  We get the primal problem
+
+\begin{align*}
+  q^* = \inf  \left( \langle \mu^{1/2} , \psi_1 \rangle \mid 
+    \begin{array}{l}
+      \psi_1 = \exp (u) \cdot \psi_0 \\
+      \langle \phi , \left. \psi_0 \right|_{X_0^c} \rangle = 0 , \forall \phi \in \mathcal{H}(X_0^c)
+    \end{array}
+  \right).
+\end{align*}
+Now that the problem is in the standard form and the Lagrangian dual function is
+\begin{align*}
+  L(\psi_0,\psi_1,\lambda) = \langle \mu^{1/2} , \psi \rangle + \langle \lambda_0 , \psi - \exp(u) \cdot \psi_0 \rangle + \sum_{ \lambda \in \mathcal{H}( X_0^c) } \langle \lambda , \left. \psi_0 \right|_{X_0^c} \rangle.
+\end{align*}
+Unfortunately, this Lagrangian is linear in $\psi_1$ and $\psi_0$ and so the Lagrangian dual function
+\begin{align*}
+  g(\lambda) := \inf_{\psi_0,\psi_1}( L(\psi_0,\psi_1,\lambda) ) = -\infty.
+\end{align*}
+So that the dual problem
+\begin{align*}
+  d^* = \sup_\lambda( g(\lambda) )
+\end{align*}
+is nonsense.
+
+\end{document}
