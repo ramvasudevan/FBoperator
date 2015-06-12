@@ -1,0 +1,156 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+
+%  TITLE, AUTHOR, DATE
+\title{Faithful and self-consistent discretizations of generalized advection PDEs at low resolutions}
+\author{Henry O. Jacobs \& Ram Vasudevan}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  blah blah blah.
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{Previous work}
+\todo[inline]{mention the $b$ equation.}
+
+\section{Generalized advection PDEs}
+\label{sec:PDEs}
+Let $X$ be a vector-field on a compact manifold $M$ of dimension $d$
+and the evolution PDEs given in a local coordinate chart by
+\begin{align}
+	&\partial_t f + X^k \partial_k f= 0 \label{eq:function_pde} \\
+	&\partial_t \rho + \partial_k( X^k \rho) = 0  \label{eq:density_pde} \\
+	&\partial_t Y^i - (\partial_k X^i) \cdot Y^k + (\partial_k Y^i) X^k  = 0 \quad , \quad i = 1,\dots,d \label{eq:vf_pde}.
+\end{align}
+Each of these equations can be described as a generalized advection equation in the sense that
+\begin{itemize}
+	\item a solution to \eqref{eq:function_pde} is given by a time-dependent function evolving under the dynamics of of $X$,
+	\item a solution to \eqref{eq:density_pde} is given by a time-dependent density evolving under the dynamics of of $X$,
+	\item and a solution to \eqref{eq:vf_pde} is given by a time-dependent vector-field evolving under the dynamics of of $X$.
+\end{itemize}
+In summary, each of these PDEs can be written in coordinate free notation as
+\begin{align}
+	\partial_t \alpha + \pounds_{X}[\alpha] = 0 \label{eq:advection_pde}
+\end{align}
+where $\alpha$ is some field and $\pounds_X[\alpha]$ is the Lie-derivative of $\alpha$ under the evolution of the vector-field $X$.
+
+\subsection{Conservation properties of advection}
+The advection of fields is a special type of evolution where the inter-relationships between the fields are conserved.
+For example, if $f$ and $g$ are time-dependent functions which satisfy \eqref{eq:function_pde} then the functions $f+g$ and $fg$
+obtained by point-wise addition and multiplication will satisfy \eqref{eq:function_pde} as well.
+Similarly, if $f_t$ denotes the function $x \in M \to f(t,x) \in M$ then $\sup(f_t) = \sup(f_0)$ for any $t \in \mathbb{R}$.
+In summary, the evolution induced by \eqref{eq:function_pde} is that of a time-dependent ring-morphism which is continuous with respect to 
+the $C^0$-topology on $M$.
+Of course, this implies that the constant function, $1$, is always a solution of \eqref{eq:function_pde}.
+
+Another conserved structure is the relationship between functions and densities.  Given a function $f$ and a density $\rho$
+one can form the real-number $\langle f, \rho \rangle$ obtained by integrating the density $f \rho$.
+If $f$ and $\rho$ are solutions to \eqref{eq:function_pde} and \eqref{eq:density_pde} respectively, then $\langle f , \rho \rangle$ is constant in time.
+In other words, advection preserves the dual-pairing between functions and densities\footnote{this can be extended to the space of distributions}.
+It is notable that this property holds true for the constant function.
+Thus advection yields a evolution of densities which is continuous with respect to the $L^1$-norm on densities. 
+
+There is more.
+If $Y_t$ is a solution to \eqref{eq:vf_pde} and $f_t$ is a solution to \eqref{eq:function_pde} then $\pounds_{Y_t}[f_t]$ is a solution to \eqref{eq:function_pde} too.
+If $\rho_t$ is a solution to \eqref{eq:density_pde} then $\pounds_{Y_t}[ \rho_t]$ is a solution to \eqref{eq:density_pde} too.
+If $Z_t$ is a solution to \eqref{eq:vf_pde} then $[Y_t,Z_t]$ is a solution to \eqref{eq:vf_pde} too.
+
+In summary
+\begin{itemize}
+	\item Advection evolves the space of real-valued functions by ring-morphisms which preserve the $L^\infty$-norm.
+	\item Advection evolves the space of densities (and distributions) by morphisms which preserve the dual pairing with 
+		the functions, and the $L^1$-norm.
+	\item Advection evolves the space of vector-fields by Lie-algebra morphisms.
+\end{itemize}
+
+\subsection{The purpose of this article}
+\label{sec:purpose}
+If one separately discretizes \eqref{eq:function_pde} \eqref{eq:density_pde} and \eqref{eq:vf_pde} using a legacy method
+then, generally speaking, the resulting solutions will not satisfy the conservation properties just mentioned in any discretized sense.
+For example, if $M$ is the $2$-torus and we discretize \eqref{eq:function_pde} with a finite difference scheme on a uniform grid,
+then functions are finitely represented by their values at each grid point.
+However, the evolution of the finite-difference scheme will not be that of a ring-morphism.
+Moreover, if one uses the same finite-difference scheme to discretize \eqref{eq:density_pde}, the dual-pairing between the 
+``discretized functions'' and the ``discretized densities'' will generally not be preserved.
+The same holds for the other conservation properties mentioned.
+
+Admittedly, it is a simple matter to work some of these properties into a discretization scheme.
+For example, one coule discretized the linear operator  $\partial_k (X^k \cdot )$ appearing in\eqref{eq:density_pde} by the transpose of the
+discretization of the linear operator $X^k \partial_k$ appearing in \eqref{eq:function_pde}.
+This discretization would ensure that the dual-pairing between discrete functions and discrete densities is preserved.
+However, given this new discretization,
+it is not clear then how to incorporate other desired properties without breaking this dual-pairing preservation property.
+In summary, it does not seem obvious how to incorporate all of these properties simultaneously.
+
+The purpose of this article is to introduce a family of discretizations for generalized advection PDEs
+which preserves all of the structures just mentioned at arbitrarily low resolutions.
+
+\section{Spectral discretization}
+
+\section{Topology}
+
+\section{Algebra}
+
+\section{Applications}
+
+\section{Examples}
+
+\subsection{A one dimensional example}
+
+\subsection{Duffing equation}
+
+\subsection{Rigid body dynamics}
+\todo[inline]{This is an integrable system.  It would be interesting to see the conserved functions (i.e. 0th Koopman modes)}
+
+\subsection{A 3D example}
+Lorenz equations?  Population dynamics?
+
+\subsection{High dimensional example}
+SRI models?  Quadrotor dynamics?  Chemical reaction dynamics?
+
+\section{Conclusion}
+
+\subsection{Open questions}
+Koopmanism?  Noise?  Control?  Differential structures?
+
+\subsection{Acknowledgements}
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\end{document}
