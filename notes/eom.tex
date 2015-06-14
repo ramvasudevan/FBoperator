@@ -1,0 +1,113 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SE}{SE}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\Herm}{Herm}
+
+%  TITLE, AUTHOR, DATE
+\title{Notes on ROA project}
+\author{Henry O. Jacobs}
+\date{4th of June, 2015}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Equations of motion for dice}
+
+\section{Constraint equation}
+
+Let $\psi(t),\nu(t) \in L^2(M)$ for $t \in [0,T]$.
+Then observe that
+\begin{align*}
+  \langle \psi(T) , \nu(T) \rangle_{L^2} = \langle \psi(0) , \nu(0) \rangle_{L^2} + \int_0^T \frac{d}{dt} \langle \psi(t) , \nu(t) \rangle dt \\
+ = \langle \psi(0) , \nu(0) \rangle_{L^2}  + 
+ \int_0^T \langle \partial_t \psi , \nu \rangle_{L^2} + \langle \psi , \partial_t \nu \rangle_{L^2} dt
+\end{align*}
+Let $A$ be an anti-symmetric operator on $L^2(M)$.
+Then $\psi(t)$ satisfies
+\begin{align}
+  \partial_t \psi + A[\psi] = 0 \label{eom}
+\end{align}
+if and only if
+\begin{align*}
+  \langle \partial_t \psi + A[\psi] , \nu \rangle_{L^2} = 0
+\end{align*}
+for all $\nu \in L^2(M)$.
+Invoking the anti-symmetry of $A$ we find that the above equation holds if and only if
+\begin{align*}
+  \langle \partial_t \psi , \nu \rangle =  \langle \psi , A[\nu] \rangle_{L^2} 
+\end{align*}
+for all $\nu$.
+
+Thus $\psi$ satisfies \eqref{eom} if and only if
+\begin{align*}
+  \langle \psi(T) , \nu(T) \rangle_{L^2} = \langle \psi(0) , \nu(0) \rangle_{L^2} + \int_0^T \langle \psi , \partial_t \nu + A[\nu] \rangle_{L^2} dt
+\end{align*}
+for all $\nu(t) \in L^2(M)$ with $t \in [0,1]$.
+
+
+In our case $A[\psi] (x) := X^i(x) \partial_i\psi(x) + \frac{1}{2} \partial_i X^i(x) \psi(x) $ and we use weak-derivatives if needed.
+
+\section{Controls}
+We wish to solve for the region of attraction under the controlled dynamics
+\begin{align*}
+	\dot{x} = X_0(x) + \sum_{k=1}^{c} u^k X_k(x).
+\end{align*}
+where $X_0,X_1,\dots,X_c$ are vector fields.
+Define the unbounded Hermetian operators $\hat{H}_i \in \Herm(L^2(M) )$ by
+\begin{align*}
+	\hat{H}_i \cdot \psi := i \sum_{\alpha=1}^d   \frac{1}{2} \partial_\alpha X_i^\alpha  \psi + X_i^\alpha \partial_\alpha \psi,
+\end{align*}
+for $i=0,1,\dots,c$.
+Then the dynamics of a half-density evolve under the controlled Schrodinger equation
+\begin{align*}
+	\dot{\psi} = i \hat{H} \cdot \psi + i \sum_{k=1}^c u^k \hat{H}_k \cdot \psi = i \hat{H}(u) \cdot \psi.
+\end{align*}
+where $\hat{H}(u) = \hat{H}_0 + u^k \hat{H}_k$.
+Let $\pi_M : U \times M \to M$ be the cartesian projection onto $M$.
+We can define the operator $\hat{J} : L^2(M) \to L^2(M \times U)$ given by $(\hat{J} \cdot \psi )(x,u)= (\hat{H}(u) \cdot \psi)(x) \sqrt{du}$
+or more concisely $\hat{J} = \hat{H}(\cdot) \otimes \sqrt{u}$.
+From here we may compute the dual operator $\hat{J}^\dagger : L^2( U \times M) \to L^2(M)$.
+Explicitly $\hat{J}^\dagger$ takes the the form
+\begin{align*}
+	(\hat{J}^\dagger \cdot \phi )(x) :=  \int_U \hat{H}(u) \phi(x,u) du
+\end{align*}
+Inspired by Henrion-Korda we should be able to obtain the ROA by solving the primal QP
+\begin{align*}
+	p^* = \sup_{
+		\substack{ \delta_T \otimes \psi_T - \delta_0 \otimes \psi_0 = \int_{0}^T \hat{J}^\dagger \cdot \phi dt \\ -1 \leq \psi_T \leq 1  }}
+			 \| \psi \|_{L^2(M)}^2
+\end{align*}
+where the decision variables are $\phi \in H^1( [0,T] ; L^2(U \times M) )$, and $\psi_T  \in L^2(M)$.
+
+\bibliographystyle{amsalpha}
+\bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
+\end{document}
