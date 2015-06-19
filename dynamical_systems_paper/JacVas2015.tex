@@ -122,8 +122,8 @@ The purpose of this article is to introduce a family of discretization for gener
 which preserves all of the structures just mentioned at arbitrarily low resolutions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Advection}
-\label{sec:advection}
+\section{The continuous regime}
+\label{sec:continous}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Let $M$ be closed compact smooth manifold.
 By virtue of being a manifold, $M$ is canonically equipped with the following structures:
@@ -136,7 +136,7 @@ By virtue of being a manifold, $M$ is canonically equipped with the following st
 	\item The cone of non-negative functions and the dual cone of non-negative densities.
 	\item The inner product space of half-densities $(\Dens^{1/2}(M), \langle \cdot , \cdot \rangle)$.
 \end{enumerate}
-The last item may be unfamilar to the reader and will be defined and elaborated on at the end of this section.
+The last item may not be familiar to some readers and will be defined and elaborated on at the end of this section.
 Each of these entities is linked to the others in a network of relationships
 which we shall review here.
 For starters, for any $\Phi \in \Diff(M)$ there exists an invertible operator, known as the \emph{Koopman operator}, given by
@@ -150,7 +150,29 @@ The Koopman operator satisfies
 	\Phi^*(f+g) = \Phi^*f + \Phi^*g \text{ and } \Phi^*(f\cdot g) = (\Phi^*f) \cdot (\Phi^*g)
 \end{align*}
 for any two functions real-valued functions $f,g: M \to \mathbb{R}$.
-In summary, the Koopman operator is a ring-automorphism of $C^k(M)$.
+In summary, the Koopman operator is a ring-automorphism of $C^k(M)$
+and the diagram
+\begin{equation}
+	\xymatrix{
+		C^0(M) \times C^0(M)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Phi^* \times \Phi^*} C^0(M) \times C^0(M)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
+		C^0(M)  & \ar[l]_{\Phi^*} C^0(M)
+	}
+\end{equation}
+commutes.
+
+If we let $\Phi^t_X: M \to M$ be the time $t $ flow of some vector-field $X \in \mathfrak{X}$
+we may define the Lie-derivative of a function $f$ to be
+\begin{align*}
+	\pounds_X[f] = \left. \frac{d}{d t} \right|_{t=0} (\Phi_X^t)^*f.
+\end{align*}
+In a local coordinate chart $(x^1,\dots,x^n)$ the vector-field is given by $X = X^i \pder{}{x^i}$
+and the Lie-derivative is simply given by $\pounds_{X}[f] = X^i \pder{f}{x^i}$.
+As the Koopman operator $(\Phi_X^t)^*$ is a ring-morphism, we find that the Lie-derivative operator is a derivation.
+That is to say
+\begin{align*}
+	\pounds_X[ f \cdot g] = \pounds_X[f] \cdot g + f \cdot \pounds_X[g]
+\end{align*}
+for any $f,g \in C^k(M)$ with $k > 0$.
 
 The topology of $C^0(M)$ is that of a Banach space with respect to the norm
 \begin{align*}
@@ -175,18 +197,32 @@ In particular, $\mathcal{D}'_0(M)$ is a Banach space with respect to the norm
 	} \langle f , \mu \rangle =: \int_M | \mu | \equiv \| \mu \|_{L^1}
 \end{align*}
 The Perron-Frobenius operator preserves this norm.
+These relationships are summarized by asserting that the diagram
+\begin{equation*}
+	\xymatrix{
+		& \ar[dl]_{\| \cdot \|_{C^0}} C^0(M) & \ar[l]_{\pi_1} C^0(M)\times \mathcal{D}'_0(M) \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \mathcal{D}'_0(M)   \ar[dd]^{\Phi_*} \ar[dr]^{\| \cdot \|_{\mathcal{D}'}}& \\
+		\mathbb{R} && \mathbb{R} && \mathbb{R} \\
+		& \ar[ul]^{\| \cdot \|_{C^0}} C^0(M) \ar[uu]_{\Phi^*} & \ar[l]_{\pi_1} C^0(M)\times \mathcal{D}'_0(M) \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \mathcal{D}'_0(M) \ar[ur]_{\| \cdot \|_{\mathcal{D}'}} &	
+	}
+\end{equation*}
+commutes for any $\Phi \in \Diff(M)$.
+
+The cones of non-negative functions and non-negative distributions will play a special role later in terms of applications.
+One can observe that the subring of non-negative functions, $C^k(M ; \R^+_0)$ is invariant under the Koopman operator.
+That is to say, $\Phi^*f$ is a non-negative function if and only if $f$ is a non-negative function.
+The same holds in regards to the Frobenius-Perron operator and non-negative distributions.
 
 Finally, we introduce the inner-product space of half-densities.
-Roughly speaking, a half-density is an object whose square is a density, and they act much like
+A half-density is an object whose square is a density, and they act much like
 the smooth wave-functions which one encounters in quantum mechanics.
-More formally, a smooth half density on $M$ is a smooth multiliear function $\psi : \bigwedge^n TM \to \mathbb{R}$
+More formally, a $C^k$ half density on $M$ is a $C^k$ multilinear function $\psi : \bigwedge^n TM \to \mathbb{R}$
 such that for any matrix $A$ and vectors $v_1,\dots,v_n$ over the same fiber
 \begin{align*}
 	\psi( (A_1^j v_j) \wedge \cdots \wedge (A_n^j v_j) ) =  | \det(A) |^{1/2} \psi(v_1 \wedge \cdots \wedge v_n).
 \end{align*}
 We define the space of half-densities by $\Dens^{1/2}(M)$.
 Such objects were first invented for the purpose of geometric quantization \cite[see Chapter 4]{GuilleminSternberg1970}.
-Note that the function $\psi^2 : \bigwedge^n TM \to \R$ is a density, and can be integrated.
+Note that the function $\psi^2 : \bigwedge^n TM \to \R$ is a $C^k$ density, and can be integrated.
 More generally, given $\psi_1,\psi_2 \in \Dens^{1/2}(M)$ we define $\langle \psi_1 \mid \psi_2 \rangle := \int_M \psi_1 \cdot \psi_2$
 where $\psi_1 \cdot \psi_2 $ denotes the density obtained by scalar multiplication.
 One can observe that $\langle \cdot \mid \cdot \rangle$ is an inner product on $\Dens^{1/2}(M)$.
@@ -197,46 +233,20 @@ Given a $\Phi \in \Diff(M)$, there is a canonical (right) action on $\Dens^{1/2}
 where $D\Phi : TM \to TM$ denotes the tangent lift of $\Phi$.
 By the change of variables formula we see that $\Diff(M)$ acts isometrically on $\Dens^{1/2}(M)$ with respect to 
 the inner product $\langle \cdot \mid \cdot \rangle$.
-Admittedly, this is an obscure object which would be of no interest to use, except for the fact that it will guide
-our discretization procedure in the next section.
-
-We can summarize what has been presented so far in the following commutative diagrams
-\begin{align*}
-	\xymatrix{
-		C^0(M) \times C^0(M)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Phi^* \times \Phi^*} C^0(M) \times C^0(M)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
-		C^0(M)  & \ar[l]_{\Phi^*} C^0(M)
-	}, \\
-	\xymatrix{
-		& \ar[dl]_{\| \cdot \|_{C^0}} C^0(M) & \ar[l]_{\pi_1} C^0(M)\times \mathcal{D}'_0(M) \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \mathcal{D}'_0(M)   \ar[dd]^{\Phi_*} \ar[dr]^{\| \cdot \|_{\mathcal{D}'}}& \\
-		\mathbb{R} && \mathbb{R} && \mathbb{R} \\
-		& \ar[ul]^{\| \cdot \|_{C^0}} C^0(M) \ar[uu]_{\Phi^*} & \ar[l]_{\pi_1} C^0(M)\times \mathcal{D}'_0(M) \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \mathcal{D}'_0(M) \ar[ur]_{\| \cdot \|_{\mathcal{D}'}} &	
-	} \\
+The conservation properties of $\Phi$ with regards to half-densities can be summarized by asserting that the diagram
+\begin{equation*}
 	\xymatrix{
 		\Dens^{1/2}(M) \times \Dens^{1/2}(M) \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\Phi^* \times \Phi^*} & \Dens^{1/2}(M) \times \Dens^{1/2}(M) \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
 		&\mathbb{R}
-	}	.
-\end{align*}
+	}
+\end{equation*}
+commutes.
 
-
-
-If we let $\Phi^t_X: M \to M$ be the time $t $ flow of some vector-field $X \in \mathfrak{X}$
-we may define the Lie-derivative of a function $f$ to be
-\begin{align*}
-	\pounds_X[f] = \left. \frac{d}{d t} \right|_{t=0} (\Phi_X^t)^*f.
-\end{align*}
-In a local coordinate chart $(x^1,\dots,x^n)$ the vector-field is given by $X = X^i \pder{}{x^i}$
-and the Lie-derivative is simply given by $\pounds_{X}[f] = X^i \pder{f}{x^i}$.
-As the Koopman operator $(\Phi_X^t)^*$ is a ring-morphism, we find that the Lie-derivative operator is a derivation.
-That is to say
-\begin{align*}
-	\pounds_X[ f \cdot g] = \pounds_X[f] \cdot g + f \cdot \pounds_X[g]
-\end{align*}
-for any $f,g \in C^k(M)$ with $k > 0$.
-
-\todo[inline]{Positivity is still not discussed.}
+Admittedly, half-densities are a somewhat obscure object which would be of no interest to use, except for the fact that they will guide
+our discretization procedure in the next section.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Discrete advection}
+\section{The discrete regime}
 \label{sec:discrete}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 In this section we review discrete analogs of the structures provided in the section \ref{sec:advection}.
@@ -272,12 +282,33 @@ The discrete Koopman operator satisfies
 \end{align*}
 for any two $\hat{f},\hat{g} \in \Lin(n)$.
 In summary, the discrete Koopman operator is a ring-automorphism of $\Lin(n)$.
+This is summarized by noting the diagram
+\begin{equation}
+	\xymatrix{
+		\Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Conj_R} \Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
+		\Lin(n)  & \ar[l]_{\Conj_R} \Lin(n)
+	} \label{cd:discrete_functions}
+\end{equation}
+commutes.
+
+If we let $R_t = \exp( \omega t)$ for some $\omega \in \mathfrak{so}(n)$
+we may define the \emph{discrete Lie-derivative} of $\hat{f} \in \Lin(n)$ to be
+\begin{align*}
+	\omega[ \hat{f}] := \left. \frac{d}{d t} \right|_{t=0} \Conj_{R_t} \hat{f} = [ \hat{f} , \omega].
+\end{align*}
+where $[ \cdot , \cdot ]$ denotes the matrix commutator.
+As the discrete Koopman operator $\Conj_{R_t}$ is a ring-morphism, we find that the discrete Lie-derivative operator is a (non-commutative) derivation.
+That is to say
+\begin{align*}
+	\omega[ \hat{f} \cdot \hat{g} ] = \omega[ \hat{f}] \cdot g + f \cdot \omega[\hat{g}]
+\end{align*}
+for any $\hat{f},\hat{g} \in \Lin(n)$.
 
 We can naturally equip $\Lin(n)$ with the operator norm
 \begin{align*}
 	\| \hat{f} \|_{\Lin} = \sup_{x \in \R^n} \| \hat{f} \cdot x \|_{\R^n}.
 \end{align*}
-where $\| \cdot \|_{\R^n}$ denotes the $2$-norm.
+where $\| \cdot \|_{\R^n}$ denotes the $2$-norm on $\R^n$.
 We can observe that discrete Koopman operator preserves this norm.
 
 We may also form the dual mapping $(\Conj_R)^*: \Lin(n)^* \to \Lin(n)^*$,
@@ -294,6 +325,35 @@ In particular, $\Lin(n)$ is  equipped with the norm
 \end{align*}
 \todo[inline]{Need to write this better.  What I mean here is that we take the sum of the absolute values of the eigen-values of $\mu$.}
 The discrete Perron-Frobenius operator preserves this norm.
+These relationships are summarized in the commutativity of the diagram
+\begin{equation*}
+	\xymatrix{
+		& \ar[dl]_{\| \cdot \|_{\Lin}} \Lin(n) & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^*   \ar[dd]^{(\Conj_R)^*} \ar[dr]^{\| \cdot \|_{\Lin^*}}& \\
+		\mathbb{R} && \mathbb{R} && \mathbb{R} \\
+		& \ar[ul]^{\| \cdot \|_{\Lin}} \Lin(n) \ar[uu]_{\Conj_R} & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^* \ar[ur]_{\| \cdot \|_{\Lin^*}} &	
+	}
+\end{equation*}
+
+The cones of positive semi-definite matrices and the dual cone will play a special role.
+One can observe that the partial subring $\Sym(n)^+$ is invariant under the Koopman operator.
+That is to say, $\Conj_R(\hat{f}) \in \Sym(n)^+$ if and only if $\hat{f} \in \Sym(n)^+$.
+The same holds in regards to the discrete Frobenius-Perron operator on $(\Sym(n)^+)^*$.
+
+Finally, we note that the very definition of $\SO(n)$ is that its elements preserve the inner-product on $\R^n$.
+In other words the diagram
+\begin{equation*}
+	\xymatrix{
+		\R^n \times \R^n \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\Conj_R} & \R^n \times \R^n \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
+		&\mathbb{R}
+	}
+\end{equation*}
+commutes.
+
+At this point a reader may come to the conclusion that this is all very cute, but
+what good is this analogy unless we provide a link between the discrete and the continuous regimes?
+More to the point, these constructions have no potential for use in numerical applications unless one can link
+$\SO(n)$ with $\Diff(M)$, $\Lin(n)$ with $C^0(M)$, ... as $n \to \infty$ with some sort of error bound.
+This is the topic of the next section.
 
 %Finally, we introduce the inner-product space of half-densities.
 %Roughly speaking, a half-density is an object whose square is a density, and they act much like
@@ -318,38 +378,23 @@ The discrete Perron-Frobenius operator preserves this norm.
 %the inner product $\langle \cdot \mid \cdot \rangle$.
 %Admittedly, this is an obscure object which would be of no interest to use, except for the fact that it will guide
 %our discretization procedure in the next section.
-
-We can summarize what has been presented so far in the following commutative diagrams
-\begin{align*}
-	\xymatrix{
-		\Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Conj_R} \Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
-		\Lin(n)  & \ar[l]_{\Conj_R} \Lin(n)
-	}, \\
-	\xymatrix{
-		& \ar[dl]_{\| \cdot \|_{\Lin}} \Lin(n) & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^*   \ar[dd]^{(\Conj_R)^*} \ar[dr]^{\| \cdot \|_{\Lin^*}}& \\
-		\mathbb{R} && \mathbb{R} && \mathbb{R} \\
-		& \ar[ul]^{\| \cdot \|_{\Lin}} \Lin(n) \ar[uu]_{\Conj_R} & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^* \ar[ur]_{\| \cdot \|_{\Lin^*}} &	
-	} \\
-	\xymatrix{
-		\R^n \times \R^n \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\Conj_R} & \R^n \times \R^n \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
-		&\mathbb{R}
-	}	.
-\end{align*}
-
-
-
-Finally, if we let $R_t = \exp( \omega t)$ for some $\omega \in \mathfrak{so}(n)$
-we may define the \emph{discrete Lie-derivative} of $\hat{f} \in \Lin(n)$ to be
-\begin{align*}
-	\omega[ \hat{f}] := \left. \frac{d}{d t} \right|_{t=0} \Conj_{R_t} \hat{f} = [ \hat{f} , \omega].
-\end{align*}
-where $[ \cdot , \cdot ]$ denotes the matrix commutator.
-As the discrete Koopman operator $\Conj_{R_t}$ is a ring-morphism, we find that the discrete Lie-derivative operator is a (non-commutative) derivation.
-That is to say
-\begin{align*}
-	\omega[ \hat{f} \cdot \hat{g} ] = \omega[ \hat{f}] \cdot g + f \cdot \omega[\hat{g}]
-\end{align*}
-for any $\hat{f},\hat{g} \in \Lin(n)$.
+%
+%We can summarize what has been presented so far in the following commutative diagrams
+%\begin{align*}
+%	\xymatrix{
+%		\Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Conj_R} \Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
+%		\Lin(n)  & \ar[l]_{\Conj_R} \Lin(n)
+%	}, \\
+%	\xymatrix{
+%		& \ar[dl]_{\| \cdot \|_{\Lin}} \Lin(n) & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^*   \ar[dd]^{(\Conj_R)^*} \ar[dr]^{\| \cdot \|_{\Lin^*}}& \\
+%		\mathbb{R} && \mathbb{R} && \mathbb{R} \\
+%		& \ar[ul]^{\| \cdot \|_{\Lin}} \Lin(n) \ar[uu]_{\Conj_R} & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^* \ar[ur]_{\| \cdot \|_{\Lin^*}} &	
+%	} \\
+%	\xymatrix{
+%		\R^n \times \R^n \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\Conj_R} & \R^n \times \R^n \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
+%		&\mathbb{R}
+%	}	.
+%\end{align*}
 
 
 \section{Convergence}
