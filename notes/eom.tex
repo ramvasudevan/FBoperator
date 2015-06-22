@@ -108,6 +108,17 @@ Inspired by Henrion-Korda we should be able to obtain the ROA by solving the pri
 \end{align*}
 where the decision variables are $\phi \in H^1( [0,T] ; L^2(U \times M) )$, and $\psi_T  \in L^2(M)$.
 
+\section{Function advection}
+Why does the following idea not work?  We consider the optimization problem
+\begin{align*}
+	\sup \int f_T (x) dx 
+\end{align*}
+subject to decision variables, $f_T(x), f(x),\mu(x,u)$ with the constraints
+\begin{align*}
+	f_T(x) - f_0(x) = \int \pounds_{X_{u}} [f] (x) \mu(x,u) du dt \\
+	\mu(x,u) \geq 0
+\end{align*}
+where $f_0$ is the indicator function on $X_0$
 \bibliographystyle{amsalpha}
 \bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
 \end{document}

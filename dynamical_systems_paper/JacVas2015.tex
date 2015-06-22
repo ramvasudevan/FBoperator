@@ -123,7 +123,7 @@ which preserves all of the structures just mentioned at arbitrarily low resoluti
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The continuous regime}
-\label{sec:continous}
+\label{sec:continuous}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Let $M$ be closed compact smooth manifold.
 By virtue of being a manifold, $M$ is canonically equipped with the following structures:
@@ -226,30 +226,40 @@ Note that the function $\psi^2 : \bigwedge^n TM \to \R$ is a $C^k$ density, and 
 More generally, given $\psi_1,\psi_2 \in \Dens^{1/2}(M)$ we define $\langle \psi_1 \mid \psi_2 \rangle := \int_M \psi_1 \cdot \psi_2$
 where $\psi_1 \cdot \psi_2 $ denotes the density obtained by scalar multiplication.
 One can observe that $\langle \cdot \mid \cdot \rangle$ is an inner product on $\Dens^{1/2}(M)$.
-Given a $\Phi \in \Diff(M)$, there is a canonical (right) action on $\Dens^{1/2}(M)$ given by
+Given a $\Phi \in \Diff(M)$, there is a canonical (left) action on $\Dens^{1/2}(M)$ given by an operator $\widehat{\Phi}$ defined by
 \begin{align*}
-	\Phi^* \psi( v_1 \wedge \cdot \wedge v_n) := \psi( D\Phi(v_1) \wedge \cdots \wedge D\Phi(v_n) )
+	(\widehat{\Phi} \cdot \psi)( v_1 \wedge \cdot \wedge v_n) := \psi( D\Phi^{-1}(v_1) \wedge \cdots \wedge D\Phi^{-1}(v_n) )
 \end{align*}
-where $D\Phi : TM \to TM$ denotes the tangent lift of $\Phi$.
+where $D\Phi^{-1} : TM \to TM$ denotes the tangent lift of $\Phi^{-1}:M \to M$.
 By the change of variables formula we see that $\Diff(M)$ acts isometrically on $\Dens^{1/2}(M)$ with respect to 
 the inner product $\langle \cdot \mid \cdot \rangle$.
 The conservation properties of $\Phi$ with regards to half-densities can be summarized by asserting that the diagram
 \begin{equation*}
 	\xymatrix{
-		\Dens^{1/2}(M) \times \Dens^{1/2}(M) \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\Phi^* \times \Phi^*} & \Dens^{1/2}(M) \times \Dens^{1/2}(M) \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
+		\Dens^{1/2}(M) \times \Dens^{1/2}(M) \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\widehat{\Phi} \times \widehat{\Phi}} & \Dens^{1/2}(M) \times \Dens^{1/2}(M) \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
 		&\mathbb{R}
 	}
 \end{equation*}
 commutes.
 
+As $\Diff(M)$ acts isometrically upon $\Dens^{1/2}(M)$ the Lie algebra $\mathfrak{X}(M)$ must act by anti-symmetric operators.
+In particular, we define the Lie derivative of a half-density $\psi \in \Dens^{1/2}(M)$ by
+\begin{align*}
+	\pounds_X[ \psi ] = \frac{d}{dt} |_{t=0} \widehat{\Phi}_t^T \psi
+\end{align*}
+where $\Phi_t$ is the time $t \in \R$ flow of $X$.
+In coordinates the Lie derivative is given by
+\begin{align*}
+	\pounds_X[\psi] = \frac{1}{2} X^i \pder{\psi}{x^i} + \frac{1}{2} \pder{}{x^i} \left(\psi \cdot X^i \right)
+\end{align*}
 Admittedly, half-densities are a somewhat obscure object which would be of no interest to use, except for the fact that they will guide
-our discretization procedure in the next section.
+our discretization procedure in section \ref{sec:convergence}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The discrete regime}
 \label{sec:discrete}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section we review discrete analogs of the structures provided in the section \ref{sec:advection}.
+In this section we review discrete analogs of the structures provided in the section \ref{sec:continuous}.
 In particular, this section is literally a copy of the previous section, except that all the infinite-dimensional entities have been replaced with finite dimensional ones.
 Consider the space $\R^n$ equipped with the following canonical structures:
 \begin{enumerate}
@@ -266,27 +276,27 @@ These relationships will suggest the following analogies
 	\item The group $\SO(n)$ is analogous to $\Diff(M)$
 	\item The Lie algebra $\mathfrak{so}(n)$ is analogous to the Lie algebra $\mathfrak{X}(M)$.
 	\item The noncommutative ring $\Lin(n)$ is analogous to the commutative ring $C^0(M)$.
-	\item The dual-space $\Sym(n)^*$ is analogous to $\mathcal{D}'_0(M)$.
+	\item The dual-space $\Lin(n)^*$ is analogous to $\mathcal{D}'_0(M)$.
 	\item The cone of positive semi-definite matrices $\Sym_0^+(n)$ is analogous to the space of non-negative functions on $M$.
 	\item The inner-product space $\R^n$ is analogous to the inner-product space $\Dens^{1/2}(M)$.
 \end{itemize}
-For starters, for any $R \in \SO(n)$ there exists a \emph{discrete Koopman operator},$\Conj_R$, given by
+For starters, for any $R \in \SO(n)$ there exists a \emph{discrete Koopman operator}, $R^*$, given by
 \begin{align*}
-	\hat{f} \in \Lin(n) \mapsto \Conj_R ( \hat{f} ) := R^T \hat{f} R \in \Lin(n)
+	\hat{f} \in \Lin(n) \mapsto R^* ( \hat{f} ) := R^T \hat{f} R \in \Lin(n)
 \end{align*}
 This is a (right) group action of $\SO(n)$ on $\Lin(n)$.
 The discrete Koopman operator satisfies
 \begin{align*}
-	\Conj_R(\hat{f}+\hat{g}) = \Conj_R(\hat{f}) + \Conj_R(\hat{g}) \intertext{ and }
-	\Conj_R(\hat{f} \cdot \hat{g}) = \Conj_R(\hat{f}) \cdot \Conj_R(\hat{g})
+	R^*(\hat{f}+\hat{g}) = R^*(\hat{f}) + R^*(\hat{g}) \intertext{ and }
+	R^*(\hat{f} \cdot \hat{g}) = R^*(\hat{f}) \cdot R^*(\hat{g})
 \end{align*}
 for any two $\hat{f},\hat{g} \in \Lin(n)$.
 In summary, the discrete Koopman operator is a ring-automorphism of $\Lin(n)$.
 This is summarized by noting the diagram
 \begin{equation}
 	\xymatrix{
-		\Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Conj_R} \Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
-		\Lin(n)  & \ar[l]_{\Conj_R} \Lin(n)
+		\Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{R^*} \Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
+		\Lin(n)  & \ar[l]_{R^*} \Lin(n)
 	} \label{cd:discrete_functions}
 \end{equation}
 commutes.
@@ -294,7 +304,7 @@ commutes.
 If we let $R_t = \exp( \omega t)$ for some $\omega \in \mathfrak{so}(n)$
 we may define the \emph{discrete Lie-derivative} of $\hat{f} \in \Lin(n)$ to be
 \begin{align*}
-	\omega[ \hat{f}] := \left. \frac{d}{d t} \right|_{t=0} \Conj_{R_t} \hat{f} = [ \hat{f} , \omega].
+	\omega[ \hat{f}] := \left. \frac{d}{d t} \right|_{t=0} R_t^* (\hat{f} ) = [ \hat{f} , \omega].
 \end{align*}
 where $[ \cdot , \cdot ]$ denotes the matrix commutator.
 As the discrete Koopman operator $\Conj_{R_t}$ is a ring-morphism, we find that the discrete Lie-derivative operator is a (non-commutative) derivation.
@@ -304,46 +314,46 @@ That is to say
 \end{align*}
 for any $\hat{f},\hat{g} \in \Lin(n)$.
 
-We can naturally equip $\Lin(n)$ with the operator norm
+The space $\Lin(n)$ is naturally equipped with the operator norm
 \begin{align*}
 	\| \hat{f} \|_{\Lin} = \sup_{x \in \R^n} \| \hat{f} \cdot x \|_{\R^n}.
 \end{align*}
 where $\| \cdot \|_{\R^n}$ denotes the $2$-norm on $\R^n$.
 We can observe that discrete Koopman operator preserves this norm.
 
-We may also form the dual mapping $(\Conj_R)^*: \Lin(n)^* \to \Lin(n)^*$,
+We may also form the dual mapping $R_*: \Lin(n)^* \to \Lin(n)^*$,
 which we shall dub the \emph{discrete Perron-Frobenius operator}.
-Given a $\mu \in \Lin(n)^*$, we may define $(\Conj_{R})^* \mu$ by the constraint
+Given a $\mu \in \Lin(n)^*$, we may define $R_*(\mu)$ by the constraint
 \begin{align*}
-	\langle \hat{f} , (\Conj_R)^*(\mu) \rangle = \langle \Conj_R(\hat{f}) , \mu \rangle \quad \forall \hat{f} \in \Lin(n).
+	\langle \hat{f} , R_*(\mu) \rangle = \langle R^*(\hat{f}) , \mu \rangle \quad \forall \hat{f} \in \Lin(n).
 \end{align*}
-This implies $\Conj_R^*(\mu) = R \mu R^T$.
+This implies $R_*(\mu) = R \mu R^T$.
 We naturally equip $\Lin(n)^*$ with the Banach norm dual to that chosen on $\Lin(n)$.
 In particular, $\Lin(n)$ is  equipped with the norm
 \begin{align*}
-	\| \mu \|_{\Lin^*} = \Tr(  |\mu| )
+	\| \mu \|_{\Lin^*} = \sum_{s \in \Sigma(\mu) } s
 \end{align*}
-\todo[inline]{Need to write this better.  What I mean here is that we take the sum of the absolute values of the eigen-values of $\mu$.}
+where $\Sigma(\mu)$ denotes the set of singular values of $\mu$.
 The discrete Perron-Frobenius operator preserves this norm.
 These relationships are summarized in the commutativity of the diagram
 \begin{equation*}
 	\xymatrix{
-		& \ar[dl]_{\| \cdot \|_{\Lin}} \Lin(n) & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^*   \ar[dd]^{(\Conj_R)^*} \ar[dr]^{\| \cdot \|_{\Lin^*}}& \\
+		& \ar[dl]_{\| \cdot \|_{\Lin}} \Lin(n) & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^*   \ar[dd]^{R_*} \ar[dr]^{\| \cdot \|_{\Lin^*}}& \\
 		\mathbb{R} && \mathbb{R} && \mathbb{R} \\
-		& \ar[ul]^{\| \cdot \|_{\Lin}} \Lin(n) \ar[uu]_{\Conj_R} & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^* \ar[ur]_{\| \cdot \|_{\Lin^*}} &	
+		& \ar[ul]^{\| \cdot \|_{\Lin}} \Lin(n) \ar[uu]_{R^*} & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^* \ar[ur]_{\| \cdot \|_{\Lin^*}} &	
 	}
 \end{equation*}
 
 The cones of positive semi-definite matrices and the dual cone will play a special role.
 One can observe that the partial subring $\Sym(n)^+$ is invariant under the Koopman operator.
-That is to say, $\Conj_R(\hat{f}) \in \Sym(n)^+$ if and only if $\hat{f} \in \Sym(n)^+$.
+That is to say, $R^*(\hat{f}) \in \Sym(n)^+$ if and only if $\hat{f} \in \Sym(n)^+$.
 The same holds in regards to the discrete Frobenius-Perron operator on $(\Sym(n)^+)^*$.
 
 Finally, we note that the very definition of $\SO(n)$ is that its elements preserve the inner-product on $\R^n$.
 In other words the diagram
 \begin{equation*}
 	\xymatrix{
-		\R^n \times \R^n \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\Conj_R} & \R^n \times \R^n \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
+		\R^n \times \R^n \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{R^*} & \R^n \times \R^n \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
 		&\mathbb{R}
 	}
 \end{equation*}
@@ -351,8 +361,6 @@ commutes.
 
 At this point a reader may come to the conclusion that this is all very cute, but
 what good is this analogy unless we provide a link between the discrete and the continuous regimes?
-More to the point, these constructions have no potential for use in numerical applications unless one can link
-$\SO(n)$ with $\Diff(M)$, $\Lin(n)$ with $C^0(M)$, ... as $n \to \infty$ with some sort of error bound.
 This is the topic of the next section.
 
 %Finally, we introduce the inner-product space of half-densities.
@@ -382,16 +390,16 @@ This is the topic of the next section.
 %We can summarize what has been presented so far in the following commutative diagrams
 %\begin{align*}
 %	\xymatrix{
-%		\Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Conj_R} \Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
-%		\Lin(n)  & \ar[l]_{\Conj_R} \Lin(n)
+%		\Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{R^*} \Lin(n) \times \Lin(n)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
+%		\Lin(n)  & \ar[l]_{R^*} \Lin(n)
 %	}, \\
 %	\xymatrix{
-%		& \ar[dl]_{\| \cdot \|_{\Lin}} \Lin(n) & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^*   \ar[dd]^{(\Conj_R)^*} \ar[dr]^{\| \cdot \|_{\Lin^*}}& \\
+%		& \ar[dl]_{\| \cdot \|_{\Lin}} \Lin(n) & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^*   \ar[dd]^{(R^*)^*} \ar[dr]^{\| \cdot \|_{\Lin^*}}& \\
 %		\mathbb{R} && \mathbb{R} && \mathbb{R} \\
-%		& \ar[ul]^{\| \cdot \|_{\Lin}} \Lin(n) \ar[uu]_{\Conj_R} & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^* \ar[ur]_{\| \cdot \|_{\Lin^*}} &	
+%		& \ar[ul]^{\| \cdot \|_{\Lin}} \Lin(n) \ar[uu]_{R^*} & \ar[l]_{\pi_1} \Lin(n)\times \Lin(n)^* \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Lin(n)^* \ar[ur]_{\| \cdot \|_{\Lin^*}} &	
 %	} \\
 %	\xymatrix{
-%		\R^n \times \R^n \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\Conj_R} & \R^n \times \R^n \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
+%		\R^n \times \R^n \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{R^*} & \R^n \times \R^n \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
 %		&\mathbb{R}
 %	}	.
 %\end{align*}
@@ -399,6 +407,29 @@ This is the topic of the next section.
 
 \section{Convergence}
 \label{sec:convergence}
+Let $M$ be a compact manifold.
+The inner-product space, $\Dens^{1/2}(M)$, can be completed to yield a separable Hilbert space, $L^2(M)$,
+and we may choose a countable Hilbert basis $\{e_0,e_1,\dots\}$.\footnote{This definition of $L^2(M)$ may appear strange but it is identical to the one usually introduced with one small difference.
+This definition does not require one to choose a reference density in order to create integrals of functions.}
+
+In order to link section \ref{sec:continuous} and section \ref{sec:discrete}
+we first need to reformulate our representations of functions, densities, and diffeomorphisms as operators on $L^2(M)$.
+To begin, for each function $f \in C^\infty(M)$ there is a unique symmetric linear operator $\hat{f} \in \Lin( L^2(M) )$
+obtained by point-wise multiplication.  Explicitly, $(\hat{f} \cdot \psi)(x) := f(x) \psi(x)$.
+The mapping $f \mapsto \hat{f}$ is a ring-monomorphism in the non-commutative ring of operators on $L^2(M)$.
+If we let $\| \cdot \|_{Op}$ denote the operator norm, then $\| \hat{f} \|_{Op} = \| f \|_{\infty}$.
+%Note that $\Lin(L^2(M))$ is an inner-product space with the inner-product $\langle A \mid B \rangle = \Tr( A^T B)$.
+By duality, for each density $\rho \in \mathcal{D}'(M)$ there is a unique symmetric operator $\hat{\rho} \in \Lin(L^2(M))^* \cong \Lin(L^2(M))$ defined
+such that $ \hat{\rho} (\hat{f}) = \int_M f \cdot \rho $.
+If we let $\| \cdot \|_{Op^*}$ denote the dual-norm to the operator norm, then $\| \hat{\rho} \|_{Op^*} = \| \rho \|_{L^1}$.
+Finally, given a $\Phi \in \Diff(M)$ one can then verify
+\begin{align*}
+	\widehat{\Phi^* f} = \widehat{\Phi}^T \cdot \hat{f} \cdot \widehat{\Phi} \quad \text{ and } \quad
+	\widehat{\Phi_* \rho} = \widehat{\Phi} \cdot \hat{\rho} \cdot \widehat{\Phi}^T
+\end{align*}
+for any $f \in C^0(M)$ and $\rho \in \mathcal{D}'(M)$.
+These ``hat''-maps make the structures of section \ref{sec:continuous} identical to the structures of section \ref{sec:discrete}
+except $\R^n$ is replaced with $L^2(M)$.
 
 \section{Applications}
 
