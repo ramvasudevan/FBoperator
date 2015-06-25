@@ -6,7 +6,7 @@
 
 %  POSSIBLY USEFULE PACKAGES
 %\usepackage{graphicx}
-%\usepackage{tensor}
+\usepackage{tensor}
 %\usepackage{todonotes}
 
 %  NEW COMMANDS
@@ -108,17 +108,58 @@ Inspired by Henrion-Korda we should be able to obtain the ROA by solving the pri
 \end{align*}
 where the decision variables are $\phi \in H^1( [0,T] ; L^2(U \times M) )$, and $\psi_T  \in L^2(M)$.
 
-\section{Function advection}
-Why does the following idea not work?  We consider the optimization problem
+\section{Discretization of vector-fields as operators}
+\label{sec:discretization of vector-fields}
+Let $X (x,t)= f^\alpha(x,t) \pder{}{x^\alpha}$.
+We wish to discretize the operator
 \begin{align*}
-	\sup \int f_T (x) dx 
+	\widehat{X}[\psi] = \frac{1}{2} \left(  \partial_\alpha( f^\alpha \cdot \psi) + f^\alpha \partial_\alpha \psi \right)
 \end{align*}
-subject to decision variables, $f_T(x), f(x),\mu(x,u)$ with the constraints
+
+What we could do is construct the operator $\widehat{\partial_\alpha}$
+and the multiplication operator $\hat{f}^\alpha: \psi(\cdot ) \mapsto f^\alpha(\cdot) \cdot \psi(\cdot)$ given in matrix form by
 \begin{align*}
-	f_T(x) - f_0(x) = \int \pounds_{X_{u}} [f] (x) \mu(x,u) du dt \\
-	\mu(x,u) \geq 0
+	[\hat{f}^\alpha]\indices{^i_j} = \langle w_i \mid \hat{f}^\alpha \mid w_j \rangle.
 \end{align*}
-where $f_0$ is the indicator function on $X_0$
+My hope is that the operator $\frac{1}{2} ( [\widehat{f^\alpha}]_n \cdot [\widehat{\partial_\alpha}]_n + [\widehat{\partial_\alpha}]_n \cdot [\widehat{f^\alpha}]_n)$ is a good approximation of $\widehat{X}$
+when $[\widehat{f^\alpha}]_n$ a least squares projection of $\widehat{f^\alpha}$ and $[\widehat{\partial_\alpha}]_n$ is a least squares projection of $\widehat{\partial_\alpha}$ onto some finite-dimensional subspace $V_n$.  The following two (yet to be proven) lemmas would give us this result.
+
+\begin{lem}
+	Let $f \in L^{\infty}$, $n \in \mathbb{N}$, and
+	$\{ e_0,e_1,\dots \}$ a Hilbert basis for $L^2$.
+	Let $V_n = {\rm span}( e_0 , e_1,\dots,e_n)$ and let
+	$\pi_N : L^2 \to V_n$ be the orthogonal projection.
+	Then the operator $[\hat{f}]_n = \pi_n \circ \hat{f} \circ \pi_n$
+	satisfies the error bound
+	\begin{align*}
+		\| \hat{f} - [\hat{f}]_n \|_{L^2} = \epsilon_1(n)
+	\end{align*}
+	for some function $\epsilon_1(n)$ which vanishes at infinity.
+\end{lem}
+
+\begin{lem}
+	The operator $[\widehat{\partial_\alpha}]_n = \pi_n \circ \widehat{\partial_\alpha} \circ \pi_n$
+	satisfies the error bound
+	\begin{align*}
+		\| \widehat{\partial_\alpha}|_{H^1} - [\widehat{\partial_\alpha}]_n \|_{L^2} = \epsilon_2(n)
+	\end{align*}
+	for some function $\epsilon_1(n)$ which vanishes at infinity.
+\end{lem}
+
+\begin{prop}
+	The operator $\frac{1}{2} ( [\widehat{f^\alpha}]_n \cdot [\widehat{\partial_\alpha}]_n + [\widehat{\partial_\alpha}]_n \cdot [\widehat{f^\alpha}]_n)$
+	approximates the operator $\widehat{X} = \frac{1}{2}( \widehat{f^\alpha}  \widehat{\partial_\alpha} +  \widehat{\partial_\alpha}  \widehat{f^\alpha} )$
+	on $H^1$	with an error bound proportional to $\epsilon(n) = \max( \epsilon_1(n) , \epsilon_2(n) )$.
+\end{prop}
+\begin{proof}
+	The proof comes down to the following computation for any two operators $A$ and $B$ with approximations $A_n$ and $B_n$.
+	\begin{align*}
+		\| AB - A_n B_n \| = \| AB - A_n B + A_n B- A_n B_n \| \\
+		\leq \| AB - A_n B \| + \| A_nB - A_n B_n \| \\
+		\leq \|B \| \|A - A_n \| + \|A_n \| \|B - B_n \|.
+	\end{align*}
+\end{proof}
+
 \bibliographystyle{amsalpha}
 \bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
 \end{document}
