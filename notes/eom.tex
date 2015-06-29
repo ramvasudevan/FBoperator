@@ -40,8 +40,6 @@
 
 \maketitle
 
-\section{Equations of motion for dice}
-
 \section{Constraint equation}
 
 Let $\psi(t),\nu(t) \in L^2(M)$ for $t \in [0,T]$.
@@ -113,7 +111,12 @@ where the decision variables are $\phi \in H^1( [0,T] ; L^2(U \times M) )$, and 
 Let $X (x,t)= f^\alpha(x,t) \pder{}{x^\alpha}$.
 We wish to discretize the operator
 \begin{align*}
-	\widehat{X}[\psi] = \frac{1}{2} \left(  \partial_\alpha( f^\alpha \cdot \psi) + f^\alpha \partial_\alpha \psi \right)
+	\rho(X)[\psi] = \frac{1}{2} \left(  \partial_\alpha( f^\alpha \cdot \psi) + f^\alpha \partial_\alpha \psi \right)
+\end{align*}
+
+To do this, let us note that
+\begin{align*}
+	\rho( f \cdot X) = \frac{1}{2} \left( \hat{f} \cdot \rho(X) + \widehat{X[f]}\right) = \frac{1}{2} \left( \hat{f} \cdot \rho(X) + [ \hat{f} , \rho(X)] \right) =  \hat{f} \rho(X) - \frac{1}{2} \rho(X) \hat{f}
 \end{align*}
 
 What we could do is construct the operator $\widehat{\partial_\alpha}$
@@ -121,7 +124,7 @@ and the multiplication operator $\hat{f}^\alpha: \psi(\cdot ) \mapsto f^\alpha(\
 \begin{align*}
 	[\hat{f}^\alpha]\indices{^i_j} = \langle w_i \mid \hat{f}^\alpha \mid w_j \rangle.
 \end{align*}
-My hope is that the operator $\frac{1}{2} ( [\widehat{f^\alpha}]_n \cdot [\widehat{\partial_\alpha}]_n + [\widehat{\partial_\alpha}]_n \cdot [\widehat{f^\alpha}]_n)$ is a good approximation of $\widehat{X}$
+My hope is that the operator $\frac{1}{2} ( [\widehat{f^\alpha}]_n \cdot [\widehat{\partial_\alpha}]_n + [\widehat{\partial_\alpha}]_n \cdot [\widehat{f^\alpha}]_n)$ is a good approximation of $\rho(X)$
 when $[\widehat{f^\alpha}]_n$ a least squares projection of $\widehat{f^\alpha}$ and $[\widehat{\partial_\alpha}]_n$ is a least squares projection of $\widehat{\partial_\alpha}$ onto some finite-dimensional subspace $V_n$.  The following two (yet to be proven) lemmas would give us this result.
 
 \begin{lem}
@@ -148,7 +151,7 @@ when $[\widehat{f^\alpha}]_n$ a least squares projection of $\widehat{f^\alpha}$
 
 \begin{prop}
 	The operator $\frac{1}{2} ( [\widehat{f^\alpha}]_n \cdot [\widehat{\partial_\alpha}]_n + [\widehat{\partial_\alpha}]_n \cdot [\widehat{f^\alpha}]_n)$
-	approximates the operator $\widehat{X} = \frac{1}{2}( \widehat{f^\alpha}  \widehat{\partial_\alpha} +  \widehat{\partial_\alpha}  \widehat{f^\alpha} )$
+	approximates the operator $\rho(X) = \frac{1}{2}( \widehat{f^\alpha}  \widehat{\partial_\alpha} +  \widehat{\partial_\alpha}  \widehat{f^\alpha} )$
 	on $H^1$	with an error bound proportional to $\epsilon(n) = \max( \epsilon_1(n) , \epsilon_2(n) )$.
 \end{prop}
 \begin{proof}
@@ -159,6 +162,48 @@ when $[\widehat{f^\alpha}]_n$ a least squares projection of $\widehat{f^\alpha}$
 		\leq \|B \| \|A - A_n \| + \|A_n \| \|B - B_n \|.
 	\end{align*}
 \end{proof}
+
+\appendix
+\section{Construction of operators}
+Let $\{ e_0 , e_1, \dots \}$ be a Hilbert basis for $L^2(\mathbb{R})$ and compute the coefficients
+\begin{align*}
+	a \indices{^i_j} = \int_{\mathbb{R}} e_i(x) \frac{d e_j}{dx} (x) dx
+\end{align*}
+In $n$-dimensions we may consider the basis elements for $L^2(\mathbb{R}^n)$ computed as tensor products of the one-dimensional case.
+That is to say, we use a basis of the form $e_{\bf i}({\bf x}) := e_{i_1}(x^1) e_{i_2}(x^2) \cdots e_{i_n}(x^n)$
+where ${\bf i} = (i_1,i_2,\dots,i_n)$ and ${\bf x} = (x^1,\dots,x^n)$.
+In this bases the operator $\widehat{\partial_\alpha}$ is computed entry-wise to be
+\begin{align*}
+	\left[ \widehat{\partial_\alpha} \right]\indices{^{\bf i}_{\bf j}} &= \langle e_{\bf i} \mid \widehat{\partial_\alpha} \mid e_{\bf j} \rangle = \int_{\mathbb{R}^n} e_{\bf i}( {\bf x} ) \pder{ e_{\bf j} }{x^\alpha} d{\bf x} \\
+		&= \int_{\mathbb{R}} \cdots \int_{\mathbb{R}} \left( \prod_{\beta \neq \alpha} e_{i_\beta}(x^\beta) e_{j_\beta}(x^\beta) \right) \cdot e_{i_\alpha} (x^\alpha) \frac{de_{j_\alpha}}{dx}(x^\alpha) dx^1 \cdots dx^n \\
+		&= \left( \prod_{ \beta \neq \alpha} \delta \indices{^{i_\beta}_{j_\beta}} \right) a \indices{^{i_\alpha}_{j_{\alpha}}}
+\end{align*}
+where the indices are ${\bf i} = (i_1,\dots,i_n)$ and ${\bf j} = (j_1,\dots,j_n)$.
+Similarly, for a $L^\infty$ function $f$ the operator $\hat{f}$ is given entry-wise by
+\begin{align*}
+	\left[ \hat{f} \right] \indices{^{\bf i}_{\bf j} } = \langle e_{\bf i} \mid \hat{f} \mid e_{\bf j} \rangle = \int_{\mathbb{R}^n} e_{\bf i}({\bf x}) f({\bf x}) e_{\bf j}({\bf x}) d{\bf x}
+\end{align*}
+You can probably compute this using your existing code by first decomposing $f(\bf x)$ into a wavelet basis as $f ({\bf x})= \sum_{\bf k} f_{\bf k} e_{\bf k}({\bf x})$ for some real coefficients $f_{\bf k}$.
+Then we'd find
+\begin{align*}
+	\left[ \hat{f} \right]\indices{^{\bf i}_{\bf j}} = \sum_{\bf k} f_{\bf k} \int_{\mathbb{R}^n} e_{\bf i}({\bf x})e_{\bf k}({\bf x}) e_{\bf j}({\bf x}) d{\bf x}
+\end{align*}
+and we can use your pre-computation of integrals of the above form.
+
+In the case of a vector-field $X = f^\alpha \partial_\alpha$, the corresponding operator on half-densities is given by $ (f^\alpha \cdot \partial_\alpha + \partial_\alpha \circ f^\alpha)/2$
+and so we are going to use the operator
+\begin{align*}
+	\rho(X) = \frac{1}{2} \left( \widehat{f^\alpha}  \cdot \widehat{\partial_{\alpha}} + \widehat{\partial_\alpha} \cdot \widehat{f^\alpha} \right)
+\end{align*}
+given entry-wise by
+\begin{align*}
+	\left[ \rho(X) \right] \indices{^{\bf i}_{\bf j}} = \frac{1}{2} \sum_{\bf k} \left(
+		\left[ \widehat{f^\alpha} \right] \indices{^{\bf i}_{\bf k}}
+		\left[\widehat{\partial_{\alpha}}\right] \indices{^{\bf k}_{\bf j}} +
+		\left[\widehat{\partial_\alpha} \right] \indices{^{\bf i}_{\bf k}}
+		\left[\widehat{f^\alpha}\right] \indices{^{\bf k}_{\bf j}}
+		 \right)
+\end{align*}
 
 \bibliographystyle{amsalpha}
 \bibliography{/Users/hoj201/Dropbox/hoj_2014.bib}
