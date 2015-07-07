@@ -6,7 +6,7 @@
 
 %  POSSIBLY USEFULE PACKAGES
 %\usepackage{graphicx}
-%\usepackage{tensor}
+\usepackage{tensor}
 \usepackage{todonotes}
 \usepackage{xypic}
 
@@ -31,7 +31,7 @@
 \DeclareMathOperator{\SO}{SO}
 \DeclareMathOperator{\U}{U}
 \DeclareMathOperator{\B}{B}
-\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Fr}{Fr}
 \DeclareMathOperator{\Herm}{Herm}
 \DeclareMathOperator{\Op}{Op}
 \DeclareMathOperator{\Tr}{Tr}
@@ -39,7 +39,7 @@
 \DeclareMathOperator{\Con}{Con}
 
 %  TITLE, AUTHOR, DATE
-\title{A self consistent discretization scheme for advecting multiple quantities at low resolution}
+\title{A very geometric advection scheme}
 \author{Henry O. Jacobs \& Ram Vasudevan}
 \date{\today}
 
@@ -51,6 +51,7 @@
 \begin{abstract}
   blah blah blah.
 \end{abstract}
+\todo[inline]{We should put a successful numerical example of our scheme towards the beginning}
 
 \section{Introduction}
 \label{sec:PDEs}
@@ -117,42 +118,127 @@ The purpose of this article is to introduce a spectral discretization of \eqref{
 which preserves discretized notions of many geometric conservation properties at arbitrarily low resolutions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Classical advection}
+\section{Geometric Lebesgue spaces}
+\label{sec:densities}
+In this section we define a geometric version of Lebesgue spaces.
+Let $M$ be a smooth compact $n$-manifold
+and we will let $L^1(M)$ denote the space of densities
+which we view as multi-linear functions on $\bigoplus^n TM$ \cite[Chapter 16]{Lee2006}.
+
+\begin{defn}\label{def:p-density}
+	Given $0 < \alpha \leq 1$, an $\alpha$-density is a continuous function $\nu : \bigoplus^n TM \to \mathbb{C}$
+	such that $\nu^{p} \in L^1(M)$.
+	By continuous extension, we will identify a $0$-density as a continuous functions on $M$.
+	We denote the space of $\alpha$ densities by $\Dens^{\alpha}(M)$.
+\end{defn}
+
+This definition is an equivalent reformulation of the $\alpha$-densities defined in the context of geometric quantization \cite{GuilleminSternberg1970,BatesWeinstein1997}.
+The following proposition follows by inspection.
+\begin{prop}
+	If $1 \leq p < \infty$ then $\Dens^{1/p}(M)$ is a normed vector-space with $\| \nu \|_p := \int_M |\nu|^p$ for $1 \leq p < \infty$.
+\end{prop}
+%\begin{proof}
+%	It is clear that $\Dens^p(M)$ is a vector-space.
+%	We need only show that $\| \cdot \|_p$ satisfies the properties of a norm.
+%	Firstly, one can observe directly that $\| \nu \|_p > 0$ for any $\nu \neq 0$.
+%	Secondly,
+%\end{proof}
+
+\begin{defn}
+	For $1 \leq p < \infty$ we let $L^p(M)$ denote the completion of $\Dens^{1/p}(M)$ under the $p$-norm.
+	We let $L^\infty(M)$ denote the space of essentially bounded complex valued functions on $M$
+	equipped with the norm $\| f \|_\infty = {\rm esssup}(|f|)$.
+\end{defn}
+
+As Banach spaces, $L^p(M)$ is isomorphic to the standard $L^p$-function space on $M$.
+This point will be made explicit in the following subsection.
+Moreover, given $\mu \in L^p(M)$ and $\nu \in L^q(M)$ the function $\mu \cdot \nu : \bigoplus^n TM \to \mathbb{C}$ is
+contained in $L^{p+q}(M)$.
+However, by defining the basic elements as $p$-densities rather than functions on $M$, a few critical distinctions arise.
+Firstly, the notion of $L^p(M)$ as a canonically embedded subspace of $L^q(M)$ when $p > q$ is nonsense because $\Dens^p(M)$ is not a subspace of $\Dens^q(M)$. 
+Secondly, the transformation law is that of $p$-densities, not of functions.
+In particular, given a diffeomorphism $\Phi \in \Diff(M)$
+there is a natural transformation of a $p$-densities given by
+\begin{align}
+	\Phi^*\nu(e_1,\dots,e_n) = \nu( D\phi \cdot e_1 , \dots, D\Phi \cdot e_n). \label{eq:transformation_law}
+\end{align}
+Only when $p = \infty$ will the above transformation law match that of a function on $M$.
+Thus only $L^\infty(M)$ is the completion of a space of functions on $M$.
+Note that the transformation \eqref{eq:transformation_law} preserves the $p$-norm of $\nu$.
+Thus the map $\nu \mapsto \Phi^* \nu$ is continuous on $L^p(M)$.
+
+We end this section by singling out three particularly important $L^p$ spaces.
+In particular, the space $L^\infty(M)$ is a $C^*$-algebra under the operations of addition multiplication and complex conjugation for complex functions on $M$.
+	The space $L^1(M)$ is the pre-dual to $L^{\infty}(M)$.
+	Finally, $L^2(M)$ is a Hilbert space with inner-product
+	\begin{align*}
+		\langle \psi_1 \mid \psi_2 \rangle := \int_M \overline{\psi_1} \cdot \psi_2.
+	\end{align*}
+	For notational convenience, given a (possibly unbounded) linear operator $L: L^2(M) \to L^2(M)$
+	\begin{align*}
+		\langle \psi_1 \mid L \mid \psi_2 \rangle := \int_M \overline{\psi_1} \cdot L(\psi_2).
+	\end{align*}
+
+\subsection{The relationship with classical Lebesgue spaces}
+\label{sec:classical_Lebesgue}
+For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-vanishing density $|\mu|$ \todo{cite the appropriate theorem in Lie}.
+The choice of a non-vanishing density is unique only up to multiplication by a non-vanishing function.
+In any case, upon choosing $|\mu|$ the $p$-norm on a bounded function $f$ is defined as
+\begin{align*}
+	\| f \|_p =  \left( \int_M f(x)^p |\mu| \right)^{1/p}.
+\end{align*}
+and $L^p(M ; |\mu|)$ is the completion of this function space.
+
+\begin{prop}
+	For any $\nu \in L^p(M)$ there exists a unique $f \in L^p(M ; |\mu|)$ such that $\nu = f \cdot |\mu|^{1/p}$.
+	This yields a continuous isomorphism between $L^p(M)$ and $L^p(M ; |\mu|)$.
+\end{prop}
+\begin{proof}
+	First note that if we view $|\mu|$ as a function on $\bigoplus^n TM$, then $|\mu|^{1/p}$ is a $\frac{1}{p}$-density.
+	It suffices to prove the dense subspace $\Dens^{1/p}$ is isomorphic to $C^0(M)$ through a map that preserves the $p$-norm.
+	Let $\nu \in \Dens^{1/p}(M)$.  Then $\nu^p$ is a continuous density.
+	By Radon-Nokodym we can assert the existence of a unique continuous function $f \in C^0(M)$ such that $f^{p} |\mu| = \nu^p$.
+	It then follows that $\nu = f \cdot | \mu |^{1/p}$.
+	Moreover, the map $\nu \in \Dens^{1/p}(M) \mapsto f \in C^0(M)$ preserves the $p$-norm, and so is continouos.
+	The inverse of the map is clearly given by $f \mapsto f \cdot |\mu|^{1/p}$.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Advection on manifolds}
 \label{sec:classical}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Let $M$ be closed compact smooth manifold.
 By virtue of being a manifold, $M$ is canonically equipped with the following structures:
 \begin{enumerate}
 	\item The topological group of smooth diffeomorphisms, $(\Diff(M), \circ)$.
-	\item The $C^*$-algebra of continous complex functions $(C(M), + , \cdot)$.
+	\item The $C^*$-algebra $L^\infty(M)$.
 	\item The Lie algebra of smooth vector-fields, $(\mathfrak{X}(M) , [ \cdot , \cdot ])$.
-	\item The space of densities, $\Dens(M)$, (pre) dual to $C(M)$
-	with the canonical pairing $\langle \cdot , \cdot \rangle : \Dens(M) \times C(M) \to \R$.
-	\item The cone of non-negative functions and the dual cone of non-negative distributions.
-	\item The inner product space of half-densities $(\Dens^{1/2}(M), \langle \cdot , \cdot \rangle)$.
+	\item The space $L^1(M)$, pre-dual to $L^\infty(M)$.
+	\item The cone $L^\infty(M;\R^+)$ and the pre-dual cone $L^1(M;\R^+)$
+	which contains the space of probability distributions.
+	\item The Hilbert space $(L^2(M), \langle \cdot \mid \cdot \rangle)$.
 \end{enumerate}
-The last item may not be familiar to some readers and will be defined and elaborated on at the end of this section.
 Each of these entities is linked to the others in a network of relationships
 which we shall review here.
 For starters, for any $\Phi \in \Diff(M)$ there exists an invertible operator, known as the \emph{Koopman operator}, given by
 \begin{align*}
-	f \in C(M) \mapsto \Phi^* f := f \circ \Phi \in C(M),
+	f \in L^\infty(M) \mapsto \Phi^* f := f \circ \Phi \in L^\infty(M),
 \end{align*}
 where $f \circ \Phi$ denotes the composition of $f:M \to \mathbb{C}$ with $\Phi:M \to M$.
-This is a (right) group action of $\Diff(M)$ on $C(M)$.
+This is a (right) group action of $\Diff(M)$ on $L^\infty(M)$.
 The Koopman operator satisfies
 \begin{align*}
 	\Phi^*(f+g) = \Phi^*f + \Phi^*g \text{ and } \Phi^*(f\cdot g) = (\Phi^*f) \cdot (\Phi^*g)
 \end{align*}
-for any two functions real-valued functions $f,g \in C(M)$.
+for any two functions real-valued functions $f,g \in L^\infty(M)$.
 The inverse of the Koopman operator is merely the Koopman operator associated to $\Phi^{-1}$, that is $(\Phi^*)^{-1} = (\Phi^{-1})^*$.
-In summary, the Koopman operator is a $C^*$-automorphism of $C(M)$
+In summary, the Koopman operator is a $*$-automorphism of $L^\infty(M)$
 because the diagram
-\begin{equation}
+\begin{equation} \label{cd:classical_ring}
 	\xymatrix{
-		C(M) \times C(M)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Phi^* \times \Phi^*} C(M) \times C(M)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
-		C(M) \ar[d]_{\dagger} & \ar[l]_{\Phi^*} C(M) \ar[d]^{\dagger} \\
-		C(M) & \ar[l]_{\Phi^*} C(M)
+		L^\infty(M) \times L^\infty(M)  \ar[d]_{+,\cdot} & \ar[l]_{ \Phi^*} L^\infty(M) \times L^\infty(M)  \ar[d]_{+,\cdot} \\
+		L^\infty(M) \ar[d]_{\dagger} & \ar[l]_{\Phi^*} L^\infty(M) \ar[d]^{\dagger} \\
+		L^\infty(M) & \ar[l]_{\Phi^*} L^\infty(M)
 	}
 \end{equation}
 commutes for any $\Phi \in \Diff(M)$.
@@ -164,98 +250,74 @@ we may define the Lie-derivative of a function $f$ to be
 \end{align*}
 In a local coordinate chart $(x^1,\dots,x^n)$ the vector-field is given by $X = X^i \pder{}{x^i}$
 and the Lie-derivative is simply given by $\pounds_{X}[f] = X^i \pder{f}{x^i}$.
-As the Koopman operator $(\Phi_X^t)^*$ is a ring-morphism, we find that the Lie-derivative operator is a (densely defined) derivation on $C(M)$.
+As the Koopman operator $(\Phi_X^t)^*$ is a ring-morphism, we find that the Lie-derivative operator is a (densely defined) derivation on $L^\infty(M)$.
 This means
 \begin{align*}
 	\pounds_X[ f \cdot g] = \pounds_X[f] \cdot g + f \cdot \pounds_X[g]
 \end{align*}
-for any $f,g \in C(M)$ such that the above expression makes sense.
-We can define $C^1(M)$ as the sub $C^*$-algebra of $C(M)$ such that $\pounds_X[f] \in C(M)$ for any $X \in \mathfrak{X}(M)$.
+for any $f,g \in L^\infty(M)$ such that the above expression makes sense.
+We can define $C^1(M)$ as the sub $C^*$-algebra of $L^\infty(M)$ such that $\pounds_X[f] \in L^\infty(M)$ for any $X \in \mathfrak{X}(M)$.
 Iteratively, we can defined $C^{k+1}(M)$ as the sub $C^*$-algebra of $C^{k}(M)$ such that $\pounds_X[f] \in C^k(M)$ for any $X \in \mathfrak{X}(M)$.
 
-The topology of $C(M)$ is that of a Banach space with respect to the norm
-\begin{align*}
-	\| f \|_{\infty} = \sup_{x \in M} | f(x) |
-\end{align*}
-By inspection, the Koopman operator, $\Phi^*$, preserves this norm and is therefore
-a continuous automorphism of $C^0(M)$.\footnote{In fact, the space of homeomorphisms of $M$ is identically the space of ring-automorphisms of $C(M)$.}
-Therefore, we may form the continuous dual mapping $\Phi_*: \Dens(M) \to \Dens(M)$,
+As the Koopman operator is continuous on $L^\infty(M)$,
+we may form the continuous dual mapping $\Phi_*: L^1(M) \to L^1(M)$,
 known by many as the \emph{Perron-Frobenius operator}.
-Given a density, $\mu \in \Dens(M)$, we define $\Phi_* \mu$ as the unique distribution such that
+Given $\mu \in L^1(M)$, we define $\Phi_* \mu$ as the unique density such that
 \begin{align*}
-	\langle f , \Phi_*\mu \rangle = \int_M f \cdot \Phi_* \mu = \int_M (\Phi^*f ) \cdot \mu \quad \forall f \in L^\infty(M).
+	\int_M f \cdot \Phi_* \mu = \int_M (\Phi^*f ) \cdot \mu \quad \forall f \in L^\infty(M).
 \end{align*}
-As $\Dens(M)$ is dual to $C(M)$, it must be topologized by the dual-norm.
-In particular, $\Dens(M)$ is a Banach space with respect to the norm
+As $L^1(M)$ is pre-dual to $L^\infty(M)$, it must be topologized by the dual-norm.
+In particular, $L^1(M)$ is a Banach space with respect to the norm
 \begin{align*}
 	\| \mu \|_{1}  = \sup_{
 		\substack{
-				f \in C(M) \\
+				f \in L^\infty(M) \\
 				\| f \|_{\infty} = 1
 		}
 	} \langle f , \mu \rangle =: \int_M | \mu |
 \end{align*}
-The Perron-Frobenius operator preserves this norm.
+and the Perron-Frobenius operator preserves this norm.
 These relationships are summarized by asserting that the diagram
-\begin{equation*}
+\begin{equation} \label{cd:classical_duality}
 	\xymatrix{
-		& \ar[dl]_{\| \cdot \|_{\infty}} C(M) & \ar[l]_{\pi_1} C(M)\times \Dens(M) \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Dens(M)   \ar[dd]^{\Phi_*} \ar[dr]^{\| \cdot \|_{1}}& \\
+		& \ar[dl]_{\| \cdot \|_{\infty}} L^\infty(M) & \ar[l]_{\pi_1} L^\infty(M)\times L^1(M) \ar[d]_{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & L^1(M)   \ar[dd]^{\Phi_*} \ar[dr]^{\| \cdot \|_{1}}& \\
 		\mathbb{R} && \mathbb{C} && \mathbb{R} \\
-		& \ar[ul]^{\| \cdot \|_{\infty}} C(M) \ar[uu]_{\Phi^*} & \ar[l]_{\pi_1} C(M)\times \Dens(M) \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & \Dens(M) \ar[ur]_{\| \cdot \|_{1}} &	
+		& \ar[ul]^{\| \cdot \|_{\infty}} L^\infty(M) \ar[uu]_{\Phi^*} & \ar[l]_{\pi_1} L^\infty(M)\times L^1(M) \ar[u]^{\langle \cdot , \cdot \rangle} \ar[r]^{\pi_2} & L^1(M) \ar[ur]_{\| \cdot \|_{1}} &	
 	}
-\end{equation*}
+\end{equation}
 commutes for any $\Phi \in \Diff(M)$.
 
 The cones of non-negative functions and non-negative distributions will play a special role later in terms of applications.
-One can observe that the subring of non-negative functions, $C(M ; \R^+_0)$ is invariant under the Koopman operator.
+One can observe that the subring of non-negative functions, $L^\infty(M ; \R^+_0)$ is invariant under the Koopman operator.
 That is to say, $\Phi^*f$ is a non-negative function if and only if $f$ is a non-negative function.
 The same holds in regards to the Frobenius-Perron operator and non-negative distributions.
 
-There is an additional relationship between smooth function, $C^\infty(M)$ and vector fields, $\mathfrak{X}(M)$.
-Namely, the space of vectorfields is a $C^\infty(M)$-module
-with respect to the operation of multiplying vector fields by functions.
-
-Finally, we introduce the inner-product space of half-densities.
-A half-density is an object whose square is a density, and they act much like
-the smooth wave-functions which one encounters in quantum mechanics.
-More formally, a $C^k$ half density on $M$ is a $C^k$ multilinear function $\psi : \bigwedge^n TM \to \mathbb{C}$
-such that for any (real) matrix $A$ and vectors $v_1,\dots,v_n$ over the same fiber
-\begin{align*}
-	\psi( (A_1^j v_j) \wedge \cdots \wedge (A_n^j v_j) ) =  | \det(A) |^{1/2} \psi(v_1 \wedge \cdots \wedge v_n).
-\end{align*}
-We define the space of half-densities by $\Dens^{1/2}(M)$.
-Such objects were first invented for the purpose of geometric quantization \cite[see Chapter 4]{GuilleminSternberg1970}.
-Note that the function $|\psi|^2 : \bigwedge^n TM \to \R$ is a $C^k$ density, and can be integrated.
-More generally, given $\psi_1,\psi_2 \in \Dens^{1/2}(M)$ we define $\langle \psi_1 \mid \psi_2 \rangle := \int_M \psi_1^\dagger \cdot \psi_2$
-where $\psi_1^\dagger \cdot \psi_2 $ denotes the complex valued density obtained by scalar multiplication.
-One can observe that $\langle \cdot \mid \cdot \rangle$ is an inner product on $\Dens^{1/2}(M)$.
-Given a $\Phi \in \Diff(M)$, there is a canonical (left) action on $\Dens^{1/2}(M)$ given by an operator $\rho(\Phi)$ defined by
-\begin{align*}
-	(\rho(\Phi) \cdot \psi)( v_1 \wedge \cdot \wedge v_n) := \psi( D\Phi^{-1}(v_1) \wedge \cdots \wedge D\Phi^{-1}(v_n) )
-\end{align*}
-where $D\Phi^{-1} : TM \to TM$ denotes the tangent lift of $\Phi^{-1}:M \to M$.
-By the change of variables formula we see that $\Diff(M)$ acts isometrically on $\Dens^{1/2}(M)$ with respect to 
+By the change of variables formula we see that $\Diff(M)$ acts isometrically on $L^2(M)$ through \eqref{eq:transformation_law} with respect to 
 the inner product $\langle \cdot \mid \cdot \rangle$.
-The conservation properties of $\Phi$ with regards to half-densities can be summarized by asserting that the diagram
+Let us denote $\rho(\Phi)$ as the unitary operator on $L^2(M)$
+\begin{align*}
+	\rho(\Phi) \cdot \psi = ( \Phi^{-1})^* \psi.
+\end{align*}
+The conservation properties of $\Phi$ with regards to $L^2(M)$ can be summarized by asserting that the diagram
 \begin{equation*}
 	\xymatrix{
-		\Dens^{1/2}(M) \times \Dens^{1/2}(M) \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\rho(\Phi) \times \rho(\Phi)} & \Dens^{1/2}(M) \times \Dens^{1/2}(M) \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
+		L^2(M) \times L^2(M) \ar[dr]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{ \rho(\Phi)} & L^2(M) \times L^2(M) \ar[d]^{\langle \cdot \mid \cdot \rangle} \\
 		&\mathbb{R}
 	}
 \end{equation*}
 commutes.
 
-As $\Diff(M)$ acts isometrically upon $\Dens^{1/2}(M)$ the Lie algebra $\mathfrak{X}(M)$ must act by (densely defined) anti-symmetric operators.
-In particular, we define the Lie derivative of a half-density $\psi \in \Dens^{1/2}(M)$ by
+As $\Diff(M)$ acts isometrically upon $L^2(M)$ the Lie algebra $\mathfrak{X}(M)$ must act by a (densely defined) anti-Hermetian operators.
+In particular, we define the Hilbert-Lie derivative as the anti-Hermetian operator $\rho(X)$ given by
 \begin{align*}
-	\pounds_X[ \psi ] = \frac{d}{dt} |_{t=0} \rho(\Phi) \cdot \psi
+	\rho(X) \cdot \psi  := \frac{d}{dt} |_{t=0} \rho(\Phi_t) \cdot \psi
 \end{align*}
 where $\Phi_t$ is the time $t \in \R$ flow of $X$.
-In coordinates the Lie derivative is given by
+In coordinates the Hilbert-Lie derivative is given by
 \begin{align*}
-	\pounds_X[\psi] = \frac{1}{2} X^i \pder{\psi}{x^i} + \frac{1}{2} \pder{}{x^i} \left(\psi \cdot X^i \right).
+	\left(\rho(X) \cdot \psi \right)(x) = \frac{1}{2} X^i (x) \left.\pder{\psi}{x^i}\right|_{x}+ \frac{1}{2} \left.\pder{}{x^i}\right|_{x} \left(\psi \cdot X^i \right).
 \end{align*}
-Given a function $f \in C^\infty(M)$ there is a unique bounded symmetric operator $\hat{f} : \Dens^{1/2}(M) \to \Dens^{1/2}(M)$
+Given a function $f \in C^\infty(M)$ there is a unique bounded symmetric operator $\hat{f} : L^2(M) \to L^2(M)$
 given by
 \begin{align}
 	(\hat{f} \cdot \psi)(x) = f(x) \psi(x). \label{eq:function_op}
@@ -269,19 +331,19 @@ Admittedly, half-densities are an obscure object which would be of no interest t
 our discretization procedure in section \ref{sec:convergence}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Hilbert Advection}
+\section{Advection on Hilbert spaces}
 \label{sec:Hilbert}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 In this section we review $C^*$-algebra analogs of the structures provided in the section \ref{sec:classical}.
 In particular, this section is nearly a copy of the previous section except that the notion of a point in $M$ has been replaced with a ray in a Hilbert space $\mathcal{H}$.
 
-To begin, note that $\R^n$ is equipped with the following canonical structures:
+To begin, note that $\H$ is equipped with the following canonical structures:
 \begin{enumerate}
 	\item The topological group of isometries, $\U(\H)$.
 	\item The of densely defined anti-Hermetian operators $\mathfrak{su}(\H)$.
-	\item The bounded operators equipped with the operator-norm $( \B(\H) , \| \cdot \|_{\Op})$.
-	\item The trace-class operators equipped with the dual to the operator norm, denoted $(\B(\H)^*,\| \cdot \|_{\Op^*})$.
-	\item The cone of bounded positive-semidefinite operators $\Herm^+(\H) \subset \B(\H)$ and its dual cone.
+	\item The $C^*$-algebra of bounded operators $( \B(\H) , \| \cdot \|_{\Op})$.
+	\item The trace-class operators equipped with the trace norm $(\B(\H)^*,\| \cdot \|_{\Op^*})$.
+	\item The positive-semidefinite operators $\Herm^+(\H) \subset \B(\H)$.
 \end{enumerate}
 Each of these entities is linked to the others in a network of relationships
 which we shall review here.
@@ -289,18 +351,18 @@ Moreover, these relationships will suggest the following analogies
 \begin{itemize}
 	\item $\U(\H)$ is analogous to $\Diff(M)$
 	\item $\mathfrak{su}(n)$ is analogous to $\mathfrak{X}(M)$.
-	\item $\B(\H)$ is analogous to $C(M)$.
-	\item $\B(\H)^*$ is analogous to $\Dens(M)$.
+	\item $\B(\H)$ is analogous to $L^\infty(M)$.
+	\item $\B(\H)^*$ is analogous to $L^1(M)$.
 	\item $\Herm^+(\H)$ is analogous to $C(M;\R^+)$.
 	\item $\H$ is analogous to $\Dens^{1/2}(M)$.
 \end{itemize}
-For starters, for any $U \in \U(\H)$ there exists an inner-automorphism on $\B(\H)$, which we call the \emph{Hilbert-Koopman operator} and denote by $\Con_U$.
+For starters, for any $U \in \U(\H)$ there exists an automorphism on $\B(\H)$, which we call the \emph{Hilbert-Koopman operator} and denote by $\Con_U$.
 The Hilbert-Koopman operator is explicitly given by
 \begin{align*}
-	\hat{f} \in \B(n) \mapsto \Con_U( \hat{f} ) := U^\dagger \hat{f} R \in \B(n)
+	\Con_U( \hat{f} ) := U^\dagger \cdot \hat{f} \cdot U
 \end{align*}
-This is a continous (right) group action of $\U(\H)$ on $\B(\H)$.
-The discrete Koopman operator satisfies
+We can observe that Hilbert-Koopman operator preserves the operator norm
+and is therefore a \emph{continuous} group action of $\U(\H)$ on $\B(\H)$ which satisfies
 \begin{align*}
 	\Con_U(\hat{f}+\hat{g}) &= \Con_U(\hat{f}) + \Con_U(\hat{g}) \quad,\quad
 	\Con_U(\hat{f} \cdot \hat{g}) = \Con_U(\hat{f}) \cdot \Con_U(\hat{g}) \quad,
@@ -308,14 +370,14 @@ The discrete Koopman operator satisfies
 	\quad \Con_U( \hat{f}^\dagger) &= \Con_U(\hat{f})^\dagger
 \end{align*}
 for any two $\hat{f},\hat{g} \in \B(\H)$.
-In summary, the discrete Koopman operator is a $C^*$-automorphism of $\B(\H)$.
+In summary, the Hilbert-Koopman operator is a $C^*$-automorphism of $\B(\H)$.
 This is summarized by the commutativity of the diagram
-\begin{equation}
+\begin{equation} \label{cd:quantum_ring}
 	\xymatrix{
-		\B(\H) \times \B(\H)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} & \ar[l]_{\Con_U} \B(\H) \times \B(\H)  \ar@<-0.6ex>[d]_{+} \ar@<0.6ex>[d]^{\cdot} \\
+		\B(\H) \times \B(\H)  \ar[d]_{+,\cdot} & \ar[l]_{\Con_U} \B(\H) \times \B(\H)  \ar[d]_{+,\cdot} \\
 		\B(\H)  \ar[d]_{\dagger}& \ar[l]_{\Con_U} \B(\H) \ar[d]^{\dagger} \\
 		\B(\H)  & \ar[l]_{\Con_U} \B(\H) \\
-	} \label{cd:discrete_functions}
+	}
 \end{equation}
 for any $U \in \U(\H)$.
 
@@ -327,21 +389,18 @@ We may then define the \emph{Hilbert-Lie derivative} of $\hat{f} \in \B(\H)$ to 
 	\pounds_{\omega}[ \hat{f}] := \left. \frac{d}{d t} \right|_{t=0} \Con_{U(t)}(\hat{f} ) = \hat{f} \cdot \omega - \omega \cdot \hat{f} = [ \hat{f} , \omega].
 \end{align*}
 where $[ \cdot , \cdot ]$ denotes the commutator bracket.
-As the discrete Koopman operator is a ring-morphism, we can observe that the discrete Lie derivative is a (non-commutative) derivation.
+As the Hilbert-Koopman operator is a ring-morphism, we can observe that the discrete Lie derivative is a (non-commutative) derivation.
 That is to say
 \begin{align*}
 	\pounds_{\omega}[ \hat{f} \cdot \hat{g} ] = \pounds_{\omega} [ \hat{f}] \cdot \hat{g} + \hat{f} \cdot \pounds_{\omega} [\hat{g}]
 \end{align*}
 for any $\hat{f},\hat{g} \in \B(\H)$.
-We define the Hilbert-Lie derivative of a trace-class operator $\hat{\rho} \in \B(n)^*$ as the dual map of the discrete Lie derivative operator.
-In particular $\pounds_X[\hat{\rho}] = [X,\hat{\rho}]$.
+Note that it is possible for $\pounds_{\omega}[\hat{f}]$ to be an unbounded operator.
+This fact will be used later to define a $C^*$-algebra based definition of differentiability.
 
-The space $\B(\H)$ is naturally equipped with the operator norm
-\begin{align*}
-	\| \hat{f} \|_{\Op} = \sup_{x \in \H} \| \hat{f} \cdot x \|.
-\end{align*}
-where we are implicitly using the Hilbert-norm on the right hand side.
-We can observe that Hilbert-Koopman operator preserves this norm.
+We define the Hilbert-Lie derivative of a trace-class operator $\hat{\rho} \in \B(n)^*$ as the dual map of the discrete Lie derivative operator.
+In particular $\pounds_\omega[\hat{\rho}] = [\omega,\hat{\rho}]$.
+
 
 We may also form the (pre)dual mapping $\Con_U^*: \B(\H)^* \to \B(\H)^*$,
 which we shall dub the \emph{Hilbert-Perron-Frobenius operator}.
@@ -358,13 +417,13 @@ In particular, $\B(\H)^*$ is  equipped with the norm
 where $\Sigma(\mu)$ denotes the set of singular values of $\mu \in \B(\H)^*$.
 The discrete Perron-Frobenius operator preserves this norm.
 These relationships are summarized in the commutativity of the diagram
-\begin{equation*}
+\begin{equation} \label{cd:quantum_duality}
 	\xymatrix{
 		& \ar[dl]_{\| \cdot \|_{\Op}} \B(\H) & \ar[l]_{\pi_1} \B(\H)\times \B(\H)^* \ar[d]_{\langle \cdot \mid \cdot \rangle} \ar[r]^{\pi_2} & \B(\H)^*   \ar[dd]_{\Con_U^*} \ar[dr]^{\| \cdot \|_{\Op^*}}& \\
 		\mathbb{R} && \mathbb{C} && \mathbb{R} \\
 		& \ar[ul]^{\| \cdot \|_{\Op}} \B(\H) \ar[uu]_{\Con_U} & \ar[l]_{\pi_1} \B(\H)\times \B(\H)^* \ar[u]^{\langle \cdot \mid \cdot \rangle} \ar[r]^{\pi_2} & \B(\H)^* \ar[ur]_{\| \cdot \|_{\Op^*}} &	
 	}
-\end{equation*}
+\end{equation}
 
 The cones of positive semi-definite operators and the dual cone will play a special role.
 One can observe that the cone $\Herm^+(\H)$ is invariant under the Hilbert-Koopman operator.
@@ -427,64 +486,135 @@ We hope to answer this question in the next section.
 %\end{align*}
 
 
-\section{Convergence}
-\label{sec:convergence}
+\section{A $C^*$-representation of advection on manifolds}
+\label{sec:embedding}
 Let $M$ be a compact manifold.
-The inner-product space, $\Dens^{1/2}(M)$, can be completed to yield a separable (real) Hilbert space, $\H$,
-and we may choose a countable Hilbert basis $\{e_0,e_1,\dots\}$.
-
 In order to link section \ref{sec:classical} and section \ref{sec:Hilbert}
-we will reformulate our representations of functions, densities, and diffeomorphisms as operators on $\H$.
-To begin, for each function $f \in C^\infty(M)$ there is a unique bounded operator $\hat{f} \in \B( \H )$
-obtained by point-wise multiplication.  Explicitly, $(\hat{f} \cdot \psi)(x) := f(x) \psi(x)$.
-The mapping $f \mapsto \hat{f}$ is a ring-monomorphism into $\B(\H)$.
+we will reformulate our representations of functions, densities, and diffeomorphisms as operators on the Hilbert space $\H = L^2(M)$.
+To begin, the mapping $i: f \in L^\infty(M) \mapsto \hat{f} \in \B(\H)$ given in \eqref{eq:function_op} is a $C^*$-monomorphism.
+More over, for any $\Phi \in \Diff(M)$ the Koopman operator acting on $L^\infty(M)$ is mapped to the Hilbert-Koopman operator acting on $\H$ when we embed the function in $\B( \H )$ through this map.
+In summary, the map $f \mapsto \hat{f}$ embeds the commutative diagram \eqref{cd:classical_ring} into the commutative diagram \eqref{cd:quantum_ring}.
+This is represented by the commutative diagram
+\begin{align*}
+	\xymatrix@=1em{
+		L^\infty(M) \times L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} \ar[dd]_<(0.2){+,\cdot} & & \ar[ll]_<(0.1){ \Phi^*} L^\infty(M) \times L^\infty(M) \ar[dr]^{\widehat{\phantom{c}} } \ar[dd]_<(0.2){+,\cdot}|!{[dr];[dl]}\hole \\
+		& \B( \H ) \times \B(\H) \ar[dd]_<(0.2){+,\cdot} & & \ar[ll]^<(0.1){\Con_{\rho(\Phi)}} \B(\H) \times \B(\H) \ar[dd]_<(0.2){+,\cdot} \\
+		L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} \ar[dd]_<(0.2){\dagger} & & \ar[ll]_<(0.2){\Phi^*}|!{[ul];[dl]}\hole L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} \ar[dd]_<(0.2){\dagger}|!{[dr];[dl]}\hole \\
+		& \B(\H) \ar[dd]_<(0.2){\dagger} & & \ar[ll]^<(0.2){\Con_{\rho(\Phi)}} \B(\H) \ar[dd]_<(0.2){\dagger} \\
+		L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} & & \ar[ll]_<(0.2){\Phi^*}|!{[ul];[dl]}\hole L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} \\
+		& \B(\H) & & \ar[ll]^<(0.2){\Con_{\rho(\Phi)}} \B(\H)
+	}
+\end{align*}
+which commutes for any $\Phi \in \Diff(M)$.
 This map is continuous because $\| \hat{f} \|_{\Op} = \| f \|_{\infty}$.
 
-Dually, for each density $\rho \in \Dens(M)$ there is a unique trace-class operator $\hat{\rho} \in \B(L^2(M))^*$ defined
-such that $ \hat{\rho} (\hat{f}) = \int_M f \cdot \rho $.
-In particular, we may define a half-density $\sqrt{\rho} \in \Dens^{1/2}(M)$ with the property that $\rho = (\sqrt{\rho})^{2}$.
-The half-density $\sqrt{\rho}$ is defined uniquely modulo a non-unique phase and $\hat{\rho} = \sqrt{\rho} \otimes \sqrt{\rho}^\dagger$.
-Again, the map $\rho \mapsto \hat{\rho}$ is continuous because $\| \hat{\rho} \|_{\Op^*} = \| \rho \|_{1}$.
+Dually, for each density $\mu \in L^1(M)$ there is a unique trace-class operator $\hat{\mu} \in \B(L^2(M))^*$ defined
+such that $ \hat{\mu} (\hat{f}) = \int_M f \cdot \mu $.
+In particular, we may choose a half-density $\sqrt{\mu} \in \Dens^{1/2}(M)$ with the property that $\mu = |\sqrt{\mu}|^{2}$.
+The half-density $\sqrt{\rho}$ is defined uniquely modulo a non-unique phase and $\hat{\mu} = \sqrt{\mu} \otimes \sqrt{\mu}^\dagger$.
+The map $\mu \mapsto \hat{\mu}$ is continuous because $\| \hat{\mu} \|_{\Op^*} = \| \rho \|_{1}$.
 Finally, given a $\Phi \in \Diff(M)$ one can then verify
 \begin{align*}
-	\widehat{\Phi^* f} = \widehat{\Phi}^T \cdot \hat{f} \cdot \widehat{\Phi} \quad \text{ and } \quad
-	\widehat{\Phi_* \rho} = \widehat{\Phi} \cdot \hat{\rho} \cdot \widehat{\Phi}^T
+	\widehat{\Phi^* f} = \Con_{\rho(\Phi)} ( \hat{f}) \quad \text{ and } \quad
+	\widehat{\Phi_* \mu} = \Con_{\rho(\Phi)}^*(\hat{\mu} )
 \end{align*}
-for any $f \in C(M)$ and $\rho \in \Dens(M)$.
-In summary, these ``hat''-maps embed the constructions of section \ref{sec:classical} into the constructions of section \ref{sec:Hilbert}.
+for any $f \in L^\infty(M)$ and $\mu \in L^1(M)$.
+In summary, these hat-maps embed the constructions of section \ref{sec:classical} into the constructions of section \ref{sec:Hilbert}.
+This is represented in the grammer of commutative diagrams by saying that the hat-maps embed the commutative diagram \eqref{cd:classical_duality}
+into the commutative diagram \eqref{cd:quantum_duality}.
+This is given by the commutative diagram
+\begin{equation}
+	\xymatrix@=1em{
+		L^\infty(M) \ar[dr] & & \ar[ll]_{\pi_1} L^\infty(M) \times L^1(M) \ar[dd]_<(0.2){\langle \cdot ,\cdot \rangle}|!{[dr];[dl]}\hole  \ar[dr] \ar[rr]^{\pi^2} & & L^1(M) \ar[dr] \ar[dddd]_{\Phi_*}|!{[dl];[dr]}\hole & \\
+		& \B(\H) & & \ar[ll]_<(0.2){\pi_1} \B(\H) \times \B(\H)^* \ar[dd]_{\langle \cdot ,\cdot \rangle} \ar[rr]^{\pi_2} & & \B(\H)^* \ar[dddd]_{\Con^*_{\rho(\Phi)}} \\
+		& & \mathbb{C} \ar@{=}[dr] & & & \\
+		& & & \mathbb{C} & & \\
+		L^\infty(M) \ar[dr] \ar[uuuu]^{\Phi^*} & & \ar[ll]_{\pi_1}|!{[dl];[uuul]}\hole L^\infty(M) \times L^1(M) \ar[dr]  \ar[rr]^<(0.2){\pi_2}|!{[dr];[ur]}\hole \ar[uu]^{\langle \cdot,\cdot \rangle} & & L^1(M) \ar[dr] & \\
+		& \B(\H) \ar[uuuu]^{\Con_{\rho(\Phi)}} & & \ar[ll]_{\pi_1} \B(\H) \times \B(\H)^* \ar[uu]_<(0.2){\langle \cdot , \cdot \rangle} \ar[rr]^{\pi_2} & & \B(\H)^*
+	}
+\end{equation}
 
-\todo[inline]{Put all your 3d commutative diagrams here}
-
-
-Moreover, for each vector-field $\mathfrak{X}(M)$ there is a (densely defined) anti-symmetric operator $\widehat{X} \in \mathfrak{so}(\H)$
-given by $\widehat{X} \cdot \psi =  - \left. \frac{d}{dt} \right|_{t=0} \widehat{\Phi}_t \cdot \psi$
+Moreover, for each vector-field $\mathfrak{X}(M)$ there is a (densely defined) anti-symmetric operator $\rho(X) \in \mathfrak{su}(\H)$
+given by $\rho(X) \cdot \psi =  - \left. \frac{d}{dt} \right|_{t=0} \rho(\Phi_t) \cdot \psi$
 where $\Phi_t \in \Diff(M)$ denotes the flow of $X$.
 
 We now precondition our understanding of advection in order to create 
 a discretization procedure for the PDEs presented in the introduction.
 We begin by recharacterizing these PDE's as ODEs on operator spaces.
 \begin{thm}\label{thm:operator}
-	If $f,\rho$, and $Y$ are solutions of \eqref{eq:function_pde}, \eqref{eq:density_pde}, and \eqref{eq:vf_pde} respectively
-	if and only if the operators $\hat{f},\hat{\rho}$ and $\hat{Y}$ are solutions of
+	If $f,\mu$, and $Y$ are solutions of \eqref{eq:function_pde}, \eqref{eq:density_pde}, and \eqref{eq:vf_pde} respectively
+	if and only if the operators $\hat{f},\hat{\mu}$ and $\widehat{Y} = \rho(Y)$ are solutions of
 	\begin{align} \label{eq:operator_evolution}
 		\frac{d\hat{f}}{dt} + [ \hat{f} , \widehat{X} ] = 0 \quad,\quad
-		\frac{d\hat{\rho}}{dt} + [ \widehat{X} , \hat{\rho} ] = 0 \quad,\quad
+		\frac{d\hat{\mu}}{dt} + [ \widehat{X}, \hat{\mu} ] = 0 \quad,\quad
 		\frac{d\widehat{Y}}{dt} + [ \widehat{X} , \widehat{Y} ] = 0.
 	\end{align}
+	where $\widehat{X} = \rho(X)$.
 \end{thm}
 \begin{proof}
 	\todo[inline]{Proof coming soon}
 \end{proof}
 What theorem \ref{thm:operator} suggests is that we may discretize the operator equation \eqref{eq:operator_evolution} in lieu of numerically approximating  \eqref{eq:function_pde}, \eqref{eq:density_pde}, and \eqref{eq:vf_pde}.
 In particular, we can discretize all the relevent operators spectrally by choosing an orthonormal basis of $\mathcal{H}$.
+This brings us to our discretization procedure.
 
-\subsection{Discretization on $\R^n$}
-\label{eq:flat manifolds}
-In the case of $\mathbb{R}^n$ any vector-field field $X$ can be written (in terms of it's action on functions) by
-$X = f^\alpha \pder{}{x^\alpha}$.
+\section{Discretization and convergence}
+\label{sec:discretization}
+Let $M$ be compact and closed.  In this case $\H = L^2(M)$ is a separable Hilbert space
+and we may choose a countable Hilbert basis $\{ e_1 , e_2 , \dots \}$.
+Without loss of generality we will assume that each basis element is of class $H^1$.
+Let $\H_N = {\rm span}\{ e_1, \dots ,e_N \}$, let
+$\pi_N$ be the orthogonal projection of $\H$ onto $\H_N$,
+ and let $i_N: \H_N \to \H$ be the canonical embedding.
+Given a vector-field $X \in \mathfrak{X}(M)$ define $[X]_N = \pi_N \circ \rho(X) \circ i_N$.
+We see that $[X]_N : \H_N \to \H_N$ 
+operates on a finite dimensional inner product space,
+and so we can represent $[X]_N$ as a $N\times N$ complex matrix using 
+the basis $\{ e_1,\dots, e_N\}$.
+Specifically, $[X]_N$ is given in bra-ket notation by
+\begin{align*}
+	[X]_N:= \sum_{i,j = 1}^{N} \mid e_i \rangle \langle e_i \mid \rho(X) \mid e_j \rangle  \langle e_j \mid
+\end{align*}
+In the same vain, given a function $f \in L^\infty(M)$ define $[f]_N = \pi_N \circ \hat{f} \circ i_N$,
+and for a density $\mu \in L^1(M)$ define $[\mu]_N = \pi_N \circ \hat{\mu} \circ i_N$. \todo[inline]{This bra-ket notation needs to be introduced earlier}
+
+\begin{lem}
+	$[X]_N$ converges to $\rho(X)$ in $H^s$ for $s> \frac{\dim(M)}{2}+1$.
+\end{lem}
+
+\todo[inline]{Hilbert-Schmidt is to much.  You only need compact.  See if you can make $s$ smaller.}
+\begin{proof}
+	Let $i_s:H^{s}(M) \hookrightarrow H^1(M)$ denote the canonical embedding.
+	We can restate the theorem as ``$\lim_{N\to \infty} \| [X]_N \circ i_s - \rho(X) \circ i_s \|_{\Op} = 0$.''
+	
+	First note that $\rho(X)$ is a first order differential operator, and thus a bounded operator from $H^{1}(M)$ to $L^2(M)$.
+	Also note that $i_s$ is Hilbert-Schmidt when $s > 1 + \frac{\dim(M)}{2}$ [thm 6.53 Adams]\todo{fix citation}.
+	As the composition of a Hilbert-Schmidt operator with a bounded operator is Hilbert-Shmidt \todo{Cite something in Conway}
+	we observe that $\rho(X) \circ i_s : H^s \to L^2$ is Hilbert-Schmidt and thus compact.
+	Thus $\rho(X) \circ i_s$ is approximated by the finite-rank operator $[X]_N$
+	which must converge to $\rho(X) \circ i_s$ as $N$ goes to infinity \todo{Cite something in Conway again}
+\end{proof}
+
+\begin{thm}
+	$\exp([X]_N)$ converges to $\exp( \rho(X) ) = \rho(\Phi_t)$ in some sense when $\Phi_t$ is the flow of $X$.
+\end{thm}
+\begin{proof}
+	blah
+\end{proof}
+
+\begin{thm}
+	If $f,\mu,Y$ solve blah and $[f]_N,[\mu]_N, [Y]_N$ solve blah
+	then $[f]_N$... converge to $\hat{f},\hat{\mu}$ and $\widehat{Y}$ in some sense.
+\end{thm}
+
+\section{Structure preserving properties}
+\label{sec:structure}
+We get a bunch of properties at the discrete level.
 
 
-\section{Applications}
+give more theorems.
+
+\section{Examples}
 
 \subsection{A one dimensional example}
 
@@ -495,7 +625,16 @@ blah blah
 \todo[inline]{This is an integrable system.  It would be interesting to see the conserved functions (i.e. 0th Koopman modes)}
 
 \subsection{A 3D example}
-Lorenz equations?  Population dynamics?
+ABC flow
+
+\begin{align*}
+	u = A \sin(z) + C \cos(y) \\
+	v = B \sin(x) + A \cos(z) \\
+	w = C \sin(y) + B \cos(x)
+\end{align*}
+
+[Henon (1966) , C.R. Ad. Sci. Paris, 262, 312]
+said $A = \sqrt{3},B = \sqrt{2},C=1$ is chaotic.
 
 \subsection{High dimensional example}
 SRI models?  Quadrotor dynamics?  Chemical reaction dynamics?
