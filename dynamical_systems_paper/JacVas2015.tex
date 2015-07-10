@@ -200,13 +200,15 @@ and $L^p(M ; \mu)$ is the completion of this function space.
 	This yields a continuous isomorphism between $L^p(M)$ and $L^p(M ; \mu)$.
 \end{prop}
 \begin{proof}
-	First note that if we view $|\mu|$ as a function on $\bigoplus^n TM$, then $|\mu|^{1/p}$ is a $\frac{1}{p}$-density.
-	It suffices to prove the dense subspace $\Dens^{1/p}$ is isomorphic to $C^0(M)$ through a map that preserves the $p$-norm.
+	First note that if we view $\mu$ as a positive function on $\bigoplus^n TM$, then $\mu^{1/p}$ is a $\frac{1}{p}$-density.
+	It suffices to prove the dense subspace $\Dens^{1/p}$ is isomorphic to $C^0(M)$ through a map that preserves the $p$-norm
+	because $C^0(M)$ is dense in $L^p(M ; \mu)$ and $\Dens^{1/p}(M)$ is dense in $L^p(M)$.
+	
 	Let $\nu \in \Dens^{1/p}(M)$.  Then $\nu^p$ is a continuous density.
-	By Radon-Nokodym we can assert the existence of a unique continuous function $f \in C^0(M)$ such that $f^{p} |\mu| = \nu^p$.
-	It then follows that $\nu = f \cdot | \mu |^{1/p}$.
-	Moreover, the map $\nu \in \Dens^{1/p}(M) \mapsto f \in C^0(M)$ preserves the $p$-norm, and so is continuous.
-	The inverse of the map is clearly given by $f \mapsto f \cdot |\mu|^{1/p}$.
+	The Radon-Nikodym derivative of $\nu^p$ with respect to $\mu$ is a positive valued continuous function $f \in C^0(M)$ such that $f \, \mu = \nu^p$.
+	It then follows that $\nu = f^{1/p} \, \mu^{1/p}$.
+	Moreover, the map $\nu \in \Dens^{1/p}(M) \mapsto f^{1/p} \in C^0(M)$ preserves the $p$-norm, and so is continuous.
+	The inverse of the map is clearly given by $f^{1/p} \mapsto f^{1/p} \cdot \mu^{1/p}$.
 \end{proof}
 
 \subsection{Sobolev spaces on Riemannian manifolds}
@@ -227,7 +229,7 @@ and the Helmholtz operator, $1 + \Delta$, is then a positive definite operator
 with a discrete spectrum.
 For any $s \geq 0$ we may define the Sobolev norm
 \begin{align*}
-	\| f \|_{k,2} =  \left( \langle f , (1+\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
+	\| f \|_{s,2} =  \left( \langle f , (1+\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
 \end{align*}
 and $H^s(M ; g)$ is then the function space obtained by completion with respect to this norm, and modulo discrepancies of measure zero.
 Note that $H^0(M;g) = L^2(M;\mu_g)$.
@@ -236,37 +238,45 @@ The following proposition will be of use later when we need to prove a notion of
 via sequences of finite rank operators.
 
 \begin{prop} \label{prop:compact_embedding}
-	Let $M$ be a compact Riemmanian manifold.  If $s > t \geq 0$ then $H^s(M;g)$ is compactly embedded within $H^t(M,g)$.
+	Let $(M,g)$ be a compact Riemmanian manifold.  If $s > t \geq 0$ then $H^s(M;g)$ is compactly embedded within $H^t(M,g)$.
 \end{prop}
 \begin{proof}
 	Let $e_0, e_1,\dots$ be a Hilbert basis for $L^2(M;\mu_g)$ which diagonalizes $\Delta$
-	in the sense that $\Delta e_i = \lambda e_i$.
-	Thus $(1+\Delta)^s$ is given by
+	in the sense that $\Delta e_i = \lambda_i e_i$ for a sequence $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \cdots$.
+	The operator $(1+\Delta)^s$ is given by
 	\begin{align*}
-		(1+\Delta)^s \cdot f =  \sum_{i} e_i (1+\lambda)^s \langle e_i , f \rangle_g,
+		(1+\Delta)^s \cdot f =  \sum_{i} e_i (1+\lambda_i)^s \langle e_i , f \rangle_g,
 	\end{align*}
 	and so $\{ (1+ \lambda_i)^{-s/2} e_i \}_{i=1}^{\infty}$ is a Hilbert basis for $H^s(M;g)$.
 	
-	Let us call $e_i^{(s)} = (1+ \lambda_i)^{-s/2}$.
+	Let us call $e_i^{(s)} = (1+ \lambda_i)^{-s/2} e_i$.
 	The embedding of $H^s(M;g)$ into $H^t(M,g)$
 	is then given in terms of the respective basis elements by $e_i^{(s)} \mapsto (1+\lambda_i)^{-(s-t)/2}e_i^{(t)}$.
 	As $s > t$ and $\lambda_i \to +\infty$, we see that 
 	this embedding is a compact operator \cite[see Proposition 4.6]{Conway1990}.
 \end{proof}
 
-We would like to represent these Sobolev spaces as existing independent of the metric
-just as the Lebesgue spaces can be expressed.
-If $M$ is a smooth compact manifold and $g^0$ and $g^1$ are two metrics on $M$,
-then we can show that $H^s(M;g^0)$ is isomorphic to $H^s(M,g^1)$.
-In particular, $f \in H^s(M;g^0)$ if and only if $|(1+\Delta)^{s/2}f|^2 \in L^1( M , \mu_{g^0})$ a
-However, $\mu_0$ and $\mu_1$ are both smooth positive densities.
-Thus $\mu_0  = h \mu_1$ for some smooth function $h$, which is bounded because $M$ is compact.
-Thus $h \in L^\infty(M)$ and by Holder's inequality, $|(1+\Delta)^{s/2}f|^2 \cdot h \in L^1(M , \mu_{g^0})$.
-This is equivalent to stating that $|(1+\Delta)^{s/2}f|^2 \in L^1(M,\mu_{g^1})$ which in turn means
-$f \in H^s(M, \mu_{g^1})$.
+In the sequel we shall say that a wave-function $\psi \in L^2(M)$ is of class $H^s$ if there exists
+a metric $g$ such that $\psi = f \sqrt{\mu_g}$, and $f \in H^s(M,g)$.\footnote{Perhaps any two Riemannian metrics on $M$
+would yield the same Hilbert space $H^s(M,g)$.
+If so, it would be reasonable to define a space $H^s(M)$ as a subspace of $L^2(M)$ defined independently of a metric.
+We were not able to prove this statement for fractional $s$, nor were we able to find a source.
+However, it is known to be true for the case where $s$ is a positive integer.} 
 
-Additionally, we may use the isomorphism between $L^2(M)$ and $L^2(M;\mu_g)$ to make a metric-independent definition.
-Let $H^s(M) = \{ \psi \in L^2(M) \mid \psi = f \sqrt{\mu_g} , f \in H^s(M;g) \}$ for an arbitrary metric $g$ on $M$.
+%We would like to represent these Sobolev spaces as existing independent of the metric
+%just as the Lebesgue spaces can be expressed.
+%If $M$ is a smooth compact manifold and $g^0$ and $g^1$ are two metrics on $M$,
+%then we can show that $H^s(M;g^0)$ and $H^s(M,g^1)$ are isometrically isomorphic.
+%In particular, $f \in H^s(M;g^0)$ if and only if $|(1+\Delta_{g^0})^{s/2}f|^2 \in L^1( M , \mu_{g^0})$ a
+%However, $\mu_0$ and $\mu_1$ are both smooth positive densities.
+%Thus $\mu_0  = h \mu_1$ for some smooth function $h$, which is bounded because $M$ is compact.
+%Thus $h \in L^\infty(M)$ and by Holder's inequality, $|(1+\Delta)^{s/2}f|^2 \cdot h \in L^1(M , \mu_{g^0})$.
+%This is equivalent to stating that $|(1+\Delta)^{s/2}f|^2 \in L^1(M,\mu_{g^1})$ which in turn means
+%$f \in H^s(M, \mu_{g^1})$.
+%
+%\todo[inline]{You forgot to transform the Laplace-Beltrami operator.,}
+%Additionally, we may use the isomorphism between $L^2(M)$ and $L^2(M;\mu_g)$ to make a metric-independent definition.
+%Let $H^s(M) = \{ \psi \in L^2(M) \mid \psi = f \sqrt{\mu_g} , f \in H^s(M;g) \}$ for an arbitrary metric $g$ on $M$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Advection on manifolds}
@@ -555,17 +565,21 @@ We hope to answer this question in the next section.
 Let $M$ be a compact manifold.
 In order to link section \ref{sec:classical} and section \ref{sec:Hilbert}
 we will reformulate our representations of functions, densities, and diffeomorphisms as operators on the Hilbert space $\H = L^2(M)$.
-To begin, the mapping $i: f \in L^\infty(M) \mapsto \hat{f} \in \B(\H)$ given in \eqref{eq:function_op} is a $C^*$-monomorphism.
+To begin, the mapping
+\begin{align*}
+	\rho: f \in L^\infty(M) \mapsto \hat{f} \in \B(\H)
+\end{align*}
+given in \eqref{eq:function_op} is a $C^*$-monomorphism.
 More over, for any $\Phi \in \Diff(M)$ the Koopman operator acting on $L^\infty(M)$ is mapped to the Hilbert-Koopman operator acting on $\H$ when we embed the function in $\B( \H )$ through this map.
-In summary, the map $f \mapsto \hat{f}$ embeds the commutative diagram \eqref{cd:classical_ring} into the commutative diagram \eqref{cd:quantum_ring}.
+In summary, the map $\rho$ embeds the commutative diagram \eqref{cd:classical_ring} into the commutative diagram \eqref{cd:quantum_ring}.
 This is represented by the commutative diagram
 \begin{align*}
 	\xymatrix@=1em{
-		L^\infty(M) \times L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} \ar[dd]_<(0.2){+,\cdot} & & \ar[ll]_<(0.1){ \Phi^*} L^\infty(M) \times L^\infty(M) \ar[dr]^{\widehat{\phantom{c}} } \ar[dd]_<(0.2){+,\cdot}|!{[dr];[dl]}\hole \\
+		L^\infty(M) \times L^\infty(M) \ar[dr]^{\rho} \ar[dd]_<(0.2){+,\cdot} & & \ar[ll]_<(0.1){ \Phi^*} L^\infty(M) \times L^\infty(M) \ar[dr]^{\rho} \ar[dd]_<(0.2){+,\cdot}|!{[dr];[dl]}\hole \\
 		& \B( \H ) \times \B(\H) \ar[dd]_<(0.2){+,\cdot} & & \ar[ll]^<(0.1){\Con_{\rho(\Phi)}} \B(\H) \times \B(\H) \ar[dd]_<(0.2){+,\cdot} \\
-		L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} \ar[dd]_<(0.2){\dagger} & & \ar[ll]_<(0.2){\Phi^*}|!{[ul];[dl]}\hole L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} \ar[dd]_<(0.2){\dagger}|!{[dr];[dl]}\hole \\
+		L^\infty(M) \ar[dr]^{\rho} \ar[dd]_<(0.2){\dagger} & & \ar[ll]_<(0.2){\Phi^*}|!{[ul];[dl]}\hole L^\infty(M) \ar[dr]^{\rho} \ar[dd]_<(0.2){\dagger}|!{[dr];[dl]}\hole \\
 		& \B(\H) \ar[dd]_<(0.2){\dagger} & & \ar[ll]^<(0.2){\Con_{\rho(\Phi)}} \B(\H) \ar[dd]_<(0.2){\dagger} \\
-		L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} & & \ar[ll]_<(0.2){\Phi^*}|!{[ul];[dl]}\hole L^\infty(M) \ar[dr]^{\widehat{\phantom{c}}} \\
+		L^\infty(M) \ar[dr]^{\rho} & & \ar[ll]_<(0.2){\Phi^*}|!{[ul];[dl]}\hole L^\infty(M) \ar[dr]^{\rho} \\
 		& \B(\H) & & \ar[ll]^<(0.2){\Con_{\rho(\Phi)}} \B(\H)
 	}
 \end{align*}
@@ -575,17 +589,17 @@ This map is continuous because $\| \hat{f} \|_{\Op} = \| f \|_{\infty}$.
 Dually, for each density $\mu \in L^1(M)$ there is a unique trace-class operator $\hat{\mu} \in \B(L^2(M))^*$ defined
 such that $ \hat{\mu} (\hat{f}) = \int_M f \cdot \mu $.
 In particular, we may choose a half-density $\sqrt{\mu} \in \Dens^{1/2}(M)$ with the property that $\mu = |\sqrt{\mu}|^{2}$.
-The half-density $\sqrt{\rho}$ is defined uniquely modulo a non-unique phase and $\hat{\mu} = \sqrt{\mu} \otimes \sqrt{\mu}^\dagger$.
-The map $\mu \mapsto \hat{\mu}$ is continuous because $\| \hat{\mu} \|_{\Op^*} = \| \rho \|_{1}$.
+The half-density $\sqrt{\mu}$ is defined uniquely modulo a non-unique phase and $\hat{\mu} = \sqrt{\mu} \otimes \sqrt{\mu}^\dagger$.
+The map $\mu \mapsto \hat{\mu}$ is continuous because $\| \hat{\mu} \|_{\Op^*} = \| \mu \|_{1}$.
 Finally, given a $\Phi \in \Diff(M)$ one can then verify
 \begin{align*}
-	\widehat{\Phi^* f} = \Con_{\rho(\Phi)} ( \hat{f}) \quad \text{ and } \quad
-	\widehat{\Phi_* \mu} = \Con_{\rho(\Phi)}^*(\hat{\mu} )
+	\rho( \Phi^* f ) = \Con_{\rho(\Phi)} ( \rho(f)) \quad \text{ and } \quad
+	\rho( \Phi_* \mu) = \Con_{\rho(\Phi)}^*(\rho(\mu) )
 \end{align*}
 for any $f \in L^\infty(M)$ and $\mu \in L^1(M)$.
-In summary, these hat-maps embed the constructions of section \ref{sec:classical} into the constructions of section \ref{sec:Hilbert}.
-This is represented in the grammer of commutative diagrams by saying that the hat-maps embed the commutative diagram \eqref{cd:classical_duality}
-into the commutative diagram \eqref{cd:quantum_duality}.
+In summary, $\rho$ embed the constructions of section \ref{sec:classical} into the constructions of section \ref{sec:Hilbert}.
+This is represented in the grammer of commutative diagrams by saying that the $\rho$ embed diagram \eqref{cd:classical_duality}
+into diagram \eqref{cd:quantum_duality}.
 This is given by the commutative diagram
 \begin{equation}
 	\xymatrix@=1em{
@@ -604,21 +618,21 @@ where $\Phi_t \in \Diff(M)$ denotes the flow of $X$.
 
 We now precondition our understanding of advection in order to create 
 a discretization procedure for the PDEs presented in the introduction.
-We begin by recharacterizing these PDE's as ODEs on operator spaces.
-\begin{thm}\label{thm:operator}
-	If $f,\mu$, and $Y$ are solutions of \eqref{eq:function_pde}, \eqref{eq:density_pde}, and \eqref{eq:vf_pde} respectively
-	if and only if the operators $\hat{f},\hat{\mu}$ and $\widehat{Y} = \rho(Y)$ are solutions of
+We begin by viewing these PDE's as ODEs on operator spaces.
+\begin{prop}\label{prop:operator}
+	The quantities $f,\mu$, and $Y$ are solutions of \eqref{eq:function_pde}, \eqref{eq:density_pde}, and \eqref{eq:vf_pde} respectively
+	if and only if the operators $\hat{f} = \rho(f),\hat{\mu} = \rho(\mu)$ and $\widehat{Y} = \rho(Y)$ are solutions of
 	\begin{align} \label{eq:operator_evolution}
 		\frac{d\hat{f}}{dt} + [ \hat{f} , \widehat{X} ] = 0 \quad,\quad
 		\frac{d\hat{\mu}}{dt} + [ \widehat{X}, \hat{\mu} ] = 0 \quad,\quad
 		\frac{d\widehat{Y}}{dt} + [ \widehat{X} , \widehat{Y} ] = 0.
 	\end{align}
 	where $\widehat{X} = \rho(X)$.
-\end{thm}
+\end{prop}
 \begin{proof}
 	\todo[inline]{Proof coming soon}
 \end{proof}
-What theorem \ref{thm:operator} suggests is that we may discretize the operator equation \eqref{eq:operator_evolution} in lieu of numerically approximating  \eqref{eq:function_pde}, \eqref{eq:density_pde}, and \eqref{eq:vf_pde}.
+What proposition \ref{prop:operator} suggests is that we may discretize the operator equation \eqref{eq:operator_evolution} in lieu of numerically approximating  \eqref{eq:function_pde}, \eqref{eq:density_pde}, and \eqref{eq:vf_pde}.
 In particular, we can discretize all the relevent operators spectrally by choosing an orthonormal basis of $\mathcal{H}$.
 This brings us to our discretization procedure.
 
@@ -626,7 +640,7 @@ This brings us to our discretization procedure.
 \label{sec:discretization}
 Let $M$ be compact and closed.  In this case $\H = L^2(M)$ is a separable Hilbert space
 and we may choose a countable Hilbert basis $\{ e_1 , e_2 , \dots \}$.
-Without loss of generality we will assume that each basis element is of class $H^1$.
+Without loss of generality we will assume that each basis element is of class $H^s$ for $s > 1$.
 Let $\H_N = {\rm span}\{ e_1, \dots ,e_N \}$, let
 $\pi_N$ be the orthogonal projection of $\H$ onto $\H_N$,
  and let $i_N: \H_N \to \H$ be the canonical embedding.
@@ -642,21 +656,43 @@ Specifically, $[X]_N$ is given in bra-ket notation by
 In the same vain, given a function $f \in L^\infty(M)$ define $[f]_N = \pi_N \circ \hat{f} \circ i_N$,
 and for a density $\mu \in L^1(M)$ define $[\mu]_N = \pi_N \circ \hat{\mu} \circ i_N$.
 
-\begin{lem}
-	$\lim_{N \to \infty}( \| [X]_N \psi - \rho(X) \cdot \psi \|_{L^2} )$ for $\psi \in H^{1+\epsilon}(M)$ for $\epsilon> 0$.
-\end{lem}
+\begin{prop} \label{prop:inf_convergence}
+	If $\psi \in L^s(M)$ is of class $H^s$ and $s>1$ then
+	$\lim_{N \to \infty}( \| [X]_N \psi - \rho(X) \cdot \psi \|_{2} ) = 0$.
+\end{prop}
 \begin{proof}
-	The operator $\rho(X)$ is a first order differential operator, and thus a bounded operator from $H^{1+\epsilon}(M)$
-	to $H^\epsilon$.
-	Moreover, the embedding $i: H^{\epsilon}(M) \hookrightarrow L^2(M)$ is compact by Proposition \ref{prop:compact_embedding}.
+	Let $g$ be an arbitrary metric on $M$.
+	The operator $\rho(X)$ is a first order differential operator and thus a bounded operator from $H^{s}$
+	to $H^{s-1}$.
+	Moreover, the embedding $i: H^{s-1}(M) \hookrightarrow L^2(M)$ is compact by Proposition \ref{prop:compact_embedding}.
 	Thus the map $i \circ \rho(X) |_{H^s(M)}$ is compact as well and can be viewed as the limit of the finite rank operator $[X]_N$.
 \end{proof}
 
-\begin{thm}
-	$\exp([X]_N)$ converges to $\exp( \rho(X) ) = \rho(\Phi_t)$ in some sense when $\Phi_t$ is the flow of $X$.
+\begin{thm} \label{thm:convergence}
+	For $\psi_0$ of class $H^s$ with $s>1$
+	$\| \exp([X]_N) \cdot \psi_0 - \rho(\Phi_t) \cdot \psi_0 \|_{2} \to 0$ as $N \to \infty$.
 \end{thm}
+
 \begin{proof}
-	let $\| [X]_N \cdot \psi - \Phi_t  \cdot \psi \| < \epsilon$... \todo[inline]{Finish this proof}.
+	Let $\psi_N(t)$ satisfy $\partial_t \psi_N = [X]_N \psi_N$ and let $\psi(t)$ satisfy $\partial_t \psi = \rho(X) \cdot \psi$ each with initial conditions $\psi(0) = \psi_N(0) = \psi_0$.
+	Let $u(t) = \| \psi_N(t) - \psi(t) \|_{2}$.
+	We calculate
+	\begin{align*}
+		\frac{du}{dt} &= \frac{1}{2u(t)} \langle [X]_N \psi_N - \rho(X) \cdot \psi , \psi_N - \psi \rangle \\
+			&= \frac{1}{2u} \langle [X]_N \cdot (\psi_N - \psi) + ([X]_N - \rho(X) ) \cdot \psi , \psi_N - \psi \rangle \\
+			&= \frac{1}{2u} \langle ([X]_N - \rho(X) ) \psi , \psi_N - \psi \rangle \\
+			&\leq \frac{1}{2u(t)} \| [X]_N |_{H^s} - \rho(X)|_{H^s} \|_{op} \cdot \| \psi \|_{H^s} \cdot \| \psi_N - \psi \|_2 \\
+			&= \frac{\epsilon_N}{2} \| \psi \|_{H^s}.
+	\end{align*}
+	By Proposition \ref{prop:inf_convergence} we know that $\epsilon_N \to 0$ as $N \to \infty$.
+	Thus, in order to prove convergence we need only show that $\psi$ is in $H^s$.
+	In local coordinates we may represent $\psi$ and $\psi_0$ as functions.
+	In particular, they are related by
+	$\psi(t , x) = \left| \det (D\Phi_t^{-1})|_{\Phi_t(x)}  \right|^{1/2} \psi_0( \Phi_t^{-1}(x) )$
+	where $\Phi_t \in \Diff(M)$ is the flow of the vector-field $X$.
+	The regularity of $\psi_0 \in H^s$ is covariant, and so the function $\psi( \Phi_t^{-1}(x) ) \in H^s$.
+	Moreover, $\left| \det (D\Phi_t^{-1})|_{\Phi_t(x)}  \right|^{1/2}$ is smooth and therefore the product $\psi(t,x) = \left| \det (D\Phi_t^{-1})|_{\Phi_t(x)}  \right|^{1/2} \psi_0( \Phi_t^{-1}(x) )$
+	is $H^s$ for all $t$.
 \end{proof}
 
 \begin{thm}
@@ -665,12 +701,12 @@ and for a density $\mu \in L^1(M)$ define $[\mu]_N = \pi_N \circ \hat{\mu} \circ
 \end{thm}
 
 
-\subsection{Wavelets}
+\section{Wavelets and sparsity}
 \label{sec:wavelets}
 We would like to apply wavelet theory for the purpose of the error bounds,
 and sparsity structure they bring to the problem.
 However, the notion of wavelets on manifolds is still in development,
-and virtually all of the available packages are for wavelets on Euclidean spaces.
+and virtually all of the available software infrastructure is built for wavelets on flat spaces.
 This motivates us to prove the following theorem.
 
 \begin{thm} \label{thm:global_chart}
@@ -744,16 +780,16 @@ RP2
 Let $(\phi,W_s)$ be a wavelet realization of $d$-manifold, $M$,
 where $\phi: U \subset M \to V \subset \mathbb{R}^n$.
 Each $X \in \mathfrak{X}(M)$ can be pushed to a vector field on $V$ through the map $\phi$.
-More importantly, the Lie derivative operator on $\Dens^{1/2}(M)$ can be pushed to a Lie derivative operator on the subspace $\phi_* \Dens^{1/2}(M) \subset \Dens^{1/2}(V)$.
+As a result, the operator $\rho(X) \in \mathfrak{su}( L^2(M) )$ is pushed to the operator $\rho(\phi_*(X)) \in \mathfrak{su}(L^2(V))$.
 More concretetly, the vector-field $X$ will appear in local coordinates induced by $\phi$ as
 \begin{align*}
   \phi_*X(x) = q_i(x) \frac{\partial}{\partial x^i}.
 \end{align*}
-The operator on half-densities $D_X = \phi_* \pounds_X$ is then
+The operator on half-densities $\rho(\phi_*X)$ can be written in terms of coordinates on $\R^n$ as
 \begin{align*}
-  D_X[\psi](x) =  q_i(x) \partial_i \psi(x) + \left( \frac{1}{2} \partial_i q_i(x) \right) \psi(x).
+  \rho(\phi_*X)[\psi](x) =  q_i(x) \partial_i \psi(x) + \left( \frac{1}{2} \partial_i q_i(x) \right) \psi(x).
 \end{align*}
- To simplify analysis we will simply write this operator as a sum over multi-indices $(D_X [\psi] )(x) = \sum_{|\alpha|\leq 1} a_\alpha(x) \partial^\alpha \psi(x)$ with (local) coefficients $a_\alpha \in \phi_*i_{U}^*C^{\infty}(M) \subset C^{\infty}(\bar{V})$. Assume that $(\psi_\lambda)_{\lambda \in \Lambda}$ and $(\tilde{\psi}_\lambda)_{\lambda \in \Lambda}$ are a pair of wavelet bases. We denote by $P_j$ the projection onto the scaling functions associated with $\psi$ of resolution $2^{-j}$. We also let $\card{\lambda}$ denote the resolution level of the index $\lambda$. 
+ To simplify analysis we will simply write this operator as a sum over multi-indices $(\rho(\phi_*X) [\psi] )(x) = \sum_{|\alpha|\leq 1} a_\alpha(x) \partial^\alpha \psi(x)$ with (local) coefficients $a_\alpha \in \phi_*i_{U}^*C^{\infty}(M) \subset C^{\infty}(\bar{V})$. Assume that $(\psi_\lambda)_{\lambda \in \Lambda}$ and $(\tilde{\psi}_\lambda)_{\lambda \in \Lambda}$ are a pair of wavelet bases. We denote by $P_j$ the projection onto the scaling functions associated with $\psi$ of resolution $2^{-j}$. We also let $\card{\lambda}$ denote the resolution level of the index $\lambda$. 
 
 Define weighted spaces as:
 \begin{equation}
@@ -761,21 +797,21 @@ Define weighted spaces as:
 \end{equation}
 When $t = 0$ we write $\ell^2$ for the aforementioned weighted space. We are interested in evaluating the entries:
 \begin{equation}
-	[X]_{\lambda,\mu} = \langle D_X \psi_\lambda, \tilde{\psi}_\mu \rangle.
+	[X]_{\lambda,\mu} = \langle \rho(\phi_*X) \psi_\lambda, \tilde{\psi}_\mu \rangle.
 \end{equation}
 We let $[X]=([X]_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$. Assume further that there exists an $\alpha,n \in \mathbb{N}$ such that the wavelets are in $C^{\alpha}$, $\alpha \geq \frac{d}{2} + 1$, and that the wavelets are orthogonal to polynomials of degree $n \geq \alpha - 1$.  Note by Theorem 3.6.1 in \cite{Cohen2003} the norm equivalence between elements in $W^{t,2}$ and the $l_t^2$ norm of the wavelet decomposition of that same element using either wavelet bases for $0\leq t \leq \alpha$. For the sake of convenience, we let $s = \frac{d}{2} + 1$. 
 
-\begin{lem} \label{lem:projection_bound}
+\begin{prop} \label{prop:projection_bound}
 	Let $f \in W^{s,2}(M)$ and $j \geq \frac{d}{2}$ and $P_j$ denote the $L^2$-orthogonal projection onto polynomials of degree $j$.
 	Then $\norm{f - P_j f}_{L^2} \leq  2^{-sj}\norm{f}_{W^{s,2}}$,
-\end{lem}
+\end{prop}
 \begin{proof}
 	This follows from either Theorem 3.3.2 or 3.10.2 in \cite{Cohen2003}.
 \end{proof}
 
-\begin{lem} \label{lem:matrix_bound}
+\begin{prop} \label{lem:matrix_bound}
 	$\abs{[X]_{\lambda,\mu}} \leq C 2^{-(\frac{d}{2}+\frac{1}{2})\abs{\abs{\lambda}-\abs{\mu}}}2^{\frac{1}{2}(\abs{\lambda}+\abs{\mu})}$
-\end{lem}
+\end{prop}
 \begin{proof}
 	\begin{align*}
 		\abs{[X]_{\lambda,\mu}} 	&= \int \abs{X \psi_{\lambda}(x) \tilde{\psi}_{\mu}(x)} dx \\
@@ -794,93 +830,6 @@ We let $[X]=([X]_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$. Assume further that 
 	%the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets.
 	The desired result follows from a symmetry argument and a rearrangement.
 \end{proof}
-
-\begin{lem} \label{lem:M_bound}
-	$[X]$ is a bounded linear operator from $W^{s,2}(M)$ to $L^2(M)$.
-\end{lem}
-\begin{proof}
-	Consider $f \in W^{s,2}(M)$ with wavelet expansion $(f_\lambda)_{\lambda \in \Lambda}$ such that $\norm{(f_\lambda)}_{l_s^2} = 1$, then:
-	\begin{align*}
-		\norm{[X] f}_{\ell^2}^2   &=    \sum_{\mu \in \Lambda} \abs{ \sum_{\lambda \in \Lambda} [X]_{\mu,\lambda} f_{\lambda} }^2. \\
-		\intertext{ Upon invoking Lemma \ref{lem:matrix_bound} we find,}
-							&\leq C\sum_{\mu \in \Lambda} \sum_{\lambda \in \Lambda} 2^{-(d+1)\abs{\card{\lambda} - \card{\mu}}} 2^{\card{\lambda}+\card{\mu}} \abs{f_\lambda}^2 \\
-							&\leq C\sum_{\lambda \in \Lambda} 2^{\card{\lambda}} \abs{f_\lambda}^2 \sum_{\mu \in \Lambda} 2^{-(d+1)\abs{\card{\lambda}-\card{\mu}}}2^\mu \\
-							&\leq C\sum_{\lambda \in \Lambda}  2^{\card{\lambda}} \abs{f_\lambda}^2 \Bigg( \underbrace{\sum_{0\leq\mu\leq\lambda} 2^{-(d+1)(\lambda - \mu)}2^{\mu}}_{term_1} \\
-							&\qquad  + \underbrace{\sum_{\mu > \lambda} 2^{-(d+1)(\mu-\lambda)}2^{\mu} }_{term_2} \Bigg) \label{eq:terms}
-		\end{align*}
-		Inspecting $term_1$ by factoring out the terms which are independent of the dummy variable $\mu$ we find
-		\begin{align*}
-			term_1 &= 2^{-(d+1) \lambda }\sum_{0\leq\mu\leq\lambda} 2^{(d+2) \mu} \\
-			&= 2^{-(d+1) \lambda} \left(  \frac{ 1-2^{(d+2)(\lambda + 1)} }{1 - 2^{d+2} } \right) \\
-			&\leq 2^{-(d+1) \lambda} 2^{2(d+2)\lambda}.
-		\end{align*}
-		By the same tactic we find $term_2 \leq 2^{\lambda - d}$.  Substituting these expressions into our original calculation we find
-		\begin{align*}	
-			\norm{[X]f}_{\ell^2}^2 	&\leq C(2^{(d+2)}+2^{-d}) \sum_{\lambda \in \Lambda} 2^{2\lambda} \abs{f_{\lambda}}^2 \\
-							&\leq C(2^{(d+2)}+2^{-d}).
-		\end{align*}
-\end{proof}
-
-\begin{lem} 
-	Let $[X]^{(j)}=([X]^{(j)}_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$ be such that $m^{(j)}_{\lambda,\mu} = m_{\lambda,\mu}$ if $\card{\lambda}$ and $\card{\mu}$ are both less than or equal to $j$ and $0$ otherwise. Then there exists a $C > 0$ such that for all $f \in W^{s,2}$:
-	\begin{equation}
-		\norm{( [X]- [X]^{(j)})(P_j f)}_{\ell^2} \leq C2^{-(d/2)(j+1)} \norm{f}_{W^{s,2}}.
-	\end{equation}
-\end{lem}
-\begin{proof}
-	\begin{align*}
-		&\norm{([X]-[X]^{(j)})(P_j f)}_{\ell^2}^2 = \\
-		&\qquad \sum_{\lambda \in \Lambda} \sum_{\card{\mu}\leq j} \abs{[X]_{\lambda,\mu}-[X]^{(j)}_{\lambda,\mu}}^2 \abs{(P_j f)_\mu}^2 \\
-	\intertext{by the definitions of $[X]^{(j)} = \{ [X]_{\lambda,\mu}^{(j)} \}$ }
-		&\qquad = \sum_{\card{\mu}\leq j}\abs{(P_j f)_\mu}^2 \sum_{\card{\lambda}>j}\abs{[X]_{\lambda,\mu}}^2 \\
-	\intertext{by Lemma \ref{lem:M_bound}}
-		 &\leq C'\sum_{\card{\mu}\leq j}\abs{(P_j f)_\mu}^2 2^{(d+2)\card{\mu}}\sum_{\card{\lambda}>j}2^{-d\card{\lambda}} \\
-		 &\leq C' 2^{-2(\frac{d}{2})(j+1)}\norm{P_j f}^2_{\ell^2_{d/2+1}}
-	\end{align*}
-	The result follows by Remark 3.3.1 in \cite{Cohen2003}.\todo{I don't think we can use a remark for this}
-\end{proof}
-
-\begin{cor}
-	The difference between $[X]^j (P_j f)$ and $[X] f$ is bounded by
-	\begin{align*}
-		&\norm{[X]f - [X]^{(j)}(P_j f)}_{\ell^2} \leq \\
-		&	\qquad  C \left( 2^{-sj}\norm{f}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{f}_{W^{s,2}} \right).
-	\end{align*}
-\end{cor}
-\begin{proof}
-	Follows from the triangle inequality:
-	\begin{align*}
-		&\norm{[X]f - [X] P_j f + [X] P_j f - [X]^{(j)} P_j f}_{\ell^2} \leq \\
-		&\qquad \norm{M}_{\ell^2} \norm{f - P_j f}_{\ell^2} + \norm{([X]-[X]^{(j)})(P_j f)}_{\ell^2}.
-	\end{align*}
-\end{proof}
-
-Next we will construct an error bound for the approximation of the exponential map.
-
-\begin{lem}
-Let $A$ and $B$ be anti-Hermitian operators on a Hilbert space.  Let $x(t)$ satisfy $\dot{x} = Ax$ and $y(t)$ satisfy $\dot{y} = By$.  If $x(0) = y(0)$ and $\| A - B \| < \varepsilon$, then $u(t) = \| x(t) - y(t) \|$ satisfies $u(t) < \varepsilon t  \| y(0) \|$.
-\end{lem}
-
-\begin{proof}
-	We calculate
-	\begin{align*}
-		\frac{du}{dt} &= \frac{1}{2u(t)} \langle Ax(t) - By(t) , x(t) - y(t) \rangle \\
-			&= \frac{1}{2u} \langle A(x(t)-y(t)) + (A-B) y(t) , x(t) - y(t) \rangle \\
-			&= \frac{1}{2u} \langle (A-B)y(t) , x(t) - y(t) \rangle \\
-			&\leq \frac{1}{2u(t)} \| A - B \| \cdot \| y(t) \| \cdot \| x(t) - y(t) \| \\
-			&< \varepsilon \| y(t) \|
-	\end{align*}
-	However $\| y(0) \| = \| y(t)\|$ because the $B$ is anti-Hermitian.  Thus $\frac{du}{dt} < \varepsilon \| y(0)\|$.	The result follows by integration.
-\end{proof}
-As $[X]$ and $[X]^{(j)}$ are anti-Hermitian operators, the upshot of this Lemma is that the deviation of the time $t$ flow of $\dot{f} = [X]^{(j)} f$ from that of $\dot{f} = [X] f$ is bounded.
-\todo{We should say something about how $[X]$ is an unbounded operator on the full Hilbert space of half-densities.
-Our analysis is possible because we are restricting our view to a more regular subspace.}
-\begin{thm}
-The quantity $\norm{ \exp(t [X]) \cdot f - \exp(t [X]^{(j)} f }$ is bounded by a quantity proportional to 
-\[
- 	t \left( 2^{-sj}\norm{f(0)}_{W^{s,2}} + 2^{-\frac{d}{2}(j+1)}\norm{f(0)}_{W^{s,2}} \right) \| f (0) \|_{\mathcal{H}}
-\]
-\end{thm}
 
 
 \section{Structure preserving properties}
