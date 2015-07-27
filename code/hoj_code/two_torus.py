@@ -11,8 +11,9 @@ import matplotlib.animation as animation
 
 # CONSTANTS 
 # modes is a list of integer tuples
-p = 5
+p = 6
 modes = [ (k1,k2) for k1 in range(- 2**p , 2**p+1 ) for k2 in range(- 2**p , 2**p + 1)]
+res = 2**(p+1)+1
 
 # These functions allow us to do basic arithmetic with the modes
 add_tuple = lambda m,n: tuple( x+y for (x,y) in zip(m,n) )
@@ -23,17 +24,18 @@ dot = lambda m,n: sum( x*y for (x,y) in zip(m,n) )
 # of the form {k:coefficient} where k is a frequency (possibly multi-dimensional)
 # and coefficient is the corresponding Fourier coefficient (also multi-dimensional)
 f_hat = {}
-f_hat[(0,0)] = np.array( [0.0 , 0.0 ] , dtype=complex)
-f_hat[(1,0)] = np.array( [ -0.5j , 0] )
-f_hat[(-1,0)] = np.array( [ 0.5j , 0] )
-f_hat[(0,1)] = np.array( [ 0.0 , -0.5j] )
-f_hat[(0,-1)] = np.array( [ 0.0 , 0.5j] )
+f_hat[(0,0)] = 1.0
+f_hat[(1,0)] = -0.5j
+f_hat[(-1,0)] = 0.5j
+
+g_hat = {}
+g_hat[(0,0)] = 1.0
 
 # vector field is X(x) = f(x) d/dx
 # f_hat is the Fourier transform of f
 
 # Arrays for plotting stuff
-temp = np.linspace(-0.5,0.5,100)
+temp = np.linspace(-0.5,0.5,res)
 X_grid,Y_grid = np.meshgrid(temp,temp)
 
 def ode_func(t,y):
@@ -62,39 +64,31 @@ def update(*args ):
     print 'it took %f seconds to plot' %(t2-t1)
     return im,
 
-def get_f_conv(a):
-    global f_hat
-    N = len(modes)
-    offsets = ()
-    data = np.zeros([len(f_hat) , N],dtype=complex)
-    for k in f_hat.keys():
-        offsets += (modes.index(k),)
-        data[k,:] = f_hat[k][a]*np.ones(N)
-        
-    plt.matshow( data.imag )
-    plt.show()
-    out= sparse.dia_matrix( (data, offsets) \
-            , shape=(N,N),dtype=complex)
-    plt.matshow( out.todense().imag )
-    plt.show()
+def conv_basis(k):
+    # Takes in a mode and outputs a convolution matrix associated
+    # to the activation of that mode.
+    global res
+    e_0 = sparse.eye(res,k=k[0])
+    e_1 = sparse.eye(res,k=k[1])
+    return sparse.kron(e_0,e_1)
+
+
+def get_conv_mat( g_hat ):
+    # outputs a convolution operator associated to 1D array g_hat
+    out = sparse.dia_matrix((res**2,res**2),dtype=complex)
+    for k in g_hat.keys():
+        e_k = conv_basis(k)
+        print e_k.shape
+        print out.shape
+        out += g_hat[k]*e_k
     return out
 
 def get_translation_generator( dimension_of_translation ):
     # creates the infinitesimal generator along the ath coordinate
-    global modes,p
-    #data = np.zeros(len(modes),dtype=complex)
-    #store = np.zeros( [2**(p+1) + 1 , 2**(p+1)+1],dtype=complex )
-    #offsets = np.array([0])
-    #for k1 in range(-2**p,2**p+1):
-    #    for k2 in range(-2**p,2**p+1):
-    #        store[k1,k2] = 2*np.pi*1j*k1
-    #data = store.flatten()
-    #for k in modes:
-    #    store[k[0],k[1]] = 2*np.pi*1j*k[a]
-    #data = store.flatten()
-    res = 2**(p+1) + 1
+    global modes,p,res
     freq = np.fft.fftfreq(res)
-    ddx = sparse.dia_matrix(( 2*np.pi*1j*freq ,
+    #I'm not sure why the following is multiplied by res
+    ddx = res*sparse.dia_matrix(( 2*np.pi*1j*freq ,
         np.array([0])),
         shape=(res,res) , dtype=complex)
     sp_id = sparse.eye(res)
@@ -102,18 +96,20 @@ def get_translation_generator( dimension_of_translation ):
         out = sparse.kron(ddx,sp_id)
     else:
         out = sparse.kron(sp_id,ddx)
-    #return sparse.dia_matrix((data,offsets), shape=(len(modes),len(modes)),dtype=complex)
     return out.todia()
 
 def get_Koopman_generator():
-    # SOMETHING IS REALLY WRONG HERE I THINK
+    global modes,f_hat,g_hat
     N = len(modes)
     Op = sparse.dia_matrix( (N,N) , dtype = complex)
-    for a in range(0,2):
-        ddx = get_translation_generator(a)
-        f_cnv = get_f_conv(a)
-        Op += 0.5*f_cnv*ddx
-    return Op
+    ddx = get_translation_generator(0)
+    f_cnv = get_conv_mat(f_hat)
+    Op += f_cnv*ddx
+
+    ddx = get_translation_generator(1)
+    f_cnv = get_conv_mat(g_hat)
+    Op += f_cnv*ddx
+    return Op.todia()
 
 def initialize_wave_function():
     # generates a wave function using fft
@@ -140,43 +136,24 @@ def initialize_wave_function():
     return psi_hat.flatten()
 
 #Lets make some operators
-#print 'Let\'s make some operators'
-#t0=time()
-#Koopman_gen = get_Koopman_generator()
-#FP_gen = ((Koopman_gen.transpose()).copy()).conj()
-#Hilbert_gen = 0.5*Koopman_gen -0.5*FP_gen
-#print 'Done.  That took me %f seconds.' %(time()-t0)
+print 'Let\'s make some operators'
+t0=time()
+Koopman_gen = get_Koopman_generator()
+FP_gen = Koopman_gen.transpose().conj().copy()
+Hilbert_gen = 0.5*Koopman_gen -0.5*FP_gen
+print 'Done.  That took me %f seconds.' %(time()-t0)
 
 psi_hat_initial = initialize_wave_function()
 print 'integrating'
-t = time()
-t_arr = np.linspace(0,1,30)
-dimension = 1
-Operator= get_translation_generator(dimension)
-#Operator = Koopman_gen
-
-print 'Let us test this translation operator'
-i = (1,-3)
-j = (1,-3)
-print 'i = (%d,%d)' %(i)
-print '2*pi*i[%d]*1j = %f * 1j' %(dimension,2*np.pi*i[dimension])
-print 'j = (%d,%d)' %(j)
-print '2*pi*j[%d]*1j = %f * 1j' %(dimension,2*np.pi*j[dimension])
-print Operator.todense()[ modes.index(i) , modes.index(j) ]
-
-print 'Is our operator anti-Hermetian?'
-A = Operator.todense()
-print 'It is if %f is small.'\
-        %(np.max(np.max( np.abs(A.conj() + A.transpose() ))))
-
 print 'p=%d' %p
-res = 2**(p+1)+1
+Operator = Hilbert_gen
 psi = np.fft.ifftn(psi_hat_initial.reshape(res,res))
 dpsi_hat = Operator.dot(psi_hat_initial)
 dpsi = np.fft.ifftn(dpsi_hat.reshape(res,res))
 fig = plt.figure()
 plt.imshow(dpsi.real)
 plt.colorbar()
+plt.title('dpsi')
 plt.show()
 print np.max(np.abs(dpsi.imag) )
 print np.max(np.abs(dpsi.real) )
@@ -187,17 +164,19 @@ t0 = 0.0
 ode_instance.set_initial_value(psi_hat_initial,t0)
 #ode_instance.set_f_params(Operator)
 #ode_instance.set_jac_params(Operator)
-t1 = 9.0
-dt = 1.5
+t1 = 1.0
+dt = 0.1
 N_nodes = 2**(p+1)+1
 while ode_instance.successful() and ode_instance.t < t1:
     ode_instance.integrate( ode_instance.t + dt )
     print 'Integrated up to t = %f' %(ode_instance.t)
     psi_hat = ode_instance.y
     psi = np.fft.ifftn( psi_hat.reshape(N_nodes,N_nodes))
-    plt.imshow(psi.real)
+    plt.imshow( np.abs(psi)**2, cmap = 'Greys', interpolation='nearest' )
+    plt.grid()
     plt.show()
-print 'Done.  That took %f seconds.' %(time()-t)
+    print 'min( rho ) = %f' %(np.min(np.min( np.abs(psi)**2)))
+    print 'total mass = %f' %(np.sum(np.sum( np.abs(psi)**2)))
 #
 #fig = plt.figure()
 #im = plt.imshow( psi.real )
