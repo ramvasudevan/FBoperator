@@ -93,13 +93,10 @@ def get_translation_generator( dimension_of_translation ):
     #    store[k[0],k[1]] = 2*np.pi*1j*k[a]
     #data = store.flatten()
     res = 2**(p+1) + 1
-    store = 2*np.pi*1j*np.arange(-2**p,2**p+1) #### THIS IS WHERE THE BUG IS
-    # YOU NEED TO SHIFT YOUR INDICES!!!!!!
-    #  OR YOU NEED TO USE THE REAL FFT ROUTINES
-    # THIS LATER APPROCH IS PROBABLY BETTER
-    print store
-    ddx = sparse.dia_matrix((store,np.array([0])),\
-            shape=(res,res) , dtype=complex)
+    freq = np.fft.fftfreq(res)
+    ddx = sparse.dia_matrix(( 2*np.pi*1j*freq ,
+        np.array([0])),
+        shape=(res,res) , dtype=complex)
     sp_id = sparse.eye(res)
     if dimension_of_translation == 0:
         out = sparse.kron(ddx,sp_id)
@@ -136,9 +133,9 @@ def initialize_wave_function():
                 s2 = k2*sigma
                 psi += np.exp(- ((X-x_bar-k1)**2 + (Y-y_bar -k2)**2)/(2*sigma**2))
     plt.imshow(psi)
+    plt.title('psi at t=0')
     plt.colorbar()
     plt.show()
-    print 'shape of psi = (%d,%d)' %(psi.shape)
     psi_hat = np.fft.fftn(psi)
     return psi_hat.flatten()
 
@@ -183,15 +180,15 @@ plt.colorbar()
 plt.show()
 print np.max(np.abs(dpsi.imag) )
 print np.max(np.abs(dpsi.real) )
-
+print "The first number should be much smaller than the second"
 ode_instance = ode( ode_func )
 ode_instance.set_integrator('zvode',method='adams')
 t0 = 0.0
 ode_instance.set_initial_value(psi_hat_initial,t0)
 #ode_instance.set_f_params(Operator)
 #ode_instance.set_jac_params(Operator)
-t1 = 1.0
-dt = 0.1
+t1 = 9.0
+dt = 1.5
 N_nodes = 2**(p+1)+1
 while ode_instance.successful() and ode_instance.t < t1:
     ode_instance.integrate( ode_instance.t + dt )
