@@ -45,7 +45,7 @@
 \DeclareMathOperator{\Con}{Con}
 
 %  TITLE, AUTHOR, DATE
-\title{A very geometric advection scheme}
+\title{Qualitatively accurate spectral schemes for advection equations}
 \author{Henry O. Jacobs \& Ram Vasudevan}
 \date{\today}
 
@@ -80,6 +80,8 @@ In summary, these PDEs can each be written in coordinate free notation as
 \end{align}
 where $\alpha$ is a field and $\pounds_X[\alpha]$ is the Lie-derivative of $\alpha$ under the action of $X$.
 The solution to \eqref{eq:advection_pde} (and therefore the solution to \eqref{eq:function_pde},\eqref{eq:density_pde}, and \eqref{eq:vf_pde}) is always of the form of a push-forward, $(\Phi_{X}^t)_* (\alpha_0)$, where $\Phi_{X}^t : M \to M$ is the flow at time $t \in \R$ induced by $X$ and $\alpha_0$ is the initial condition.
+That is to say, the solutions are
+\begi
 
 \subsection{Conservation properties of advection}
 The advection of fields is a special type of evolution where the inter-relationships between the fields are conserved.
