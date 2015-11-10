@@ -1,0 +1,414 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+\usepackage{tensor}
+\usepackage{todonotes}
+\usepackage{xypic}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\renewcommand{\H}{\ensuremath{\mathcal{H}}}
+\newcommand{\norm}[1]{\ensuremath{\left\| #1 \right\| }}
+\newcommand{\abs}[1]{\ensuremath{ | #1 | }}
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+% NEW ENVIRONMENTS
+\newenvironment{example}
+  { \newline {\bf Example:} }
+  {\rule{1ex}{1ex} }
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\Dens}{Dens}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\U}{U}
+\DeclareMathOperator{\B}{B}
+\DeclareMathOperator{\Fr}{Fr}
+\DeclareMathOperator{\Herm}{Herm}
+\DeclareMathOperator{\Op}{Op}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\card}{card}
+\DeclareMathOperator{\Con}{Con}
+
+%  TITLE, AUTHOR, DATE
+\title{Qualitatively accurate spectral schemes for advection}
+\author{Henry O. Jacobs \& Ram Vasudevan}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  blah blah blah.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\label{sec:intro}
+
+Qualitative accuracy is important because...
+Here is an example of a failure.
+
+\subsection{Previous work}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation and properties of advection PDEs}
+\label{sec:properties}
+In this section we define specifically what we mean by ``advection PDEs'' in more precise mathematical terms.
+Throughout this paper let $\mathfrak{X}(M)$ denote the space of smooth vector-fields on a compact manifold $M$
+and let $X(t) \in \mathfrak{X}(M)$ be a time-dependent vector-field on $M$.
+Let $\Phi^{t_{0},t_{1}}_{X}:M\to M$ denote the flow map of $X$ from time $t_{0}$ to $t_{1}$.
+Given a bounded real-valued function $f_{0}$, we could consider the time-dependent function $f(x,t) := f_{0} ( (\Phi_{X}^{0,t})^{-1}(x) )$.
+The function $f$ represents how $f_{0}$ is pushed and stirred around by the flow of $X$.
+For a fixed $x \in M$ we observe, via the chain-rule,
+\begin{align*}
+	 \frac{d}{dt}  f(x;t) &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} ( f(x;t+\epsilon) - f(x,t) ) \\
+	 &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} \left( f( (\Phi_{X}^{t,t+\epsilon})^{-1}(x) , t ) - f(x,t) \right) \\
+	 &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} \left( f(x,t) + \epsilon \pder{f}{x^{j}} [ (\Phi_{X}^{t,t+\epsilon})^{-1}(x) - x ]^{j} + \mathcal{O}(\epsilon^{2}) - f(x,t) \right) \\
+	 &= - X^{j}(x) \pder{f}{x^{j}} = - \pounds_{X}[f_{0}]
+\end{align*}
+where $\pounds_{X}[f]$ denotes the Lie-derivative of $f$.
+This calculation yields the time-dependent advection PDE
+\begin{align}\label{eq:function pde}
+	\pder{f}{t} + X^{j} \pder{f}{x^{j}} = 0
+\end{align}
+
+The same idea works if we consider the advection of a density $\rho_{0}$ by $X$.
+In this case, the advected density is given by $\rho (x ; t) =  \det\left[ (D\Phi_{X}^{t,0})^{-1} (x) \right] \rho_{0}( (\Phi_{X}^{0,t})^{-1}(x) )$
+and the advection pde is
+\begin{align} \label{eq:density pde}
+	\pder{\rho}{t} + \pder{}{x^{j}} \left( \rho X^{j} \right) = 0.
+\end{align}
+
+Similarly, a (constant in time) vector-field $Y_{0}$ is advected by $X$ by the formula $Y(x ; t) =  (D\Phi_{X}^{t,0})|_{(\Phi_{X}^{t,0})^{-1}(x)} \cdot Y_{0}( (\Phi_{X}^{t,0})^{-1}(x))$
+and satisfies the advection PDE
+\begin{align} \label{eq:vector field pde}
+	\pder{Y^{i}}{t} + \pder{Y^{i}}{x^{j}} \cdot X^{j} - \pder{X^{i}}{x^{j}} \cdot Y^{j} = 0.
+\end{align}
+
+\section{Qualitative properties of advection}
+\label{sec:properties}
+Advection PDEs preserve a lot of natural structures.
+For example if $f(x,t)$ and $g(x,t)$ are solutions to \eqref{eq:function pde}, then the scalar product $f(x,t) g(x,t)$  and the sum $f(x,t) + g(x,t)$ is also a solution to \eqref{eq:function pde}.
+This observation can be summarized by the statement \emph{evolution by \eqref{eq:function pde} preserves the ring of functions on $M$}.
+In the same vein, if $\rho$ is a density which satisfies \eqref{eq:density pde} and $f$ is a function which satisfies \eqref{eq:function pde}, then the quantity $c = \int_{M} f \cdot \rho$ is constant in time.
+This can naturally be extended to the case where $\rho$ is a distribution, and we can summarize this conservation law by saying \emph{advection preserves the duality between functions and distributions on $M$}.
+
+More conservation laws can be found for vector-field advection.
+If $Y$ and $Z$ are vector-fields, then there is a natural Lie-bracket structure given by
+\begin{align*}
+	[Y,Z]^{i} \equiv ( \pounds_{Y}[Z] )^{i} := \partial_{j}Z^{i} \, Y^{j} - \partial_{j}Y^{i} \, Z^{j}.
+\end{align*}
+We can observe that if $Y$ and $Z$ satisfy \eqref{eq:vector field pde} then $[Y,Z]$ also satisfies \eqref{eq:vector field pde}.
+In summary, advection preserves the Lie algebra of vector fields.
+
+Lastly, the canonical relationships between vector-fields and functions and densities are also preserved.
+Given a vector-field $Y$ a function $f$ and a density $\rho$ we may define the Lie derivatives
+\begin{align*}
+	\pounds_{Y}[f] = Y^{j} \partial_{j}f \quad , \quad \pounds_{Y}[\rho] = \pder{}{x^{j}} ( \rho Y^{j} ).
+\end{align*}
+The quantity $\pounds_{Y}[f]$ is itself a function, and $\pounds_{Y}[\rho]$ is a density.
+If $f,\rho$ and $Y$ satisfy the advection PDEs \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde} respectively,
+then $\pounds_{Y}[f]$ satisfies \eqref{eq:function pde} and $\pounds_{Y}[\rho]$ satisfies \eqref{eq:density pde}.
+In summary, advection preserves the action of vector fields on functions and densities.
+
+In some sense these conservation laws are remarkable, since most PDEs do not conserve all the structures mentioned.
+Of course, there is no such thing as magic.
+The group of smooth diffeomorphisms of $M$ is in fact identical to the group of ring-automorphisms of $C^{\infty}(M)$.
+The formal Lie algebra of the group of Diffeomorphisms is the space of vector-fields $\mathfrak{X}(M)$.
+So it is no wonder that advection preserves the ring-structure of functions.
+Moreover, the space of distributions is \emph{defined} as the dual space to that of functions, and so the action of a vector-field on distributions is defined
+as the dual of the action on functions.
+So of course advection preserves the duality between functions and distributions.
+Lastly, any Lie group preserves it's own Lie algebra and its own group actions.
+So of course advection preserves the Lie bracket of vector fields and the Lie derivatives of functions and densities.
+These conservation laws are fundamental properties of advection, and this motivates the definition of qualitative accuracy
+which we shall use in this paper:
+
+\fbox{
+	\begin{minipage}{0.8\textwidth}
+		A numerical method for an advection is {\bf qualitatively accurate} if it conserves (up to machine precision) the same properties as the exact advection pde.
+	\end{minipage}
+}
+
+This criterion is separate from numerical accuracy, and can be evaluated independently.
+Of course, numerical accuracy is a first and priority,
+but the goal of this paper will be to go the extra length of constructing a scheme which is numerically
+and qualitatively accurate.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The canonical space $L^{2}(M)$}
+\label{sec:half densities}
+The goal of this paper is to construct a spectral advection scheme which exhibits a large number of invariants.
+At the core of many spectral schemes is the use of some Hilbert space upon which everything can be approximated via least squares projections.
+Typically this Hilbert space is $L^{2}(M ; \mu)$ where the $L^{2}$-inner product is taken with respect to some non-canonical density or volume form $\mu$ on $M$.
+We do not have this luxury.
+The properties of advection that we desire to have are strictly properties of $M$ alone, i.e. they are canonical.
+Any non-canonical choices we make in constructing our scheme (such as the choice of a volume form) threaten to break these conservation laws by introducing non-canonical artifacts.
+
+In this section we define a geometric version of an $L^{2}$-space which foregoes the choice of a volume form, denoted simply by $L^{2}(M)$.
+The ``cost'' we pay for not choosing a volume form is that the elements of $L^{2}(M)$ are not (equivalence classes of) functions because they transform differently under a change of coordinates.
+
+Again, let $M$ be a smooth compact $n$-manifold
+and we will let $\Dens(M)$ denote the space of continuous densities,
+which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \cite[Chapter 16]{Lee2006}.
+
+\begin{defn}\label{def:half density}
+	A half-density is a continous complex function $\psi : \bigoplus^n TM \to \mathbb{C}$
+	such that $| \psi |^{2} \in \Dens(M)$.
+	We denote the space of half densities by $\sqrt{\Dens(M)}$.
+\end{defn}
+
+This definition is an equivalent reformulation of the half densities defined in the context of geometric quantization \cite{GuilleminSternberg1970,BatesWeinstein1997}.
+In physical terms, $L^{2}(M)$ is precisely the Hilbert space of wave functions on $M$ used in quantum mechanics.
+It is unfortunate that physicists call these ``wave-functions''
+because elements of $L^{2}(M)$ and $\sqrt{\Dens(M)}$ are \emph{not} functions on $M$.\footnote{However, this sloppy use of names is consistent with others instances such as the fact that the ``Dirac-delta function'' is also not a function.}
+One way to see this is to observe how elements of $\sqrt{\Dens(M)}$ transform.
+Under a change of coordinates $\Phi$ we observe $\psi$ will map to $\tilde \psi$ where
+\begin{align}
+	\tilde{\psi}(x)  =  \left| \det \left[ \left. \pder{\Phi^{i}}{x^{j}} \right|_{\Phi^{-1}(x)} \right]_{i,j=1}^{n} \right|^{1/2} \psi( \Phi^{-1}(x) ). \label{eq:transformation law}
+\end{align}
+
+
+As $|\psi|^{2} \in \Dens(M)$ for any $\psi \in \sqrt{\Dens(M)}$ we can integrate $|\psi|^{2}$
+and observe that half densities are is naturally equipped with the norm $$\| \nu \|_2 :=  \left( \int_M |\nu|^2 \right)^{1/2}$$ which we call the $2$-norm.
+
+\begin{defn}
+	We define $L^{2}(M)$ as the completion of $\sqrt{ \Dens(M)}$ with respect to the $2$-norm.
+	The space $L^{2}(M)$ is equipped with an inner-product given by
+	\begin{align*}
+		\langle \psi \mid \phi \rangle = \int_{M} \bar \psi \phi
+	\end{align*}
+	through polar decomposition, and so $L^{2}(M)$ is a Hilbert space.
+\end{defn}
+
+
+
+
+\subsection{The relationship with classical $L^{2}$ spaces}
+\label{sec:classical_Lebesgue}
+For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$.
+In any case, upon choosing some $\mu$ the $2$-norm of a complex function $f$ with respect to $\mu$
+\begin{align*}
+	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
+\end{align*}
+and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
+
+\begin{prop}
+	Choose a non-vanishing density $\mu$.
+	Let $\sqrt{\mu}$ be any half-density such that $| \sqrt{\mu} |^{2} = \mu$.
+	For any $\psi \in L^2(M)$ there exists a unique $f \in L^2(M ; \mu)$ such that $\psi = f \cdot  \sqrt{\mu}$.
+	This yields a continuous isomorphism between $L^2(M)$ and $L^2(M ; \mu)$.
+\end{prop}
+\begin{proof}
+	First note that if we view $\mu$ as a positive function on $\bigoplus^n TM$, then we can simply set $\sqrt{\mu}$ to be it's classical square root.
+	It suffices to prove that the dense subspace $\sqrt{\Dens(M)} \subset L^{2}(M)$ can be mapped to a dense subspace of $L^{2}(M;\mu)$ through a map that sends $\| \cdot \|_{2}$ to $\| \cdot \|_{\mu,2}$.
+	
+	Let $\psi \in \sqrt{\Dens(M)}$.  Then $|\psi|^2$ is a continuous density.
+	The Radon-Nikodym derivative of $|\psi|^{2}$ with respect to $\mu$ is a positive valued continuous function $g \in C^0(M)$ defined such that $g \, \mu = |\psi|^2$.
+	Without loss of generality, we may set $g = |f|^{2}$ for some complex function $f$ such that $\psi = f\, \sqrt{\mu}$.
+	The function $f$ is unique with respect to $\psi$ and
+	the map $\psi \in \sqrt{\Dens(M)} \mapsto f \in C^0(M ; \mathbb{C} )$ sends $\| \cdot \|_{2}$ to $\| \cdot \|_{\mu,2}$ by construction.
+	Thus the map is continuous.
+	The inverse of the map is given by $f \in C^{0}(M;\mathbb{C}) \mapsto f \, \sqrt{\mu} \in \sqrt{\Dens(M)}$.
+\end{proof}
+
+\subsection{Sobolev spaces on Riemannian manifolds}
+\label{sec:Sobolev spaces}
+Let $M$ be a Riemannian $n$-manifold with metric $g:TM \oplus TM \to \mathbb{R}$.
+The metric induces a positive density $\mu_g$,
+known as the \emph{metric density},
+as well as an elliptic operator,
+$\Delta:C^\infty(M) \to C^{\infty}(M)$,
+known as the \emph{Laplace-Beltrami operator}. 
+The Riemmanian density induces the $L^2$ inner-product on $C^\infty(M)$ via
+\begin{align*}
+	\langle f_1 , f_1 \rangle_{g} = \int \overline{f_1} \cdot f_2 \mu_g
+\end{align*}
+and $\Delta$ is positive-semidefinite.
+If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert space
+and the Helmholtz operator, $1 + \Delta$, is then a positive definite operator
+with a discrete spectrum.
+For any $s \geq 0$ we may define the Sobolev norm
+\begin{align*}
+	\| f \|_{s,2} =  \left( \langle f , (1+\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
+\end{align*}
+and $H^s(M ; g)$ is then the function space obtained by completion with respect to this norm, and modulo discrepancies of measure zero.
+Note that $H^0(M;g) = L^2(M;\mu_g)$.
+
+The following proposition will be of use later when we need to prove a notion of convergence
+via sequences of finite rank operators.
+
+\begin{prop} \label{prop:compact_embedding}
+	Let $(M,g)$ be a compact Riemmanian manifold.  If $s > t \geq 0$ then $H^s(M;g)$ is compactly embedded within $H^t(M,g)$.
+\end{prop}
+\begin{proof}
+	Let $e_0, e_1,\dots$ be a Hilbert basis for $L^2(M;\mu_g)$ which diagonalizes $\Delta$
+	in the sense that $\Delta e_i = \lambda_i e_i$ for a sequence $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \cdots$.
+	The operator $(1+\Delta)^s$ is given by
+	\begin{align*}
+		(1+\Delta)^s \cdot f =  \sum_{i} e_i (1+\lambda_i)^s \langle e_i , f \rangle_g,
+	\end{align*}
+	and so $\{ (1+ \lambda_i)^{-s/2} e_i \}_{i=1}^{\infty}$ is a Hilbert basis for $H^s(M;g)$.
+	
+	Let us call $e_i^{(s)} = (1+ \lambda_i)^{-s/2} e_i$.
+	The embedding of $H^s(M;g)$ into $H^t(M,g)$
+	is then given in terms of the respective basis elements by $e_i^{(s)} \mapsto (1+\lambda_i)^{-(s-t)/2}e_i^{(t)}$.
+	As $s > t$ and $\lambda_i \to +\infty$, we see that 
+	this embedding is a compact operator \cite[see Proposition 4.6]{Conway1990}.
+\end{proof}
+
+In the sequel we shall say that a wave-function $\psi \in L^2(M)$ is of class $H^s$ if there exists
+a metric $g$ such that $\psi = f \sqrt{\mu_g}$, and $f \in H^s(M,g)$.\footnote{Perhaps any two Riemannian metrics on $M$
+would yield the same Hilbert space $H^s(M,g)$.
+If so, it would be reasonable to define a space $H^s(M)$ as a subspace of $L^2(M)$ defined independently of a metric.
+We were not able to prove this statement for fractional $s$, nor were we able to find a source.
+However, it is known to be true for the case where $s$ is a positive integer.} 
+
+\section{A spectral discretization}
+The goal of this section will be to produce a spectral scheme for the advection equations \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde}
+using the space $L^{2}(M)$.
+In order to realize this goal we must relate functions, densities, and vector-fields to $L^{2}(M)$ in a way that can be spectrally discretized without breaking any canonical structures.
+
+To begin, let us consider the space of continuous real-valued functions $C(M)$.
+For each $f \in C(M)$ there is a unique bounded Hermetian operator, $\hat{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
+That is to say $(\hat{f} \cdot \psi) (x) = f(x) \psi(x)$.
+We see that the hat-map, $f \mapsto \hat{f}$, preserves the ring structure because $\widehat{f \cdot g + h} = \hat{f} \cdot \hat{g} + \hat{h}$.
+
+Similarly, for any distribution $\rho \in C(M)'$ there is a unique operator $\hat{\rho}$ of rank 1 defined such that 
+\begin{align*}
+	 \int f \, \rho = \Tr ( \hat{f}^{\dagger} \cdot \hat{\rho} )
+\end{align*}
+for any $f \in C(M)$.
+By construction, the maps $\rho \mapsto \hat{\rho}$ and $f \mapsto \hat{f}$ preserve the duality between functions and distributions.
+
+Finally, for any vector field $X$ there is a unique (unbounded) anti-symmetric operator $\pi(X)$ on $L^{2}(M)$
+given in coordinates by
+\begin{align}
+	\pi(X) \cdot \psi = \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ). \label{eq:representation}
+\end{align}
+After some minor computations (see Appendix \ref{app:Lie} \todo{need to write an appendix} ) we see that $\pi$ is a Lie algebra morphism which sends
+the Jacobi-Lie bracket to (minus) the commutator bracket.  That is to say, $\pi$ is linear and $\pi([X,Y]) = - [ \pi(X) , \pi(Y)]$.
+
+We can now convert the evolution pdes \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde}
+into ode's of operators on $L^{2}(M)$.
+
+\begin{thm} \label{thm:quantize}
+	Let $X(t) \in \mathfrak{X}(M)$ be a time-dependent vector-field.
+	Then $f$, $\rho$, and $Y$ satisfy \eqref{eq:function pde},\eqref{eq:density pde}, and \eqref{eq:vector field pde} respectively
+	if and only if $\hat{f}$, $\hat{\rho}$, and $\pi(Y)$ satisfy the operator ODEs
+	\begin{align}
+		&\frac{d \hat{f} }{dt} + [ \hat{f} , \pi(X) ] = 0 \label{eq:quantum observable ode} \\
+		&\frac{d \hat{\rho} }{dt} + [ \hat{\rho} , \pi(X) ] = 0 \label{eq:quantum density ode} \\
+		&\frac{d \pi(Y) }{dt} + [ \pi(Y), \pi(X) ] = 0 \label{eq:quantum vf ode}
+	\end{align}
+	respectively.
+\end{thm}
+
+\begin{proof}
+	Let $f$ satisfy \eqref{eq:function pde}.
+	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ \hat{f} , \pi(X)] \cdot \psi$ is given in coordinates by
+	\begin{align*}
+		[ \hat{f} , \pi(X) ] \cdot \psi = f \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right)
+			- \frac{1}{2} X^{j} \pder{}{x^{j}}( f \psi)  + \frac{1}{2} \pder{}{x^{j}} (f \psi \, X^{j} )
+	\end{align*}
+	where we have used \eqref{eq:representation}.  Application of the product rule to all these terms then yields
+	a number of cancellations and we find
+	\begin{align*}
+		[ \hat{f} , \pi(X) ] \cdot \psi = - X^{j} \pder{f}{x^{j}} \psi = (\partial_{t} f )\psi = \frac{d \hat{f} }{dt} \cdot \psi.
+	\end{align*}
+	As $\psi$ is arbitrary we have managed to show that $\hat{f}$ satisfies \eqref{eq:quantum observable ode}.
+	Each line of reasoning is reversible, and so we have proven the converse as well.
+	
+	In order to handle densities note that $\langle f , \rho \rangle = \int_{M} f\rho$ is constant in time when $f$
+	and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde} respectively.
+	By the definition of $\hat{\rho}$ we observe $\Tr( \hat{f}^{\dagger} \hat{\rho}) = \langle f , \rho \rangle$.
+	Thus we find
+	\begin{align*}
+		0 = \frac{d}{dt} \left( \Tr( \hat{f}^{\dagger} \rho ) \right) = \Tr \left( \frac{d \hat{f}^{\dagger}}{dt} \hat{\rho} + \hat{f}^{\dagger} \frac{d \hat{\rho}}{dt} \right).
+	\end{align*}
+	As was just shown, $\frac{d}{dt} \hat{f} =  - [\hat{f} , \pi(X) ]$ so we observe
+	\begin{align*}
+		0 = \Tr( - [\hat{f} , \pi(X) ]^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \hat{\rho} ) = \Tr( - \pi(X)^{\dagger} \hat{f}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \pi(X)^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \frac{d\hat{\rho}}{dt} ).
+	\end{align*}
+	Upon noting that $\pi(X)^{\dagger} = - \pi(X)$ and use of identity $\Tr( a b c) = \Tr( bc a)$ we obtain
+	\begin{align*}
+		0 = \Tr( \hat{f}^{\dagger}( [\hat{\rho} , \pi(X) ] + \frac{d \hat{\rho}}{dt} ) ).
+	\end{align*}
+	As $\hat{f}$ was chosen arbitrarily, the desired result follows.
+	Again, this line of reasoning is reversible.
+	
+	Lastly, if $Y$ satisfies \eqref{eq:vector field pde}, then we observe 
+	\begin{align*}
+		\frac{d}{dt} \pi(Y) = \pi ( \partial_{t} Y ) = \pi( - [X,Y] ) = [\pi(X) , \pi(Y) ].
+	\end{align*}
+	where we have used the fact that $\pi$ is bracket preserving.
+\end{proof}
+
+The benefit of representing our pde's in the form \eqref{eq:quantum observable ode},\eqref{eq:quantum density ode}, and \eqref{eq:quantum vf ode}
+is that we may construct discretization schemes for these equations using least squares projections.
+Specifically, we have the following numerical scheme for \eqref{eq:function pde}
+
+\begin{center}
+\fbox{
+	\begin{minipage}{0.8\textwidth}
+		{\bf Problem:} Given $f_{0} \in C(M)$ solve \eqref{eq:function pde} on the time interval $[0,T]$.\\
+		{\bf Numerical solution:}
+		\begin{enumerate}
+			\item Choose an $n$-dimensional subspace $V_{n} \subset H^{1+s}(M) \subset L^{2}(M)$ for $s > 0$.
+			Let $i_{n}:V_{n} \to L^{2}(M)$ and $\pi_{n}: L^{2}(M) \to V_{n}$ be the canonical immersion an projection.
+			\item Let ${\bf f}_{n,0} := \pi_{n} \cdot \hat{f}_{0} \cdot i_{n}$ and ${\bf X}_{n} := \pi_{n} \cdot \widehat{X} \cdot i_{n}$.
+			\item Solve the finite dimensional ode $\dot{ \bf f}_{n} + [ {\bf f}_{n} , {\bf X}_{n} ] = 0$ with initial condition ${\bf f}_{n,0}$ on the interval $[0,T]$.
+			\item Set $f_{n}(t) = \operatorname{arginf}_{g \in C(M)} \| \hat{g} - {\bf f}_{n} \|_{op} $ where $\| \cdot \|_{op}$ is the operator norm.
+		\end{enumerate}
+	\end{minipage}
+}
+\end{center}
+
+The final few steps might require explanation.
+It will be shown that as $n$ increases ${\bf f}_{n}(t)$ converges to the solution of \eqref{eq:quantum observable ode} with respect to the operator norm.
+By theorem \eqref{thm:quantize} we know that the solution of \eqref{eq:quantum observable ode} is related to the solution of \eqref{eq:function pde}
+through the map $f \mapsto \hat{f}$.
+If one desires to get a function rather than an operator we must find a left inverse of the hat-map (in fact ${\bf f}_{n}$ will typically fall slightly outside the range of the hat-map).
+This is what is accomplished in step (4) where an optimization problem yields a function on $M$.
+We will later show that the function $f_{n}(t)$ converges to $f$ in the sup-norm.
+
+We use roughly the same exact algorithm for advection of densities (except this time you use the dual norm to $\| \cdot \|_{op}$.
+We also us the same algorithm for vector-fields, although the final inversion step dropped and we leave things in operator form.
+
+\subsection{Convergence rates}
+
+\section{Numerical experiments}
+
+\section{$C^{*}$-algebraic and quantum mechanical interpretations}
+
+\section{Conclusion}
+
+\subsection{Future work}
+
+\subsection{Acknowledgements}
+
+\appendix
+
+\section{Proof that $\pi$ is bracket preserving} \label{app:Lie}
+Here we prove that $\pi$ is a Lie algebra morephism.
+
+\bibliographystyle{amsalpha}
+\bibliography{hoj.bib}
+\end{document}
