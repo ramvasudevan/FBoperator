@@ -66,6 +66,13 @@ Qualitative accuracy is important because...
 Here is an example of a failure.
 
 \subsection{Previous work}
+Papers to mention:
+\begin{enumerate}
+	\item \cite{HenrionKorda2014}
+	\item Froyland, Koopman papers
+	\item Representation theory stuff \cite{VershilGelfandGraev1975,Ismagilov1975}
+	\item C*algebra and noncommutative geometry (with caveat that we don't know any).
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Derivation and properties of advection PDEs}
@@ -393,6 +400,45 @@ We use roughly the same exact algorithm for advection of densities (except this 
 We also us the same algorithm for vector-fields, although the final inversion step dropped and we leave things in operator form.
 
 \subsection{Convergence rates}
+
+\todo[inline]{We must still show that $E(0) \to 0$, spectrally, and that the convergence proofs for functions and densities follows}
+
+\begin{thm} \label{thm:convergence 1}
+	Let $\psi_{0} \in H^{s}(M)$ for $s > 1$ and let $\psi(t)$ be the exact and $\tilde{\psi}(t)$ be the numerical solutions on the interval $[0,T]$ for $T < \infty$.
+	Then $\| \psi(t) - \tilde{\psi}(t) \|_{H^{s}} \leq ( K_{T} n^{-2(s-1)} t+  E(0) ) e^{C_{T}}$ for $t \in [0,T]$ and constants $K_{T}$ and $C_{T}$.
+\end{thm}
+
+\begin{lem} \label{lem:Gronwall}
+If $\frac{du}{dt} \leq Ku + \epsilon$ then $u(t) \leq (\epsilon t + u(0) ) e^{Kt}$.
+\end{lem}
+\begin{proof}
+	Let $w (t)= u (t) e^{-Kt}$.  Then for $t \geq 0$ we find
+	\begin{align*}
+		\frac{dw}{dt} = \frac{du}{dt} e^{-Kt} - K w \leq (Ku+\epsilon) e^{-Kt} - Kw = \epsilon e^{-Kt} \leq \epsilon
+	\end{align*}
+	Thus $w(t) \leq \epsilon t + w(0) = \epsilon t + u(0)$.
+\end{proof}
+
+\begin{proof}
+	Let $\Delta \psi  = \psi - \tilde{\psi}$, $E = \| \Delta \psi \|_{H^{s}}$ for $s > 1$.  Note that $\frac{dE}{dt} = \frac{1}{2E} \langle \Delta \psi \mid \frac{d}{dt} \Delta \psi \rangle_{H^{s}}$.
+	By the Cauchy-Schwarz inequality we see that
+	\begin{align*}
+		\frac{dE}{dt} \leq \left| \frac{dE}{dt} \right| &\leq \| X[\psi] - \pi_{n}(X[\tilde{\psi}]) \|_{H^{s}} = \| X[\psi] - \pi_{n}( X[\psi- \Delta \psi]) \|_{H^{s}} \\
+		&\leq \| (1-\pi_{n})|_{H^{s-1}} \| \, \|X|_{H^{s}} \| \, \| \psi \|_{H^{s}} + \| \pi_{n} \| \, \|X|_{H^{s}} \| \, \| \Delta \psi \|_{H^{s}} \\
+	\end{align*}
+	We know $\psi(t) = \Phi^{t}_{*}\psi_{0}$ where $\Phi^{t}$ is the flow of $X$.
+	As $\Phi$ is as smooth as $X$ we can see that $\| \psi(t) \|_{H^{s}}$ is bounded by a scalar multiple of $\| \psi_{0} \|_{H^{s}}$.
+	Thus we may write the above bound in the form
+	\begin{align*}
+		\frac{dE}{dt} \leq C_{1,T} \, \| (1- \pi_{n})|_{H^{s-1}} \| + C_{2,T} E
+	\end{align*}
+	However the operator norm of $(1-\pi_{n})|_{H^{s-1}}$ decays like $\lambda_{n}^{-(s-1)}  \sim n^{-2(s-1)}$.
+	Therefore we may write this inequality in a form suitable to invoke Lemma \ref{lem:Gronwall} with $\epsilon \sim n^{-2(s-1)}$.
+	As a result we find
+	\begin{align*}
+		E(t) \leq ( K_{T} n^{-2(s-1)} t+  E(0) ) e^{C_{2,T}}
+	\end{align*}
+\end{proof}
 
 \section{Numerical experiments}
 
