@@ -93,12 +93,12 @@ For a fixed $x \in M$ we observe, via the chain-rule,
 where $\pounds_{X}[f]$ denotes the Lie-derivative of $f$.
 This calculation yields the time-dependent advection PDE
 \begin{align}\label{eq:function pde}
-	\pder{f}{t} + X^{j} \pder{f}{x^{j}} = 0
+	\pder{f}{t} + X^{j} \pder{f}{x^{j}} = 0.
 \end{align}
 
 The same idea works if we consider the advection of a density $\rho_{0}$ by $X$.
 In this case, the advected density is given by $\rho (x ; t) =  \det\left[ (D\Phi_{X}^{t,0})^{-1} (x) \right] \rho_{0}( (\Phi_{X}^{0,t})^{-1}(x) )$
-and the advection pde is
+and the advection PDE is
 \begin{align} \label{eq:density pde}
 	\pder{\rho}{t} + \pder{}{x^{j}} \left( \rho X^{j} \right) = 0.
 \end{align}
@@ -151,15 +151,15 @@ which we shall use in this paper:
 \begin{center}
     \fbox{
     	\begin{minipage}{0.8\textwidth}
-    		A numerical method for an advection is {\bf qualitatively accurate} if it conserves (up to machine precision) the same properties as the exact advection pde.
+    		A numerical method for an advection is {\bf qualitatively accurate} if it conserves (up to machine precision) the same properties as the exact advection PDE.
     	\end{minipage}
     }
 \end{center}
 
 This criterion is separate from numerical accuracy, and can be evaluated independently.
-Of course, numerical accuracy is a first and priority,
+Of course, numerical accuracy takes first priority,
 but the goal of this paper will be to go the extra length of constructing a scheme which is numerically
-and qualitatively accurate.
+\emph{and qualitatively} accurate.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The canonical space $L^{2}(M)$}
@@ -196,11 +196,11 @@ Under a change of coordinates $\Phi$ we observe $\psi$ will map to $\tilde \psi$
 
 
 As $|\psi|^{2} \in \Dens(M)$ for any $\psi \in \sqrt{\Dens(M)}$ we can integrate $|\psi|^{2}$
-and observe that half densities are is naturally equipped with the norm $$\| \nu \|_2 :=  \left( \int_M |\nu|^2 \right)^{1/2}$$ which we call the $2$-norm.
+and observe that half densities are is naturally equipped with the norm $$\| \psi \|_2 :=  \left( \int_M |\psi|^2 \right)^{1/2}$$ which we call the $2$-norm.
 
 \begin{defn}
 	We define $L^{2}(M)$ as the completion of $\sqrt{ \Dens(M)}$ with respect to the $2$-norm.
-	The space $L^{2}(M)$ is equipped with an inner-product given by
+	The space $L^{2}(M)$ is equipped with a complex inner-product given by
 	\begin{align*}
 		\langle \psi \mid \phi \rangle = \int_{M} \bar \psi \phi
 	\end{align*}
@@ -217,18 +217,30 @@ The advection equation can be written as
 \begin{align*}
 	\partial_{t} \psi + \pounds_{X}[\psi] = 0.
 \end{align*}
-By Stone's theorem, there is a solution for all time, in spite of the fact that the Lie derivative is an unbounded operator.
-The solution is given by a unitary operator $U_{t}: \psi_{0} \mapsto (\Phi_{X}^{t})_{*} \psi_{0}$.
+By the Stone Von-Neumann theorem \cite{Conway1990}, there is a solution for all time, in spite of the fact that the Lie derivative is an unbounded operator.
+Moreover, the solution is given by a unitary action.  For reference later, we restate this remark formally.
+\begin{prop} \label{prop:stone}
+	The solution to \eqref{eq:half density pde} is of the form $\psi(t) = U(t) \cdot \psi(0)$ where $U(t)$ is
+	the unitary operator.
+\end{prop}
+%\begin{proof}
+%	Again, the existence of $U(t)$ as a unitary operator is simply an instance of the Stone Von-Neumann theorem.
+%\end{proof}
+
+In fact, $U(t)$ is merely the push-forward operator given in \eqref{eq:transformation law} with ``$\Phi$'' replaced by the flow-map of the dynamics.
+We will generally avoid using this explicit expression though, since it can be cumbersome, and the details can be distracting.
 
 
 \subsection{The relationship with classical $L^{2}$ spaces}
 \label{sec:classical_Lebesgue}
 For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$.
-In any case, upon choosing some $\mu$ the $2$-norm of a complex function $f$ with respect to $\mu$
+Upon choosing some $\mu$, the $2$-norm of a complex function $f$ with respect to $\mu$ is
 \begin{align*}
 	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
 \end{align*}
 and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
+The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are identical as topological vector-spaces.
+In fact, the isomorphism can be given fairly explicitly.
 
 \begin{prop}
 	Choose a non-vanishing density $\mu$.
@@ -236,18 +248,30 @@ and $L^2(M ; \mu)$ is the completion of the space of continuous functions with r
 	For any $\psi \in L^2(M)$ there exists a unique $f \in L^2(M ; \mu)$ such that $\psi = f \cdot  \sqrt{\mu}$.
 	This yields a continuous isomorphism between $L^2(M)$ and $L^2(M ; \mu)$.
 \end{prop}
-\begin{proof}
-	First note that if we view $\mu$ as a positive function on $\bigoplus^n TM$, then we can simply set $\sqrt{\mu}$ to be it's classical square root.
-	It suffices to prove that the dense subspace $\sqrt{\Dens(M)} \subset L^{2}(M)$ can be mapped to a dense subspace of $L^{2}(M;\mu)$ through a map that sends $\| \cdot \|_{2}$ to $\| \cdot \|_{\mu,2}$.
-	
-	Let $\psi \in \sqrt{\Dens(M)}$.  Then $|\psi|^2$ is a continuous density.
-	The Radon-Nikodym derivative of $|\psi|^{2}$ with respect to $\mu$ is a positive valued continuous function $g \in C^0(M)$ defined such that $g \, \mu = |\psi|^2$.
-	Without loss of generality, we may set $g = |f|^{2}$ for some complex function $f$ such that $\psi = f\, \sqrt{\mu}$.
-	The function $f$ is unique with respect to $\psi$ and
-	the map $\psi \in \sqrt{\Dens(M)} \mapsto f \in C^0(M ; \mathbb{C} )$ sends $\| \cdot \|_{2}$ to $\| \cdot \|_{\mu,2}$ by construction.
-	Thus the map is continuous.
-	The inverse of the map is given by $f \in C^{0}(M;\mathbb{C}) \mapsto f \, \sqrt{\mu} \in \sqrt{\Dens(M)}$.
-\end{proof}
+%\begin{proof}
+%	First note that if we view $\mu$ as a positive function on $\bigoplus^n TM$, then we can simply set $\sqrt{\mu}$ to be it's classical square root.
+%	It suffices to prove that the dense subspace $\sqrt{\Dens(M)} \subset L^{2}(M)$ can be mapped to a dense subspace of $L^{2}(M;\mu)$ through a map that sends $\| \cdot \|_{2}$ to $\| \cdot \|_{\mu,2}$.
+%	
+%	Let $\psi \in \sqrt{\Dens(M)}$.  Then $|\psi|^2$ is a continuous density.
+%	The Radon-Nikodym derivative of $|\psi|^{2}$ with respect to $\mu$ is a positive valued continuous function $g \in C^0(M)$ defined such that $g \, \mu = |\psi|^2$.
+%	Without loss of generality, we may set $g = |f|^{2}$ for some complex function $f$ such that $\psi = f\, \sqrt{\mu}$.
+%	The function $f$ is unique with respect to $\psi$ and
+%	the map $\psi \in \sqrt{\Dens(M)} \mapsto f \in C^0(M ; \mathbb{C} )$ sends $\| \cdot \|_{2}$ to $\| \cdot \|_{\mu,2}$ by construction.
+%	Thus the map is continuous.
+%	The inverse of the map is given by $f \in C^{0}(M;\mathbb{C}) \mapsto f \, \sqrt{\mu} \in \sqrt{\Dens(M)}$.
+%\end{proof}
+
+At this point the reader might ask ``If both space are the same, then why don't we use the one that is more familiar?  i.e. the space $L^{2}(M;\mu)$''.
+The answer is that these space are really not the same in all aspects.
+One difference that we've already discussed is that they transform differently.
+Elements of $L^{2}(M)$ transform according to \eqref{eq:transformation law} while elements of $L^{2}(M;\mu)$ transform like functions.
+Additionally, a more useful difference for us is that $L^{2}(M)$ is \emph{not} contained within $L^{1}(M)$ and $L^{\infty}(M)$ is not contained in $L^{2}(M)$
+because each of these spaces consists of objects with different transformation properties.
+This separation between $L^{2}(M)$ and $L^{1}(M)$ \emph{forces} us to think of these objects as distinct.
+For example an operator on $L^{2}(M)$ can not generally be applied to $L^{1}(M)$ in the same way.
+Later we will find this is a good thing, because it allows us to have an operator act on $L^{1}(M)$ differently than how it acts on $L^{2}(M)$
+without leading to contradiction.
+Such safety mechanisms are analogous to the use of private/public functions in object oriented programming, which place constraints on a computer program in order to banish certain bugs from arising.
 
 \subsection{Sobolev spaces}
 \label{sec:Sobolev spaces}
@@ -262,14 +286,14 @@ and consider the operator
 \begin{align*}
 	(\pounds_{X})^{s} [ \psi] = \sum_{\lambda \in \sigma( \pounds_{X}) } \lambda^{s} \langle e_{\lambda} \mid \psi \rangle e_{\lambda}
 \end{align*}
-where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denote the eigenvectors of $\pounds_{X}$. 
-so that we may consider Sobolev spaces of fractional orders as well.
-Our motivation for constructing Sobolev spaces is to perform error-analysis.
-In particular, we will find that our spectral methods only converge on $H^{s}(M)$ for $s>1$.
-However, in order to perform error analysis the canonicalism of the above Sobolev spaces is not so helpful
-because error-analysis almost necessarily entails using a norm.
-In particular, to perform our error-analysis we will choose a (non-canonical) norm for $H^{s}(M)$
-and use a more traditional form of the Sobolev space.
+where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denotes the set of eigenvectors of $\pounds_{X}$. 
+This fractional power of $\pounds_{X}$ allows us to consider Sobolev spaces of fractional orders as well.
+
+  However, while the canonical (metric-free) nature of $L^{2}(M)$ will turn out to be quite useful,
+  these new constructions for $H^{s}(M)$ are not so useful for our purposes.
+  We will find that our algorithms only converge on $H^{s}(M)$
+  and in order to perform our error-analysis we must choose a norm.
+  This choice is necessarily non-canonical.
 
 To begin, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
 The metric induces a positive density $\mu_g$,
@@ -332,7 +356,7 @@ Similarly, (and in the opposite direction) for any trace class operator $\hat{\r
 	 \int f \, \rho = \Tr ( \hat{f}^{\dagger} \cdot \hat{\rho} )
 \end{align*}
 for any $f \in C(M)$.
-By construction, the surjection $\hat{\rho} \to \rho$ and the injection $f \mapsto \hat{f}$ preserve the duality between functions and distributions.
+By construction, the surjection $\hat{\rho} \mapsto \rho$ and the injection $f \mapsto \hat{f}$ preserve the duality between functions and distributions.
 
 Finally, for any vector field $X$ there is a unique (unbounded) anti-symmetric operator $\pi(X)$ on $L^{2}(M)$
 given in coordinates by
@@ -342,8 +366,8 @@ given in coordinates by
 After some minor computations (see Appendix \ref{app:Lie} \todo{need to write an appendix} ) we see that $\pi$ is a Lie algebra morphism which sends
 the Jacobi-Lie bracket to (minus) the commutator bracket.  That is to say, $\pi$ is linear and $\pi([X,Y]) = - [ \pi(X) , \pi(Y)]$.
 
-We can now convert the evolution pdes \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde}
-into ode's of operators on $L^{2}(M)$.
+We can now convert the evolution PDEs \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde}
+into ODE's of operators on $L^{2}(M)$.
 
 \begin{thm} \label{thm:quantize}
 	Let $X(t) \in \mathfrak{X}(M)$ be a time-dependent vector-field.
@@ -355,6 +379,7 @@ into ode's of operators on $L^{2}(M)$.
 		&\frac{d \pi(Y) }{dt} + [ \pi(Y), \pi(X) ] = 0 \label{eq:quantum vf ode}
 	\end{align}
 	respectively.
+	Moreover, if $\psi \in L^{2}(M)$ is such that $|\psi|^{2} = \rho$ and $\psi$ satisfies \eqref{eq:half density pde}, then $\rho$ satisfies \eqref{eq:density pde}.
 \end{thm}
 
 \begin{proof}
@@ -390,11 +415,20 @@ into ode's of operators on $L^{2}(M)$.
 	As $\hat{f}$ was chosen arbitrarily, the desired result follows.
 	Again, this line of reasoning is reversible.
 	
-	Lastly, if $Y$ satisfies \eqref{eq:vector field pde}, then we observe 
+	Thirdly, if $Y$ satisfies \eqref{eq:vector field pde}, then we observe 
 	\begin{align*}
 		\frac{d}{dt} \pi(Y) = \pi ( \partial_{t} Y ) = \pi( - [X,Y] ) = [\pi(X) , \pi(Y) ].
 	\end{align*}
 	where we have used the fact that $\pi$ is bracket preserving.
+	
+	Lastly, if $\psi$ satisfies \eqref{eq:half density pde} and $\rho = |\psi|^{2} = \bar{\psi} \psi$ then we see
+	\begin{align*}
+		\partial_{t} \rho &= \partial_{t} ( \bar{\psi} \psi) = (\partial_{t} \bar{\psi} ) \psi + \bar{\psi} \partial_{t} \psi \\
+		&= \left( - \frac{1}{2} \partial_{i} (\bar{\psi} X^{i}) - \frac{1}{2} X^{i} \partial_{i} \bar{\psi} \right) \psi + \bar{\psi} \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \\
+		&= \left( - X^{i} \partial_{i} \bar{\psi} - \frac{1}{2} \bar{\psi} \partial_{i} X^{i}  \right) \psi + \bar{\psi} \left( - X^{i} \partial_{i} \psi - \frac{1}{2} \psi \partial_{i} X^{i}  \right) \\
+		&= - X_{i} \left(  (\partial_{i} \bar{\psi}) \psi + \bar{\psi} (\partial_{i} \psi) \right) - \rho \partial_{i} X^{i} \\
+		&= - X_{i} \partial_{i} \rho - \rho \partial_{i} X^{i} = - \partial_{i} ( \rho X^{i}).
+	\end{align*}
 \end{proof}
 
 The benefit of representing our pde's in the form \eqref{eq:quantum observable ode},\eqref{eq:quantum density ode}, and \eqref{eq:quantum vf ode}
