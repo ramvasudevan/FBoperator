@@ -5,10 +5,9 @@
 % \geometry{landscape} % rotated page geometry
 
 %  POSSIBLY USEFULE PACKAGES
-%\usepackage{graphicx}
+\usepackage{graphicx,caption,subcaption}
 \usepackage{tensor}
 \usepackage{todonotes}
-\usepackage{xypic}
 
 %  NEW COMMANDS
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
@@ -736,6 +735,58 @@ We have a discrete analog of this.
 
 
 \section{Numerical experiments}
+
+\subsection{A one dimensional example}
+Let us consider the vector field $\dot{x} = \sin(2x)$ for $x \in S^{1}$.
+Given an initial density $\rho_{0} \in \Dens(S^{1})$ the exact solution at time $t$ is given by
+\begin{align}
+	\rho(x;t) = \dots \rho_{0}( \dots ) \label{eq:exact solution}
+\end{align}
+\todo[inline]{figure this out}  In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=2$ with an initial condition given by a uniform distribution.
+Subfigure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution}.  Subfigure \ref{fig:standard spectral} depicts the numerical solution computed
+from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes.
+Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution computed using algorithm 2 with 32 modes.\todo{Consider renaming the GN algorithm}.
+
+\begin{figure}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{./images/exact_1D.pdf}
+		\caption{Exact}
+		\label{fig:exact}
+	\end{subfigure}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{./images/standard_spectral_1D.pdf}
+		\caption{Standard spectral}
+		\label{fig:standard spectral}
+	\end{subfigure}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{./images/gn_spectral_1D.pdf}
+		\caption{GN spectral}
+		\label{fig:gn spectral}
+	\end{subfigure}
+	\caption{A benchmark computation}
+	\label{fig:S1}
+\end{figure}
+
+From these figures, it is tempting to suggest that GN discretization has greater qualitative accuracy than standard spectral discretization.
+For one, standard spectral discretization exhibits negative mass, which is not physically achievable in the exact system.
+Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  However, it is conserved in GN discretization.
+A plot of the $L^{1}$-norm is given in figure \ref{fig:L1}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{./images/L1_plot.pdf}
+	\caption{A plot of the $L^{1}$-norm vs time.
+		The blue line denotes the $L^{1}$ norm under standard spectral discretization.
+		The red line denotes the $L^{1}$ norm under GN discretization.
+	}
+	\label{fig:L1}
+\end{figure}
+
+\subsection{AB flow}
+
+\subsection{Rigid body}
+
+\subsection{ABC flow}
 
 \section{Interpretations from $C^{*}$-algebras and quantum mechanics}
 
