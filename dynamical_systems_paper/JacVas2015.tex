@@ -61,6 +61,9 @@
 
 \section{Introduction}
 \label{sec:PDEs}
+
+\todo[inline]{This introduction will go in the rubbish tin.  Needs to be rewritten so that people will read the paper.  We will write it last.  If you are skimming, just skip this section}
+
 Let $X$ be a vector-field on a compact manifold $M$ of dimension $d$
 and the evolution PDEs given in a local coordinate chart by
 \begin{align}
@@ -80,8 +83,13 @@ In summary, these PDEs can each be written in coordinate free notation as
 \end{align}
 where $\alpha$ is a field and $\pounds_X[\alpha]$ is the Lie-derivative of $\alpha$ under the action of $X$.
 The solution to \eqref{eq:advection_pde} (and therefore the solution to \eqref{eq:function_pde},\eqref{eq:density_pde}, and \eqref{eq:vf_pde}) is always of the form of a push-forward, $(\Phi_{X}^t)_* (\alpha_0)$, where $\Phi_{X}^t : M \to M$ is the flow at time $t \in \R$ induced by $X$ and $\alpha_0$ is the initial condition.
-That is to say, the solutions are
-\begi
+That is to say, the solutions to \eqref{eq:function_pde}-\eqref{eq:vf_pde} with initial conditions $f_{0},\rho_{0}$, and $Y_{0}$ are
+\begin{align*}
+	f(x;t) &= f_{0}( y(t) ) \\
+	\rho(x;t) &= \det( D\Phi_{X}^{t} (y) ) \rho_{0}( y(t) ) \\
+	Y(x;t) &= D\Phi^{t}_{X}(y) \cdot Y_{0}(y)
+\end{align*}
+where $y(t) = (\Phi_{X}^{t})^{-1} (x)$.
 
 \subsection{Conservation properties of advection}
 The advection of fields is a special type of evolution where the inter-relationships between the fields are conserved.
@@ -124,6 +132,12 @@ This high resolution assumption does not always hold.
 In the case of high dimensional systems, one must use schemes which are accurate at low resolutions.
 The purpose of this article is to introduce a spectral discretization of \eqref{eq:function_pde},\eqref{eq:density_pde}, and \eqref{eq:vf_pde}
 which preserves discretized notions of many geometric conservation properties at arbitrarily low resolutions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Derivation and properties of advection PDEs}
+\label{sec:properties}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Geometric Lebesgue spaces}
@@ -189,13 +203,13 @@ In particular, the space $L^\infty(M)$ is a $C^*$-algebra under the operations o
 
 \subsection{The relationship with classical Lebesgue spaces}
 \label{sec:classical_Lebesgue}
-For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$ \todo{cite the appropriate theorem in Lie}.
-The choice of a non-vanishing density is unique only up to multiplication by a non-vanishing function.
-In any case, upon choosing $\mu$ the $p$-norm on a bounded function $f$ is defined as
+For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$.
+In any case, upon choosing some $\mu$ the $p$-norm of a function $f$ with respect to $\mu$
 \begin{align*}
 	\| f \|_p =  \left( \int_M f(x)^p |\mu| \right)^{1/p}.
 \end{align*}
-and $L^p(M ; \mu)$ is the completion of this function space.
+and $L^p(M ; \mu)$ is the completion of the space of bounded functions with respect to this norm.
+For $p = \infty$ the above is the sup-norm
 
 \begin{prop}
 	For any $\nu \in L^p(M)$ there exists a unique $f \in L^p(M ; \mu)$ such that $\nu = f \cdot |\mu|^{1/p}$.
@@ -701,138 +715,6 @@ and for a density $\mu \in L^1(M)$ define $[\mu]_N = \pi_N \circ \hat{\mu} \circ
 	If $f,\mu,Y$ solve blah and $[f]_N,[\mu]_N, [Y]_N$ solve blah
 	then $[f]_N$... converge to $\hat{f},\hat{\mu}$ and $\widehat{Y}$ in some sense.
 \end{thm}
-
-
-\section{Wavelets and sparsity}
-\label{sec:wavelets}
-We would like to apply wavelet theory for the purpose of the error bounds,
-and sparsity structure they bring to the problem.
-However, the notion of wavelets on manifolds is still in development,
-and virtually all of the available software infrastructure is built for wavelets on flat spaces.
-This motivates us to prove the following theorem.
-
-\begin{thm} \label{thm:global_chart}
-  Let $M$ be a compact connected manifold and let
-  $\phi:U \subset M \to V \subset \mathbb{R}^n$
-  be a chart such that $\bar{U} = M$.
-  Then the subspace of half-densities over $V$ given by
-  $(i_U \circ \phi^{-1})^* \Dens^{1/2}(M)$ is isomorphic
-  to $\Dens^{1/2}(M)$.
-\end{thm}
-\begin{proof}
-  Elements of $(i_U \circ \phi^{-1})^* \Dens^{1/2}(M)$
-  are half-densities on $V \subset \mathbb{R}^n$ given by $ \left. \psi \right|_{U} \circ \Fr(\phi)$ for some $\psi \in \Dens^{1/2}(M)$.
-  Thus the map $\psi \mapsto \psi|_U \circ \Fr(\phi)$ provides a surjection.
-  We wish to show that this map is also an injection.
-  Specifically this means, given $\left. \psi \right|_{U} \circ \Fr(\phi)$ in $(i_U \circ \phi^{-1})^*\Dens^{1/2}(M)$ the half-density $\psi$ is uniquely determined.
-  To prove this, assume that there exists another half-density,
-  $\tilde{\psi}$, such that $\tilde{\psi}|_U \circ \phi^{-1} = \psi|_U \circ \phi^{-1}$.
-  For any $x \in V$ and ${\bf e}_x \in \Fr_x(V)$ we observe that
-  \begin{align*}
-    \tilde{\psi}( \Fr_x(\varphi) \cdot {\bf e}_x) = \psi( \Fr_x( \varphi) \cdot {\bf e}_x).
-  \end{align*}
-  Applying this over all $x \in V$ matches $\psi$ and $\tilde{\psi}$ on the set $U$.
-  However, $\psi$ and $\tilde{\psi}$ are both smooth.
-  Therefore, the only place where $\psi$ and $\tilde{\psi}$ may differ is on $M \ U$.
-  As $U$ is dense in the compact space $M$,
-  the extension of $\psi|_U$ to $M$ is unique.
-  Thus $\psi = \tilde{\psi}$.
-\end{proof}
-
-  Theorem \ref{thm:global_chart} is useful because in translates computations on manifolds to computation on compact subspaces of $\mathbb{R}^n$.
-
-\begin{defn}
-  Let $M$ be a compact connected manifold (with or without boundary), and let $\phi:U \subset M \to V \subset \mathbb{R}^n$ be a chart such that $U$ is dense in $M$.
-  Let $W_s \subset C^k(\bar{V})$ be a nested sequence of function spaces
-  with respect to the scale paramenter $s \in \mathbb{Z}$.
-  We call the pair $(\phi, W_s)$ a \emph{Computational realization of $M$}
-  if $\phi^* i_V^*W_s \subset i_{U}^* C^k(M)$ for each $s$ and $\cup_s \phi^*i_V^*W_s$ is dense in $i_{U}^*C^k(M)$.
-\end{defn}
-
-The constraint ``$\phi^*i_V^*W_s \subset i_U^* C^k(M)$'' enforces that each of the spaces $W_s$ models the function space $i_U^* C^k(M)$ and nothing more.
-By theorem \ref{thm:global_chart}, $i_U^* C^k(M) = C^k(M)$, and thus $W_s$ models a subspace of the functions on $C^k(M)$.
-The second constraint ensures that elements of $i_U^* C^k(M)$ can be approximated by $W_s$ for some $s \in \mathbb{Z}$.
-
-\subsection{Examples of computational realizations of manifolds}
-In this subsection we provide a list of illustrative examples for computational realizations
-\begin{example}
-Let $W_s$ for $s \in \mathbb{N}$ denote the subspace of $C^k( [-\pi,\pi])$ given by:
-\begin{align*}
-  W_s = \bigcup_{k=1}^{s} \{ \sin( k x),\cos( kx) \}.
-\end{align*}
-Let $S^1$ be represented by the subset of the complex plane $\{ e^{ix} \mid x \in \mathbb{R} \}$.
-Let $U = \{ e^{ix} \mid x \in (-\pi,\pi) \}$.
-Finally, let $\phi: U \to (-\pi,\pi)$ be the chart $\phi( e^{ix}) = x$.
-We see that $i_U^*C^k(S^1)$ is isomorphic to the subspace of $C^k$-functions on $(-\pi,\pi)$
-which can be extended to $C^k$ functions on $[-\pi,\pi]$ with periodic boundary conditions up to order $k$.
-As summations of sinuisoids are dense in the space of periodic function on $[-\pi,\pi]$ we see that $(\phi,W_s)$ is a computational domain for $S^1$.
-\end{example}
-\begin{example}
-n - sphere
-\end{example}
-\begin{example}
-Klein bottle
-\end{example}
-\begin{example}
-RP2
-\end{example}
-
-\subsection{Error analysis}
-\label{sec:error}
-Let $(\phi,W_s)$ be a wavelet realization of $d$-manifold, $M$,
-where $\phi: U \subset M \to V \subset \mathbb{R}^n$.
-Each $X \in \mathfrak{X}(M)$ can be pushed to a vector field on $V$ through the map $\phi$.
-As a result, the operator $\rho(X) \in \mathfrak{su}( L^2(M) )$ is pushed to the operator $\rho(\phi_*(X)) \in \mathfrak{su}(L^2(V))$.
-More concretetly, the vector-field $X$ will appear in local coordinates induced by $\phi$ as
-\begin{align*}
-  \phi_*X(x) = q_i(x) \frac{\partial}{\partial x^i}.
-\end{align*}
-The operator on half-densities $\rho(\phi_*X)$ can be written in terms of coordinates on $\R^n$ as
-\begin{align*}
-  \rho(\phi_*X)[\psi](x) =  q_i(x) \partial_i \psi(x) + \left( \frac{1}{2} \partial_i q_i(x) \right) \psi(x).
-\end{align*}
- To simplify analysis we will simply write this operator as a sum over multi-indices $(\rho(\phi_*X) [\psi] )(x) = \sum_{|\alpha|\leq 1} a_\alpha(x) \partial^\alpha \psi(x)$ with (local) coefficients $a_\alpha \in \phi_*i_{U}^*C^{\infty}(M) \subset C^{\infty}(\bar{V})$. Assume that $(\psi_\lambda)_{\lambda \in \Lambda}$ and $(\tilde{\psi}_\lambda)_{\lambda \in \Lambda}$ are a pair of wavelet bases. We denote by $P_j$ the projection onto the scaling functions associated with $\psi$ of resolution $2^{-j}$. We also let $\card{\lambda}$ denote the resolution level of the index $\lambda$. 
-
-Define weighted spaces as:
-\begin{equation}
-	\ell_t^2(\Lambda) = \left\{ (c_\lambda)_{\lambda \in \Lambda}  \mid \norm{(c_\lambda)}_{\ell^2_t}^2 = \sum_{\lambda \in \Lambda} 2^{2t\card{\lambda}}\abs{c_\lambda}^2 < \infty  \right\}.
-\end{equation}
-When $t = 0$ we write $\ell^2$ for the aforementioned weighted space. We are interested in evaluating the entries:
-\begin{equation}
-	[X]_{\lambda,\mu} = \langle \rho(\phi_*X) \psi_\lambda, \tilde{\psi}_\mu \rangle.
-\end{equation}
-We let $[X]=([X]_{\lambda,\mu})_{\lambda,\mu \in \Lambda}$. Assume further that there exists an $\alpha,n \in \mathbb{N}$ such that the wavelets are in $C^{\alpha}$, $\alpha \geq \frac{d}{2} + 1$, and that the wavelets are orthogonal to polynomials of degree $n \geq \alpha - 1$.  Note by Theorem 3.6.1 in \cite{Cohen2003} the norm equivalence between elements in $W^{t,2}$ and the $l_t^2$ norm of the wavelet decomposition of that same element using either wavelet bases for $0\leq t \leq \alpha$. For the sake of convenience, we let $s = \frac{d}{2} + 1$. 
-
-\begin{prop} \label{prop:projection_bound}
-	Let $f \in W^{s,2}(M)$ and $j \geq \frac{d}{2}$ and $P_j$ denote the $L^2$-orthogonal projection onto polynomials of degree $j$.
-	Then $\norm{f - P_j f}_{L^2} \leq  2^{-sj}\norm{f}_{W^{s,2}}$,
-\end{prop}
-\begin{proof}
-	This follows from either Theorem 3.3.2 or 3.10.2 in \cite{Cohen2003}.
-\end{proof}
-
-\begin{prop} \label{lem:matrix_bound}
-	$\abs{[X]_{\lambda,\mu}} \leq C 2^{-(\frac{d}{2}+\frac{1}{2})\abs{\abs{\lambda}-\abs{\mu}}}2^{\frac{1}{2}(\abs{\lambda}+\abs{\mu})}$
-\end{prop}
-\begin{proof}
-	\begin{align*}
-		\abs{[X]_{\lambda,\mu}} 	&= \int \abs{X \psi_{\lambda}(x) \tilde{\psi}_{\mu}(x)} dx \\
-								&\leq \norm{\tilde{\psi}_\mu}_{L^1} \| X \psi_\lambda \|_{L^\infty}, \\ %\inf_{g \in \Pi_n} \norm{X \psi_{\lambda} - g}_{L^{\infty}} \\
-							\intertext{by Theorem 3.3.1 and 3.10.2 of \cite{Cohen2003} we observe: }
-								&\leq C_1 2^{-\card{\mu}\frac{d}{2}}\norm{X\psi_{\lambda}}_{L^{\infty}} \\
-								&= C_1 2^{-\card{\mu}\frac{d}{2}}\norm{ \sum_{\abs{m} \leq 1 } a_m(x) \psi^{(m)}_\lambda(x) }_{L^{\infty}} \\
-								&\leq C_2 2^{-\card{\mu}\frac{d}{2}}\sum_{\card{m}\leq 1}\norm{\psi_{\lambda}^{(m)}(x)}_{L^{\infty}} , \\
-							\intertext{and by the definition of wavelets:}
-								&\leq C_3 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}\frac{d}{2}} \sum_{\card{m}\leq 1} (2^{\card{\lambda}})^{\abs{m}} \\
-								&\leq C_3 (d+1) 2^{-\card{\mu}\frac{d}{2}} 2^{\card{\lambda}(1+\frac{d}{2})} \\
-								&= C_4 2^{d/2(\card{\lambda} - \card{\mu})}2^{\card{\lambda}},
-	\end{align*}
-	%where the second line follows from the fact that $\tilde{\psi}$ is orthogonal to polynomials of degree $n$, 
-	%the third line follows from Theorems 3.3.1 and 3.10.2 in \cite{Cohen2003},
-	%the fourth line follows from the definition of $X$, and the fifth follows from the definition of the wavelets.
-	The desired result follows from a symmetry argument and a rearrangement.
-\end{proof}
-
 
 \section{Structure preserving properties}
 \label{sec:structure}

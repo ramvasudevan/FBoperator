@@ -11,9 +11,12 @@ import matplotlib.animation as animation
 
 # CONSTANTS 
 # modes is a list of integer tuples
-p = 6
+p = 7
 modes = [ (k1,k2) for k1 in range(- 2**p , 2**p+1 ) for k2 in range(- 2**p , 2**p + 1)]
 res = 2**(p+1)+1
+
+print 'There are %d modes' %(len(modes))
+print 'So our operator has %d entries' %(len(modes)**2)
 
 # These functions allow us to do basic arithmetic with the modes
 add_tuple = lambda m,n: tuple( x+y for (x,y) in zip(m,n) )
@@ -23,13 +26,15 @@ dot = lambda m,n: sum( x*y for (x,y) in zip(m,n) )
 # f_hat is a dictionary of complex valued multi-dimensional fourier coefficients
 # of the form {k:coefficient} where k is a frequency (possibly multi-dimensional)
 # and coefficient is the corresponding Fourier coefficient (also multi-dimensional)
+B = 1.0
+C = 1.0
 f_hat = {}
-f_hat[(0,0)] = 1.0
-f_hat[(1,0)] = -0.5j
-f_hat[(-1,0)] = 0.5j
+f_hat[(0,1)] = C*0.5
+f_hat[(0,-1)] = C*0.5
 
 g_hat = {}
-g_hat[(0,0)] = 1.0
+g_hat[(1,0)] = B*0.5j
+g_hat[(-1,0)] = -B*0.5j
 
 # vector field is X(x) = f(x) d/dx
 # f_hat is the Fourier transform of f
@@ -78,8 +83,6 @@ def get_conv_mat( g_hat ):
     out = sparse.dia_matrix((res**2,res**2),dtype=complex)
     for k in g_hat.keys():
         e_k = conv_basis(k)
-        print e_k.shape
-        print out.shape
         out += g_hat[k]*e_k
     return out
 
@@ -143,6 +146,10 @@ FP_gen = Koopman_gen.transpose().conj().copy()
 Hilbert_gen = 0.5*Koopman_gen -0.5*FP_gen
 print 'Done.  That took me %f seconds.' %(time()-t0)
 
+nnz = Hilbert_gen.nnz
+sparsity = (100.0 * nnz) / ( len(modes)**2)
+print 'There are %d nonzero entries, sparsity = %f %%' %(nnz,sparsity)
+
 psi_hat_initial = initialize_wave_function()
 print 'integrating'
 print 'p=%d' %p
@@ -151,7 +158,7 @@ psi = np.fft.ifftn(psi_hat_initial.reshape(res,res))
 dpsi_hat = Operator.dot(psi_hat_initial)
 dpsi = np.fft.ifftn(dpsi_hat.reshape(res,res))
 fig = plt.figure()
-plt.imshow(dpsi.real)
+plt.imshow(dpsi.imag)
 plt.colorbar()
 plt.title('dpsi')
 plt.show()
@@ -165,16 +172,23 @@ ode_instance.set_initial_value(psi_hat_initial,t0)
 #ode_instance.set_f_params(Operator)
 #ode_instance.set_jac_params(Operator)
 t1 = 1.0
-dt = 0.1
+dt = t1/90.
 N_nodes = 2**(p+1)+1
+fig_num = 0
 while ode_instance.successful() and ode_instance.t < t1:
     ode_instance.integrate( ode_instance.t + dt )
     print 'Integrated up to t = %f' %(ode_instance.t)
     psi_hat = ode_instance.y
     psi = np.fft.ifftn( psi_hat.reshape(N_nodes,N_nodes))
-    plt.imshow( np.abs(psi)**2, cmap = 'Greys', interpolation='nearest' )
-    plt.grid()
-    plt.show()
+    plt.imshow( np.abs(psi)**2,
+            cmap = 'Greys',
+            interpolation='bicubic',
+            extent = [-0.5,0.5,-0.5,0.5])
+    plt.grid(True)
+    plt.title('t=%.2f' %ode_instance.t)
+    plt.savefig('figures/figure_%d.png'%(fig_num))
+    plt.clf()
+    fig_num += 1
     print 'min( rho ) = %f' %(np.min(np.min( np.abs(psi)**2)))
     print 'total mass = %f' %(np.sum(np.sum( np.abs(psi)**2)))
 #

@@ -6,14 +6,14 @@ import scipy.sparse as sparse
 DIM = 1
 p = 6
 res = 2**p
-n_basis = 10 #number of basis along one dimension
+degree_max = 10 #number of basis along one dimension
 
 def mult_by_monomial( alpha ):
     #produces multiplication operator for monomial
-    global DIM, n_basis
-    out = sparse.eye( n_basis, k=alpha[0], format='dia')
+    global DIM, degree_max
+    out = sparse.eye( degree_max, k=alpha[0], format='dia')
     for d in range(1,DIM):
-        store = sparse.eye( n_basis, k=alpha[d], format='dia')
+        store = sparse.eye( degree_max, k=alpha[d], format='dia')
         out = sparse.kron( store , out )
     return out
 
@@ -33,12 +33,12 @@ def derivative_of_basis_function(beta,x):
 
 def translation_gen(d):
     # generates a one-dimensional translation
-    global n_basis,DIM
-    data = -np.ones( [2 , n_basis] )
-    data[0,:] = np.arange(0, n_basis)
+    global degree_max,DIM
+    data = -np.ones( [2 , degree_max] )
+    data[0,:] = np.arange(0, degree_max)
     offsets = np.array( [ 1 , -1 ] , dtype = int)
-    ide = sparse.eye(n_basis,format='dia')
-    ddx = sparse.dia_matrix( (data,offsets) , shape = (n_basis,n_basis) )
+    ide = sparse.eye(degree_max,format='dia')
+    ddx = sparse.dia_matrix( (data,offsets) , shape = (degree_max,degree_max) )
     if d==0:
         out = ddx
     else:
@@ -50,18 +50,24 @@ def translation_gen(d):
             out = sparse.kron(out,ide)
     return out
 
+x_arr = np.linspace(-3,3,res)
+X,Y = np.meshgrid(x_arr,x_arr) 
 
-X = np.linspace(-3,3,res)
-
-if os.path.isfile("basis_array.npy"):
-    basis_array = np.load("basis_array.npy")
-    print "Loaded basis array"
-else:
-    basis_array = np.zeros([n_basis,res])
-    for beta in range(0,10):
-        basis_array[beta] = basis_function( beta , X)
-    np.save( "basis_array" , basis_array)
-    print "Created basis array"
+#fname = "basis_array_DIM_{:d}.npy".format(DIM)
+#if os.path.isfile(fname):
+#    basis_array = np.load(fname)
+#    print "Loaded basis array"
+#else:
+#    if DIM ==1:
+#        basis_array = np.zeros([degree_max,res])
+#    elif DIM==2:
+#        basis_array = np.zeros([degree_max**2,res,res])
+#    elif DIM==3:
+#        basis_array = np.zeros([degree_max**3,res,res,res])
+#    for beta in range(0,10):
+#        basis_array[beta] = basis_function( beta , X)
+#    np.save( fname , basis_array)
+#    print "Created basis array"
 
 #DESCRIBE YOUR VECTOR_FIELD HERE
 f = [{} , {}]
@@ -69,15 +75,14 @@ f[0][(1,0)] = -1.0
 f[1][(0,0)] = 1.0
 
 # This is the vector field dx/dt = -x , dy/dt = 1
-
-Operator = translation_gen()
-mult_by_x = multiply_by_x(2)
-psi_initial = np.zeros( n_basis )
+Operator = translation_gen(1)
+psi_initial = np.zeros( degree_max )
 psi_initial[0] = 1.0
 psi_initial[1] = 0
 
-plt.plot(X , np.dot(psi_initial,basis_array) )
-plt.plot(X , np.dot( mult_by_x.dot(psi_initial)  , basis_array) )
-plt.grid(True)
-plt.show()
+monomial_indices  = [ (a_1,a_2) for a_1 in range(0,degree_max)
+            for a_2 in range(0,degree_max) ]
+
+print monomial_indices
+
 
