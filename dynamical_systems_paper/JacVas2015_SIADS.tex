@@ -227,7 +227,7 @@ Moreover, the solution is given by a unitary action.  For reference later, we re
 %\end{proof}
 
 In fact, $U(t)$ is merely the push-forward operator given in \eqref{eq:transformation law} with ``$\Phi$'' replaced by the flow-map of the dynamics.
-We will generally avoid using this explicit expression though, since it can be cumbersome, and the details can be distracting.
+We will generally avoid using this explicit expression though, as it can be cumbersome.
 
 
 \subsection{The relationship with classical $L^{2}$ spaces}
@@ -279,31 +279,33 @@ We could construct a canonical Sobolev space by defining the subset
 	H^{1}(M) := \{ \psi \in L^{2}(M) \mid \pounds_{X}[\psi] \in L^{2}(M) , \forall X \in \mathfrak{X}(M) \} \equiv \bigcap_{X \in \mathfrak{X}} \operatorname{dom}( \pounds_{X} ).
 \end{align*}
 Where we view $\pounds_{X}$ as an unbounded operator on $L^{2}(M)$.
-More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative operators.
-As $\pounds_{X}$ is anti-Hermetian we can invoke the spectral theorem of functional analysis
-and consider the operator
-\begin{align*}
-	(\pounds_{X})^{s} [ \psi] = \sum_{\lambda \in \sigma( \pounds_{X}) } \lambda^{s} \langle e_{\lambda} \mid \psi \rangle e_{\lambda}
-\end{align*}
-where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denotes the set of eigenvectors of $\pounds_{X}$. 
-This fractional power of $\pounds_{X}$ allows us to consider Sobolev spaces of fractional orders as well.
+More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative operators,
+and we can even consider fraction degrees of regularity as well.
+%As $\pounds_{X}$ is anti-Hermetian we can invoke the spectral theorem of functional analysis
+%and consider the operator
+%\begin{align*}
+%	(\pounds_{X})^{s} [ \psi] = \sum_{\lambda \in \sigma( \pounds_{X}) } \lambda^{s} \langle e_{\lambda} \mid \psi \rangle e_{\lambda}
+%\end{align*}
+%where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denotes the set of eigenvectors of $\pounds_{X}$. 
+%This fractional power of $\pounds_{X}$ allows us to consider Sobolev spaces of fractional orders as well.
 
   However, while the canonical (metric-free) nature of $L^{2}(M)$ will turn out to be quite useful,
-  these new constructions for $H^{s}(M)$ are not so useful for our purposes.
-  We will find that our algorithms only converge on $H^{s}(M)$
-  and in order to perform our error-analysis we must choose a norm.
+  these new constructions for Sobolev spaces are not so useful for our purposes.
+  We will find that our algorithms only converge on spaces of sufficient regularity,
+  but in order to perform our error-analysis we will need to choose a norm.
   This choice is necessarily non-canonical.
 
 To begin, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
 The metric induces a positive density $\mu_g$,
-known as the \emph{metric density},
-as well the \emph{Laplace operator},
-$\Delta:C^\infty(M) \to C^{\infty}(M)$. 
+known as the \emph{metric density}. 
 The Riemmanian density induces the $L^2$ inner-product on $C^\infty(M)$ via
 \begin{align*}
 	\langle f_1 , f_1 \rangle_{g} = \int \overline{f_1} \cdot f_2 \mu_g
 \end{align*}
-and $\Delta$ is positive-semidefinite.
+and $L^{2}(M;\mu_{g})$ is the completion of the inner-product space $( C^{\infty}(M) , \langle \cdot , \cdot \rangle_{g})$ under 
+the inner-product norm.
+The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is is positive-semidefinite
+with respect to $\langle \cdot , \cdot \rangle_{g}$.
 If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert space
 and the Helmholtz operator, $1 + \Delta$, is then a positive definite operator
 with a discrete spectrum.
@@ -738,11 +740,15 @@ We have a discrete analog of this.
 
 \subsection{A one dimensional example}
 Let us consider the vector field $\dot{x} = \sin(2x)$ for $x \in S^{1}$.
-Given an initial density $\rho_{0} \in \Dens(S^{1})$ the exact solution at time $t$ is given by
+The flow of this system is given explicitly by
+\begin{align*}
+	\Phi_{X}^{t}(x) = \operatorname{atan} \left( e^{2t} \tan(x) \right).
+\end{align*}
+If the initial density is given by a uniform distribution $\rho_{0} = dx$ then the the exact solution of the advection pde \eqref{eq:density pde} at time is
 \begin{align}
-	\rho(x;t) = \dots \rho_{0}( \dots ) \label{eq:exact solution}
+	\rho(x;t) =  \frac{dx}{e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) } \label{eq:exact solution}
 \end{align}
-\todo[inline]{figure this out}  In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=2$ with an initial condition given by a uniform distribution.
+ In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=2$ with an initial condition given by a uniform distribution.
 Subfigure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution}.  Subfigure \ref{fig:standard spectral} depicts the numerical solution computed
 from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes.
 Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution computed using algorithm 2 with 32 modes.\todo{Consider renaming the GN algorithm}.
@@ -769,7 +775,8 @@ Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution
 
 From these figures, it is tempting to suggest that GN discretization has greater qualitative accuracy than standard spectral discretization.
 For one, standard spectral discretization exhibits negative mass, which is not physically achievable in the exact system.
-Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  However, it is conserved in GN discretization.
+Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  However, by Theorem \ref{thm:norms} we know that
+the $L^{1}$ norm is conserved in GN discretization.
 A plot of the $L^{1}$-norm is given in figure \ref{fig:L1}
 
 \begin{figure}
