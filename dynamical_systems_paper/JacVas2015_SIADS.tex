@@ -697,12 +697,24 @@ In this section we list a number of properties which algorithms 1 through 3 exhi
 	and
 	\begin{align*}
 		\lim_{n \to \infty} \| \hat{f} \|_{op} = \| f \|_{\sup} \\
-		\lim_{n \to \infty} \| \rho_{n} \|_{L^{1}} = \| \rho \|_{L^{1}} \\
+		\lim_{n \to \infty} \| \rho_{n} \|_{nuc} = \| \rho \|_{L^{1}} \\
 		\lim_{n \to \infty} \| \psi_{n} \|_{L^{2}} = \| \psi \|_{L^{2}}
 	\end{align*}
 \end{thm}
 \begin{proof}
-	\todo[inline]{Write up this proof.}
+	To prove $\| \hat{f}_{n} \|_{op}$ is conserved note that the evolution is isospectral.
+	In particular, the solution is given by $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$
+	where $U_{n}(t)$ is the the solution to $\dot{U}_{n} = X_{n} \cdot U_{n}$ with $U_{n}(0)$ as the identity.
+	As $U_{n}(t)$ is unitary, we can observe that 
+	\begin{align*}
+		\| \hat{f}_{n}(t) \|_{op}  &= \sup_{\psi}( \langle \psi \mid \hat{f}_{n}(t) \mid \psi \rangle) = \sup_{\psi}\left( \langle \psi \mid U_{n}(t) \cdot \hat{f}_{n}(0) \cdot U_{n}(t)^{\dagger} \mid \psi \rangle \right) \\
+			&= \sup_{\psi} \left( \langle U_{n}(t)^{\dagger} \cdot \psi \mid \hat{f}_{n}(0) \mid U_{n}(t)^{\dagger} \psi \rangle \right) = \sup_{\psi} \langle \psi \mid \hat{f}_{n}(0) \mid \psi \rangle \\
+			&= \| \hat{f}_{n}(0) \|_{op}.
+	\end{align*}
+	We've already shown that $\hat{f}_{n}(t)$ converges to $\hat{f}(t)$ in the operator norm.
+	Convergence of the norms follows from the fact that $\| \hat{f} \|_{op} = \| f \|_{\sup}$.
+	
+	The idea of this proof works for $\| \rho_{n} \|_{nuc}$ and $\| \psi_{n} \|_{L^{2}}$ as well.
 \end{proof}
 
 Theorem \ref{thm:norms} is valuable because each of the norms is naturally associated to the entity which it bounds, and these quantities are exactly conserved for the exact pde's we wish to approximate.
@@ -719,20 +731,35 @@ We find that our integrator has this property as well.
 	Let $\hat{f}_{n}, \hat{g}_{n}$ and $\hat{h}_{n}$ be numerical solutions derived from algorithm 1
 	so that each satisfies the ode \eqref{eq:quantum observable ode}, with ``$X$'' replaced by it $n$-rank approximation.
 	Then $\hat{k}_{n}(t) = \hat{f}_{n}(t) \cdot \hat{g}_{n}(t) + \hat{h}_{n}(t)$ also satisfies \eqref{eq:quantum observable ode}, with ``$X$'' replaced by it $n$-rank approximation.
-	Moreover, $\hat{k}_{n}(t)$ converges to the solution $\hat{k}$ as $n \to \infty$ in the operator norm.
+	Moreover, $\hat{k}_{n}(t)$ converges to the solution $\hat{k}$ as $n \to \infty$ in the operator norm when $f,g,h \in W^{s,\infty}(M)$ for $s>1$.
 \end{thm}
 \begin{proof}
-	\todo[inline]{Write up this proof.}
+	Note that 
+	\begin{align*}
+		\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} \quad,\quad 
+		\hat{g}_{n}(t) = U_{n}(t) \hat{g}_{n}(0) U_{n}(t)^{\dagger} \quad,\quad
+		\hat{h}_{n}(t) = U_{n}(t) \hat{h}_{n}(0) U_{n}(t)^{\dagger}.
+	\end{align*}
+	Similarly, if $k_{n}(0) = f_{n}(0) g_{n}(0) + h_{n}(0)$ then
+	\begin{align*}
+		\hat{k}_{n}(t) &= U(t) \hat{k}_{n}(0) U(t)^{\dagger} = U(t)\left( \hat{g}_{n}(0) \hat{f}_{n}(0) + \hat{h}_{n}(0) \right) U(t)^{\dagger} \\
+			&= U(t) \hat{g}_{n}(0) U(t)^{\dagger} U(t) \hat{f}_{n}(0) U(t)^{\dagger} + U(t) \hat{h}_{n}(0) U(t)^{\dagger} \\
+			&= \hat{g}_{n}(t) \hat{f}_{n}(t) + \hat{h}_{n}(t)
+	\end{align*}
+	Convergence follows as a result of Theorem \ref{thm:function convergence}.
 \end{proof}
 
 Finally, the duality between functions and densities is preserved by advection.  If $f$ satisfies \eqref{eq:function pde} and $\rho $ satisfies \eqref{eq:density pde} then $\int f \rho$ is conserved in time.
 We have a discrete analog of this.
 \begin{thm}
 	Let $\hat{f}_{n}$ and $\hat{\rho}_{n}$ be numerical solutions derived from algorithms 1 and 2 respectively.
-	Then $\Tr( \hat{f}_{n} \rho_{n} )$ is constant in time and converges to the constant $\int f \rho$ as $n \to \infty$.
+	Then $\Tr( \hat{f}_{n} \rho_{n} )$ is constant in time and converges to the constant $\int f \rho$ as $n \to \infty$
+	for $f \in W^{s,\infty}$ and $\rho \in W^{s,1}$ for $s>1$.
 \end{thm}
 \begin{proof}
-	\todo[inline]{Write up this proof.}
+	As $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$ and $\hat{\rho}_{n}(t) = U_{n}(t) \hat{\rho}_{n}(0) U_{n}(t)^{\dagger}$
+	we see that $\Tr( \hat{f}_{n}(t)^{\dagger} \rho_{n}(t) ) = \Tr( U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} U_{n}(t) \rho_{n}(0) U_{n}(t)^{\dagger}) = \Tr( \hat{f}_{n} \rho_{n}(0) )$.
+	Convergence follows from Theorem \ref{thm:function convergence} and Theorem \ref{thm:density convergence}.
 \end{proof}
 
 
