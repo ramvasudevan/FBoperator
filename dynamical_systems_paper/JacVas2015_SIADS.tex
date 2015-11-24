@@ -789,6 +789,38 @@ A plot of the $L^{1}$-norm is given in figure \ref{fig:L1}
 	\label{fig:L1}
 \end{figure}
 
+We also know the evolution for an initial function, $f_{0}(x)$.
+For example, if $f_{0}(x) = \sin(x)$ then the solution to \eqref{eq:function pde} under this vector-field is
+\begin{align*}
+	f(x;t) = \frac{ e^{-2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{-4t} \sin^{2}(x) } }.
+\end{align*}
+
+Unfortunately, algorithm 1 outputs $f$ as an operator on half-densities, and it is not clear how best to invert the hat-map.
+However, we can obtain one estimate by applying $\hat{f}_{n}$ to the half-density $\sqrt{dx}$, and then divide the result by $\sqrt{dx}$.
+The resulting function appears to approximate $f(x;t)$ well in the flat areas, and overshoot at the peaks.
+In comparison, a standard spectral discretization seems to have large spurious oscillations in the center.
+These estimates are plotted alongside the exact solution in figure \ref{fig:function}.
+We should note that our means of converting $\hat{f}_{n}$ into a function is probably not the best choice of a left inverse to the hat-map.
+Different choices yield different approximations to $f(x;t)$, some
+of which get the peaks correct, but do poorly in the valleys.
+
+We can see that the $L^{\infty}$-norm behaves well using GN discretization.
+The $L^{\infty}$-norm is conserved to machine precision for GN discretization, while it will drift using standard discretization.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./images/function_comparison.pdf}
+		\caption{Functions}
+		\label{fig:function}
+	\end{subfigure}
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./images/L_inf_plot.pdf}
+		\caption{$L^{\infty}$-norms}
+		\label{fig:sup norm}
+	\end{subfigure}
+\end{figure}
+
 \subsection{AB flow}
 
 \subsection{Rigid body}
