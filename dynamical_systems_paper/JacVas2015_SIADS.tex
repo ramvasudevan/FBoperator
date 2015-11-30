@@ -24,11 +24,9 @@
 \newtheorem{cor}[thm]{Corollary}
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem{defn}[thm]{Definition}
+\newtheorem{example}[thm]{Example}
 
 % NEW ENVIRONMENTS
-\newenvironment{example}
-  { \newline {\bf Example:} }
-  {\rule{1ex}{1ex} }
 
 %  MATH OPERATORS
 \DeclareMathOperator{\Diff}{Diff}
@@ -367,6 +365,26 @@ given in coordinates by
 After some minor computations (see Appendix \ref{app:Lie} \todo{need to write an appendix} ) we see that $\pi$ is a Lie algebra morphism which sends
 the Jacobi-Lie bracket to (minus) the commutator bracket.  That is to say, $\pi$ is linear and $\pi([X,Y]) = - [ \pi(X) , \pi(Y)]$.
 
+\begin{example}
+Let us describe what this means when $M$ is a torus.
+In standard coordinates $\theta = (\theta^{1},\dots,\theta^{d})$ we may write $X = X^{i}(\theta) \frac{\partial}{\partial \theta^{i}}$ for some functions $X^{1}(\theta),\dots,X^{d}(\theta)$.
+In a Fourier basis $\{ \frac{1}{\sqrt{2\pi}} e^{ i \langle k , \theta \rangle}   \mid k \in \mathbb{Z}^{d} \}$ 
+a half density, $\psi$ is given by it's Fourier series $\mathcal{F}[\psi]$.
+Upon noting that $\mathcal{F}[ f \cdot \psi] = \mathcal{F}[f] * \mathcal{F}[\psi]$
+we find $\hat{f} = \mathcal{F}[f] * $, i.e. $\hat{f}$ is the convolution operator associated to the Fourier transform of $f$.
+We observe that $\pi \left( \pder{}{\theta^{j}} \right) \cdot e^{i \langle k , \theta \rangle}  = i k^{j} e^{i \langle k,\theta\rangle}$.
+That is to say, $\pi \left( \pder{}{\theta^{j}} \right)$ simply multiplies the $k$th mode by $k^{j}$.
+This is the sparsest representation of this operator one can ever expect to obtain.
+We then see that $\pi(X) \cdot \psi = \mathcal{F}[X^{j}] *  [ \pi \left( \pder{}{\theta^{j}} \right) \cdot \psi ]$.
+If $X$ is smooth, than $\mathcal{F}(X^{j})$ is well approximated by a sparse operator by truncation.
+As a result, we have a sparse spectral approximation of $\pi(X)$ when we use truncation.
+
+Finally, given a sufficiently regular\footnote{e.g. $W^{1+\epsilon,1}$ for $\epsilon >0$ will do.} density, $\rho$,  we could 
+split $\rho$ into non-negative and non-positive components as $\rho = \rho^{+} - \rho^{-}$
+so that $\psi = \sqrt{\rho^{+}} + i \sqrt{\rho^{-}}$ is a square root of $\rho$.
+Then $\hat{\rho}$ is represented in the Fourier domain by $\mathcal{F}(\psi) \otimes \mathcal{F}(\psi)^{\dagger}$.
+\end{example}
+
 We can now convert the evolution PDEs \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde}
 into ODE's of operators on $L^{2}(M)$.
 
@@ -380,7 +398,7 @@ into ODE's of operators on $L^{2}(M)$.
 		&\frac{d \pi(Y) }{dt} + [ \pi(Y), \pi(X) ] = 0 \label{eq:quantum vf ode}
 	\end{align}
 	respectively.
-	Moreover, if $\psi \in L^{2}(M)$ is such that $|\psi|^{2} = \rho$ and $\psi$ satisfies \eqref{eq:half density pde}, then $\rho$ satisfies \eqref{eq:density pde}.
+	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$ and $\psi$ satisfies \eqref{eq:half density pde}, then $\rho$ satisfies \eqref{eq:density pde}.
 \end{thm}
 
 \begin{proof}
@@ -422,15 +440,16 @@ into ODE's of operators on $L^{2}(M)$.
 	\end{align*}
 	where we have used the fact that $\pi$ is bracket preserving.
 	
-	Lastly, if $\psi$ satisfies \eqref{eq:half density pde} and $\rho = |\psi|^{2} = \bar{\psi} \psi$ then we see
+	Lastly, if $\psi$ satisfies \eqref{eq:half density pde} and $\rho = \psi^{2}$ then we see
 	\begin{align*}
-		\partial_{t} \rho &= \partial_{t} ( \bar{\psi} \psi) = (\partial_{t} \bar{\psi} ) \psi + \bar{\psi} \partial_{t} \psi \\
-		&= \left( - \frac{1}{2} \partial_{i} (\bar{\psi} X^{i}) - \frac{1}{2} X^{i} \partial_{i} \bar{\psi} \right) \psi + \bar{\psi} \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \\
-		&= \left( - X^{i} \partial_{i} \bar{\psi} - \frac{1}{2} \bar{\psi} \partial_{i} X^{i}  \right) \psi + \bar{\psi} \left( - X^{i} \partial_{i} \psi - \frac{1}{2} \psi \partial_{i} X^{i}  \right) \\
-		&= - X_{i} \left(  (\partial_{i} \bar{\psi}) \psi + \bar{\psi} (\partial_{i} \psi) \right) - \rho \partial_{i} X^{i} \\
-		&= - X_{i} \partial_{i} \rho - \rho \partial_{i} X^{i} = - \partial_{i} ( \rho X^{i}).
+		\partial_{t} \rho &= \partial_{t} ( \psi^{2}) = 2 (\partial_{t} \psi ) \, \psi \\
+		&= 2 \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \psi \\
+		&= \left( - X^{i} \partial_{i} \psi - \psi \partial_{i} X^{i}  \right) \psi \\
+		&= - 2 \psi (\partial_{i} \psi) X^{i} - (\partial_{i}X^{i}) \psi^{2}\\
+		&= - \partial_{i}(\rho) X^{i} - (\partial_{i}X^{i}) \rho = - \partial_{i} ( \rho X^{i}).
 	\end{align*}
 \end{proof}
+
 
 The benefit of representing our pde's in the form \eqref{eq:quantum observable ode},\eqref{eq:quantum density ode}, and \eqref{eq:quantum vf ode}
 is that we may construct discretization schemes for these equations using least squares projections.
@@ -449,19 +468,47 @@ Given these choices we obtain the following numerical scheme for \eqref{eq:funct
 		\begin{enumerate}
 			\item Let $\hat{f}_{n}(0) := \pi_{n} \cdot \hat{f}(0) |_{V_{n}}$ and $X_{n} := \pi_{n} \cdot \pi(X) |_{V_{n}}$.
 			\item Solve the finite dimensional ode $\frac{d}{dt} \hat{f}_{n} + [ \hat{f}_{n} , X_{n} ] = 0$ with initial condition $\hat{f}_{n}(0)$ on the interval $[0,T]$.
-			\item Set $f_{n}(t) = \operatorname{arginf}_{g \in C(M)} \| \hat{g} - \hat{f}_{n}\cdot \pi_{n} \|_{op} $ where $\| \cdot \|_{op}$ is the operator norm.
 		\end{enumerate}
 	\end{minipage}
 }
 \end{center}
 
-The final step might require explanation.
-It will be shown that as $n$ increases $\hat{f}_{n}(t)$ converges to the solution, $\hat{f}$, of \eqref{eq:quantum observable ode} with respect to the operator norm.
-By theorem \eqref{thm:quantize} we know that the solution of \eqref{eq:quantum observable ode} is related to the solution of \eqref{eq:function pde}
-through the map $f \mapsto \hat{f}$.
-If one desires to get a function rather than an operator we must find a left inverse of the hat-map because $\hat{f}_{n}$ will typically fall outside the range of the hat-map.
-This is what is accomplished in step (4) where an optimization problem yields a local left inverse function.
-As the operator norm is identical to the supremum norm it is possible to show that $f_{n}(t)$ converges to $f$ in the sup-norm.
+This algorithm is more provided out of theoretical interest, than of a practical suggestion.
+The size of the matrix $\hat{f}_{n}$ is $n^{2d}$, and even if it is sparse initially it will become dense when $t$ increases.
+This is prohibitively expensive at $d = 3$.
+On the torus, a more practical approach which holds much of the numerical benefits would be to approximate $\hat{f}_{n}$ psuedo-spectrally,
+by evaluating $f$ on grid points.
+The resulting method is really the method of characteristics in disguise (i.e. a particle method).
+
+\begin{center}
+\fbox{ \label{psuedo spectral scheme}
+	\begin{minipage}{0.8\textwidth}
+		{\bf Algorithm 1b:} A psuedo-spectral algorithm for Toric functions.\\
+		{\bf Problem:} Given an initial condition $f(0) \in C( \mathbb{T}^{n} )$ solve \eqref{eq:function pde} on the time interval $[0,T]$.\\
+		{\bf Numerical solution:}
+		\begin{enumerate}
+			\item Initialize a regular grid, $\Omega_{n}$, of size $n = r^{d}$.
+			\item Solve the ode $\dot{y}_{i}(t) = X(y_{i})$ with the initial condition $y_{i}(0) = x_{i}$ for each $x_{i} \in \Omega_{n}$.  
+			\item Set $\hat{f}_{n}$ to be the truncated convolution operator associated 
+				to the Fourier series $\mathcal{DFT}[ f_{0}(y_{1}(t)) , \dots, f_{0}(y_{n}(t) ) ]$,
+				where $\mathcal{DFT}$ denotes the discrete Fourier transform.
+		\end{enumerate}
+	\end{minipage}
+}
+\end{center}
+
+The use of the discrete Fourier transform introduces errors which disrupt the conservation laws we seek to keep.
+However, these newly incurred errors are dominated by other discretization errors, which we still analyze shortly.
+While our main concern in this paper is with the properties of algorithm 1, we merely mention algorithm 1b as a practical alternative
+that still retains much of the benefits.
+
+%The final step might require explanation.
+%It will be shown that as $n$ increases $\hat{f}_{n}(t)$ converges to the solution, $\hat{f}$, of \eqref{eq:quantum observable ode} with respect to the operator norm.
+%By theorem \eqref{thm:quantize} we know that the solution of \eqref{eq:quantum observable ode} is related to the solution of \eqref{eq:function pde}
+%through the map $f \mapsto \hat{f}$.
+%If one desires to get a function rather than an operator we must find a left inverse of the hat-map because $\hat{f}_{n}$ will typically fall outside the range of the hat-map.
+%This is what is accomplished in step (4) where an optimization problem yields a local left inverse function.
+%As the operator norm is identical to the supremum norm it is possible to show that $f_{n}(t)$ converges to $f$ in the sup-norm.
 
 To solve the Louiville equation, \eqref{eq:density pde}, we could implement the following
 \begin{center}
@@ -472,9 +519,9 @@ To solve the Louiville equation, \eqref{eq:density pde}, we could implement the 
 		{\bf Numerical solution:}
 		\begin{enumerate}
 			\item Split $\rho_{0} = \rho_{0}^{(+)} - \rho_{0}^{(-)}$ for positive densities, $\rho_{0}^{(+)},\rho_{0}^{(-)}$.
-			\item Let $\psi_{0}^{(+)} = \sqrt{ \rho_{0}^{(+)}}$ and $\psi_{0}^{(-)} = \sqrt{ \rho_{0}^{(-)}}$.
-			\item Solve \eqref{eq:half density pde} numerically with initial conditions $\psi_{0}^{(+)}$ and $\psi_{0}^{(-)}$.
-			\item Set $\rho(t) = [\psi^{(+)}(t)]^{2} - [\psi^{(-)}(t)]^{2}$ (or equivalently, set $\hat{\rho}(t) = \psi^{(+)} \otimes \psi^{(+)}  - \psi^{(-)} \otimes \psi^{(-)}$). 
+			\item Let $\psi_{0} = \sqrt{ \rho_{0}^{(+)}} + i \sqrt{\rho_{0}^{(-)}}$.
+			\item Solve \eqref{eq:half density pde} numerically with initial conditions $\psi_{0}$.
+			\item Set $\rho(t) = \psi(t)^{2}$. 
 		\end{enumerate}
 	\end{minipage}
 }
@@ -600,7 +647,7 @@ Having derived an error bound for algorithm 3, we can also derive an error bound
 
 \begin{proof}
 	Without loss of generality, we can assume that $\rho$ is non-negative (otherwise split it into it's non-negative and non-positive components).
-	Let $\psi \in L^{2}(M)$ be such that $\rho = | \psi |^{2}$, as described in algorithm 2.
+	Let $\psi \in L^{2}(M)$ be such that $\rho =  \psi ^{2}$, as described in algorithm 2.
 	It follows that $\psi \in H^{s}(M)$ and we compute
 	\begin{align*}
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}} = \int_{M} | \rho(t) - \rho_{n}(t)| = \int_{M} | \psi^{2} - \psi_{n}^{2} |
@@ -849,10 +896,13 @@ The $L^{\infty}$-norm is conserved to machine precision for GN discretization, w
 \end{figure}
 
 \subsection{AB flow}
+\todo[inline]{Only do densities, Plot location of mode,compare with Monte Carlo and standard spectral.}
 
 \subsection{Rigid body}
+\todo[inline]{Do this last, if at all}
 
 \subsection{ABC flow}
+\todo[inline]{Only do densities, Plot location of mode,compare with Monte Carlo and standard spectral. Show slices, no fancy 3d shit.}
 
 \section{Interpretations from $C^{*}$-algebras and quantum mechanics}
 
