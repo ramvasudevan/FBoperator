@@ -7,9 +7,7 @@ from scipy.integrate import ode
 from scipy.integrate import odeint
 # FOR PLOTTING ANYTHING UNCOMMENT THE FOLLOWING LINE
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
-#THERE IS AN INDEXING MISMATCH BETWEEN HOW PSI IS CALCULATED AND OUR OPERATOR
 
 # CONSTANTS 
 # modes is a list of integer tuples
@@ -19,11 +17,6 @@ res = 2**(p+1)+1
 
 print 'There are %d modes' %(len(modes))
 print 'So our operator has %d entries' %(len(modes)**2)
-
-# These functions allow us to do basic arithmetic with the modes
-add_tuple = lambda m,n: tuple( x+y for (x,y) in zip(m,n) )
-sub_tuple = lambda m,n: tuple( x-y for (x,y) in zip(m,n) )
-dot = lambda m,n: sum( x*y for (x,y) in zip(m,n) )
 
 #CONVENTIONS:  DFT[ a ]_k = \sum_{x} a(x) exp( - 2*pi*i*x*k)
 #So we must divide by n in order for this sum to approximate an integral.
@@ -66,16 +59,6 @@ def state_to_XY( state):
     y = state[len(state)/2:]
     return x,y
 
-"""
-def conv_basis(k):
-    # Takes in a mode and outputs a convolution matrix associated
-    # to the activation of that mode.
-    global res
-    e_0 = sparse.eye(res,k=k[0])
-    e_1 = sparse.eye(res,k=k[1])
-    return sparse.kron(e_1,e_0)
-"""
-
 def conv_basis(k):
     # Takes in a mode and outputs a convolution matrix associated
     # to the activation of that mode.
@@ -115,33 +98,6 @@ f_cnv = get_conv_mat(f_hat)
 g_cnv = get_conv_mat(g_hat)
 ddx = ddx_1d(0)
 ddy = ddx_1d(1)
-
-# NOTE:  PLOTTING IS WORKING.  DDX and DDY are WORKING.  WE STILL NEED TO TEST F_CNV and GCNV
-# NOTE:  I THINK WHAT IS WRONG IS THAT OUR CONV BASIS IS INCORRECT
-# NOTE:  WE NEED TO USE THE HELPER FUNCTION "np.fft.fftshift" and "np.fft.ifftshift" POSSIBLY
-# NOTE:  OR WE NEED TO CONSTRUCT OUR OWN SHIFT FUNCTION.  DO THIS, SINCE THERE IS NO
-# N-DIMENSIONAL ROUTINE TO USE
-#N_nodes = 2**(p+1)+1
-#x_span = np.linspace( 0 , 1 , N_nodes)
-#y_span = np.linspace( 0 , 1 , N_nodes)
-#X_mesh,Y_mesh = np.meshgrid(x_span,y_span)
-#psi = np.ones(X_mesh.shape, dtype=complex) # np.cos( 2*np.pi*X_mesh*3)
-#psi_hat = np.fft.fft2( psi )
-#store = g_cnv.dot( psi_hat.flatten() )
-#output = np.fft.ifft2( store.reshape( (N_nodes,N_nodes) ) )
-#plt.subplot(1,2,1)
-#plt.imshow( output.real , origin='lower')
-#plt.colorbar()
-#plt.title('this should be -sin(2*pi*x)')
-#plt.subplot(1,2,2)
-#exact =  psi* -np.sin(2*np.pi*X_mesh)
-#plt.imshow(exact.real , origin='lower' )
-#plt.colorbar()
-#plt.title('This is actually -sin(2*pi*x)' )
-#plt.show()
-#print np.max(np.abs(output.imag))
-#print np.max(np.abs(output.real - exact))
-#quit()
 
 def get_Koopman_Op():
     global modes,f_cnv,g_cnv,ddx,ddy
