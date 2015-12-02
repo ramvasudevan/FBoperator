@@ -275,12 +275,12 @@ Such safety mechanisms are analogous to the use of private/public functions in o
 For each $X \in \mathfrak{X}(M)$ the operator $\pounds_{X}$ on $L^{2}(M)$ is unbounded.
 In the parlance of functional analysis, the domain of $\pounds_{X}$ is
 \begin{align}
-	\operatorname{dom}( \pounds_{X} ) = \{ \psi \in L^{2}(M) \mid  \| \pounds_{X}[\psi] \|_{L^{2}} < \infty \}
+	\operatorname{dom}( \pounds_{X} ) := \{ \psi \in L^{2}(M) \mid  \| \pounds_{X}[\psi] \|_{L^{2}} < \infty \}.
 \end{align}
 One can then show that $\operatorname{dom}( \pounds_{X} )$ is a closed subspace of $L^{2}(M)$ and then define
 a \emph{canonical} Sobolev space
 \begin{align}
-	H^{1}(M) := \bigcap_{X \in \mathfrak{X}} \operatorname{dom}( \pounds_{X} ).
+	H^{1}(M) := \bigcap_{X \in \mathfrak{X}(M)} \operatorname{dom}( \pounds_{X} ).
 \end{align}
 Where we view $\pounds_{X}$ as an unbounded operator on $L^{2}(M)$.
 More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative operators,
@@ -293,12 +293,11 @@ and we can even consider fraction degrees of regularity as well.
 %where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denotes the set of eigenvectors of $\pounds_{X}$. 
 %This fractional power of $\pounds_{X}$ allows us to consider Sobolev spaces of fractional orders as well.
 
-  However, while the canonical (metric-free) nature of $L^{2}(M)$ will turn out to be quite useful,
-  these new constructions for Sobolev spaces are not so useful for our purposes.
+  However, while the canonicalism of $L^{2}(M)$ will be quite useful to us,
+  \emph{canonical} (metric-free) Sobolev spaces will not be.
   We will find that our algorithms only converge on spaces of sufficient regularity,
-  but in order to perform our error-analysis we will need to choose a norm.
-  This choice is necessarily non-canonical.
-
+  but in order to perform our error-analysis we will need to choose a non-canonical norm.
+  
 To begin the process of choosing a norm for $H^{s}(M)$, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
 The metric induces a positive density $\mu_g$,
 known as the \emph{metric density}. 
@@ -327,7 +326,8 @@ via sequences of finite rank operators.
 	Let $(M,g)$ be a compact Riemmanian manifold.  If $s > t \geq 0$ then $H^s(M;g)$ is compactly embedded within $H^t(M,g)$.
 \end{prop}
 \begin{proof}
-	Let $e_0, e_1,\dots$ be a Hilbert basis for $L^2(M;\mu_g)$ which diagonalizes $\Delta$
+	As $M$ is compact we know that the spectrum of $\Delta$ is discrete and $L^{2}(M)$ is separable.
+	Let $e_0, e_1,\dots$ be the Hilbert basis for $L^2(M;\mu_g)$ which diagonalizes $\Delta$
 	in the sense that $\Delta e_i = \lambda_i e_i$ for a sequence $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \cdots$.
 	The operator $(1+\Delta)^s$ is given by
 	\begin{align}
@@ -526,14 +526,14 @@ To solve the Louiville equation, \eqref{eq:density pde}, we could implement the 
 		\begin{enumerate}
 			\item Split $\rho_{0} = \rho_{0}^{(+)} - \rho_{0}^{(-)}$ for positive densities, $\rho_{0}^{(+)},\rho_{0}^{(-)}$.
 			\item Let $\psi_{0} = \sqrt{ \rho_{0}^{(+)}} + i \sqrt{\rho_{0}^{(-)}}$.
-			\item Solve \eqref{eq:half density pde} numerically with initial conditions $\psi_{0}$.
+			\item Solve \eqref{eq:half density pde} numerically with initial conditions $\psi_{0}$. (see algorithm 3)
 			\item Set $\rho(t) = \psi(t)^{2}$. 
 		\end{enumerate}
 	\end{minipage}
 }
 \end{center}
 
-Step (4) of the above algorithm involves solving \eqref{eq:half density pde} numerically.
+Step (3) of the above algorithm involves solving \eqref{eq:half density pde} numerically.
 Here we propose the most naive spectral algorithm
 \begin{center}
 \fbox{
@@ -543,7 +543,9 @@ Here we propose the most naive spectral algorithm
 		{\bf Numerical solution:}
 		\begin{enumerate}
 			\item set $[X]_{n} = \pi_{n} \cdot \pi(X) |_{V_{n}}$.
-			\item Solve the ODE $\frac{d\psi_{n}}{dt} = [X]_{n} \cdot \psi_{n}$ with the initial condition $\psi_{n}(0) = \pi_{n}(\psi(0))$.
+			\item We observe that $[X]_{n}$ is a linear automorphism on a finite dimensional subspace.
+			Thus we can solve the ODE $\frac{d\psi_{n}}{dt} = [X]_{n} \cdot \psi_{n}$ with the initial condition $\psi_{n}(0) = \pi_{n}(\psi(0))$
+			using a standard ODE integrator.\footnote{We use the implementation of VODE \cite{VODE} within SciPy \cite{Scipy} in this paper.}
 		\end{enumerate}
 	\end{minipage}
 }
@@ -901,8 +903,29 @@ The $L^{\infty}$-norm is conserved to machine precision for GN discretization, w
 	\end{subfigure}
 \end{figure}
 
-\subsection{AB flow}
-\todo[inline]{Only do densities, Plot location of mode,compare with Monte Carlo and standard spectral.}
+\subsection{A system on the 2-torus}
+Let us consider the system on $\mathbb{T}^{2}$ given by 
+\begin{align}
+	\dot{x} &= \cos(y) - D \sin(x) \\
+	\dot{y} &= -\sin(x) - D \cos(y).
+\end{align}
+This can be seen as a dissipative Hamiltonian system with Hamiltonian $H(x,y) = \sin(y) - \cos(x)$ and dissipation $\vec{F} = D \cdot \nabla H$.
+In Figure \ref{fig:2 torus} we depict the result of solving \eqref{eq:density pde} using three methods: GN spectral, Monte-Carlo, and a standard spectral discretization.
+The top row depicts the result from applying algorithm 2 with the Fourier basis $\{ e^{2\pi i (k_{1}x +k_{2}y)} \mid -8 \leq k_{1},k_{2} \leq 8\}$.
+This is a total of $289$ basis functions. 
+The middle row depicts the results of a Monte-Carlo simulation with $10^{5}$ particles.
+Finally, the bottom row depicts the results of a standard spectral scheme using the same basis as mentioned earlier.
+The Monte-Carlo simulation can serve us as a benchmark.
+We see that spurious oscillations will manifest using standard discretization, just as in the one-dimensional case.
+Also as before, our GN discretization will conserve mass while the standard spectral scheme will dissipate and diffuse mass (by allowing for negative mass)
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{./images/two_torus.png}
+	\caption{Blah}
+	\label{fig:2 torus}
+\end{figure}
+
 
 \subsection{Rigid body}
 \todo[inline]{Do this last, if at all}
