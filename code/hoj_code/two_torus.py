@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 # CONSTANTS 
 # modes is a list of integer tuples
-p = 6
+p = 3
 modes = [ (k1,k2) for k1 in range(- 2**p , 2**p+1 ) for k2 in range(- 2**p , 2**p + 1)]
 res = 2**(p+1)+1
 
@@ -27,27 +27,28 @@ print 'So our operator has %d entries' %(len(modes)**2)
 # of the form {k:coefficient} where k is a (multi)frequency
 B = 1.0
 C = 1.0
-f_hat = {}
-f_hat[(0,1)] = C*0.5
-f_hat[(0,-1)] = C*0.5
+f_hat,g_hat = {},{}
 
-g_hat = {}
-g_hat[(1,0)] = B*0.5j
-g_hat[(-1,0)] = -B*0.5j
+# THIS IS THE HAMILTONIAN COMPONENT
+f_hat[( 0, 1)] = C/2
+f_hat[( 0,-1)] = C/2
+g_hat[( 1, 0)] = -B/2j
+g_hat[(-1, 0)] = B/2j
 
-# vector field is X(x) = f(x) d/dx
-# f_hat is the Fourier transform of f
+# THIS IS THE DISSAPATIVE COMPONENT
+D = 0.2
+f_hat[( 1, 0)] = -D*B /2j
+f_hat[(-1, 0)] = D*B/2j
+g_hat[( 0, 1)] = -D*C/2
+g_hat[( 0,-1)] = -D*C/2
 
-# Arrays for plotting stuff
-temp = np.linspace(-0.5,0.5,res)
-X_grid,Y_grid = np.meshgrid(temp,temp)
 
 def CB_flow( state , t ):
-    global B,C
+    global B,C,D
     x,y = state_to_XY( state)
-    dx = C * np.cos(2*np.pi*y)
-    dy = -B * np.sin(2*np.pi*x)
-    return np.concatenate((dx,dy))
+    dx = C * np.cos(2*np.pi*y) - D*B*np.sin(2*np.pi*x)
+    dy = -B * np.sin(2*np.pi*x) - D*C*np.cos(2*np.pi*y)
+    return 2*np.concatenate((dx,dy))
 
 def translate_right( state , t):
     x,y = state_to_XY(state)
@@ -128,6 +129,9 @@ def get_Hilbert_Op():
         return 0.5*(w1+w2+w3+w4)
     return LinearOperator( (N,N) , matvec=mv)
 
+# Arrays for plotting stuff
+temp = np.linspace(-0.5,0.5,res)
+X_grid,Y_grid = np.meshgrid(temp,temp)
 def initialize_wave_function():
     # generates a wave function using fft
     global modes
@@ -135,11 +139,11 @@ def initialize_wave_function():
     x_arr = np.linspace(0.0,1.0,N_nodes)
     X,Y = np.meshgrid( x_arr , x_arr)
     sigma_x = 0.3
-    sigma_y = 0.1
+    sigma_y = 0.3
     psi = np.zeros(X.shape)
     # here we construct a wrapped Guassian
-    x_bar = 0.2
-    y_bar = 0.9
+    x_bar = 0.4
+    y_bar = 0.4
     for k1 in range(-7,8):
         for k2 in range(-7,8):
             if True or k1**2 + k2**2 < 7**2:
@@ -147,60 +151,98 @@ def initialize_wave_function():
                 s2 = k2*sigma_y
                 psi += np.exp( -(X-x_bar-k1)**2 / (2*sigma_x**2) - (Y-y_bar -k2)**2 /(2*sigma_y**2))
     psi_hat = np.fft.fftn(psi)
-    N_samples = (50)**2
+    N_samples = (100)**2
+    rt2 = np.sqrt(2)
     x = ( np.random.randn(N_samples)*sigma_x/2 + x_bar ) 
     y = ( np.random.randn(N_samples)*sigma_y/2 + y_bar ) 
     psi = np.fft.ifftn(psi_hat)
-    rho = (psi**2).real
+    rho = psi**2
+    rho_hat = np.fft.fftn( rho )
     plt.subplot(1,2,1)
-    plt.imshow( rho , cmap='Greys' ,origin='lower', extent=[0,1,0,1] )
+    plt.imshow( np.abs(psi**2) , cmap='Greys' ,origin='lower', extent=[0,1,0,1] )
     plt.title('rho at t=0')
     plt.subplot(1,2,2,aspect='equal')
     plt.axis([0,1,0,1])
-    plt.scatter( x%1,y%1 ,alpha=0.035, c = 'k')
+    plt.scatter( x%1,y%1 ,alpha=0.02, c= 'k', s=3. )
     plt.show()
-    return psi_hat.flatten(),x%1,y%1
+    return psi_hat.flatten(), rho_hat.flatten(), x%1,y%1
 
-#Lets make some operators
-psi_hat_initial,x,y = initialize_wave_function()
+#GET INITIAL CONDITIONS
+psi_hat_initial,rho_hat_initial,x,y = initialize_wave_function()
 print 'integrating'
 print 'p=%d' %p
-#Operator = -ddx
+t0 = 0.0
+t1 = 1.0
+N_timesteps = 11
+t = np.linspace(0.0 , t1 , N_timesteps)
+
+#SOLVE USING MONTE-CARLO
+state_0 = np.concatenate( (x , y) )
+states = odeint( CB_flow ,state_0 , t )
+
+#SOLVE USING HILBERT METHOD
 Operator = -get_Hilbert_Op() 
 ode_instance = ode( lambda t,y: Operator.dot(y) )
 ode_instance.set_integrator('zvode',method='adams')
-t0 = 0.0
-t1 = 1.0
 ode_instance.set_initial_value(psi_hat_initial,t0)
-t_span = np.linspace(0.0 , t1 , 10)
-dt = t_span[1]
-state_0 = np.concatenate( (x , y) )
-states = odeint( CB_flow ,state_0 , t_span )
-#states = odeint( translate_right ,state_0 , t_span )
 N_nodes = 2**(p+1)+1
-fig_num = 0
-x_span = np.linspace( 0 , 1. , N_nodes)
-X_mesh,Y_mesh = np.meshgrid( x_span,x_span)
-while ode_instance.successful() and ode_instance.t < t1:
-    ode_instance.integrate( ode_instance.t + dt )
+psi_list = [np.fft.ifftn(psi_hat_initial.reshape(N_nodes,N_nodes)) ]
+for i in range(1,N_timesteps):
+    ode_instance.integrate( t[i] )
     print 'Integrated up to t = %f' %(ode_instance.t)
     psi_hat = ode_instance.y
-    psi = np.fft.ifftn( psi_hat.reshape(N_nodes,N_nodes))
-    plt.subplot(1,2,1)
-    plt.imshow( np.abs(psi)**2,
+    psi_list.append( np.fft.ifftn( psi_hat.reshape(N_nodes,N_nodes)) )
+
+#SOLVE USING FP-CALLOCATION METHOD
+Operator = -get_FP_Op() 
+ode_instance = ode( lambda t,y: Operator.dot(y) )
+ode_instance.set_integrator('zvode',method='adams')
+ode_instance.set_initial_value(rho_hat_initial,t0)
+N_nodes = 2**(p+1)+1
+rho_list = [np.fft.ifftn(rho_hat_initial.reshape(N_nodes,N_nodes)) ]
+for i in range(1,N_timesteps):
+    ode_instance.integrate( t[i] )
+    print 'Integrated up to t = %f' %(ode_instance.t)
+    rho_hat = ode_instance.y
+    rho_list.append( np.fft.ifftn( rho_hat.reshape(N_nodes,N_nodes)) )
+
+#NOW ON TO PLOTTING
+f,ax = plt.subplots( 3, 1+N_timesteps/2 )
+#f.set_size_inches(16,4)
+#f.text( 0.02, 0.5, 't=%.2f'%t[i], fontsize=16)
+for i in range(N_timesteps/2+1):
+    #PLOT GN SPEC
+    psi = psi_list[2*i]
+    rho = rho_list[2*i]
+    ax[0,i].imshow( np.abs(psi**2) ,
             cmap = 'Greys',
             origin='lower',
             interpolation='nearest',
             extent=[0,1,0,1])
-    plt.grid(True)
-    plt.title('t=%.2f' %ode_instance.t)
-    fig_num += 1
-    x,y = state_to_XY( states[fig_num] )
-    plt.subplot(1,2,2,aspect='equal')
-    plt.axis([0,1,0,1])
-    plt.scatter( x%1,y%1 ,alpha=0.035, c = 'k')
-    plt.show()
+    ax[0,i].grid(True)
+    ax[0,i].set_title('t=%.2f'%t[2*i])    
+    #PLOT MONTE CARLO
+    x,y = state_to_XY( states[i] )
+    ax[1,i].scatter( x%1,y%1 ,alpha=0.01, s=2.0, c = 'k')
+    ax[1,i].axis([0,1,0,1])
+    ax[1,i].set_aspect('equal')
+    ax[1,i].grid(True)
+
+    #PLOT STANDARD SPEC
+    ax[2,i].imshow( rho.real ,
+            cmap = 'Greys',
+            origin='lower',
+            interpolation='nearest',
+            extent=[0,1,0,1])
+    ax[2,i].grid(True)
+    
+    #REMOVE TICKLABELS
+    for k in range(3):
+        ax[k,i].xaxis.set_ticklabels([]) 
+        ax[k,i].yaxis.set_ticklabels([]) 
     #plt.savefig('figures/figure_%d.png'%(fig_num))
-    plt.clf()
     print 'min( rho ) = %f' %(np.min(np.min( np.abs(psi)**2)))
     print 'total mass = %f' %(np.sum(np.sum( np.abs(psi)**2)))
+
+plt.tight_layout()
+plt.show()
