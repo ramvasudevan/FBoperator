@@ -273,13 +273,14 @@ Such safety mechanisms are analogous to the use of private/public functions in o
 \subsection{Sobolev spaces}
 \label{sec:Sobolev spaces}
 For each $X \in \mathfrak{X}(M)$ the operator $\pounds_{X}$ on $L^{2}(M)$ is unbounded.
-In the parlance of functional analysis, we could define the domain of $\pounds_{X}$ to be 
+In the parlance of functional analysis, the domain of $\pounds_{X}$ is
 \begin{align}
-	\dom
+	\operatorname{dom}( \pounds_{X} ) = \{ \psi \in L^{2}(M) \mid  \| \pounds_{X}[\psi] \|_{L^{2}} < \infty \}
 \end{align}
-We could construct a canonical Sobolev space by defining the subset
+One can then show that $\operatorname{dom}( \pounds_{X} )$ is a closed subspace of $L^{2}(M)$ and then define
+a \emph{canonical} Sobolev space
 \begin{align}
-	H^{1}(M) := \{ \psi \in L^{2}(M) \mid \pounds_{X}[\psi] \in L^{2}(M) , \forall X \in \mathfrak{X}(M) \} \equiv \bigcap_{X \in \mathfrak{X}} \operatorname{dom}( \pounds_{X} ).
+	H^{1}(M) := \bigcap_{X \in \mathfrak{X}} \operatorname{dom}( \pounds_{X} ).
 \end{align}
 Where we view $\pounds_{X}$ as an unbounded operator on $L^{2}(M)$.
 More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative operators,
@@ -298,7 +299,7 @@ and we can even consider fraction degrees of regularity as well.
   but in order to perform our error-analysis we will need to choose a norm.
   This choice is necessarily non-canonical.
 
-To begin, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
+To begin the process of choosing a norm for $H^{s}(M)$, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
 The metric induces a positive density $\mu_g$,
 known as the \emph{metric density}. 
 The Riemmanian density induces the $L^2$ inner-product on $C^\infty(M)$ via
