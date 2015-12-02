@@ -11,7 +11,7 @@
 
 %  NEW COMMANDS
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
-\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial{align}
       #2 \partial #3} } }
 \newcommand{\R}{\ensuremath{\mathbb{R}}}
 \renewcommand{\H}{\ensuremath{\mathcal{H}}}
@@ -81,12 +81,12 @@ Let $\Phi^{t_{0},t_{1}}_{X}:M\to M$ denote the flow map of $X$ from time $t_{0}$
 Given a bounded real-valued function $f_{0}$, we could consider the time-dependent function $f(x,t) := f_{0} ( (\Phi_{X}^{0,t})^{-1}(x) )$.
 The function $f$ represents how $f_{0}$ is pushed and stirred around by the flow of $X$.
 For a fixed $x \in M$ we observe, via the chain-rule,
-\begin{align*}
+\begin{align}
 	 \frac{d}{dt}  f(x;t) &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} ( f(x;t+\epsilon) - f(x,t) ) \\
 	 &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} \left( f( (\Phi_{X}^{t,t+\epsilon})^{-1}(x) , t ) - f(x,t) \right) \\
 	 &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} \left( f(x,t) + \epsilon \pder{f}{x^{j}} [ (\Phi_{X}^{t,t+\epsilon})^{-1}(x) - x ]^{j} + \mathcal{O}(\epsilon^{2}) - f(x,t) \right) \\
 	 &= - X^{j}(x) \pder{f}{x^{j}} = - \pounds_{X}[f_{0}]
-\end{align*}
+\end{align}
 where $\pounds_{X}[f]$ denotes the Lie-derivative of $f$.
 This calculation yields the time-dependent advection PDE
 \begin{align}\label{eq:function pde}
@@ -116,17 +116,17 @@ This can naturally be extended to the case where $\rho$ is a distribution, and w
 
 More conservation laws can be found for vector-field advection.
 If $Y$ and $Z$ are vector-fields, then there is a natural Lie-bracket structure given by
-\begin{align*}
+\begin{align}
 	[Y,Z]^{i} \equiv ( \pounds_{Y}[Z] )^{i} := \partial_{j}Z^{i} \, Y^{j} - \partial_{j}Y^{i} \, Z^{j}.
-\end{align*}
+\end{align}
 We can observe that if $Y$ and $Z$ satisfy \eqref{eq:vector field pde} then $[Y,Z]$ also satisfies \eqref{eq:vector field pde}.
 In summary, advection preserves the Lie algebra of vector fields.
 
 Lastly, the canonical relationships between vector-fields and functions and densities are also preserved.
 Given a vector-field $Y$ a function $f$ and a density $\rho$ we may define the Lie derivatives
-\begin{align*}
+\begin{align}
 	\pounds_{Y}[f] = Y^{j} \partial_{j}f \quad , \quad \pounds_{Y}[\rho] = \pder{}{x^{j}} ( \rho Y^{j} ).
-\end{align*}
+\end{align}
 The quantity $\pounds_{Y}[f]$ is itself a function, and $\pounds_{Y}[\rho]$ is a density.
 If $f,\rho$ and $Y$ satisfy the advection PDEs \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde} respectively,
 then $\pounds_{Y}[f]$ satisfies \eqref{eq:function pde} and $\pounds_{Y}[\rho]$ satisfies \eqref{eq:density pde}.
@@ -198,9 +198,9 @@ and observe that half densities are is naturally equipped with the norm $$\| \ps
 \begin{defn}
 	We define $L^{2}(M)$ as the completion of $\sqrt{ \Dens(M)}$ with respect to the $2$-norm.
 	The space $L^{2}(M)$ is equipped with a complex inner-product given by
-	\begin{align*}
+	\begin{align}
 		\langle \psi \mid \phi \rangle = \int_{M} \bar \psi \phi
-	\end{align*}
+	\end{align}
 	through polar decomposition, and so $L^{2}(M)$ is a Hilbert space.
 \end{defn}
 
@@ -211,9 +211,9 @@ For a vector-field $X$, the Lie derivative of a half-density is given in local c
 \end{align}
 This is an unbounded anti-Hermetian operator on $L^{2}(M)$.
 The advection equation can be written as
-\begin{align*}
+\begin{align}
 	\partial_{t} \psi + \pounds_{X}[\psi] = 0.
-\end{align*}
+\end{align}
 By the Stone Von-Neumann theorem \cite{Conway1990}, there is a solution for all time, in spite of the fact that the Lie derivative is an unbounded operator.
 Moreover, the solution is given by a unitary action.  For reference later, we restate this remark formally.
 \begin{prop} \label{prop:stone}
@@ -232,9 +232,9 @@ We will generally avoid using this explicit expression though, as it can be cumb
 \label{sec:classical_Lebesgue}
 For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$.
 Upon choosing some $\mu$, the $2$-norm of a complex function $f$ with respect to $\mu$ is
-\begin{align*}
+\begin{align}
 	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
-\end{align*}
+\end{align}
 and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
 The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are identical as topological vector-spaces.
 In fact, the isomorphism can be given fairly explicitly.
@@ -272,18 +272,23 @@ Such safety mechanisms are analogous to the use of private/public functions in o
 
 \subsection{Sobolev spaces}
 \label{sec:Sobolev spaces}
+For each $X \in \mathfrak{X}(M)$ the operator $\pounds_{X}$ on $L^{2}(M)$ is unbounded.
+In the parlance of functional analysis, we could define the domain of $\pounds_{X}$ to be 
+\begin{align}
+	\dom
+\end{align}
 We could construct a canonical Sobolev space by defining the subset
-\begin{align*}
+\begin{align}
 	H^{1}(M) := \{ \psi \in L^{2}(M) \mid \pounds_{X}[\psi] \in L^{2}(M) , \forall X \in \mathfrak{X}(M) \} \equiv \bigcap_{X \in \mathfrak{X}} \operatorname{dom}( \pounds_{X} ).
-\end{align*}
+\end{align}
 Where we view $\pounds_{X}$ as an unbounded operator on $L^{2}(M)$.
 More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative operators,
 and we can even consider fraction degrees of regularity as well.
 %As $\pounds_{X}$ is anti-Hermetian we can invoke the spectral theorem of functional analysis
 %and consider the operator
-%\begin{align*}
+%\begin{align}
 %	(\pounds_{X})^{s} [ \psi] = \sum_{\lambda \in \sigma( \pounds_{X}) } \lambda^{s} \langle e_{\lambda} \mid \psi \rangle e_{\lambda}
-%\end{align*}
+%\end{align}
 %where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denotes the set of eigenvectors of $\pounds_{X}$. 
 %This fractional power of $\pounds_{X}$ allows us to consider Sobolev spaces of fractional orders as well.
 
@@ -297,9 +302,9 @@ To begin, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
 The metric induces a positive density $\mu_g$,
 known as the \emph{metric density}. 
 The Riemmanian density induces the $L^2$ inner-product on $C^\infty(M)$ via
-\begin{align*}
+\begin{align}
 	\langle f_1 , f_1 \rangle_{g} = \int \overline{f_1} \cdot f_2 \mu_g
-\end{align*}
+\end{align}
 and $L^{2}(M;\mu_{g})$ is the completion of the inner-product space $( C^{\infty}(M) , \langle \cdot , \cdot \rangle_{g})$ under 
 the inner-product norm.
 The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is is positive-semidefinite
@@ -308,9 +313,9 @@ If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert spa
 and the Helmholtz operator, $1 + \Delta$, is then a positive definite operator
 with a discrete spectrum.
 For any $s \geq 0$ we may define the Sobolev norm
-\begin{align*}
+\begin{align}
 	\| f \|_{s,2} =  \left( \langle f , (1+\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
-\end{align*}
+\end{align}
 and $H^s(M ; g)$ is then the function space obtained by completion with respect to this norm, and modulo discrepancies of measure zero.
 Note that $H^0(M;g) = L^2(M;\mu_g)$.
 
@@ -324,9 +329,9 @@ via sequences of finite rank operators.
 	Let $e_0, e_1,\dots$ be a Hilbert basis for $L^2(M;\mu_g)$ which diagonalizes $\Delta$
 	in the sense that $\Delta e_i = \lambda_i e_i$ for a sequence $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \cdots$.
 	The operator $(1+\Delta)^s$ is given by
-	\begin{align*}
+	\begin{align}
 		(1+\Delta)^s \cdot f =  \sum_{i} e_i (1+\lambda_i)^s \langle e_i , f \rangle_g,
-	\end{align*}
+	\end{align}
 	and so $\{ (1+ \lambda_i)^{-s/2} e_i \}_{i=1}^{\infty}$ is a Hilbert basis for $H^s(M;g)$.
 	
 	Let us call $e_i^{(s)} = (1+ \lambda_i)^{-s/2} e_i$.
@@ -351,9 +356,9 @@ That is to say $(\hat{f} \cdot \psi) (x) = f(x) \psi(x)$.
 We see that the hat-map, $f \mapsto \hat{f}$, preserves the ring structure because $\widehat{f \cdot g + h} = \hat{f} \cdot \hat{g} + \hat{h}$.
 
 Similarly, (and in the opposite direction) for any trace class operator $\hat{\rho}$ there is a unique distribution $\rho \in C(M)'$ such that 
-\begin{align*}
+\begin{align}
 	 \int f \, \rho = \Tr ( \hat{f}^{\dagger} \cdot \hat{\rho} )
-\end{align*}
+\end{align}
 for any $f \in C(M)$.
 By construction, the surjection $\hat{\rho} \mapsto \rho$ and the injection $f \mapsto \hat{f}$ preserve the duality between functions and distributions.
 
@@ -404,15 +409,15 @@ into ODE's of operators on $L^{2}(M)$.
 \begin{proof}
 	Let $f$ satisfy \eqref{eq:function pde}.
 	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ \hat{f} , \pi(X)] \cdot \psi$ is given in coordinates by
-	\begin{align*}
+	\begin{align}
 		[ \hat{f} , \pi(X) ] \cdot \psi = f \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right)
 			- \frac{1}{2} X^{j} \pder{}{x^{j}}( f \psi)  + \frac{1}{2} \pder{}{x^{j}} (f \psi \, X^{j} )
-	\end{align*}
+	\end{align}
 	where we have used \eqref{eq:representation}.  Application of the product rule to all these terms then yields
 	a number of cancellations and we find
-	\begin{align*}
+	\begin{align}
 		[ \hat{f} , \pi(X) ] \cdot \psi = - X^{j} \pder{f}{x^{j}} \psi = (\partial_{t} f )\psi = \frac{d \hat{f} }{dt} \cdot \psi.
-	\end{align*}
+	\end{align}
 	As $\psi$ is arbitrary we have managed to show that $\hat{f}$ satisfies \eqref{eq:quantum observable ode}.
 	Each line of reasoning is reversible, and so we have proven the converse as well.
 	
@@ -420,34 +425,34 @@ into ODE's of operators on $L^{2}(M)$.
 	and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde} respectively.
 	By the definition of $\hat{\rho}$ we observe $\Tr( \hat{f}^{\dagger} \hat{\rho}) = \langle f , \rho \rangle$.
 	Thus we find
-	\begin{align*}
+	\begin{align}
 		0 = \frac{d}{dt} \left( \Tr( \hat{f}^{\dagger} \rho ) \right) = \Tr \left( \frac{d \hat{f}^{\dagger}}{dt} \hat{\rho} + \hat{f}^{\dagger} \frac{d \hat{\rho}}{dt} \right).
-	\end{align*}
+	\end{align}
 	As was just shown, $\frac{d}{dt} \hat{f} =  - [\hat{f} , \pi(X) ]$ so we observe
-	\begin{align*}
+	\begin{align}
 		0 = \Tr( - [\hat{f} , \pi(X) ]^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \hat{\rho} ) = \Tr( - \pi(X)^{\dagger} \hat{f}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \pi(X)^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \frac{d\hat{\rho}}{dt} ).
-	\end{align*}
+	\end{align}
 	Upon noting that $\pi(X)^{\dagger} = - \pi(X)$ and use of identity $\Tr( a b c) = \Tr( bc a)$ we obtain
-	\begin{align*}
+	\begin{align}
 		0 = \Tr \left( \hat{f}^{\dagger}( [\hat{\rho} , \pi(X) ] + \frac{d \hat{\rho}}{dt} ) \right).
-	\end{align*}
+	\end{align}
 	As $\hat{f}$ was chosen arbitrarily, the desired result follows.
 	Again, this line of reasoning is reversible.
 	
 	Thirdly, if $Y$ satisfies \eqref{eq:vector field pde}, then we observe 
-	\begin{align*}
+	\begin{align}
 		\frac{d}{dt} \pi(Y) = \pi ( \partial_{t} Y ) = \pi( - [X,Y] ) = [\pi(X) , \pi(Y) ].
-	\end{align*}
+	\end{align}
 	where we have used the fact that $\pi$ is bracket preserving.
 	
 	Lastly, if $\psi$ satisfies \eqref{eq:half density pde} and $\rho = \psi^{2}$ then we see
-	\begin{align*}
+	\begin{align}
 		\partial_{t} \rho &= \partial_{t} ( \psi^{2}) = 2 (\partial_{t} \psi ) \, \psi \\
 		&= 2 \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \psi \\
 		&= \left( - X^{i} \partial_{i} \psi - \psi \partial_{i} X^{i}  \right) \psi \\
 		&= - 2 \psi (\partial_{i} \psi) X^{i} - (\partial_{i}X^{i}) \psi^{2}\\
 		&= - \partial_{i}(\rho) X^{i} - (\partial_{i}X^{i}) \rho = - \partial_{i} ( \rho X^{i}).
-	\end{align*}
+	\end{align}
 \end{proof}
 
 
@@ -558,27 +563,27 @@ Let us begin by observing how well half densities in $V_{n}$ can approximate arb
 \begin{prop} \label{prop:approximation}
 	Let $\psi \in H^{\bar{s}}(M)$ for $\bar{s} > s \geq 0$.
 	Then
-	\begin{align*}
+	\begin{align}
 		\| \psi - \pi_{n}(\psi) \|_{H^{s}} <  \frac{d \, C_{\bar{s},s} }{ \bar{s}-s} \| \psi \|_{H^{\bar{s}}} \, n^{-2(\bar{s}-s)/d}
-	\end{align*}
+	\end{align}
 	for some constant $C_{\bar{s},s}$ and $d = \dim(M)$.
 \end{prop}
 \begin{proof}
 	The Fourier decomposition of $\psi$ satisfies
-	\begin{align*}
+	\begin{align}
 		\| \psi \|^{2}_{H^{\bar{s} }} = \sum_{k=0}^{\infty} \hat{\psi}_{k}^{2} (1+\lambda_{k})^{\bar{s}} < \infty
-	\end{align*}
+	\end{align}
 	Weyl's asymptotic formula tells us that $\lambda_{k} \sim k^{2/d}$.
 	Substitution of this asymptotic result into the above inline equation for large $k$ tells us that $\hat{\psi}_{k}^{2}$ is asymptotically dominated by  $C k^{-1- 2\bar{s}/d}$
 	for some constant $C$.
 	Let $n$ be such that this dominance occurs for all $k>n$.  Then we find
-	\begin{align*}
+	\begin{align}
 		\| \psi - \pi_{n}(\psi) \|_{H^{s}} = \sum_{k>n} (1+\lambda_{k})^{s} \hat{\psi}_{k}^{2} \leq C \sum_{k>n} (1+\lambda_{k})^{s} k^{-1- 2\bar{s}/d}
-	\end{align*}
+	\end{align}
 	and by another application of the Weyl formula
-	\begin{align*}
+	\begin{align}
 		\| \psi - \pi_{n}(\psi) \|_{H^{s}} \leq \tilde{C} \sum_{k>n} \frac{1}{k^{1+2(\bar{s}-s)/d}} \leq C_{s,\bar{s}}  \frac{d }{ \bar{s}-s} n^{-2(\bar{s}-s)/d}.
-	\end{align*}
+	\end{align}
 	Where the last inequality is derived by bounding the above infinite sum with an integral.
 \end{proof}
 
@@ -593,14 +598,14 @@ derive an error bound for the numerical solutions derived in algorithm 3.
 	and $\psi_{n}(t)$ be the numerical solutions on the interval $[0,T]$ for $T < \infty$ with initial condition $\psi_{n}(0) = \pi_{n}(\psi_{0})$
 	computed using algorithm 3.
 	Then the error $E_{n}(t) := \| \psi(t) - \psi_{n}(t) \|_{H^{s}}$ satisfies the bound
-	\begin{align*}
+	\begin{align}
 		E_{n}(t) \leq \| \psi_{0} \|_{H^{\bar{s}}} \, K \left( n^{-2(s-1)} t+  \frac{d}{\bar{s}-s} n^{-2(\bar{s}-s)/d} \right) e^{C t}
-	\end{align*}
+	\end{align}
 	for all $t \in [0,T]$, where $K$ and $C$ are positive constants with respect to $n$,$s$, and $\bar{s}$.
 	In particular for $s = (\bar{s}+1)/2$ we get
-	\begin{align*}
+	\begin{align}
 			E_{n}(t) \leq \| \psi_{0} \|_{H^{\bar{s}}} \, K \left( n^{1-\bar{s}} t+  \frac{d}{\bar{s}-1} n^{(1-\bar{s})/d} \right) e^{C t}.
-	\end{align*}
+	\end{align}
 \end{thm}
 
 
@@ -608,26 +613,26 @@ derive an error bound for the numerical solutions derived in algorithm 3.
 \begin{proof}
 	Note that $\frac{dE_{n}}{dt} = \frac{1}{2E_{n}} \langle  \psi - \tilde{\psi} \mid \frac{d}{dt} ( \psi -\tilde{\psi} )\rangle_{H^{s}}$.
 	By the Cauchy-Schwarz inequality we see that
-	\begin{align*}
+	\begin{align}
 		\frac{dE_{n}}{dt} &\leq  \frac{1}{2} \| X[\psi] - \pi_{n}(X[\psi_{n}]) \|_{H^{s}} = \| X[\psi] - \pi_{n}( X[\psi- (\psi-\psi_{n})]) \|_{H^{s}} \\
 	\intertext{By the triangle inequality we may split this sum and use the definition of the operator norm to find}
 		&\leq \| (1-\pi_{n})|_{H^{s-1}} \|_{op} \, \|X|_{H^{s}} \|_{op} \, \| \psi \|_{H^{s}} + \| \pi_{n} \| \, \|X|_{H^{s}} \| \, E_{n} \\
-	\end{align*}
+	\end{align}
 	We know $\psi(t) = \Phi^{t}_{*}\psi_{0}$ where $\Phi^{t}$ is the flow of $X$.
 	As $\Phi$ is as smooth as $X$ we can see that $\| \psi(t) \|_{H^{s}}$ is bounded by a scalar multiple of $\| \psi_{0} \|_{H^{s}}$.
 	Thus we may write the above bound in the form
-	\begin{align*}
+	\begin{align}
 		\frac{dE_{n}}{dt} \leq K' \, \| (1- \pi_{n})|_{H^{s-1}} \| \, \| \psi_{0}\|_{H^{s}}+ C E_{n}
-	\end{align*}
+	\end{align}
 	for constants $C$ and $K'$.
 	We can explicitly compute $\| (1-\pi_{n})|_{H^{s-1}} \|_{op} = (1+\lambda_{n+1})^{-(s-1)}$ where $\lambda_{k}$ denotes the $k$th eigenvalue of the Laplace operator.
 	By Weyl's asymptotic formula \cite[Theorem B.2]{Chavel1984} we
 	can derive that $\lambda_{n}$ asymptotically behaves like $n^{2/d}$ where $d = \dim(M)$.
 	Therefore by a perturbed version of Gronwall's inequality (see Lemma \ref{lem:Gronwall} on page \pageref{lem:Gronwall}) with $\epsilon = C_{1,T} n^{-2(s-1) / d} \, \| \psi_{0}\|_{H^{s}}$
 	we find
-	\begin{align*}
+	\begin{align}
 		E(t) \leq ( K' n^{-2(s-1) / d} \| \psi_{0} \|_{H^{s}} t+  E(0) ) e^{C t}.
-	\end{align*}
+	\end{align}
 	That $E_{n}(0)$ behaves as $K'' \| \psi_{0} \|_{H^{\bar{s}}} n^{-2(\bar{s}-s)/d}$ is merely a re-statement of Proposition \ref{prop:approximation}.
 	We then set $K = \max(K', K'')$.
 \end{proof}
@@ -639,9 +644,9 @@ Having derived an error bound for algorithm 3, we can also derive an error bound
 	Let $\rho(t)$ be the solution of \eqref{eq:density pde} on the time interval $[0,T]$.
 	Let $\rho_{n}(t)$ be the numerical solution derived via algorithm 2 on the time interval $[0,T]$.
 	Then we find
-	\begin{align*}
+	\begin{align}
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}} \leq \| \rho(0) \|_{W^{\bar{s},1}} \, \bar{K} \left( n^{-2(s-1)} t+  \frac{d}{\bar{s}-s} n^{-2(\bar{s}-s)/d} \right) e^{C t}
-	\end{align*}
+	\end{align}
 	for all $t \in [0,T]$, $\bar{K}$ is constant with respect to $n$ and $C$ is the same constant as in Theorem \ref{thm:half density convergence}.
 \end{thm}
 
@@ -649,14 +654,14 @@ Having derived an error bound for algorithm 3, we can also derive an error bound
 	Without loss of generality, we can assume that $\rho$ is non-negative (otherwise split it into it's non-negative and non-positive components).
 	Let $\psi \in L^{2}(M)$ be such that $\rho =  \psi ^{2}$, as described in algorithm 2.
 	It follows that $\psi \in H^{s}(M)$ and we compute
-	\begin{align*}
+	\begin{align}
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}} = \int_{M} | \rho(t) - \rho_{n}(t)| = \int_{M} | \psi^{2} - \psi_{n}^{2} |
-	\end{align*}
+	\end{align}
 	If we let $\phi_{n} = \psi - \psi_{n}$ then we can re-write the above as
-	\begin{align*}
+	\begin{align}
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}}  &= \int_{M} | \psi^{2} - (\psi - \phi_{n})^{2} | = \int_{M} | 2 \psi \phi_{n} - \phi_{n}^{2} | \\
 			&\leq 2 \| \psi \|_{L^{2}} \| \phi_{n}\|_{L^{2}} + \| \phi_{n} \|_{L^{2}}^{2} = 2 \| \rho \|_{L^{1}}^{1/2} \cdot \| \phi_{n} \|_{L^{2}} + \| \phi_{n} \|_{L^{2}}^{2}
-	\end{align*}
+	\end{align}
 	By Theorem \ref{thm:half density convergence} provides a bound for $\| \phi_{n} \|$.
 	Substitution of this bound into the above inequality yields the theorem.
 \end{proof}
@@ -666,9 +671,9 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 
 \begin{prop} \label{prop:function approximation}
 	Let $f \in C^{k}(M)$ and let $\hat{f}_{n} = \pi_{n} \circ \hat{f} \circ \pi_{n}$.  Then
-	\begin{align*}
+	\begin{align}
 		\| ( \hat{f} - \hat{f}_{n} )|_{H^{s}} \|_{op} \leq D \frac{d}{s} n^{-2s/d} \| \hat{f} \|_{op}
-	\end{align*}
+	\end{align}
 	where $d= \dim(M)$, $s > k \geq 1$, and $D$ is constant.
 \end{prop}
 \begin{proof}
@@ -677,12 +682,12 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 		\| \pi_{n}^{\perp}(\psi) \|_{L^{2}} \leq \frac{d}{s} n^{-2s/d} \| \psi \|_{H^{s}} \label{eq:hot inequality}
 	\end{align}
 	for $s>0$.  We now use this to compute the desired bound.  We find
-	\begin{align*}
+	\begin{align}
 		\| (\hat{f} - \hat{f}_{n})|_{H^{s}} \|_{op} &= \sup_{\| \psi \|_{H^{s}}=1} \langle \psi \mid \hat{f} - \hat{f}_{n} \mid \psi \rangle \\
 			&= \sup_{\| \psi \|_{H^{s}}=1} \left( \langle \psi \mid \hat{f}  \mid \psi \rangle - \langle \psi - \pi_{n}^{\perp}(\psi) \mid \hat{f} \mid \psi - \pi_{n}^{\perp}(\psi) \rangle \right) \\
 			&= \sup_{\| \psi \|_{H^{s}}=1} \left( 2 \Re \langle \pi_{n}^{\perp}(\psi) \mid \hat{f} \mid \psi \rangle - \langle \pi_{n}^{\perp}(\psi) \mid \hat{f} \mid \pi_{n}^{\perp}(\psi) \rangle \right) \\
 			&\leq \sup_{\| \psi \|_{H^{s}}=1}  ( \| \pi_{n}^{\perp}(\psi) \|_{L^{2}}- \| \pi_{n}^{\perp}(\psi) \|_{L^{2}}^{2} ) \| \hat{f} \|_{op} \\
-	\end{align*}
+	\end{align}
 	By \eqref{eq:hot inequality} the result follows.
 \end{proof}
 
@@ -690,20 +695,20 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 	Let $f(t) \in C^{k}(M)$ be a solution to \eqref{eq:function pde} so that $\hat{f}(t)$ is a solution to \eqref{eq:quantum observable ode}.
 	Let $\hat{f}_{n}$ denote the numerical solution obtained through the numerical scheme described on page \pageref{function scheme}.
 	Then
-	\begin{align*}
+	\begin{align}
 		\| ( \hat{f} - \hat{f}_{n})|_{H^{s}} \|_{op} \leq D \frac{d}{s} n^{-2s/d} \| \hat{f} \|_{op}+  K \| \hat{f}_{n} \|_{op} \left( n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}
-	\end{align*}
+	\end{align}
 	for the same constants $D$ as in Proposition \ref{prop:function approximation} and the same constants $C,K$ as in \ref{thm:half density convergence}.
 \end{thm}
 
 \begin{proof}
 	We find
-	\begin{align*}
+	\begin{align}
 		\| ( \hat{f}(t) - \hat{f}_{n}(t))|_{H^{s}} \|_{op} &= \sup_{\| \psi \|_{H^{s}} =1} \langle \psi \mid \hat{f}(t) - \hat{f}_{n}(t) \mid \psi \rangle \\
 			&= \sup_{ \| \psi \|_{H^{s}} =1} \langle \psi \mid U(t) \cdot \hat{f}(0) U(t)^{\dagger} - U_{n}(t) \cdot \hat{f}_{n}(0) U_{n}(t)^{\dagger} \mid \psi \rangle \\
 			&= \sup_{ \| \psi \|_{H^{s}} =1 } \langle U(t)^{\dagger} \psi \mid f(0) \mid U(t)^{\dagger} \psi \rangle 
 				- \langle U_{n}(t)^{\dagger} \psi \mid \hat{f}_{n} \mid U_{n}(t)^{\dagger} \psi \rangle\\
-	\end{align*}
+	\end{align}
 	and finally
 	\begin{align}
 			&= \sup_{ \| \psi \|_{H^{s}} = 1} \langle U(t)^{\dagger} \psi \mid f(0) \mid U(t)^{\dagger} \psi \rangle \\
@@ -716,22 +721,22 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 	As $U_{n}(t)^{\dagger} \psi$ is the backwards time numerical solution to \eqref{eq:half density pde}
 	and $U_{n}(t)^{\dagger}\psi$ is the exact backward time solution to \eqref{eq:half density pde} we know by Theorem \ref{thm:half density convergence} that
 	there exists constants $K$ and $C$ such that
-	\begin{align*}
+	\begin{align}
 		\| \phi \|_{H^{\underline{s}}} = \| U_{n}(t)^{\dagger} \psi - U(t)^{\dagger} \psi \|_{H^{\underline{s}}}  \leq K \| \psi \|_{H^{s}} \left(  n^{-2(\underline{s}-1)} + \frac{d}{s - \underline{s}} n^{-2(s-\underline{s})/d} \right) e^{Ct} 
-	\end{align*}
+	\end{align}
 	for any $\underline{s} <s$.
 	We can simplify this expression by noting that $\| \psi \|_{H^{s}} = 1$, setting $\underline{s} = (1+s)/2$, and using that the $H^{\underline{s}}$ norm is stronger than the $L^{2}$-norm we get
-	\begin{align*}
+	\begin{align}
 		 \| \phi \|_{L^{2}}  \leq  K \left(  n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}.
-	\end{align*}
+	\end{align}
 	By applying the Cauchy-Schwarz inequality to \eqref{eq:final line} and our newly derived bound on $\phi$ we find
-	\begin{align*}
+	\begin{align}
 		\| ( \hat{f}(t) - \hat{f}_{n}(t))|_{H^{s}} \|_{op} \leq \| ( \hat{f}(0) - \hat{f}_{n}(0) )|_{H^{s}} \|_{op} +  K \| \hat{f}_{n} \|_{op} \left( n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}
-	\end{align*}
+	\end{align}
 	Upon invoking Proposition \ref{prop:function approximation} we get
-	\begin{align*}
+	\begin{align}
 		\| ( \hat{f}(t) - \hat{f}_{n}(t))|_{H^{s}} \|_{op} \leq D \frac{d}{s} n^{-2s/d} \| \hat{f} \|_{op}+  K \| \hat{f}_{n} \|_{op} \left( n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}
-	\end{align*}
+	\end{align}
 \end{proof}
 
 
@@ -742,22 +747,22 @@ In this section we list a number of properties which algorithms 1 through 3 exhi
 	Let $\hat{f}_{n}, \rho_{n}$, and $\psi_{n}$ be numerical solutions derived from algorithms 1, 2, and 3.
 	Then $\| \hat{f}_{n}(t) \|_{op}, \|\rho_{n}(t)\|_{L^{1}} , \| \psi (t)\|_{L^{2}}$ are all constant in time
 	and
-	\begin{align*}
+	\begin{align}
 		\lim_{n \to \infty} \| \hat{f} \|_{op} = \| f \|_{\sup} \\
 		\lim_{n \to \infty} \| \rho_{n} \|_{nuc} = \| \rho \|_{L^{1}} \\
 		\lim_{n \to \infty} \| \psi_{n} \|_{L^{2}} = \| \psi \|_{L^{2}}
-	\end{align*}
+	\end{align}
 \end{thm}
 \begin{proof}
 	To prove $\| \hat{f}_{n} \|_{op}$ is conserved note that the evolution is isospectral.
 	In particular, the solution is given by $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$
 	where $U_{n}(t)$ is the the solution to $\dot{U}_{n} = X_{n} \cdot U_{n}$ with $U_{n}(0)$ as the identity.
 	As $U_{n}(t)$ is unitary, we can observe that 
-	\begin{align*}
+	\begin{align}
 		\| \hat{f}_{n}(t) \|_{op}  &= \sup_{\psi}( \langle \psi \mid \hat{f}_{n}(t) \mid \psi \rangle) = \sup_{\psi}\left( \langle \psi \mid U_{n}(t) \cdot \hat{f}_{n}(0) \cdot U_{n}(t)^{\dagger} \mid \psi \rangle \right) \\
 			&= \sup_{\psi} \left( \langle U_{n}(t)^{\dagger} \cdot \psi \mid \hat{f}_{n}(0) \mid U_{n}(t)^{\dagger} \psi \rangle \right) = \sup_{\psi} \langle \psi \mid \hat{f}_{n}(0) \mid \psi \rangle \\
 			&= \| \hat{f}_{n}(0) \|_{op}.
-	\end{align*}
+	\end{align}
 	We've already shown that $\hat{f}_{n}(t)$ converges to $\hat{f}(t)$ in the operator norm.
 	Convergence of the norms follows from the fact that $\| \hat{f} \|_{op} = \| f \|_{\sup}$.
 	
@@ -782,17 +787,17 @@ We find that our integrator has this property as well.
 \end{thm}
 \begin{proof}
 	Note that 
-	\begin{align*}
+	\begin{align}
 		\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} \quad,\quad 
 		\hat{g}_{n}(t) = U_{n}(t) \hat{g}_{n}(0) U_{n}(t)^{\dagger} \quad,\quad
 		\hat{h}_{n}(t) = U_{n}(t) \hat{h}_{n}(0) U_{n}(t)^{\dagger}.
-	\end{align*}
+	\end{align}
 	Similarly, if $k_{n}(0) = f_{n}(0) g_{n}(0) + h_{n}(0)$ then
-	\begin{align*}
+	\begin{align}
 		\hat{k}_{n}(t) &= U(t) \hat{k}_{n}(0) U(t)^{\dagger} = U(t)\left( \hat{g}_{n}(0) \hat{f}_{n}(0) + \hat{h}_{n}(0) \right) U(t)^{\dagger} \\
 			&= U(t) \hat{g}_{n}(0) U(t)^{\dagger} U(t) \hat{f}_{n}(0) U(t)^{\dagger} + U(t) \hat{h}_{n}(0) U(t)^{\dagger} \\
 			&= \hat{g}_{n}(t) \hat{f}_{n}(t) + \hat{h}_{n}(t)
-	\end{align*}
+	\end{align}
 	Convergence follows as a result of Theorem \ref{thm:function convergence}.
 \end{proof}
 
@@ -815,9 +820,9 @@ We have a discrete analog of this.
 \subsection{A one dimensional example}
 Let us consider the vector field $\dot{x} = \sin(2x)$ for $x \in S^{1}$.
 The flow of this system is given explicitly by
-\begin{align*}
+\begin{align}
 	\Phi_{X}^{t}(x) = \operatorname{atan} \left( e^{2t} \tan(x) \right).
-\end{align*}
+\end{align}
 If the initial density is given by a uniform distribution $\rho_{0} = dx$ then the the exact solution of the advection pde \eqref{eq:density pde} at time is
 \begin{align}
 	\rho(x;t) =  \frac{dx}{e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) } \label{eq:exact solution}
@@ -865,9 +870,9 @@ A plot of the $L^{1}$-norm is given in figure \ref{fig:L1}
 
 We also know the evolution for an initial function, $f_{0}(x)$.
 For example, if $f_{0}(x) = \sin(x)$ then the solution to \eqref{eq:function pde} under this vector-field is
-\begin{align*}
+\begin{align}
 	f(x;t) = \frac{ e^{-2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{-4t} \sin^{2}(x) } }.
-\end{align*}
+\end{align}
 
 Unfortunately, algorithm 1 outputs $f$ as an operator on half-densities, and it is not clear how best to invert the hat-map.
 However, we can obtain one estimate by applying $\hat{f}_{n}$ to the half-density $\sqrt{dx}$, and then divide the result by $\sqrt{dx}$.
@@ -929,9 +934,9 @@ If $\frac{du}{dt} \leq Ku + \epsilon$ then $u(t) \leq (\epsilon t + u(0) ) e^{Kt
 \end{lem}
 \begin{proof}
 	Let $w (t)= u (t) e^{-Kt}$.  Then for $t \geq 0$ we find
-	\begin{align*}
+	\begin{align}
 		\frac{dw}{dt} = \frac{du}{dt} e^{-Kt} - K w \leq (Ku+\epsilon) e^{-Kt} - Kw = \epsilon e^{-Kt} \leq \epsilon
-	\end{align*}
+	\end{align}
 	Thus $w(t) \leq \epsilon t + w(0) = \epsilon t + u(0)$.
 \end{proof}
 
