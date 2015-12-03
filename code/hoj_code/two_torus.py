@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 # CONSTANTS 
 # modes is a list of integer tuples
-p = 3
+p = 5
 modes = [ (k1,k2) for k1 in range(- 2**p , 2**p+1 ) for k2 in range(- 2**p , 2**p + 1)]
 res = 2**(p+1)+1
 
