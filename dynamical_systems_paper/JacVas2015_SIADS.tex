@@ -488,10 +488,10 @@ In other-words, in the Fourier domain differentiation is given by
 for all $k \in \mathbb{Z}$.
 For any $n \in \mathbb{N}$ we may approximate the differentiation operator with a complex matrix
 \begin{align*}
-	D_{k \ell } = \delta_{k \ell } 2\pi i k
+	[D_n]_{k \ell } = \delta_{k \ell } 2\pi i k
 \end{align*}
 for $k,\ell \in \{ -N , \dots,-1,0,1,\dots N \}$.
-If we define $\mathbf{c} = ( c_{-n}, \dots , c_{-1} , c_0 , c_{1},\dots,c_n ) \in \mathbb{C}^{2n+1}$, the vector $D \cdot {\bf c}$ is the truncated Fourier series of $\frac{d\psi}{dx}$.
+If we define $\mathbf{c}_n = ( c_{-n}, \dots , c_{-1} , c_0 , c_{1},\dots,c_n ) \in \mathbb{C}^{2n+1}$, the vector $D_n \cdot {\bf c}_n$ is the truncated Fourier series of $\frac{d\psi}{dx}$.
 
 Similarly we may take the Fourier transform of the function $g$ to get the Fourier series expansion
 \begin{align}
@@ -509,26 +509,26 @@ In other-words, the multiplication operator $\hat{g}$ is nothing but the convolu
 
 Again, for any $n \in \mathbb{N}$ we can approximate $\hat{g}$ with a complex $(2n+1) \times (2n+1)$ matrix
 \begin{align}
-	\hat{G}_{k\ell} = g_{k - \ell}
+	[\hat{G}_n]_{k\ell} = g_{k - \ell}
 \end{align}
 for $k,\ell \in \{ -n , \dots,-1,0,1,\dots,n\}$.
-For $n$ large, we will find that $\hat{G}$ converges to the true operator.
+We will find that $\hat{G}_n$ converges to $\hat{g}$ as $n$ goes to infinity.
 As a result the matrix-vector computation
 \begin{align}
 	 {\bf d}_n = {\bf X}_n \cdot {\bf c}_n
 \end{align}
 where
 \begin{align}
-	{\bf X}_n = \frac{1}{2} \hat{G} \cdot D + \frac{1}{2} D \cdot \hat{G}
+	{\bf X}_n = \frac{1}{2} \hat{G}_n \cdot D_n + \frac{1}{2} D_n \cdot \hat{G}_n
 \end{align}
 serves as an approximation of the truncated Fourier series to \eqref{eq:S1 op}.
-We will see that this approximation converges exponentially when $\psi$ is smooth, and converges faster than $n^{1-s}$ when $\psi \in H^{s + \epsilon}$.
+We will see that this approximation converges exponentially when $\psi$ is smooth, and converges at a rate $n^{1-s}$ when $\psi \in H^{s}$.
 
 This gives us the following numerical scheme for \eqref{eq:half density pde} for a fixed $n$:
 
 \begin{enumerate}
 	\item Given the initial condition $\psi_0 \in L^2(S^1)$ compute ${\bf c}_n$.
-	\item Solve the ode $\frac{d {\bf c}_n }{dt} = {\bf X}_n \cdot {bf c}_n$ on $\mathbb{C}^{2n+1}$ over a finite time interval, $[0,T]$, using a legacy ode integration scheme or trusted software (e.g. we use vode).\footnote{If ${\bf X}_n$ is constant in time, than one can solve this using a numerical matrix exponential as well, but this can be treacherous.}
+	\item Solve the ode $\frac{d {\bf c}_n }{dt} = {\bf X}_n \cdot {\bf c}_n$ on $\mathbb{C}^{2n+1}$ over a finite time interval, $[0,T]$, using a legacy ode integration scheme or trusted software (e.g. we use vode).\footnote{If ${\bf X}_n$ is constant in time, than one can solve this using a numerical matrix exponential as well, but this can be treacherous.}
 	\item Let $\psi^{(n)}(x,t) = \sum_{k=-n}^n c_k(t) e^{2\pi ikx}$. 
 \end{enumerate}
 We will find that $\psi^{(n)}$ is a good approximation to the exact solution of \eqref{eq:half density pde} when $\psi_0$ is sufficiently regular.
@@ -547,6 +547,8 @@ We then can approximate a solution to \eqref{eq:quantum observable ode}
 \begin{align*}
 	\frac{d \widehat{F}_n }{dt} + [ \widehat{F}_n , {\bf X}_n ] = 0.
 \end{align*}
+
+Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this approach.  Another problem with this approach is the potential storage cost.
 
 \subsection{Discretization on a general compact manifold}
 In particular choose a metric, $g$, and let $\{ f_{0}, f_{1},\dots \}$ denote  eigen-functions of the Laplace operator.
