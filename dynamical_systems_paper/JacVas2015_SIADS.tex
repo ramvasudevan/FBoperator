@@ -5,7 +5,8 @@
 % \geometry{landscape} % rotated page geometry
 
 %  POSSIBLY USEFULE PACKAGES
-\usepackage{graphicx,caption,subcaption}
+\usepackage{graphicx}
+\usepackage{caption,subcaption}
 \usepackage{tensor}
 \usepackage{todonotes}
 
@@ -458,7 +459,68 @@ into ODE's of operators on $L^{2}(M)$.
 
 
 The benefit of representing our pde's in the form \eqref{eq:quantum observable ode},\eqref{eq:quantum density ode}, and \eqref{eq:quantum vf ode}
-is that we may construct discretization schemes for these equations using least squares projections.
+is that we may \emph{canonically} discretize these ODEs using least squares projections.  In order to demonstrate this, we will illustrate a detailed implementation of how this would be done on the unit circle, $S^1$, before considering the case of a general compact manifold.
+
+\subsection{Discretization on $S^1$ using the Fourier Transform}
+In the case of $S^1$ we can discretize all the needed concepts using the Fourier transform.  In particular, let us consider the ODE $\dot{x} = g(x)$ where
+$g(x)$ is a continuous function of $x \in S^1$.
+Then the operator $\pi(X)$ is given by
+\begin{align}
+	\left( \pi(X) \cdot \psi \right)(x) = \frac{1}{2}
+	\left( g(x) \left.\frac{d\psi}{dx}\right|_x 
+	+ \left. \frac{d}{dx} \right|_x (g \cdot \psi ) \right).
+\end{align}
+
+We will first describe how one can approximate the operator $\pi(X)$ with an operator on $\mathbb{C}^{2n+1}$ for a finite $n$.  To begin, note that $\pi(X)$ consists of either multiplication by $g(x)$, or differentiation, or multiplication by $1/2$.  So our approach will be to discretize the linear operations of multiplication by $g(x)$ and the linear operation of differentiation.
+
+The first step is to transform everything to the Fourier domain.  Any $\psi \in L^2(M)$ can be viewed as a normal $L^2$-function with respect to the standard Haar measure on $S^1$.  We may then apply the Fourier transform to write $\psi$ as a complex series
+\begin{align}
+	\psi(x) = \sum_{k=-\infty}^\infty c_k e^{2\pi i k x}.
+\end{align}
+We find that differentiation takes the form
+\begin{align}
+	\frac{d}{dx} (\psi)(x) = \sum_{k} 2\pi i k c_k e^{2\pi i kx}.
+\end{align}
+In other-words, in the Fourier domain differentiation is given by
+\begin{align}
+ 	c_k \mapsto 2 \pi ik c_k
+\end{align}
+for all $k \in \mathbb{Z}$.
+For any $n \in \mathbb{N}$ we may approximate the differentiation operator with a complex matrix
+\begin{align*}
+	D_{k \ell } = \delta_{k \ell } 2\pi i k
+\end{align*}
+for $k,\ell \in \{ -N , \dots,-1,0,1,\dots N \}$.
+If we define $\mathbf{c} = ( c_{-n}, \dots , c_{-1} , c_0 , c_{1},\dots,c_n ) \in \mathbb{C}^{2n+1}$, the vector $D \cdot {\bf c}$ is the truncated Fourier series of $\frac{d\psi}{dx}$.
+
+Similarly we may take the Fourier transform of the function $g$ to get the Fourier series expansion
+\begin{align}
+	g(x) = \sum_k g_k e^{2\pi i kx}.
+\end{align}
+Multiplication of $\psi \in L^2(S^1)$ by $g \in C^0(M)$ is given by
+\begin{align}
+	g(x) \cdot \psi(x) &= \sum_{k \ell} g_\ell c_k e^{2\pi i (k+\ell)x} \\
+		&= \sum_{k \ell} g_{k-\ell} c_k e^{2\pi i kx}.
+\end{align}
+In other-words, the multiplication operator $\hat{g}$ is nothing but the convolution operator
+\begin{align}
+	( \hat{g} \cdot \psi )(x) = \sum_{k \ell} g_{k-\ell} c_k e^{2\pi i kx}.
+\end{align}
+
+Again, for any $n \in \mathbb{N}$ we can approximate $\hat{g}$ with a complex $(2n+1) \times (2n+1)$ matrix
+\begin{align}
+	\hat{G}_{k\ell} = g_{k - \ell}
+\end{align}
+for $k,\ell \in \{ -n , \dots,-1,0,1,\dots,n\}$.
+For $n$ large, we will find that $\hat{G}$ converges to the true operator.
+As a result the matric-vector computation
+\begin{align}
+	 {\bf d} = \frac{1}{2} \hat{G} \cdot D \cdot {\bf c} + \frac{1}{2} D \cdot \hat{G} \cdot {\bf c}
+\end{align}
+serves as an approximation of the truncated Fourier series to $\pi(X) \cdot \psi$.
+We will see that this approximation converges exponentially when $\psi$ is smooth, and converges faster than $n^{1-s}$ when $\psi \in H^{s + \epsilon}$.
+
+\subsection{Discretization on a general compact manifold}
 In particular choose a metric, $g$, and let $\{ f_{0}, f_{1},\dots \}$ denote  eigen-functions of the Laplace operator.
 Then $\{ f_{0} \sqrt{\mu_{g}} , f_{1} \sqrt{\mu_{g}} , \dots \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemmannian density.
 Let $V_{n}$ denote the span of the first $n+1$ elements.
@@ -921,7 +983,7 @@ Also as before, our GN discretization will conserve mass while the standard spec
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\textwidth]{./images/two_torus.png}
+	\includegraphics[width=0.8\textwidth]{./images/placeholder}
 	\caption{Blah}
 	\label{fig:2 torus}
 \end{figure}
