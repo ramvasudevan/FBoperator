@@ -468,7 +468,7 @@ Then the operator $\pi(X)$ is given by
 \begin{align}
 	\left( \pi(X) \cdot \psi \right)(x) = \frac{1}{2}
 	\left( g(x) \left.\frac{d\psi}{dx}\right|_x 
-	+ \left. \frac{d}{dx} \right|_x (g \cdot \psi ) \right).
+	+ \left. \frac{d}{dx} \right|_x (g \cdot \psi ) \right). \label{eq:S1 op}
 \end{align}
 
 We will first describe how one can approximate the operator $\pi(X)$ with an operator on $\mathbb{C}^{2n+1}$ for a finite $n$.  To begin, note that $\pi(X)$ consists of either multiplication by $g(x)$, or differentiation, or multiplication by $1/2$.  So our approach will be to discretize the linear operations of multiplication by $g(x)$ and the linear operation of differentiation.
@@ -513,12 +513,40 @@ Again, for any $n \in \mathbb{N}$ we can approximate $\hat{g}$ with a complex $(
 \end{align}
 for $k,\ell \in \{ -n , \dots,-1,0,1,\dots,n\}$.
 For $n$ large, we will find that $\hat{G}$ converges to the true operator.
-As a result the matric-vector computation
+As a result the matrix-vector computation
 \begin{align}
-	 {\bf d} = \frac{1}{2} \hat{G} \cdot D \cdot {\bf c} + \frac{1}{2} D \cdot \hat{G} \cdot {\bf c}
+	 {\bf d}_n = {\bf X}_n \cdot {\bf c}_n
 \end{align}
-serves as an approximation of the truncated Fourier series to $\pi(X) \cdot \psi$.
+where
+\begin{align}
+	{\bf X}_n = \frac{1}{2} \hat{G} \cdot D + \frac{1}{2} D \cdot \hat{G}
+\end{align}
+serves as an approximation of the truncated Fourier series to \eqref{eq:S1 op}.
 We will see that this approximation converges exponentially when $\psi$ is smooth, and converges faster than $n^{1-s}$ when $\psi \in H^{s + \epsilon}$.
+
+This gives us the following numerical scheme for \eqref{eq:half density pde} for a fixed $n$:
+
+\begin{enumerate}
+	\item Given the initial condition $\psi_0 \in L^2(S^1)$ compute ${\bf c}_n$.
+	\item Solve the ode $\frac{d {\bf c}_n }{dt} = {\bf X}_n \cdot {bf c}_n$ on $\mathbb{C}^{2n+1}$ over a finite time interval, $[0,T]$, using a legacy ode integration scheme or trusted software (e.g. we use vode).\footnote{If ${\bf X}_n$ is constant in time, than one can solve this using a numerical matrix exponential as well, but this can be treacherous.}
+	\item Let $\psi^{(n)}(x,t) = \sum_{k=-n}^n c_k(t) e^{2\pi ikx}$. 
+\end{enumerate}
+We will find that $\psi^{(n)}$ is a good approximation to the exact solution of \eqref{eq:half density pde} when $\psi_0$ is sufficiently regular.
+
+Through \ref{thm:quantize} we will find that $\rho^{(n)} = ( \psi^{(n)} )^2$ is a provides a good approximation to \eqref{eq:density pde}.
+
+Lastly, we can approximate solutions to \eqref{eq:function pde}
+by discretizing \eqref{eq:quantum observable ode} in a similar way.
+Given an initial condition $f(x,0) \in C^0(M)$ we can compute the truncated Fourier series $f_{-n},\dots,f_{-1},f_0,f_1,\dots,f_n$ and create the convolution matrix
+\begin{align*}
+	[ \widehat{F}_n(0) ]_{k \ell} = f_{k-\ell}.
+\end{align*}
+Again, $\widehat{F}_n(0)$ is a truncated approximation of the operator $\widehat{f( \cdot , 0)}$.
+We then can approximate a solution to \eqref{eq:quantum observable ode}
+ by integrating the finite-dimensional matrix ode
+\begin{align*}
+	\frac{d \widehat{F}_n }{dt} + [ \widehat{F}_n , {\bf X}_n ] = 0.
+\end{align*}
 
 \subsection{Discretization on a general compact manifold}
 In particular choose a metric, $g$, and let $\{ f_{0}, f_{1},\dots \}$ denote  eigen-functions of the Laplace operator.
