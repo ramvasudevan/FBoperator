@@ -27,6 +27,7 @@
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem{defn}[thm]{Definition}
 \newtheorem{example}[thm]{Example}
+\newtheorem{ass}{Assumption}
 
 % NEW ENVIRONMENTS
 
@@ -557,9 +558,15 @@ Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this appro
 In this section will will present numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
 The basic ingredient for all the algorithms in this section is a Hilbert basis and an ode solver.
 We will denote the Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$.
-In order to ensure convergence we will find that this basis must have the property that $\| e_{k} \|_{H^{s}}$ is asymptotically proportional to $k^{2s/d}$ where $d = \dim(M)$ for some $s \geq 1$.
 For example we may choose a Riemannian metric, $g$, and let $\{ f_{0}, f_{1},\dots \}$ denote  eigen-functions of the Laplace operator.
 Then $\{ e_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemmannian density.
+In order to ensure convergence we will assume
+\begin{ass} \label{ass:basis}
+	There exists a metric such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$
+	is bounded on $H^{s}$ for some $s > 1$.
+\end{ass}
+The above assumption holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Louiville basis (e.g. Legendre functions, sufficiently regular wavelets, etc.).
+
 For the ode solver, one can consider any legacy method such as Euler's method or 4th order Runge-Kutta or even well tested software such as \cite{VODE}.
 This article is concerned purely with the semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}, and so we will assume that this ode solver 
 efficiently solves finite dimensional ODEs to any prescribed accuracy.
@@ -588,8 +595,10 @@ Before solving \eqref{eq:function pde} and \eqref{eq:density pde}, let us solve 
 	\caption{An algorithm for half densities} \label{alg:half density}
 \end{algorithm}
 
-By theorem \ref{thm:quantize} we can merely square the result to obtained a numerical solution to \eqref{eq:density pde}.
+To summarize, algorithm \ref{alg:half density} produces a half-density $\psi_{n}(t_{k}) \in V_{n}$ where $V_{n} = \operatorname{span}( e_{1},\dots,e_{n}) \subset L^{2}(M)$.
+As $\lim_{n\to \infty} V_{n} = L^{2}(M)$ we can at least hope that $\psi_{n}(t_{k})$ converges.
 
+By theorem \ref{thm:quantize} we can merely square the result to obtained a numerical solution to \eqref{eq:density pde}.
 This yields the following numerical solution for densities which admit square roots.
 For example for any continuous $\rho \in L^{1}(M)$ we may let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$.
 Then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ in the sense that $\rho = \psi^{2}$.
@@ -656,11 +665,13 @@ This is not a new algorithm, and is only introduced here as an alternative to Al
 \section{Error analysis}
 
 This article concerns a collection of numerical schemes and, a priori, one might think we will need to perform a lot of error analysis.
-However, the saving grace of our schemes is that they are all connected.  We will find that error bounds for our schemes can be derived as functions of an error bound
-for our numerical solution to \eqref{eq:half density pde}.  Therefore we will prioritize deriving a useful error bound for a solution
-of \eqref{eq:half density pde}.
+However, our schemes are all connected through relationships such that the error bounds of one scheme implies error bounds for the others.
+In particular, we will find that error bounds for Algorithm \ref{alg:half density} as solutions to \eqref{eq:half density pde}
+have this property.
+Therefore we will prioritize deriving a useful error bound for Algorithm \ref{alg:half density}.
 
-Let us begin by observing how well half densities in $V_{n}$ can approximate arbitrary members of $H^{s}(M)$.
+Let us begin by observing how well half densities in $V_{n} = \operatorname{span}( e_{1},\dots,e_{n})$ can approximate members of $H^{s}(M)$.
+In all that follows $\pi_{n}: L^{2}(M) \to V_{n}$ will denote the orthogonal projection.
 
 \begin{prop} \label{prop:approximation}
 	Let $\psi \in H^{\bar{s}}(M)$ for $\bar{s} > s \geq 0$.
@@ -671,6 +682,8 @@ Let us begin by observing how well half densities in $V_{n}$ can approximate arb
 	for some constant $C_{\bar{s},s}$ and $d = \dim(M)$.
 \end{prop}
 \begin{proof}
+	Without loss of generality we will assume that $e_{1},e_{2},\dots$ is a Fourier basis with respect to some Riemannian metric.
+	The results are unchanged upon applying Assumption \ref{ass:basis} and converting everything to the Fourier domain.
 	The Fourier decomposition of $\psi$ satisfies
 	\begin{align}
 		\| \psi \|^{2}_{H^{\bar{s} }} = \sum_{k=0}^{\infty} \hat{\psi}_{k}^{2} (1+\lambda_{k})^{\bar{s}} < \infty
@@ -690,15 +703,14 @@ Let us begin by observing how well half densities in $V_{n}$ can approximate arb
 \end{proof}
 
 We should note that this error bound illustrates that we have a spectral convergence rate on smooth data.
-This rapid convergence for smooth data will trickle down to algorithms 1 and 2 as well.
+This rapid convergence for smooth data will cascade to bounds throughout this section.
 Now that we have derive an error bound for the approximation error of $V_{n}$ with respect to $H^{s}(M)$ we can 
-derive an error bound for the numerical solutions derived in algorithm 3.
+derive an error bound for Algorithm \ref{alg:half density}.
 
 \begin{thm} \label{thm:half density convergence}
 	Let $\psi_{0} \in H^{\bar{s}}(M)$ for $\bar{s} > s > 1$.
 	Let $\psi(t)$ be the exact solution to \eqref{eq:half density pde} with initial condition $\psi_{0}$ and let
-	and $\psi_{n}(t)$ be the numerical solutions on the interval $[0,T]$ for $T < \infty$ with initial condition $\psi_{n}(0) = \pi_{n}(\psi_{0})$
-	computed using algorithm 3.
+	and $\psi_{n}(t)$ be the output of Algorithm \ref{alg:half density} on the interval $[0,T]$ for $T < \infty$ with initial condition $\psi_{n}(0) = \pi_{n}(\psi_{0})$.
 	Then the error $E_{n}(t) := \| \psi(t) - \psi_{n}(t) \|_{H^{s}}$ satisfies the bound
 	\begin{align}
 		E_{n}(t) \leq \| \psi_{0} \|_{H^{\bar{s}}} \, K \left( n^{-2(s-1)} t+  \frac{d}{\bar{s}-s} n^{-2(\bar{s}-s)/d} \right) e^{C t}
@@ -744,7 +756,7 @@ Having derived an error bound for algorithm 3, we can also derive an error bound
 \begin{thm} \label{thm:density convergence}
 	Let $\rho(0)$ be a distribution in $W^{\bar{s},1}(M)$ for $\bar{s} > s >1$.
 	Let $\rho(t)$ be the solution of \eqref{eq:density pde} on the time interval $[0,T]$.
-	Let $\rho_{n}(t)$ be the numerical solution derived via algorithm 2 on the time interval $[0,T]$.
+	Let $\rho_{n}(t)$ be the output of Algorithm \ref{alg:density} on the time interval $[0,T]$.
 	Then we find
 	\begin{align}
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}} \leq \| \rho(0) \|_{W^{\bar{s},1}} \, \bar{K} \left( n^{-2(s-1)} t+  \frac{d}{\bar{s}-s} n^{-2(\bar{s}-s)/d} \right) e^{C t}
@@ -795,7 +807,7 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 
 \begin{thm} \label{thm:function convergence}
 	Let $f(t) \in C^{k}(M)$ be a solution to \eqref{eq:function pde} so that $\hat{f}(t)$ is a solution to \eqref{eq:quantum observable ode}.
-	Let $\hat{f}_{n}$ denote the numerical solution obtained through the numerical scheme described on page \pageref{function scheme}.
+	Let $\hat{f}_{n}$ denote the output of Algorithm \ref{alg:function}.
 	Then
 	\begin{align}
 		\| ( \hat{f} - \hat{f}_{n})|_{H^{s}} \|_{op} \leq D \frac{d}{s} n^{-2s/d} \| \hat{f} \|_{op}+  K \| \hat{f}_{n} \|_{op} \left( n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}
