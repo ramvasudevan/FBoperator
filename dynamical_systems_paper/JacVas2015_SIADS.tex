@@ -597,13 +597,33 @@ Before solving \eqref{eq:function pde} and \eqref{eq:density pde}, let us solve 
 
 To summarize, algorithm \ref{alg:half density} produces a half-density $\psi_{n}(t_{k}) \in V_{n}$ where $V_{n} = \operatorname{span}( e_{1},\dots,e_{n}) \subset L^{2}(M)$.
 As $\lim_{n\to \infty} V_{n} = L^{2}(M)$ we can at least hope that $\psi_{n}(t_{k})$ converges.
+We will address convergence in a later section.
+For the moment we can state a sparsity result which will aide in choosing a basis.
+The proof of this results is a matter of simple counting, and so we omit it.
 
-By theorem \ref{thm:quantize} we can merely square the result to obtained a numerical solution to \eqref{eq:density pde}.
-This yields the following numerical solution for densities which admit square roots.
-For example for any continuous $\rho \in L^{1}(M)$ we may let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$.
+\begin{thm} \label{thm:sparsity}
+	Let $x^{1},\dots,x^{d}$ be a dense coordinate chart for $M$.\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus. \todo{Thank Richard on MathOverflow.}}
+	Then we may write the half density basis $e_{k} (x)= f_{k}(x) \sqrt{dx^{1} \wedge \cdots dx^{d}}$ for $L^{2}$-functions $f_{k}(x)$.
+	If the vector-field $X = X^{\alpha} \pder{}{x^{\alpha}}$ is such that $X^{\alpha} = c^{k} f_{k}$ where fewer than $b$ of $c_{k}$'s are non-zero, then
+	the operator $X_{n}$ in Algorithm \ref{alg:half density} is sparse, and banded diagonal with fewer than $db$ bands.
+\end{thm}
+
+\begin{cor} \label{cor:sparsity}
+	Given the same setting as Theorem \ref{thm:sparsity} the integration step of Algorithm \ref{alg:half density} is of complexity $\mathcal{O}( dbn)$.
+\end{cor}
+
+What Theorem \ref{thm:sparsity} and Corollary \ref{cor:sparsity} suggest is that we want to choose our basis such that $b$ is small.
+For example if $M$ were a torus, and the vector-field was sinusoidal with finitely many Fourier terms, then a Fourier basis would yield a $b$ equal to the maximum number of terms along all dimensions.
+
+By theorem \ref{thm:quantize} we can merely square the result of Algorithm \ref{alg:half density} to obtained a numerical solution to \eqref{eq:density pde}.
+In order to make this into an algorithm for densities we must know how to take the square root of a density.
+It is not possible to take the square root of any density, such as a Dirac Delta functiona.
+However, for any continuous $\rho \in L^{1}(M)$ we may find a square root.
+To begin, let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$.
 Then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ in the sense that $\rho = \psi^{2}$.
+This yields the following algorithm for densities.
 
-\begin{algorithm}
+\begin{algorithm}[H] 
 	\KwData{An initial condition $\rho(0) \in L^{1}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
 	\KwResult{A numerical solution, $\rho_{n}(t_{k})$, to \eqref{eq:density pde} for $k = 1,\dots,m$.}
 	Initialize $\psi(0) =  \sqrt{\rho^{+}(0)} - i \sqrt{\rho^{-}(0)}$\;
@@ -616,7 +636,7 @@ Then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ in 
 Finally, we present an algorithm to solve \eqref{eq:quantum observable ode} (in lieu of solving \eqref{eq:function pde}).
 We present this algorithm more from the perspective of theoretical interest at the moment, as it does not scale well with the problem size in terms of memory.
 
-\begin{algorithm}
+\begin{algorithm}[H]
 	\KwData{An initial condition $f(0) \in C(M)$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $n \in \mathbb{N}$.}
 	\KwResult{A numerical solution, $\hat{f}_{n}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
 	
@@ -641,7 +661,7 @@ Given the value of $f$ on a regular grid, one can efficiently compute (an approx
 The corresponding operator $\hat{f}_{n}$ could then be reconstructed by assembling the convolution operator associated to the Fourier series.
 The resulting method is really the method of characteristics in disguise (i.e. a particle method).
 
-\begin{algorithm}
+\begin{algorithm}[H]
 	\KwData{An initial condition $f(0) \in C( \mathbb{T}^{d})$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $n \in \mathbb{N}$.}
 	\KwResult{A numerical solution, $\hat{f}_{n}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
 	initialize a regular grid, $\Omega_{n}$, of size $n = r^{d}$\;
@@ -943,7 +963,7 @@ If the initial density is given by a uniform distribution $\rho_{0} = dx$ then t
  In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=2$ with an initial condition given by a uniform distribution.
 Subfigure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution}.  Subfigure \ref{fig:standard spectral} depicts the numerical solution computed
 from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes.
-Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution computed using algorithm 2 with 32 modes.\todo{Consider renaming the GN algorithm}
+Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
 
 \begin{figure}
 	\begin{subfigure}{0.3\textwidth}
@@ -958,14 +978,14 @@ Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution
 	\end{subfigure}
 	\begin{subfigure}{0.3\textwidth}
 		\includegraphics[width=\textwidth]{./images/gn_spectral_1D.pdf}
-		\caption{GN spectral}
+		\caption{Algorithm \ref{alg:density}}
 		\label{fig:gn spectral}
 	\end{subfigure}
 	\caption{A benchmark computation}
 	\label{fig:S1}
 \end{figure}
 
-From these figures, it is tempting to suggest that GN discretization has greater qualitative accuracy than standard spectral discretization.
+From these figures, it is tempting to suggest that Algorithm \ref{alg:density} has greater qualitative accuracy than a standard spectral discretization.
 For one, standard spectral discretization exhibits negative mass, which is not physically achievable in the exact system.
 Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  However, by Theorem \ref{thm:norms} we know that
 the $L^{1}$ norm is conserved in GN discretization.
@@ -976,10 +996,22 @@ A plot of the $L^{1}$-norm is given in figure \ref{fig:L1}
 	\includegraphics[width=0.8\textwidth]{./images/L1_plot.pdf}
 	\caption{A plot of the $L^{1}$-norm vs time.
 		The blue line denotes the $L^{1}$ norm under standard spectral discretization.
-		The red line denotes the $L^{1}$ norm under GN discretization.
+		The red line denotes the $L^{1}$ norm under Algorithm \ref{alg:density}.
 	}
 	\label{fig:L1}
 \end{figure}
+
+While a Fourier basis is convenient due to our ability to leverage existing fast Fourier transform packages, it is notable that we may use other basis.
+In particular, if we consider Daubechies wavelets with mother wavelet that have $4$ vanishing moments, then we may obtain solutions with much greater
+accuracy with fewer degrees of freedom. \todo[inline]{Ram should elaborate on this and include some pics.}
+At low resolutions, wavelet based solutions come at some cost in terms of sparsity, but this cost vanishes for large resolutions.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.2\textwidth]{./images/placeholder}
+	\caption{Algorithm \ref{alg:density} in a wavelet basis}
+\end{figure}
+
 
 We also know the evolution for an initial function, $f_{0}(x)$.
 For example, if $f_{0}(x) = \sin(x)$ then the solution to \eqref{eq:function pde} under this vector-field is
@@ -987,7 +1019,7 @@ For example, if $f_{0}(x) = \sin(x)$ then the solution to \eqref{eq:function pde
 	f(x;t) = \frac{ e^{-2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{-4t} \sin^{2}(x) } }.
 \end{align}
 
-Unfortunately, algorithm 1 outputs $f$ as an operator on half-densities, and it is not clear how best to invert the hat-map.
+Unfortunately, Algorithm \ref{alg:function} outputs $f$ as an operator on half-densities, and it is not clear how best to invert the hat-map.
 However, we can obtain one estimate by applying $\hat{f}_{n}$ to the half-density $\sqrt{dx}$, and then divide the result by $\sqrt{dx}$.
 The resulting function appears to approximate $f(x;t)$ well in the flat areas, and overshoot at the peaks.
 In comparison, a standard spectral discretization seems to have large spurious oscillations in the center.
@@ -996,8 +1028,8 @@ We should note that our means of converting $\hat{f}_{n}$ into a function is pro
 Different choices yield different approximations to $f(x;t)$, some
 of which get the peaks correct, but do poorly in the valleys.
 
-We can see that the $L^{\infty}$-norm behaves well using GN discretization.
-The $L^{\infty}$-norm is conserved to machine precision for GN discretization, while it will drift using standard discretization.
+We can see that the operator-norm behaves well using Algorithm \ref{alg:function}.
+The operator-norm is conserved to machine precision for Algorithm \ref{alg:function}, while it will drift using standard discretization.
 
 \begin{figure}
 	\centering
@@ -1008,11 +1040,13 @@ The $L^{\infty}$-norm is conserved to machine precision for GN discretization, w
 	\end{subfigure}
 	\begin{subfigure}{0.45\textwidth}
 		\includegraphics[width=\textwidth]{./images/L_inf_plot.pdf}
-		\caption{$L^{\infty}$-norms}
+		\caption{Operator norms}
 		\label{fig:sup norm}
 	\end{subfigure}
 	\caption{Numerical results for a one-dimensional system}
 \end{figure}
+
+
 
 \subsection{A system on the 2-torus}
 Let us consider the system on $\mathbb{T}^{2}$ given by 
@@ -1025,21 +1059,25 @@ When $D=0$, we have an integrable system and volume is preserved with respect to
 When $D>0$ the system exhibits phase space contraction near minima of $H$ and phase space expansion near the maxima of $H$.
 In particular, there are four equilibria $(0, \frac{1}{4}) , (0, \frac{3}{4}) , (\frac{1}{2} , \frac{1}{4} ) , (\frac{1}{2} , \frac{3}{4})$.
 
-In Figure \ref{fig:2 torus} we depict the result of solving \eqref{eq:density pde} using three methods: GN spectral, Monte-Carlo, and a standard spectral discretization.
+In Figure \ref{fig:2 torus} we depict the result of solving \eqref{eq:density pde} using three methods: Algorithm \ref{alg:density}, Monte-Carlo, and a standard spectral discretization.
 The top row depicts the result from applying algorithm 2 with the Fourier basis $\{ e^{2\pi i (k_{1}x +k_{2}y)} \mid -8 \leq k_{1},k_{2} \leq 8\}$.
 This is a total of $289$ basis functions. 
 The middle row depicts the results of a Monte-Carlo simulation with $10^{5}$ particles.
 Finally, the bottom row depicts the results of a standard spectral scheme using the same basis as mentioned earlier.
 The Monte-Carlo simulation can serve us as a benchmark.
 We see that spurious oscillations will manifest using standard discretization, just as in the one-dimensional case.
-Also as before, our GN discretization will conserve mass while the standard spectral scheme will dissipate and diffuse mass (by allowing for negative mass)
+Also as before, our Algorithm \ref{alg:density} will conserve mass while the standard spectral scheme will diffuse and even negate mass.
+By inspection, it appears the largest unstable mode of the standard spectral algorithm is a function with rapid spatial oscillations.
+The dominance of this function can be seen visually at time $0.6$ in figure \ref{fig:2 torus}.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{./images/two_torus.png}
 	\caption{ \tiny {\bf Top:} GN Spectral, {\bf Middle:} Monte Carlo, {\bf Bottom:} Standard Spectral}
 	\label{fig:2 torus}
 \end{figure}
+
+
 
 
 \subsection{Rigid body}
