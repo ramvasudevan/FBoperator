@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{caption,subcaption}
 \usepackage{tensor}
+\usepackage[boxed,ruled]{algorithm2e}
 \usepackage{todonotes}
 
 %  NEW COMMANDS
@@ -36,7 +37,7 @@
 \DeclareMathOperator{\U}{U}
 \DeclareMathOperator{\B}{B}
 \DeclareMathOperator{\Fr}{Fr}
-\DeclareMathOperator{\Herm}{Herm}
+\DeclareMathOperator{\OdeSolve}{OdeSolve}
 \DeclareMathOperator{\Op}{Op}
 \DeclareMathOperator{\Tr}{Tr}
 \DeclareMathOperator{\card}{card}
@@ -481,14 +482,14 @@ We find that differentiation takes the form
 \begin{align}
 	\frac{d}{dx} (\psi)(x) = \sum_{k} 2\pi i k c_k e^{2\pi i kx}.
 \end{align}
-In other-words, in the Fourier domain differentiation is given by
+Thus, in the Fourier domain, differentiation is given by
 \begin{align}
  	c_k \mapsto 2 \pi ik c_k
 \end{align}
 for all $k \in \mathbb{Z}$.
-For any $n \in \mathbb{N}$ we may approximate the differentiation operator with a complex matrix
+For any $N \in \mathbb{N}$ we may approximate the differentiation operator with a complex matrix
 \begin{align*}
-	[D_n]_{k \ell } = \delta_{k \ell } 2\pi i k
+	[D_N]_{k \ell } = \delta_{k \ell } 2\pi i k
 \end{align*}
 for $k,\ell \in \{ -N , \dots,-1,0,1,\dots N \}$.
 If we define $\mathbf{c}_n = ( c_{-n}, \dots , c_{-1} , c_0 , c_{1},\dots,c_n ) \in \mathbb{C}^{2n+1}$, the vector $D_n \cdot {\bf c}_n$ is the truncated Fourier series of $\frac{d\psi}{dx}$.
@@ -507,33 +508,34 @@ In other-words, the multiplication operator $\hat{g}$ is nothing but the convolu
 	( \hat{g} \cdot \psi )(x) = \sum_{k \ell} g_{k-\ell} c_k e^{2\pi i kx}.
 \end{align}
 
-Again, for any $n \in \mathbb{N}$ we can approximate $\hat{g}$ with a complex $(2n+1) \times (2n+1)$ matrix
+Again, we can approximate $\hat{g}$ with a complex $(2N+1) \times (2N+1)$ matrix
 \begin{align}
-	[\hat{G}_n]_{k\ell} = g_{k - \ell}
+	[\hat{G}_N]_{k\ell} = g_{k - \ell}
 \end{align}
-for $k,\ell \in \{ -n , \dots,-1,0,1,\dots,n\}$.
-We will find that $\hat{G}_n$ converges to $\hat{g}$ as $n$ goes to infinity.
+for $k,\ell \in \{ -N , \dots,-1,0,1,\dots,N\}$.
+We will find that $\hat{G}_N$ converges to $\hat{g}$ as $n$ goes to infinity.
 As a result the matrix-vector computation
 \begin{align}
-	 {\bf d}_n = {\bf X}_n \cdot {\bf c}_n
+	 {\bf d}_N = {\bf X}_N \cdot {\bf c}_N
 \end{align}
 where
 \begin{align}
-	{\bf X}_n = \frac{1}{2} \hat{G}_n \cdot D_n + \frac{1}{2} D_n \cdot \hat{G}_n
+	{\bf X}_N = \frac{1}{2} \hat{G}_N \cdot D_N + \frac{1}{2} D_N \cdot \hat{G}_N
 \end{align}
 serves as an approximation of the truncated Fourier series to \eqref{eq:S1 op}.
-We will see that this approximation converges exponentially when $\psi$ is smooth, and converges at a rate $n^{1-s}$ when $\psi \in H^{s}$.
+We will see that this approximation converges to order $\mathcal{O}( N^{1-s} )$ on the subspace $H^{s} \subset L^{2}$.
 
 This gives us the following numerical scheme for \eqref{eq:half density pde} for a fixed $n$:
 
 \begin{enumerate}
-	\item Given the initial condition $\psi_0 \in L^2(S^1)$ compute ${\bf c}_n$.
-	\item Solve the ode $\frac{d {\bf c}_n }{dt} = {\bf X}_n \cdot {\bf c}_n$ on $\mathbb{C}^{2n+1}$ over a finite time interval, $[0,T]$, using a legacy ode integration scheme or trusted software (e.g. we use vode).\footnote{If ${\bf X}_n$ is constant in time, than one can solve this using a numerical matrix exponential as well, but this can be treacherous.}
-	\item Let $\psi^{(n)}(x,t) = \sum_{k=-n}^n c_k(t) e^{2\pi ikx}$. 
+	\item Given the initial condition $\psi(0) \in L^2(S^1)$ compute ${\bf c}_N(0)$.
+	\item Solve the ode $\frac{d {\bf c}_N }{dt} = {\bf X}_N \cdot {\bf c}_N$ over a finite time interval, $[0,T]$,
+	with a trusted ode solver.\footnote{If ${\bf X}_n$ is constant in time, than one can solve this ode using a matrix exponential, but this could be treacherous
+	and needlessly expensive \cite{Moler2003}.}
+	\item Let $\psi_{N}(x,t) = \sum_{k=-N}^N c_k(t) e^{2\pi ikx}$. 
 \end{enumerate}
-We will find that $\psi^{(n)}$ is a good approximation to the exact solution of \eqref{eq:half density pde} when $\psi_0$ is sufficiently regular.
-
-Through \ref{thm:quantize} we will find that $\rho^{(n)} = ( \psi^{(n)} )^2$ is a provides a good approximation to \eqref{eq:density pde}.
+We will later find that $\psi_{N}$ converges to the solution of \eqref{eq:half density pde} at a rate $\mathcal{O}( N^{1-s})$ when $\psi(0) \in H^{s}(M)$ for $s > 1$.
+Moreover, we will find that $\rho^{(n)} = ( \psi^{(n)} )^2$ converges to solutions of \eqref{eq:density pde} at the same rate.
 
 Lastly, we can approximate solutions to \eqref{eq:function pde}
 by discretizing \eqref{eq:quantum observable ode} in a similar way.
@@ -550,105 +552,110 @@ We then can approximate a solution to \eqref{eq:quantum observable ode}
 
 Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this approach.  Another problem with this approach is the potential storage cost.
 
-\subsection{Discretization on a general compact manifold}
-In particular choose a metric, $g$, and let $\{ f_{0}, f_{1},\dots \}$ denote  eigen-functions of the Laplace operator.
-Then $\{ f_{0} \sqrt{\mu_{g}} , f_{1} \sqrt{\mu_{g}} , \dots \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemmannian density.
-Let $V_{n}$ denote the span of the first $n+1$ elements.
-Let $\pi_{n}:L^{2}(M) \to V_{n}$ denote the orthogonal projection. 
-Given these choices we obtain the following numerical scheme for \eqref{eq:function pde}
+\subsection{Numerical algorithms on compact manifolds}
 
-\begin{center}
-\fbox{ \label{function scheme}
-	\begin{minipage}{0.8\textwidth}
-		{\bf Algorithm 1:} An algorithm for functions.\\
-		{\bf Problem:} Given an initial condition $f(0) \in C(M)$ solve \eqref{eq:function pde} on the time interval $[0,T]$.\\
-		{\bf Numerical solution:}
-		\begin{enumerate}
-			\item Let $\hat{f}_{n}(0) := \pi_{n} \cdot \hat{f}(0) |_{V_{n}}$ and $X_{n} := \pi_{n} \cdot \pi(X) |_{V_{n}}$.
-			\item Solve the finite dimensional ode $\frac{d}{dt} \hat{f}_{n} + [ \hat{f}_{n} , X_{n} ] = 0$ with initial condition $\hat{f}_{n}(0)$ on the interval $[0,T]$.
-		\end{enumerate}
-	\end{minipage}
-}
-\end{center}
+In this section will will present numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
+The basic ingredient for all the algorithms in this section is a Hilbert basis and an ode solver.
+We will denote the Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$.
+In order to ensure convergence we will find that this basis must have the property that $\| e_{k} \|_{H^{s}}$ is asymptotically proportional to $k^{2s/d}$ where $d = \dim(M)$ for some $s \geq 1$.
+For example we may choose a Riemannian metric, $g$, and let $\{ f_{0}, f_{1},\dots \}$ denote  eigen-functions of the Laplace operator.
+Then $\{ e_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemmannian density.
+For the ode solver, one can consider any legacy method such as Euler's method or 4th order Runge-Kutta or even well tested software such as \cite{VODE}.
+This article is concerned purely with the semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}, and so we will assume that this ode solver 
+efficiently solves finite dimensional ODEs to any prescribed accuracy.
+More explicitly, we will let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final})$ when $x(t)$ is the solution to the ode $\dot{x} = F(x)$ with initial condition $x_{init}$.
 
-This algorithm is more provided out of theoretical interest, than of a practical suggestion.
-The size of the matrix $\hat{f}_{n}$ is $n^{2d}$, and even if it is sparse initially it will become dense when $t$ increases.
-This is prohibitively expensive at $d = 3$.
+Before solving \eqref{eq:function pde} and \eqref{eq:density pde}, let us solve \eqref{eq:half density pde}.
+
+\begin{algorithm}
+	\KwData{An initial condition $\psi(0) \in L^{2}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
+	\KwResult{A numerical solution, $\psi_{n}(t_{k})$, to \eqref{eq:half density pde} for $k = 1,\dots,m$.}
+	initialize $z(0) \in \mathbb{C}^{n}$.\;
+	initialize $X_{n} \in \mathbb{C}^{n \times n}$\;
+	initialize the function $F: \mathbb{C}^{n} \to \mathbb{C}^{n}$
+	given by $F(z) = X_{n} \cdot z$.\;
+	\For{ $i = 1 , \dots , n$}{
+		$[z(0)]_{i} = \int_{M} \bar{e}_{i}(x) \psi(0,x)$\;
+		\For{$j=1,\dots,n$}{
+			$[X_{n}]\indices{^{i}_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$
+		} 
+	}
+	$t_{0} = 0$\;
+	\For{ k = 1,\dots,m}{
+		$z(t_{k}) = \operatorname{OdeSolve}(  F , z(t_{k-1}) , t_{k})$\;
+	}
+	\KwOut{ $\psi_{n}(t_{k} , x) = \sum_{i=1}^{n} [z(t_{k})]_{i} e_{i}(x)$ for $k=1,\dots,m$.}
+	\caption{An algorithm for half densities} \label{alg:half density}
+\end{algorithm}
+
+By theorem \ref{thm:quantize} we can merely square the result to obtained a numerical solution to \eqref{eq:density pde}.
+
+This yields the following numerical solution for densities which admit square roots.
+For example for any continuous $\rho \in L^{1}(M)$ we may let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$.
+Then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ in the sense that $\rho = \psi^{2}$.
+
+\begin{algorithm}
+	\KwData{An initial condition $\rho(0) \in L^{1}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
+	\KwResult{A numerical solution, $\rho_{n}(t_{k})$, to \eqref{eq:density pde} for $k = 1,\dots,m$.}
+	Initialize $\psi(0) =  \sqrt{\rho^{+}(0)} - i \sqrt{\rho^{-}(0)}$\;
+	Set $\psi_{n}(t_{1}),\dots,\psi_{n}(t_{m}) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t_{1} , \dots,t_{m}, n )$\;
+	\KwOut{ $\rho_{n}(t_{k} , x) = \psi_{n}(t_{k} , x)^{2}$ for $k=1,\dots,m$.}
+	\caption{An algorithm for densities} \label{alg:density}
+\end{algorithm}
+
+
+Finally, we present an algorithm to solve \eqref{eq:quantum observable ode} (in lieu of solving \eqref{eq:function pde}).
+We present this algorithm more from the perspective of theoretical interest at the moment, as it does not scale well with the problem size in terms of memory.
+
+\begin{algorithm}
+	\KwData{An initial condition $f(0) \in C(M)$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $n \in \mathbb{N}$.}
+	\KwResult{A numerical solution, $\hat{f}_{n}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
+	
+	initialize $F_{n}(0), X_{n} \in \mathbb{C}^{n \times n}$.\;
+	initialize the function $B: \mathbb{C}^{n \times n} \to \mathbb{C}^{n \times n}$
+	given by $B(M) = - [M , X_{n}]$.\;
+	\For{ $i , j = 1 , \dots , n$ }{
+		$[F_{n}(0)]\indices{^i_{j}} =  \int_{M} \bar{e}_{i}(x) f(x) e_{j}(x)$ \;
+		$[X_{n}]\indices{^i_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$ \;
+	}
+	$t_{0} = 0$\;
+	\For{ $k = 1 ,\dots, m $}{
+		$F_{n}(t_{k}) = \OdeSolve( B , F_{n}(t_{k-1}) , t_{k})$\;
+	}
+	\KwOut{ The Operator $\hat{f}_{n}(t_{k}) = \sum_{i,j=1}^{n}[ F_{n}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
+	\caption{An algorithm for functions} \label{alg:function}
+\end{algorithm}
+
 On the torus, a more practical approach which holds much of the numerical benefits would be to approximate $\hat{f}_{n}$ psuedo-spectrally,
-by evaluating $f$ on grid points.
+by evaluating $f$ on fixed grid points.
+Given the value of $f$ on a regular grid, one can efficiently compute (an approximation of) the Fourier series using the discrete Fourier transform.
+The corresponding operator $\hat{f}_{n}$ could then be reconstructed by assembling the convolution operator associated to the Fourier series.
 The resulting method is really the method of characteristics in disguise (i.e. a particle method).
 
-\begin{center}
-\fbox{ \label{psuedo spectral scheme}
-	\begin{minipage}{0.8\textwidth}
-		{\bf Algorithm 1b:} A psuedo-spectral algorithm for Toric functions.\\
-		{\bf Problem:} Given an initial condition $f(0) \in C( \mathbb{T}^{n} )$ solve \eqref{eq:function pde} on the time interval $[0,T]$.\\
-		{\bf Numerical solution:}
-		\begin{enumerate}
-			\item Initialize a regular grid, $\Omega_{n}$, of size $n = r^{d}$.
-			\item Solve the ode $\dot{y}_{i}(t) = X(y_{i})$ with the initial condition $y_{i}(0) = x_{i}$ for each $x_{i} \in \Omega_{n}$.  
-			\item Set $\hat{f}_{n}$ to be the truncated convolution operator associated 
-				to the Fourier series $\mathcal{DFT}[ f_{0}(y_{1}(t)) , \dots, f_{0}(y_{n}(t) ) ]$,
-				where $\mathcal{DFT}$ denotes the discrete Fourier transform.
-		\end{enumerate}
-	\end{minipage}
-}
-\end{center}
+\begin{algorithm}
+	\KwData{An initial condition $f(0) \in C( \mathbb{T}^{d})$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $n \in \mathbb{N}$.}
+	\KwResult{A numerical solution, $\hat{f}_{n}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
+	initialize a regular grid, $\Omega_{n}$, of size $n = r^{d}$\;
+	\For{$x_{i} \in \Omega_{n}$}{
+		initialize $y_{i}(0) = x_{i}$\;
+	}
+	$t_{0} = 0$\;
+	\For{$k=1,\dots,m$}{
+		\For{$x_{i} \in \Omega_{n}$}{
+			$y_{i}(t_{k}) = \OdeSolve( X , y_{i}(t_{k-1}) , t_{k})$\;
+		}
+		$s_{k} = \mathcal{DFT}[ \{ f(y_{i}(t_{k}) ) \} ]$ \;
+	}
+	\KwOut{ The Operator $\hat{f}_{n}(t_{k}) = \sum_{i,j}^{n}[ s_{k}]_{i-j} e^{i} \otimes e^{j \dagger}$}
+	\caption{A psuedo-spectral algorithm for toric functions} \label{alg:function2}
+\end{algorithm}
 
-The use of the discrete Fourier transform introduces errors which disrupt the conservation laws we seek to keep.
-However, these newly incurred errors are dominated by other discretization errors, which we still analyze shortly.
-While our main concern in this paper is with the properties of algorithm 1, we merely mention algorithm 1b as a practical alternative
-that still retains much of the benefits.
-
-%The final step might require explanation.
-%It will be shown that as $n$ increases $\hat{f}_{n}(t)$ converges to the solution, $\hat{f}$, of \eqref{eq:quantum observable ode} with respect to the operator norm.
-%By theorem \eqref{thm:quantize} we know that the solution of \eqref{eq:quantum observable ode} is related to the solution of \eqref{eq:function pde}
-%through the map $f \mapsto \hat{f}$.
-%If one desires to get a function rather than an operator we must find a left inverse of the hat-map because $\hat{f}_{n}$ will typically fall outside the range of the hat-map.
-%This is what is accomplished in step (4) where an optimization problem yields a local left inverse function.
-%As the operator norm is identical to the supremum norm it is possible to show that $f_{n}(t)$ converges to $f$ in the sup-norm.
-
-To solve the Louiville equation, \eqref{eq:density pde}, we could implement the following
-\begin{center}
-\fbox{
-	\begin{minipage}{0.8\textwidth}
-		{\bf Algorithm 2:} An algorithm for densities.\\
-		{\bf Problem:} Given $\rho_{0} \in \Dens(M)$ solve \eqref{eq:density pde} on the time interval $[0,T]$.\\
-		{\bf Numerical solution:}
-		\begin{enumerate}
-			\item Split $\rho_{0} = \rho_{0}^{(+)} - \rho_{0}^{(-)}$ for positive densities, $\rho_{0}^{(+)},\rho_{0}^{(-)}$.
-			\item Let $\psi_{0} = \sqrt{ \rho_{0}^{(+)}} + i \sqrt{\rho_{0}^{(-)}}$.
-			\item Solve \eqref{eq:half density pde} numerically with initial conditions $\psi_{0}$. (see algorithm 3)
-			\item Set $\rho(t) = \psi(t)^{2}$. 
-		\end{enumerate}
-	\end{minipage}
-}
-\end{center}
-
-Step (3) of the above algorithm involves solving \eqref{eq:half density pde} numerically.
-Here we propose the most naive spectral algorithm
-\begin{center}
-\fbox{
-	\begin{minipage}{0.8\textwidth}
-		{\bf Algorithm 3:} An algorithm for half densities. \\
-		{\bf Problem:} Given and initial condition $\psi(0) \in H^{s}(M)$ solve \eqref{eq:half density pde} on the time interval $[0,T]$.\\
-		{\bf Numerical solution:}
-		\begin{enumerate}
-			\item set $[X]_{n} = \pi_{n} \cdot \pi(X) |_{V_{n}}$.
-			\item We observe that $[X]_{n}$ is a linear automorphism on a finite dimensional subspace.
-			Thus we can solve the ODE $\frac{d\psi_{n}}{dt} = [X]_{n} \cdot \psi_{n}$ with the initial condition $\psi_{n}(0) = \pi_{n}(\psi(0))$
-			using a standard ODE integrator.\footnote{We use the implementation of VODE \cite{VODE} within SciPy \cite{Scipy} in this paper.}
-		\end{enumerate}
-	\end{minipage}
-}
-\end{center}
-
-While half-densities and algorithm 3 may be of little interest in most problems,
-we will find that being able to solve \eqref{eq:half density pde} accurately will be crucial in determining the accuracy of algorithms 1 and 2 (i.e. solving \eqref{eq:function pde} and \eqref{eq:density pde}).
+We should note that the use of the discrete Fourier transform introduces errors which disrupt the conservation laws we seek to keep.
+This is not a new algorithm, and is only introduced here as an alternative to Algorithm \ref{alg:function}.
 
 \section{Error analysis}
 
-This article concerns a collection of numerical schemes (one for half-densities, one for densities, one for functions, etc) and a priori one might think we will need to perform a lot of error analysis.
+This article concerns a collection of numerical schemes and, a priori, one might think we will need to perform a lot of error analysis.
 However, the saving grace of our schemes is that they are all connected.  We will find that error bounds for our schemes can be derived as functions of an error bound
 for our numerical solution to \eqref{eq:half density pde}.  Therefore we will prioritize deriving a useful error bound for a solution
 of \eqref{eq:half density pde}.
@@ -908,7 +915,6 @@ We have a discrete analog of this.
 	we see that $\Tr( \hat{f}_{n}(t)^{\dagger} \rho_{n}(t) ) = \Tr( U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} U_{n}(t) \rho_{n}(0) U_{n}(t)^{\dagger}) = \Tr( \hat{f}_{n} \rho_{n}(0) )$.
 	Convergence follows from Theorem \ref{thm:function convergence} and Theorem \ref{thm:density convergence}.
 \end{proof}
-
 
 \section{Numerical experiments}
 
