@@ -334,11 +334,11 @@ via sequences of finite rank operators.
 	\begin{align}
 		(1+\Delta)^s \cdot f =  \sum_{i} e_i (1+\lambda_i)^s \langle e_i , f \rangle_g,
 	\end{align}
-	and so $\{ (1+ \lambda_i)^{-s/2} e_i \}_{i=1}^{\infty}$ is a Hilbert basis for $H^s(M;g)$.
+	and so $\{ (1+ \lambda_i)^{-s} e_i \}_{i=1}^{\infty}$ is a Hilbert basis for $H^s(M;g)$.
 	
-	Let us call $e_i^{(s)} = (1+ \lambda_i)^{-s/2} e_i$.
+	Let us call $e_i^{(s)} = (1+ \lambda_i)^{-s} e_i$.
 	The embedding of $H^s(M;g)$ into $H^t(M,g)$
-	is then given in terms of the respective basis elements by $e_i^{(s)} \mapsto (1+\lambda_i)^{-(s-t)/2}e_i^{(t)}$.
+	is then given in terms of the respective basis elements by $e_i^{(s)} \mapsto (1+\lambda_i)^{-(s-t)}e_i^{(t)}$.
 	As $s > t$ and $\lambda_i \to +\infty$, we see that 
 	this embedding is a compact operator \cite[see Proposition 4.6]{Conway1990}.
 \end{proof}
@@ -843,7 +843,7 @@ In this section we list a number of properties which algorithms 1 through 3 exhi
 	Then $\| \hat{f}_{n}(t) \|_{op}, \|\rho_{n}(t)\|_{L^{1}} , \| \psi (t)\|_{L^{2}}$ are all constant in time
 	and
 	\begin{align}
-		\lim_{n \to \infty} \| \hat{f} \|_{op} = \| f \|_{\sup} \\
+		\lim_{n \to \infty} \| \hat{f}_{n} \|_{op} = \| f \|_{\sup} \\
 		\lim_{n \to \infty} \| \rho_{n} \|_{nuc} = \| \rho \|_{L^{1}} \\
 		\lim_{n \to \infty} \| \psi_{n} \|_{L^{2}} = \| \psi \|_{L^{2}}
 	\end{align}
@@ -925,7 +925,7 @@ If the initial density is given by a uniform distribution $\rho_{0} = dx$ then t
  In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=2$ with an initial condition given by a uniform distribution.
 Subfigure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution}.  Subfigure \ref{fig:standard spectral} depicts the numerical solution computed
 from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes.
-Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution computed using algorithm 2 with 32 modes.\todo{Consider renaming the GN algorithm}.
+Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution computed using algorithm 2 with 32 modes.\todo{Consider renaming the GN algorithm}
 
 \begin{figure}
 	\begin{subfigure}{0.3\textwidth}
@@ -993,15 +993,20 @@ The $L^{\infty}$-norm is conserved to machine precision for GN discretization, w
 		\caption{$L^{\infty}$-norms}
 		\label{fig:sup norm}
 	\end{subfigure}
+	\caption{Numerical results for a one-dimensional system}
 \end{figure}
 
 \subsection{A system on the 2-torus}
 Let us consider the system on $\mathbb{T}^{2}$ given by 
 \begin{align}
-	\dot{x} &= \cos(y) - D \sin(x) \\
-	\dot{y} &= -\sin(x) - D \cos(y).
+	\dot{x} &= \cos(2\pi y) - D \sin(2\pi x) \\
+	\dot{y} &= -\sin(2 \pi x) - D \cos(2 \pi y).
 \end{align}
-This can be seen as a dissipative Hamiltonian system with Hamiltonian $H(x,y) = \sin(y) - \cos(x)$ and dissipation $\vec{F} = D \cdot \nabla H$.
+This can be seen as a dissipative Hamiltonian system with Hamiltonian $H(x,y) = \sin(2 \pi y) - \cos(2 \pi x)$ and dissipation $\vec{F} = D \cdot \nabla H$.
+When $D=0$, we have an integrable system and volume is preserved with respect to the standard volume form on $\mathbb{T}^{2}$.
+When $D>0$ the system exhibits phase space contraction near minima of $H$ and phase space expansion near the maxima of $H$.
+In particular, there are four equilibria $(0, \frac{1}{4}) , (0, \frac{3}{4}) , (\frac{1}{2} , \frac{1}{4} ) , (\frac{1}{2} , \frac{3}{4})$.
+
 In Figure \ref{fig:2 torus} we depict the result of solving \eqref{eq:density pde} using three methods: GN spectral, Monte-Carlo, and a standard spectral discretization.
 The top row depicts the result from applying algorithm 2 with the Fourier basis $\{ e^{2\pi i (k_{1}x +k_{2}y)} \mid -8 \leq k_{1},k_{2} \leq 8\}$.
 This is a total of $289$ basis functions. 
@@ -1013,8 +1018,8 @@ Also as before, our GN discretization will conserve mass while the standard spec
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\textwidth]{./images/placeholder}
-	\caption{Blah}
+	\includegraphics[width=0.8\textwidth]{./images/two_torus.png}
+	\caption{ \tiny {\bf Top:} GN Spectral, {\bf Middle:} Monte Carlo, {\bf Bottom:} Standard Spectral}
 	\label{fig:2 torus}
 \end{figure}
 
