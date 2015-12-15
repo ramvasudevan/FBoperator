@@ -473,7 +473,9 @@ Then the operator $\pi(X)$ is given by
 	+ \left. \frac{d}{dx} \right|_x (g \cdot \psi ) \right). \label{eq:S1 op}
 \end{align}
 
-We will first describe how one can approximate the operator $\pi(X)$ with an operator on $\mathbb{C}^{2n+1}$ for a finite $n$.  To begin, note that $\pi(X)$ consists of either multiplication by $g(x)$, or differentiation, or multiplication by $1/2$.  So our approach will be to discretize the linear operations of multiplication by $g(x)$ and the linear operation of differentiation.
+We will first describe how one can approximate the operator $\pi(X)$ with an operator on $\mathbb{C}^{2n+1}$ for a finite $n > 0$.
+In essence what we will describe is a standard spectral scheme \cite{Boyd2001,NumericalRecipes}.
+To begin, note that $\pi(X)$ consists of either multiplication by $g(x)$, or differentiation, or multiplication by $1/2$.  So our approach will be to discretize the linear operations of multiplication by $g(x)$ and the linear operation of differentiation.
 
 The first step is to transform everything to the Fourier domain.  Any $\psi \in L^2(M)$ can be viewed as a normal $L^2$-function with respect to the standard Haar measure on $S^1$.  We may then apply the Fourier transform to write $\psi$ as a complex series
 \begin{align}
@@ -572,21 +574,20 @@ This article is concerned purely with the semi-discretization of \eqref{eq:funct
 efficiently solves finite dimensional ODEs to any prescribed accuracy.
 More explicitly, we will let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final})$ when $x(t)$ is the solution to the ode $\dot{x} = F(x)$ with initial condition $x_{init}$.
 
-Before solving \eqref{eq:function pde} and \eqref{eq:density pde}, let us solve \eqref{eq:half density pde}.
+Before solving \eqref{eq:function pde} and \eqref{eq:density pde}, let us solve \eqref{eq:half density pde} using a standard spectral discretization \cite{Boyd2001,NumericalRecipes}.
 
 \begin{algorithm}
 	\KwData{An initial condition $\psi(0) \in L^{2}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
 	\KwResult{A numerical solution, $\psi_{n}(t_{k})$, to \eqref{eq:half density pde} for $k = 1,\dots,m$.}
 	initialize $z(0) \in \mathbb{C}^{n}$.\;
 	initialize $X_{n} \in \mathbb{C}^{n \times n}$\;
-	initialize the function $F: \mathbb{C}^{n} \to \mathbb{C}^{n}$
-	given by $F(z) = X_{n} \cdot z$.\;
 	\For{ $i = 1 , \dots , n$}{
 		$[z(0)]_{i} = \int_{M} \bar{e}_{i}(x) \psi(0,x)$\;
 		\For{$j=1,\dots,n$}{
 			$[X_{n}]\indices{^{i}_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$
 		} 
 	}
+	initialize the function $F: \mathbb{C}^{n} \to \mathbb{C}^{n}$ given by $F(z) = X_{n} \cdot z$.\;
 	$t_{0} = 0$\;
 	\For{ k = 1,\dots,m}{
 		$z(t_{k}) = \operatorname{OdeSolve}(  F , z(t_{k-1}) , t_{k})$\;
@@ -602,7 +603,7 @@ For the moment we can state a sparsity result which will aide in choosing a basi
 The proof of this results is a matter of simple counting, and so we omit it.
 
 \begin{thm} \label{thm:sparsity}
-	Let $x^{1},\dots,x^{d}$ be a dense coordinate chart for $M$.\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus. \todo{Thank Richard on MathOverflow.}}
+	Let $x^{1},\dots,x^{d}$ be a dense coordinate chart for $M$.\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus.}\todo{Thank Richard here}
 	Then we may write the half density basis $e_{k} (x)= f_{k}(x) \sqrt{dx^{1} \wedge \cdots dx^{d}}$ for $L^{2}$-functions $f_{k}(x)$.
 	If the vector-field $X = X^{\alpha} \pder{}{x^{\alpha}}$ is such that $X^{\alpha} = c^{k} f_{k}$ where fewer than $b$ of $c_{k}$'s are non-zero, then
 	the operator $X_{n}$ in Algorithm \ref{alg:half density} is sparse, and banded diagonal with fewer than $db$ bands.
@@ -1031,7 +1032,7 @@ of which get the peaks correct, but do poorly in the valleys.
 We can see that the operator-norm behaves well using Algorithm \ref{alg:function}.
 The operator-norm is conserved to machine precision for Algorithm \ref{alg:function}, while it will drift using standard discretization.
 
-\begin{figure}
+\begin{figure}[h!]
 	\centering
 	\begin{subfigure}{0.45\textwidth}
 		\includegraphics[width=\textwidth]{./images/function_comparison.pdf}
@@ -1045,7 +1046,6 @@ The operator-norm is conserved to machine precision for Algorithm \ref{alg:funct
 	\end{subfigure}
 	\caption{Numerical results for a one-dimensional system}
 \end{figure}
-
 
 
 \subsection{A system on the 2-torus}
@@ -1070,18 +1070,36 @@ Also as before, our Algorithm \ref{alg:density} will conserve mass while the sta
 By inspection, it appears the largest unstable mode of the standard spectral algorithm is a function with rapid spatial oscillations.
 The dominance of this function can be seen visually at time $0.6$ in figure \ref{fig:2 torus}.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{./images/two_torus.png}
 	\caption{ \tiny {\bf Top:} GN Spectral, {\bf Middle:} Monte Carlo, {\bf Bottom:} Standard Spectral}
 	\label{fig:2 torus}
 \end{figure}
 
+Even at dimension $d=2$ Algorithm \ref{alg:function} becomes troublesome, although still feasible.
+Instead we implement Algorithm \ref{alg:function2}, which is nothing but a combination of the method of characteristics and a Fourier collocation.
+Using the initial function $f_{0}(x,y) = \sin(2\pi y)$ we observe the numerical results shown in Figure \ref{fig:psuedo}
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\textwidth]{./images/psuedo_spec_Koopman.png}
+	\caption{The result of Algorithm \ref{alg:function2} with initial condition $f_{0}(x,y) = \sin(2\pi y)$.}
+	\label{fig:psuedo}
+\end{figure}
 
+We can take the inner-product of a density the function output by our respective algorithms.
+This inner-product is constant in time for exact solutions to the pdes.
+For our numerical solutions these inner-products drift.
+However, there is substantially greater drift and variation when using a standard spectral discretization.
+These results are shown in Figure \ref{fig:inner}. 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\textwidth]{./images/inner_product_plot.pdf}
+	\caption{The inner product between numerically densities and functions.  Blue depicts standard spectral discretization, red depicts the results from Algorithm \ref{alg:density}.}
+	\label{fig:inner}
+\end{figure}
 
-\subsection{Rigid body}
-\todo[inline]{Do this last, if at all}
 
 \subsection{ABC flow}
 \todo[inline]{Only do densities, Plot location of mode,compare with Monte Carlo and standard spectral. Show slices, no fancy 3d shit.}
