@@ -1073,7 +1073,7 @@ The dominance of this function can be seen visually at time $0.6$ in figure \ref
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{./images/two_torus.png}
-	\caption{ \tiny {\bf Top:} GN Spectral, {\bf Middle:} Monte Carlo, {\bf Bottom:} Standard Spectral}
+	\caption{ \tiny {\bf Top:} Algorithm \ref{alg:density}, {\bf Middle:} Monte Carlo, {\bf Bottom:} Standard Spectral}
 	\label{fig:2 torus}
 \end{figure}
 
@@ -1101,8 +1101,48 @@ These results are shown in Figure \ref{fig:inner}.
 \end{figure}
 
 
-\subsection{ABC flow}
-\todo[inline]{Only do densities, Plot location of mode,compare with Monte Carlo and standard spectral. Show slices, no fancy 3d shit.}
+\subsection{A modified ABC flow}
+Consider the system on $\mathbb{T}^{3}$
+\begin{align}
+	\dot{x} = A \sin( 2\pi z) + C \cos(2\pi y)  + D \cos(2\pi x)\\
+	\dot{y} = B \sin( 2\pi z) + A \cos(2\pi y)  + D \cos(2\pi y)\\
+	\dot{z} = A \sin( 2\pi z) + B \cos(2\pi y)  + D \cos(2\pi z)\\
+\end{align}
+For constants $A,B,C,D \in \mathbb{R}$.  When $D=0$ this system is a well studied volume conserving system known as an ABC flow.
+When $A > B > C > D = 0$ and $C << 1$, then the solutions to this ODE are chaotic, with a uniform steady state distribution \cite{MajdaBertozzi2002}.
+When $D=0$ the operator $\pi(X)$ is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ which appears in equation \eqref{eq:density pde},
+and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is generically the case for any volume conserving system.  The benefits of our algorithm are not as strong in such cases.}
+Therefore we will demonstrate the case where $D > 0$ and these discretization are different.
+When $D> 0$ volume is no longer conserved and there is a non-uniform steady-state distribution.
+
+Given any probability distribution on $\mathbb{R}^{3}$ we can get a probability distribution on $\mathbb{T}^{3}$ by wrapping it around.
+That is to say for any $p \in L^{1}(\mathbb{R}^{3})$ we can consider the probability distribution on $\tilde{p} \in L^{1}(\mathbb{T}^{3})$ implicitly given by
+\begin{align*}
+	\int_{A} \tilde{p}( {\bf x} ) = \sum_{ {\bf k} \in \mathbb{Z}^{3} } \int_{A + {\bf k} } p( {\bf x} + {\bf k} ).
+\end{align*}
+for any Borel set $A \subset \mathbb{T}^{3}$ where we view $\mathbb{T}^{3}$ as a unit-cube with boundaries identified.
+
+In particular, if we consider the streched Gaussian
+\begin{align}
+	p(x,y,z) = \frac{1}{ (\sigma_{x} \sigma_{y} \sigma_{z} )\sqrt{ 2\pi } } e^{ - \frac{1}{2} ( (x/\sigma_{x})^{2} + (y/\sigma_{y})^{2} +  (z/\sigma_{z})^{2} )}
+\end{align}
+with $\sigma_{x} = 0.2, \sigma_{y} = 0.3, \sigma_{z} = 0.3$
+we can consider the resulting wrapped distribution $\tilde{p}$ on $\mathbb{T}$ as an initial condition which we shall evolve by the dynamics.
+The results of applying three different algorithms are shown in figure \ref{fig:ABCD} where we only plot the shadow onto the XY-plane.
+The top row depicts the results from using Algorithm \ref{alg:density}.
+The middle row depicts the results from using a Monte-Carlo method with $15^{3} = 3375$ particles..
+The Monte-Carlo method serves as a good benchmark for the purpose of visual inspection.
+Finally, the bottom row depicts the results from using a direct Fourier based discretization of \eqref{eq:density}.
+Again we see that Algorithm \ref{alg:density} performs quite well.
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{./images/ABCD_flow.png}
+	\caption{ \tiny {\bf Top:} Algorithm \ref{alg:density}, {\bf Middle:} Monte Carlo, {\bf Bottom:} Standard Spectral}
+	\label{fig:ABCD}
+\end{figure}
+
 
 \section{Interpretations from $C^{*}$-algebras and quantum mechanics}
 
