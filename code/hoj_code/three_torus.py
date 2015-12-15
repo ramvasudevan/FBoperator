@@ -13,7 +13,7 @@ from matplotlib import cm
 
 # CONSTANTS 
 # modes is a list of integer tuples
-p = 5
+p = 4
 
 res = 2**(p+1)+1
 freq = np.fft.fftfreq(res)
@@ -35,9 +35,10 @@ DIM = 3
 A = 1.0
 B = 0.5
 C = 0.2
+D = 0.5
 
 def ABC_flow( arr ,t):
-    global A,B,C
+    global A,B,C,D
     N = len(arr)
     x = arr[0:N/3]
     y = arr[N/3:2*N/3]
@@ -45,6 +46,11 @@ def ABC_flow( arr ,t):
     dx = A*np.sin(2*np.pi*z) + C*np.cos(2*np.pi*y)
     dy = B*np.sin(2*np.pi*x) + A*np.cos(2*np.pi*z)
     dz = C*np.sin(2*np.pi*y) + B*np.cos(2*np.pi*x)
+
+    #Non-conservative terms
+    dx += D*np.cos(2*np.pi*x)
+    dy += D*np.cos(2*np.pi*y)
+    dz += D*np.cos(2*np.pi*z)
     return np.hstack([dx,dy,dz])
 
 #(u,v,w) = ( Asin(z)+Ccos(y), B sin(x) + A cos(z) , C sin(y) + B cos(x) )
@@ -62,6 +68,14 @@ f_hat[2][(0, 1,0)] = -C*0.5j
 f_hat[2][(0,-1,0)] = C*0.5j
 f_hat[2][( 1,0,0)] = B*0.5
 f_hat[2][(-1,0,0)] = B*0.5
+
+# Non-conservative terms
+f_hat[0][( 1,0,0)] = D*0.5
+f_hat[0][(-1,0,0)] = D*0.5
+f_hat[1][(0, 1,0)] = D*0.5
+f_hat[1][(0,-1,0)] = D*0.5
+f_hat[2][(0,0, 1)] = D*0.5
+f_hat[2][(0,0,-1)] = D*0.5
 
 # Arrays for plotting stuff
 temp = np.linspace(-0.5,0.5,res)
@@ -170,68 +184,79 @@ def Gaussian_in_Fourier(particles=False):
         return out,X%1,Y%1,Z%1
     return out
 
-#Lets make some operators
-print 'Let\'s make some operators'
-t0=time()
-Operator = get_Hilbert_Op()
-#Operator = ddx[0]
-print 'Done.  That took me %f seconds.' %(time()-t0)
 print 'initializing psi with p=%d and res=%d' %(p,res)
-t0 = time()
 psi_hat,X_pts,Y_pts,Z_pts = Gaussian_in_Fourier(particles=True)
-print 'Done.  That took me %f seconds.' %(time()-t0)
-print 'Integrating'
-psi = np.fft.ifftn(psi_hat.reshape(res,res,res))
 
-#LET'S DISPLAY THE INITIAL CONDITION BEFORE PROCEEDING
-f,ax = plt.subplots(1,2)
-ax[0].imshow( (np.abs(psi)**2).sum(2).transpose() ,
-        cmap='Greys',
-        extent=[0,1,0,1],
-        interpolation='nearest',
-        origin = 'lower')
-ax[0].grid(True)
-ax[0].set_title('GN spectral')
-ax[1].scatter(X_pts%1,Y_pts%1,alpha=0.15,s=3,c='k')
-ax[1].set_aspect('equal')
-ax[1].axis([0,1,0,1])
-ax[1].set_title('Monte Carlo')
-ax[1].grid(True)
-plt.show()
-f.clear()
 
-N_timesteps = 30
-t = np.linspace(0,1,N_timesteps+1 )
+print 'Done.  Integrating PDE'
+N_timesteps = 5
+t = np.linspace(0,1.0,N_timesteps+1 )
+
+#SOLVE USING HILBERT METHOD
+Operator = get_Hilbert_Op()
 r = ode( lambda t,y: -Operator.dot(y) ).set_integrator('zvode', method='bdf')
 r.set_initial_value( psi_hat.flatten() , t[0] )
-
-
-#INTEGRATING POINT CLOUD
-states = odeint( ABC_flow , np.hstack( [X_pts,Y_pts,Z_pts] ) , t )
-N_pts = states[0].size / 3
-f,ax = plt.subplots(1,2)
+psi = np.fft.ifftn( psi_hat)
+psi_list = [psi]
+print "Solving for psi"
 for i in range(N_timesteps):
-    psi = np.fft.ifftn( r.y.reshape(res,res,res) )
     r.integrate(t[i+1])
-    if r.successful():
-        print 'success'
+    psi_list.append( np.fft.ifftn( r.y.reshape(res,res,res) ) )
+    if not r.successful():
+        print 'fail at time {:d}'.format(i)
+        quit()
     else:
-        print 'fail'
-    ax[0].imshow( (np.abs(psi)**2).sum(2).transpose() ,
+        print 'Success.  Continuing at time step {:d}'.format(i)
+
+#SOLVE USING FROBENIUS PERRON METHOD
+Operator = get_Frobenius_Perron_Op()
+r = ode( lambda t,y: -Operator.dot(y) ).set_integrator('zvode', method='bdf')
+rho = psi**2
+rho_hat = np.fft.fftn( rho )
+r.set_initial_value( rho_hat.flatten() , t[0] )
+rho_list = [rho]
+print "Solving for rho using Standard discretization"
+for i in range(N_timesteps):
+    r.integrate(t[i+1])
+    rho_list.append( np.fft.ifftn( r.y.reshape(res,res,res) ) )
+    if not r.successful():
+        print 'fail at time {:d}, exiting loop'.format(i)
+        quit()
+    else:
+        print 'Success.  Continuing at time step {:d}'.format(i)
+
+#SOLVE USING MONTE CARLO
+states = odeint( ABC_flow , np.hstack( [X_pts,Y_pts,Z_pts] ) , t )
+N_pts = X_pts.size
+
+f,ax = plt.subplots(3,N_timesteps+1)
+#PLOT RESULTS
+for i in range(N_timesteps+1):
+    psi = psi_list[i]
+    rho = rho_list[i]
+    ax[0,i].imshow( (np.abs(psi)**2).sum(2).transpose() ,
             cmap = 'Greys',
             interpolation='nearest',
             extent = [ 0. , 1. , 0. , 1. ],
             origin = 'lower')
-    ax[0].grid(True)
-    ax[0].set_title('GN Spectral')
+    ax[0,i].grid(True)
+    ax[0,i].set_title('t = %.2f'%t[i])
+    ax[2,i].imshow( rho.real.sum(2).transpose() ,
+            cmap = 'Greys',
+            interpolation='nearest',
+            extent = [ 0. , 1. , 0. , 1. ],
+            origin = 'lower')
+    ax[2,i].grid(True)
     X_pts = states[i,0:N_pts]
     Y_pts = states[i,N_pts:2*N_pts]
-    ax[1].scatter( X_pts % 1 , Y_pts % 1, alpha = .12, s=3., c='k')
-    ax[1].axis([0,1,0,1])
-    ax[1].set_aspect('equal')
-    ax[1].set_title('Monte Carlo')
-    ax[1].grid(True)
-    plt.savefig('./figures/figure_{:,d}'.format(i))
-    ax[0].clear()
-    ax[1].clear()
+    ax[1,i].scatter( X_pts % 1 , Y_pts % 1, alpha = .03, s=3., c='k')
+    ax[1,i].axis([0,1,0,1])
+    ax[1,i].set_aspect('equal')
+    ax[1,i].grid(True)
+    #REMOVE TICKLABELS
+    for k in range(3):
+        ax[k,i].xaxis.set_ticklabels([]) 
+        ax[k,i].yaxis.set_ticklabels([]) 
     print "print frame %d of %d" %(i,N_timesteps)
+
+plt.show()
