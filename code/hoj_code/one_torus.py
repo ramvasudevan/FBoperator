@@ -10,7 +10,7 @@ for k in range(-N,N):
     ddx[k,k] = 1j*k
 
 def mult_by_e( k ):
-    return np.eye(2*N+1,k=k)
+    return np.eye(2*N+1,k=-k,dtype=complex)
 
 def mult_by_sin(k):
     return (mult_by_e(k) - mult_by_e(-k))/(2j)
@@ -28,7 +28,7 @@ def ift( y ):
 
 #X = sin(x) ddx
 
-FP_op = np.dot( -ddx , mult_by_sin(2) )
+FP_op = np.dot( ddx , mult_by_sin(2) )
 H_op = 0.5*FP_op - 0.5*FP_op.conj().transpose()
 
 # Initialize our half-density and density to a uniform distribution
