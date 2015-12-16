@@ -1148,9 +1148,105 @@ Again we see that Algorithm \ref{alg:density} performs quite well.
 
 \section{Insights from operator theory}
 
-There
+In this section we describe ``why these algorithms work'' from a different perspective, that of Operator theory.
+Admittedly, this section is not crucial for a practitioner to benefit from the paper.
+Uninterested readers are free to skip it without consequence.
+Nonetheless, we consider the following informal discussion valuable from the perspective of research, and integration within the larger mathematics community.
+For the sake if pace we will provide references for theorems and claims made in this section, rather than proving them here.
 
-\todo[inline]{Things to mention: Gelfand transform, that \eqref{eq:half density pde} is a Shrodinger equation, reconstruction theorems.  That $\Diff(M)$ is the space of $*$-automorphisms.}
+To begin, let us review some definitions.
+\begin{defn}
+	A \emph{Banach-algebra} is a Banach space, $A$, which is also equipped with a multiplication-like operation $(a,b) \in A \times A \mapsto ab \in A$
+	which is bounded and associative in that $\| ab \| \leq \|a \| \|b \|$ and $(ab)c = a(bc)$ for any $a,b,c \in A$.
+	
+	A \emph{$C^{*}$-algebra} is a Banach algebra, $A$, over the field $\mathbb{C}$ with an involution ``$a \in A \mapsto a^{*} \in A$'' which satisfies
+	\begin{align}
+		(ab)^{*} = b^{*} a^{*} \\
+		(\lambda a)^{*} = \bar{\lambda} a^{*} \\
+		\| a \| = \| a^{*}\|.
+	\end{align}
+	for all $a,b \in A$ and $\lambda \in \mathbb{C}$.
+	We call $A$ \emph{unital} if $A$ has a multiplicative identity.
+	We call $A$ commutative if $ab = ba$ for all $a,b \in A$.
+	
+	Finally, a map $T:A \to A$ is called a $*$-automorphism if $T$ is a bounded linear automorphism that preserves products, i.e. $T(ab) = T(a) T(b)$.
+	We denote the space of $*$-automorphisms of $A$ by $\operatorname{Aut}(A)$.
+\end{defn}
+
+The notion of a $C^{*}$-algebra may appear abstract so we provide the two most important examples.
+
+\begin{example}
+	Let $X$ be a topological space.  Then the space of complex valued continuous functions with compact support, $C_{0}(X;\mathbb{C})$, is a $C^{*}$-algebra under the sup-norm and addition/multiplication operations of functions.
+	In fact $C_{0}(X;\mathbb{C})$ is a commutative $C^{*}$-algebra.  If $X$ is compact, then the constant function $f(x) = 1$ serves as a multiplicative identity, and this algebra becomes unital.
+\end{example}
+
+\begin{example}
+	Let $\mathcal{H}$ be a complex Hilbert space. Then the space of bounded operators on $\mathcal{H}$, denoted $B(\mathcal{H})$, is a (non-commutative) $C^{*}$-algebra.
+\end{example}
+
+While the notion of a general $C^{*}$-algebras is, apriori, more abstract than the examples above, this feeling of abstraction is an illusion.
+One of the cornerstones of operator theory is that \emph{all} $C^{*}$-algebras are contained within these examples.
+This is formally given by
+
+\begin{thm}[The Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN1}
+	Any $C^{*}$-algebra is isomorphic to a sub-algebra of $B(\mathcal{H})$ for some Hilbert space, $\mathcal{H}$.
+\end{thm}
+
+For commutative $C^{*}$-algebras more can be said.
+In particular we can consider the space of character as in \cite{Bondia2001}.
+
+\begin{defn}
+	A \emph{character} of a $C^{*}$-algebra, $A$, is an element of the dual space $x \in A^{*}$ such that
+	$x(ab) = x(a) x(c)$.  We denote the space of characters by $X_{A}$.
+	The map $A \to X_{A}$ is known as the \emph{Gelfand transform}.
+\end{defn}
+
+\begin{prop}[Lemma 1.1 \cite{Bondia2001}]
+	If we equipp $A^{*}$ with the weak topology, the space $X_{A} \subset A^{*}$ is a compact Hausdorff space with respect to the relative topology.
+\end{prop}
+\begin{proof}
+	We provide a sketch of the proof.
+	One can verify that any character $x \in X_{A}$ is of unit norm.
+	Compactness follows from the Banach-Alaoglu theorem.
+\end{proof}
+
+For example, if $A$ is a space of continuous complex functions on a manifold $M$, then $X_{A}$ is the space of Dirac-delta distributions, which is homeomorphic to $M$ itself.
+The following is really a corollary to \ref{thm:GN1}.
+
+\begin{thm}[The second Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN2}
+	Any commutative $C^{*}$-algebra is isomorphic to $C(X_{A} ; \mathbb{C})$.
+\end{thm}
+
+Historically, theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into relatively concrete things, such as linear operators or continuous functions.
+In this paper, we appear to have gone the other direction.
+The map $f \in C(M) \to \hat{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand transform}!
+In particular, correspondence theorem \ref{thm:quantize} is simply the correspondence between advection pdes on $M$ and various odes on $L^{2}(M)$ and $B(L^{2}(M))$ under the Gelfand transform.
+Perhaps one of the reasons our algorithms were not done earlier, is because it is not intuitively a good idea to use the Gelfand transform to turn ``concrete'' objects into ``abstract'' ones like this.
+However, ``abstract'' does not mean easier to deal with numerically.
+In fact, it appears that the abstract characterization is easier to numerically discretize when it comes to advection pdes.
+As we have seen, it is easier to represent conservation laws for advection in this form.
+In essence this is related to the following corollary of Theorem \ref{thm:GN2}
+
+\begin{cor}[see Corollary 1,7 of \cite{Bondia2001}]
+	If $A$ is a commutative $C^{*}$-algebra, and $T:A\to A$ is $*$-automorphism such that $T(a)T(b) = T(ab)$,
+	then there is a unique homeomorphism $\Phi_{T} \in \Diff_{0}(X_{A})$
+	such that $\Phi_{T}(x) (a) = T^{-1}(a)$.
+	In other words, $\Diff_{0}(X_{A}) \equiv \operatorname{Aut}(A)$ as a topological group.
+\end{cor}
+
+Said more plainly, any bounded and invertible transformation of $C(M)$ that preserves sums and products is necessarily a homeomorphism.
+Thus, conservation of sums of products is more than just a fundamental property of advection.
+\emph{Conservation of sums and products is the defining property of advection}.
+Consequently, numerical schemes that respect these conservation laws are targeting the defining property of \eqref{eq:function pde} and \eqref{eq:density pde}.
+The methods presented in this article provide a case in point, as do particle methods.
+In particular, particle methods take $M$ as the fundamental object to use for discretization.
+As discussed in the introduction, particle methods conserve (a discrete notion of) sums and products, and therefore we can consider them qualitatively accurate.
+The spectral methods considered in this article considers the commutative $C^{*}$-algebra, $C(M)$ as fundamental.
+By Theorem \ref{thm:GN2}, the space $C(M)$ has the same data as $M$ itself.
+Moreover, by theorem \ref{thm:GN1} we can view $C(M)$ as a space of operators without any loss in data.
+As a result, the spectral methods in this paper can be seen as a reasonable discretization one would apply to from the perspective of $C^{*}$-algebras,
+while particle methods can be seen as a reasonable discretization one would apply, after using the Gelfand transform.
+
 
 \section{Conclusion}
 
