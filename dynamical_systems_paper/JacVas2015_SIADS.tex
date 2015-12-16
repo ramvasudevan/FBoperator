@@ -45,7 +45,7 @@
 \DeclareMathOperator{\Con}{Con}
 
 %  TITLE, AUTHOR, DATE
-\title{Qualitatively accurate spectral schemes for advection}
+\title{Qualitatively accurate spectral schemes for advection and transport}
 \author{Henry O. Jacobs \& Ram Vasudevan}
 \date{\today}
 
@@ -62,8 +62,80 @@
 \section{Introduction}
 \label{sec:intro}
 
-Qualitative accuracy is important because...
-Here is an example of a failure.
+Let $M$ be a compact manifold and let $X$ be a vector-field on $M$. The current paper is concerned with the following two equations
+\begin{align}
+	\partial_{t} f + X^{i} \partial_{i} f = 0 \label{eq:function pde} \\
+	\partial_{t} \rho + \partial_{t} (\rho X^{i}) = 0 \label{eq:density pde}
+\end{align}
+for a time dependent function $f$ and a time dependent density $\rho$ on $M$.
+Both equations occur in a variety of contexts.
+Equation \eqref{eq:function pde} describes how a scalar quantity (such as a particle label) is transported by the flow of $X$.
+Such a pde arises in the context of fluids when $X$ is the (time-dependent) velocity field of the fluid, and $f$ is the temperature, and the thermal diffusivity is $0$.
+In the context of imaging and computer vision, it is often desired that one evolve a surface under some prescribed dynamics.
+For such a problem, level-set methods provide a possible numerical solution.
+Level set methods begin by converting the surface into the level set of some function, $f$, and then solving \eqref{eq:function pde}.
+
+Equation \eqref{eq:density pde} describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
+In the context of classical mechanics, this equation is known as the Louiville equation.
+More generally, it can be seen as the zero-noise limit of the Fokker-Planck equation.
+In the context of fluids, such an equation describes how the density of a chemical tracer is transported by $X$.
+
+These equations have a number of conservation laws associated to them.
+For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
+then so is the product and the sum $f\cdot g$ and $f+g$.
+Other such conservation laws will be described in a future section, but suffice it to say,
+we will consider a numerical scheme to be qualitatively accurate if it exhibits a discretized version of these conservation laws. 
+
+Both \eqref{eq:function pde} and \eqref{eq:density pde} can be approached, numerically, from a variety of directions, each with its own benefit.
+For example, particle methods can be used, and do a decent job with regards to ``qualitative accuracy''.
+The method of characteristics tells us that
+the solution to \eqref{eq:function pde} with the initial condition $f_{0} \in C^{1}(M)$ is the time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
+This suggests the following numerical method for the case $M = S^{1}$.
+
+\begin{algorithm} 
+	\KwData{An initial function $f_{0}$ and a resolution $n$.}
+	\KwResult{The value of the solution $f(x,t)$ to \eqref{eq:function pde} at time $t=1$ at a finite set of points.}.
+	Initialize a regular grid $\{ x_{1},\dots,x_{n} \}$ on $S^{1}$\;
+	\For{i = 1,\dots,n}{
+		Solve the ode $\dot{x} = X(x)$ with final condition $x_{i}(1)$ using a method of choice (e.g. Euler's method)\;
+	}
+	\KwOut{ $f_{0}( x_{1}(0) ), \dots, f_{0}(x_{n}(0) )$. }
+	\caption{The method of characteristics}\label{alg:particle}
+\end{algorithm}
+ 
+We will see that this algorithm retains many of the properties of \eqref{eq:function pde},
+and we think it deserves the label of \emph{qualitatively accurate}.
+For example, given the input $h_{0} = f_{0} \cdot g_{0}$, the output of Algorithm \ref{alg:particle} is identical to the componentwise product of the outputs obtained from inputing $f_{0}$ and $g_{0}$ separately.
+In other words, Algorithm \ref{alg:particle} conserves a (discrete version of) multiplication of functions just like the original pde \eqref{eq:function pde}.
+Moreover, this algorithm converges over finite time-intervals (using any reasonable interpolation method) at a rate $\mathcal{O}(n^{-1})$.
+However, one drawback of this algorithm in the context of smooth data there exists algorithms which exhibit vastly superior convergence rates, namely spectral methods with spectral convergence.
+
+In the case where $M=S^{1}$ a spectral method can be obtained by converting \eqref{eq:function pde} to the Fourier domain where it takes the form
+of an ode
+\begin{align}
+	\frac{d \hat{f}_{k}}{dt} + 2\pi i \ell  \widehat{X}_{k-\ell} \hat{f}_{\ell} \label{eq:standard spectral}
+\end{align}
+where $\hat{f}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $f$ and $X$.
+We see that we have converted our linear pde into a linear ode on the space of Fourier coefficients.
+A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients (see Algorithm \ref{alg:spectral}).
+
+\begin{algorithm} 
+	\KwData{An initial function $f_{0}$ and a resolution $n$.}
+	\KwResult{A truncated Fourier series which approximates the solution $f(x,t)$ to \eqref{eq:function pde}, at time $t=1$.}
+	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
+	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
+	\caption{A standard spectral method for \eqref{eq:function pde}}\label{alg:spectral}
+\end{algorithm}
+
+Such a numerical method is good for smooth data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-p})$ for any finite $p > 0$ over a fixed finite time interval.
+Such a convergence rate is known as \emph{spectral} or \emph{exponential}.
+However, this algorithm is not qualitatively accurate.  It does not preserve sums and products of functions.
+
+This motivates the primary goal of this paper:
+to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is spectrally convergent and qualitatively accurate.
+From the previous discussion, it appears there are solutions to each of these goals individually, but not simultaneously.
 
 \subsection{Previous work}
 Papers to mention:
@@ -91,17 +163,11 @@ For a fixed $x \in M$ we observe, via the chain-rule,
 	 &= - X^{j}(x) \pder{f}{x^{j}} = - \pounds_{X}[f_{0}]
 \end{align}
 where $\pounds_{X}[f]$ denotes the Lie-derivative of $f$.
-This calculation yields the time-dependent advection PDE
-\begin{align}\label{eq:function pde}
-	\pder{f}{t} + X^{j} \pder{f}{x^{j}} = 0.
-\end{align}
+This calculation yields the time-dependent advection PDE \eqref{eq:function pde}.
 
 The same idea works if we consider the advection of a density $\rho_{0}$ by $X$.
 In this case, the advected density is given by $\rho (x ; t) =  \det\left[ (D\Phi_{X}^{t,0})^{-1} (x) \right] \rho_{0}( (\Phi_{X}^{0,t})^{-1}(x) )$
-and the advection PDE is
-\begin{align} \label{eq:density pde}
-	\pder{\rho}{t} + \pder{}{x^{j}} \left( \rho X^{j} \right) = 0.
-\end{align}
+and the advection PDE is \ref{eq:density pde}.
 
 Similarly, a (constant in time) vector-field $Y_{0}$ is advected by $X$ by the formula $Y(x ; t) =  (D\Phi_{X}^{t,0})|_{(\Phi_{X}^{t,0})^{-1}(x)} \cdot Y_{0}( (\Phi_{X}^{t,0})^{-1}(x))$
 and satisfies the advection PDE
