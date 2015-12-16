@@ -725,6 +725,7 @@ In all that follows $\pi_{n}: L^{2}(M) \to V_{n}$ will denote the orthogonal pro
 
 We should note that this error bound illustrates that we have a spectral convergence rate on smooth data.
 This rapid convergence for smooth data will cascade to bounds throughout this section.
+
 Now that we have derive an error bound for the approximation error of $V_{n}$ with respect to $H^{s}(M)$ we can 
 derive an error bound for Algorithm \ref{alg:half density}.
 
@@ -918,13 +919,13 @@ We find that our integrator has this property as well.
 	Let $\hat{f}_{n}, \hat{g}_{n}$ and $\hat{h}_{n}$ be numerical solutions derived from algorithm 1
 	so that each satisfies the ode \eqref{eq:quantum observable ode}, with ``$X$'' replaced by it $n$-rank approximation.
 	Then $\hat{k}_{n}(t) = \hat{f}_{n}(t) \cdot \hat{g}_{n}(t) + \hat{h}_{n}(t)$ also satisfies \eqref{eq:quantum observable ode}, with ``$X$'' replaced by it $n$-rank approximation.
-	Moreover, $\hat{k}_{n}(t)$ converges to the solution $\hat{k}$ as $n \to \infty$ in the operator norm when $f,g,h \in W^{s,\infty}(M)$ for $s>1$.
+	Moreover, $\hat{k}_{n}(t)$ converges to the solution $\hat{k}$ as $n \to \infty$ in the operator norm on $H^{s}(M)$ when $f,g,h \in W^{s,\infty}(M)$ for $s>1$.
 \end{thm}
 \begin{proof}
 	Note that 
 	\begin{align}
-		\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} \quad,\quad 
-		\hat{g}_{n}(t) = U_{n}(t) \hat{g}_{n}(0) U_{n}(t)^{\dagger} \quad,\quad
+		\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} \\
+		\hat{g}_{n}(t) = U_{n}(t) \hat{g}_{n}(0) U_{n}(t)^{\dagger} \\
 		\hat{h}_{n}(t) = U_{n}(t) \hat{h}_{n}(0) U_{n}(t)^{\dagger}.
 	\end{align}
 	Similarly, if $k_{n}(0) = f_{n}(0) g_{n}(0) + h_{n}(0)$ then
@@ -1122,17 +1123,18 @@ That is to say for any $p \in L^{1}(\mathbb{R}^{3})$ we can consider the probabi
 \end{align*}
 for any Borel set $A \subset \mathbb{T}^{3}$ where we view $\mathbb{T}^{3}$ as a unit-cube with boundaries identified.
 
-In particular, if we consider the streched Gaussian
+In particular, let
 \begin{align}
 	p(x,y,z) = \frac{1}{ (\sigma_{x} \sigma_{y} \sigma_{z} )\sqrt{ 2\pi } } e^{ - \frac{1}{2} ( (x/\sigma_{x})^{2} + (y/\sigma_{y})^{2} +  (z/\sigma_{z})^{2} )}
 \end{align}
-with $\sigma_{x} = 0.2, \sigma_{y} = 0.3, \sigma_{z} = 0.3$
-we can consider the resulting wrapped distribution $\tilde{p}$ on $\mathbb{T}$ as an initial condition which we shall evolve by the dynamics.
+with $\sigma_{x} = 0.2, \sigma_{y} = 0.3, \sigma_{z} = 0.3$.
+We take the resulting wrapped distribution $\tilde{p}$ on $\mathbb{T}$ as an initial conditions to \eqref{eq:density pde}.
+Then numerically solve \eqref{eq:density pde} using Algorithm \ref{alg:density}, Monte-Carlo, and a standard spectral method respectively.
 The results of applying three different algorithms are shown in figure \ref{fig:ABCD} where we only plot the shadow onto the XY-plane.
 The top row depicts the results from using Algorithm \ref{alg:density}.
-The middle row depicts the results from using a Monte-Carlo method with $15^{3} = 3375$ particles..
+The middle row depicts the results from using a Monte-Carlo method with $15^{3} = 3375$ particles.
 The Monte-Carlo method serves as a good benchmark for the purpose of visual inspection.
-Finally, the bottom row depicts the results from using a direct Fourier based discretization of \eqref{eq:density}.
+Finally, the bottom row depicts the results from using a direct Fourier based discretization of \eqref{eq:density pde}.
 Again we see that Algorithm \ref{alg:density} performs quite well.
 
 
@@ -1144,7 +1146,9 @@ Again we see that Algorithm \ref{alg:density} performs quite well.
 \end{figure}
 
 
-\section{Interpretations from $C^{*}$-algebras and quantum mechanics}
+\section{Insights from operator theory}
+
+There
 
 \todo[inline]{Things to mention: Gelfand transform, that \eqref{eq:half density pde} is a Shrodinger equation, reconstruction theorems.  That $\Diff(M)$ is the space of $*$-automorphisms.}
 
