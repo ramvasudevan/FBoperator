@@ -162,11 +162,11 @@ def get_Hilbert_Op():
         return 0.5*w1+0.5*w2
     return LinearOperator( f_cnv[0].shape , matvec=mv )
 
+sigma = [ 0.2 , 0.3 , 0.3 ]
 def Gaussian_in_Fourier(particles=False):
     #generates the Fourier transform of a Guassian
-    global modes,res
+    global modes,res,sigma
     N = len(modes)
-    sigma = [ 0.2 , 0.3 , 0.3 ]
     modes_arr = np.array(modes)
     freq = np.fft.fftfreq(res)
     unos = np.ones(res)
@@ -229,27 +229,28 @@ for i in range(N_timesteps):
 states = odeint( ABC_flow , np.hstack( [X_pts,Y_pts,Z_pts] ) , t )
 N_pts = X_pts.size
 
-f,ax = plt.subplots(3,N_timesteps+1)
 #PLOT RESULTS
+f,ax = plt.subplots(3,N_timesteps+1)
+clim = ( 0.0 , 8*rho.max().max()  ) #( 0.0 , 1./np.sqrt(2*np.pi *( (np.array(sigma)**2).sum()) ) )
 for i in range(N_timesteps+1):
     psi = psi_list[i]
     rho = rho_list[i]
     ax[0,i].imshow( (np.abs(psi)**2).sum(2).transpose() ,
-            cmap = 'Greys',
+            cmap = 'Greys',clim=clim,
             interpolation='nearest',
             extent = [ 0. , 1. , 0. , 1. ],
             origin = 'lower')
     ax[0,i].grid(True)
     ax[0,i].set_title('t = %.2f'%t[i])
     ax[2,i].imshow( rho.real.sum(2).transpose() ,
-            cmap = 'Greys',
+            cmap = 'Greys',clim=clim,
             interpolation='nearest',
             extent = [ 0. , 1. , 0. , 1. ],
             origin = 'lower')
     ax[2,i].grid(True)
     X_pts = states[i,0:N_pts]
     Y_pts = states[i,N_pts:2*N_pts]
-    ax[1,i].scatter( X_pts % 1 , Y_pts % 1, alpha = .03, s=3., c='k')
+    ax[1,i].scatter( X_pts % 1 , Y_pts % 1 , s=1 , c='k')
     ax[1,i].axis([0,1,0,1])
     ax[1,i].set_aspect('equal')
     ax[1,i].grid(True)
@@ -258,5 +259,5 @@ for i in range(N_timesteps+1):
         ax[k,i].xaxis.set_ticklabels([]) 
         ax[k,i].yaxis.set_ticklabels([]) 
     print "print frame %d of %d" %(i,N_timesteps)
-
+plt.tight_layout()
 plt.show()
