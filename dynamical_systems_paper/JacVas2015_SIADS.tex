@@ -1108,8 +1108,20 @@ Let us consider the system on $\mathbb{T}^{2}$ given by
 This can be seen as a dissipative Hamiltonian system with Hamiltonian $H(x,y) = \sin(2 \pi y) - \cos(2 \pi x)$ and dissipation $\vec{F} = D \cdot \nabla H$.
 When $D=0$, we have an integrable system and volume is preserved with respect to the standard volume form on $\mathbb{T}^{2}$.
 When $D>0$ the system exhibits phase space contraction near minima of $H$ and phase space expansion near the maxima of $H$.
-In particular, there are four equilibria $(0, \frac{1}{4}) , (0, \frac{3}{4}) , (\frac{1}{2} , \frac{1}{4} ) , (\frac{1}{2} , \frac{3}{4})$.
+In particular, there are four equilibria:
+\begin{center}
+\begin{tabular}{cc}
+	$(x,y)$ & Type \\
+	\hline
+	$(0, 1/4)$ & saddle \\
+	$(0, 3/4)$ & sink with clockwise rotation\\
+	$(1/2,1/4)$ & source with counter-clockwise rotation \\
+	$(1/2,3/4)$ & saddle
+\end{tabular}
+\end{center}
 
+If we place a wrapped Guassian probability distribution with center at $(\bar{x},\bar{y}) = (0.4,0.4)$ and variance $\sigma = 0.3$ we should expect much of the mass to be swept by the unstable
+axis of the saddle at $(0,1/4)$ and sucked towards the sink at $(0,3/4)$.
 In Figure \ref{fig:2 torus} we depict the result of solving \eqref{eq:density pde} using three methods: Algorithm \ref{alg:density}, Monte-Carlo, and a standard spectral discretization.
 The top row depicts the result from applying algorithm 2 with the Fourier basis $\{ e^{2\pi i (k_{1}x +k_{2}y)} \mid -8 \leq k_{1},k_{2} \leq 8\}$.
 This is a total of $289$ basis functions. 
@@ -1202,7 +1214,8 @@ In this section we describe ``why these algorithms work'' from a different persp
 Admittedly, this section is not crucial for a practitioner to benefit from the paper.
 Uninterested readers are free to skip it without consequence.
 Nonetheless, we consider the following informal discussion valuable from the perspective of research, and integration within the larger mathematics community.
-For the sake if pace we will provide references for theorems and claims made in this section, rather than proving them here.
+In the interest of pacing and being overly pedagogical we will provide references for theorems and claims made in this section rather than proving them here.
+All of these theorems can be found in standard functional analysis textbooks such as \cite{Conway1990} or \cite{Rudin1991}.
 
 To begin, let us review some definitions.
 \begin{defn}
