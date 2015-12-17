@@ -3,14 +3,14 @@ from scipy import sparse
 from scipy.integrate import ode
 import matplotlib.pyplot as plt
 
-N = 32
+N = 64
 
-#Making the operator ddx
-diag = 1j*np.arange(-N,N+1)
-data = np.zeros([1,2*N+1],dtype=complex)
-data[0,:] = diag
-offsets = np.zeros(1)
-ddx = sparse.dia_matrix((data,offsets),shape=(2*N+1,2*N+1),dtype=complex)
+def get_ddx(N):
+    diag = 1j*np.arange(-N,N+1)
+    data = np.zeros([1,2*N+1],dtype=complex)
+    data[0,:] = diag
+    offsets = np.zeros(1)
+    return sparse.dia_matrix((data,offsets),shape=(2*N+1,2*N+1),dtype=complex)
 
 def mult_by_e( k ):
     return sparse.eye(2*N+1,k=-k,dtype=complex, format='dia')
@@ -21,7 +21,7 @@ def mult_by_sin(k):
 def mult_by_cos(k):
     return (mult_by_e(k) + mult_by_e(-k))/2.
 
-x = np.linspace(-np.pi, np.pi,400)
+x = np.linspace(-np.pi, np.pi,1000)
 def ift( y ):
     global x,N
     store = np.zeros( x.size, dtype = complex)
@@ -29,9 +29,15 @@ def ift( y ):
         store += y[k+N]*np.exp(1j*k*x)
     return store
 
-#X = -sin(2x) ddx
-FP_op =  ddx.dot( mult_by_sin(2) )
-H_op = 0.5*FP_op - 0.5*FP_op.conj().transpose()
+def get_FP_op(N):
+    return get_ddx(N).dot( mult_by_sin(2) )
+
+def get_H_op(N):
+    FP_op = get_FP_op(N)
+    return 0.5*FP_op - 0.5*FP_op.conj().transpose()
+
+FP_op = get_FP_op(N)
+H_op = get_H_op(N)
 
 # Initialize our half-density and density to a uniform distribution
 psi_0 = np.zeros(2*N+1,dtype=complex)
@@ -40,7 +46,7 @@ rho_0 = np.zeros(2*N+1,dtype=complex)
 rho_0[N] = 1.0
 
 # Integrate solutions
-n_frames = 2
+n_frames = 100
 t = np.linspace(0,1.5,n_frames)
 
 #Solving for psi
@@ -125,4 +131,54 @@ plt.xlabel('time')
 plt.ylabel('$L^1$ norm')
 plt.grid()
 plt.show()
+
+
+#NOW WE MAKE A CONVERGENCE PLOT
+t_final = 1.0
+n_trials = 15
+error_H = np.zeros(n_trials)
+error_FP = np.zeros(n_trials)
+for k in range(n_trials):
+    #Solving for psi
+    power = k+2
+    N = int(1.5**power)
+    psi_0 = np.zeros( 2*N+1 , dtype = complex )
+    psi_0[N] = 1.
+    H_op = get_H_op(N)
+    integrator = ode( lambda t,x : H_op.dot(x) )
+    integrator.set_integrator('zvode',method='bdf')
+    integrator.set_initial_value( psi_0 , 0 )
+    integrator.integrate(t_final)
+    psi = integrator.y
+    
+    #Solving for rho
+    rho_0 = np.zeros( 2*N+1 , dtype = complex )
+    rho_0[N] = 1.
+    FP_op = get_FP_op(N)
+    integrator = ode( lambda t,x : FP_op.dot(x) )
+    integrator.set_integrator('zvode',method='bdf')
+    integrator.set_initial_value( rho_0 , 0 )
+    integrator.integrate(t_final)
+    rho = integrator.y
+    
+    #Compute errors
+    rho_exact = (np.exp(2*t_final)*np.sin(x)**2 + np.exp(-2*t_final)*np.cos(x)**2)**(-1)
+    rho_spatial = ift(rho)
+    psi_spatial = ift(psi)
+    #plt.plot( x , rho_exact,'k')
+    #plt.plot( x , rho_spatial.real,'b')
+    #plt.plot( x , psi_spatial.real**2,'r')
+    #plt.show()
+    error_H[k] = 2*np.pi*np.mean( np.abs( np.abs(psi_spatial)**2 - rho_exact) )
+    error_FP[k] = 2*np.pi*np.mean( np.abs( rho_spatial - rho_exact) )
+
+res = 2**(np.arange(n_trials)+2)
+print res
+print error_H
+plt.loglog( res, error_H,'r' )
+plt.loglog( res, error_FP, 'b' )
+plt.grid(True)
+plt.title('L^1 error')
+plt.show()
+
 
