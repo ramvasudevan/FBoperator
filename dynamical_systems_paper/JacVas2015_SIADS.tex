@@ -83,59 +83,43 @@ In the context of fluids, such an equation describes how the density of a chemic
 These equations have a number of conservation laws associated to them.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
 then so is the product and the sum $f\cdot g$ and $f+g$.
+Similarly, the $L^{1}$-norm is the natural norm associated to densities, and this norm is conserved in time under the evolution of \eqref{eq:density pde}.
 Other such conservation laws will be described in a future section, but suffice it to say,
 we will consider a numerical scheme to be qualitatively accurate if it exhibits a discretized version of these conservation laws. 
 
-Both \eqref{eq:function pde} and \eqref{eq:density pde} can be approached, numerically, from a variety of directions, each with its own benefit.
+Both \eqref{eq:function pde} and \eqref{eq:density pde} can be numerically solved from a variety of schemes, each with its own benefit.
 For example, particle methods can be used, and do a decent job with regards to ``qualitative accuracy''.
 The method of characteristics tells us that
 the solution to \eqref{eq:function pde} with the initial condition $f_{0} \in C^{1}(M)$ is the time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
-This suggests the following numerical method for the case $M = S^{1}$.
-
-\begin{algorithm} 
-	\KwData{An initial function $f_{0}$ and a resolution $n$.}
-	\KwResult{The value of the solution $f(x,t)$ to \eqref{eq:function pde} at time $t=1$ at a finite set of points.}.
-	Initialize a regular grid $\{ x_{1},\dots,x_{n} \}$ on $S^{1}$\;
-	\For{i = 1,\dots,n}{
-		Solve the ode $\dot{x} = X(x)$ with final condition $x_{i}(1)$ using a method of choice (e.g. Euler's method)\;
-	}
-	\KwOut{ $f_{0}( x_{1}(0) ), \dots, f_{0}(x_{n}(0) )$. }
-	\caption{The method of characteristics}\label{alg:particle}
-\end{algorithm}
+This suggests using the particle method described in Algorithm \ref{alg:particle} in appendix \ref{app:algorithms}.
  
-We will see that this algorithm retains many of the properties of \eqref{eq:function pde},
+We will see that this algorithm \eqref{alg:particle} retains many of the properties of \eqref{eq:function pde},
 and we think it deserves the label of \emph{qualitatively accurate}.
 For example, given the input $h_{0} = f_{0} \cdot g_{0}$, the output of Algorithm \ref{alg:particle} is identical to the componentwise product of the outputs obtained from inputing $f_{0}$ and $g_{0}$ separately.
 In other words, Algorithm \ref{alg:particle} conserves a (discrete version of) multiplication of functions just like the original pde \eqref{eq:function pde}.
 Moreover, this algorithm converges over finite time-intervals (using any reasonable interpolation method) at a rate $\mathcal{O}(n^{-1})$.
-However, one drawback of this algorithm in the context of smooth data there exists algorithms which exhibit vastly superior convergence rates, namely spectral methods with spectral convergence.
+Similarly, there is a particle based numerical solution to \eqref{eq:density pde} described in Algorithm \ref{alg:Monte Carlo} with similar convergence properties and qualitative accuracy.
+However, in the context of smooth data particle based algorithms do not perform well in comparison to spectral methods, which we describe next.
 
-In the case where $M=S^{1}$ a spectral method can be obtained by converting \eqref{eq:function pde} to the Fourier domain where it takes the form
+In the case where $M=S^{1}$ a spectral method can be obtained by converting \eqref{eq:density pde} to the Fourier domain where it takes the form
 of an ode
 \begin{align}
-	\frac{d \hat{f}_{k}}{dt} + 2\pi i \ell  \widehat{X}_{k-\ell} \hat{f}_{\ell} \label{eq:standard spectral}
+	\frac{d \hat{\rho}_{k}}{dt} + 2\pi i k  \widehat{X}_{k-\ell} \hat{f}_{\ell} \label{eq:standard spectral}
 \end{align}
-where $\hat{f}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $f$ and $X$.
+where $\hat{\rho}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $\rho$ and $X$.
 We see that we have converted our linear pde into a linear ode on the space of Fourier coefficients.
 A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients (see Algorithm \ref{alg:spectral}).
 
-\begin{algorithm} 
-	\KwData{An initial function $f_{0}$ and a resolution $n$.}
-	\KwResult{A truncated Fourier series which approximates the solution $f(x,t)$ to \eqref{eq:function pde}, at time $t=1$.}
-	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
-	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
-	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
-	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
-	\caption{A standard spectral method for \eqref{eq:function pde}}\label{alg:spectral}
-\end{algorithm}
+
 
 Such a numerical method is good for smooth data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-p})$ for any finite $p > 0$ over a fixed finite time interval.
 Such a convergence rate is known as \emph{spectral} or \emph{exponential}.
-However, this algorithm is not qualitatively accurate.  It does not preserve sums and products of functions.
+In particular, spectral schemes converge must faster than particle based method whenever the initial conditions have more than a few derivatives.
+However, the standard spectral algorithm is not qualitatively accurate.
+Solutions to \eqref{eq:density pde} preserve positivity and the $L^{1}$-norm.  This is not the case with the numerical solutions produced by Algorithm \ref{alg:spectral}.
 
 This motivates the primary goal of this paper:
-to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is spectrally convergent and qualitatively accurate.
-From the previous discussion, it appears there are solutions to each of these goals individually, but not simultaneously.
+\emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously spectrally convergent and qualitatively accurate.}
 
 \subsection{Previous work}
 Papers to mention:
@@ -1028,7 +1012,7 @@ If the initial density is given by a uniform distribution $\rho_{0} = dx$ then t
 \begin{align}
 	\rho(x;t) =  \frac{dx}{e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) } \label{eq:exact solution}
 \end{align}
- In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=2$ with an initial condition given by a uniform distribution.
+ In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=1.5$ with an initial condition given by a uniform distribution.
 Subfigure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution}.  Subfigure \ref{fig:standard spectral} depicts the numerical solution computed
 from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes.
 Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
@@ -1325,6 +1309,43 @@ while particle methods can be seen as a reasonable discretization one would appl
 \todo[inline]{Peter Michor, Stephen Marsland, Stefan Sommer,Dmitry Pavlov, Tilak Ratnanather.}
 
 \appendix
+
+\section{Legacy algorithms}
+\label{app:algorithms}
+In this section we provide standard algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde}.
+
+\begin{algorithm} 
+	\KwData{An initial function $f_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T>0$.}
+	\KwResult{The value of the solution $f(x,t)$ to \eqref{eq:function pde} at time $t=1$ at a finite set of points.}.
+	Initialize a set of points $\{ x_{1},\dots,x_{n} \}$ on $M$ (e.g. a regular grid) \;
+	\For{i = 1,\dots,n}{
+		Backward integrate the ode $\dot{x} = X(x)$ from final condition $x_{i}(T)$ using a method of choice (e.g. Euler's method) up to time $t=0$\;
+	}
+	\KwOut{ $f_{0}( x_{1}(0) ), \dots, f_{0}(x_{n}(0) )$. }
+	\caption{The method of characteristics}\label{alg:particle}
+\end{algorithm}
+
+\begin{algorithm} 
+	\KwData{An initial probability density $\rho_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T>0$.}
+	\KwResult{An approximation of the solution $\rho(x,t)$ to \eqref{eq:desity pde} at time $t=1$ as a finite sum of Dirac delta distributions.}.
+	Initialize a set of points $\{ x_{1},\dots,x_{n} \}$ on $M$ by sampling the probability density $\rho_{0}$\;
+	\For{i = 1,\dots,n}{
+		Integrate the ode $\dot{x} = X(x)$ and the Jacobian matrix equation $\dot{J} = DX(x)\cdot J$ with the initial conditions $x_{i}$ using a method of choice (e.g. Euler's method) up to time $t=T$\;
+	}
+	\KwOut{ $\sum_{i} \frac{1}{\det(J)} \delta_{x_{i}(T)}$ where $\delta_{x}$ denotes the Dirac delta distribution centered at $x$. }
+	\caption{A Monte Carlo method}\label{alg:Monte Carlo}
+\end{algorithm}
+
+\begin{algorithm} 
+	\KwData{An initial density $\rho_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T > 0$.}
+	\KwResult{A truncated Fourier series which approximates the solution $\rho(x,t)$ to \eqref{eq:density pde}, at time $t=T$.}
+	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
+	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
+	\caption{A standard spectral method for \eqref{eq:density pde}}\label{alg:spectral}
+\end{algorithm}
+
 
 \section{Proof that $\pi$ is bracket preserving} \label{app:Lie}
 Here we prove that $\pi$ is a Lie algebra morphism.
