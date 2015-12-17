@@ -1,16 +1,19 @@
 import numpy as np
-from scipy.linalg import expm
-#from scipy.integrate import odeint
+from scipy import sparse
+from scipy.integrate import ode
 import matplotlib.pyplot as plt
 
 N = 32
 
-ddx = np.zeros( [2*N+1,2*N+1] , dtype=complex)
-for k in range(-N,N):
-    ddx[k,k] = 1j*k
+#Making the operator ddx
+diag = 1j*np.arange(-N,N+1)
+data = np.zeros([1,2*N+1],dtype=complex)
+data[0,:] = diag
+offsets = np.zeros(1)
+ddx = sparse.dia_matrix((data,offsets),shape=(2*N+1,2*N+1),dtype=complex)
 
 def mult_by_e( k ):
-    return np.eye(2*N+1,k=-k,dtype=complex)
+    return sparse.eye(2*N+1,k=-k,dtype=complex, format='dia')
 
 def mult_by_sin(k):
     return (mult_by_e(k) - mult_by_e(-k))/(2j)
@@ -18,27 +21,52 @@ def mult_by_sin(k):
 def mult_by_cos(k):
     return (mult_by_e(k) + mult_by_e(-k))/2.
 
-x = np.linspace(-np.pi, np.pi,200)
+x = np.linspace(-np.pi, np.pi,400)
 def ift( y ):
-    global x
-    store = 0j
-    for k in range(-N,N):
-        store += y[k]*np.exp(1j*k*x)
+    global x,N
+    store = np.zeros( x.size, dtype = complex)
+    for k in range(-N,N+1):
+        store += y[k+N]*np.exp(1j*k*x)
     return store
 
-#X = sin(x) ddx
-
-FP_op = np.dot( ddx , mult_by_sin(2) )
+#X = -sin(2x) ddx
+FP_op =  ddx.dot( mult_by_sin(2) )
 H_op = 0.5*FP_op - 0.5*FP_op.conj().transpose()
 
 # Initialize our half-density and density to a uniform distribution
 psi_0 = np.zeros(2*N+1,dtype=complex)
-psi_0[0] = 1.0
-rho_0 = psi_0**2
+psi_0[N] = 1.0
+rho_0 = np.zeros(2*N+1,dtype=complex)
+rho_0[N] = 1.0
 
 # Integrate solutions
-n_frames = 90
-t = np.linspace(0,2.0,n_frames)
+n_frames = 2
+t = np.linspace(0,1.5,n_frames)
+
+#Solving for psi
+psi_arr = np.zeros( ( n_frames , 2*N+1), dtype=complex )
+integrator = ode( lambda t,x : H_op.dot(x) )
+integrator.set_integrator('zvode',method='bdf')
+integrator.set_initial_value( psi_0 , t[0] )
+psi_arr[0] = psi_0
+for k in range(1,n_frames):
+    if integrator.successful():
+        integrator.integrate(t[k])
+        psi_arr[k] = integrator.y
+    else:
+        print "Integration unsucessful"
+
+rho_arr = np.zeros( ( n_frames , 2*N+1) , dtype=complex)
+integrator = ode( lambda t,x : FP_op.dot(x) )
+integrator.set_integrator('zvode',method='bdf')
+integrator.set_initial_value( rho_0 , t[0] )
+rho_arr[0] = rho_0
+for k in range(1,n_frames):
+    if integrator.successful():
+        integrator.integrate(t[k])
+        rho_arr[k] = integrator.y
+    else:
+        print "Integration unsucessful"
 
 Louiville_L1 = np.zeros(n_frames)
 quantum_L1 = np.zeros(n_frames)
@@ -49,13 +77,13 @@ error_fp = np.zeros(n_frames)
 for k in range(n_frames):
     #plt.plot(x, ift(rho).real, 'b', x, np.zeros(len(x)) , 'k' )
     rho_exact = (np.exp(2*t[k])*np.sin(x)**2 + np.exp(-2*t[k])*np.cos(x)**2)**(-1)
-    rho = np.dot(expm( t[k] * FP_op ) , rho_0 )
-    psi = np.dot(expm( t[k] * H_op ) , psi_0 )
-    rho_spatial = ift(rho).real
+    rho = rho_arr[k]
+    psi = psi_arr[k]
+    rho_spatial = ift(rho)
     psi_spatial = ift(psi)
     Louiville_L1[k] = np.mean(abs(rho_spatial))
     quantum_L1[k] = (np.abs(psi)**2).sum()
-    error_H[k] = np.mean( abs( np.abs(psi_spatial)**2 - rho_exact) )
+    error_H[k] = np.mean( np.abs( np.abs(psi_spatial)**2 - rho_exact) )
     error_fp[k] = np.mean( abs( rho_spatial - rho_exact) )
     #U = expm( t[k]*H_op)
     #psi = ift(np.dot( U , psi_0))
@@ -70,7 +98,7 @@ for k in range(n_frames):
     #plt.clf()
 
 #plotting final condition
-psi_spatial = ift(psi)
+psi_spatial = ift(psi_arr[-1])
 rho_spatial[0] = 0
 rho_spatial[-1] = 0
 psi_spatial[0] = 0

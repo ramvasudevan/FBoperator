@@ -1019,10 +1019,10 @@ We have a discrete analog of this.
 \section{Numerical experiments}
 
 \subsection{A one dimensional example}
-Let us consider the vector field $\dot{x} = -\sin(2x)$ for $x \in S^{1}$.
+Let us consider the vector field $\dot{x} = -\sin(2 x)$ for $x \in S^{1}$.
 The flow of this system is given explicitly by
 \begin{align}
-	\Phi_{X}^{t}(x) = \operatorname{atan} \left( e^{2t} \tan(x) \right).
+	\Phi_{X}^{t}(x) = \operatorname{atan} \left( e^{2t} \tan( x) \right).
 \end{align}
 If the initial density is given by a uniform distribution $\rho_{0} = dx$ then the the exact solution of the advection pde \eqref{eq:density pde} at time is
 \begin{align}
@@ -1054,9 +1054,9 @@ Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution
 \end{figure}
 
 From these figures, it is tempting to suggest that Algorithm \ref{alg:density} has greater qualitative accuracy than a standard spectral discretization.
-For one, standard spectral discretization exhibits negative mass, which is not physically achievable in the exact system.
-Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  However, by Theorem \ref{thm:norms} we know that
-the $L^{1}$ norm is conserved in GN discretization.
+For one, standard spectral discretization exhibits negative mass, which is not achievable in the exact system.
+Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  In contrast, by Theorem \ref{thm:norms}, we know that
+the $L^{1}$-norm is conserved in Algorithm \ref{alg:density}.
 A plot of the $L^{1}$-norm is given in figure \ref{fig:L1}
 
 \begin{figure}
@@ -1101,12 +1101,12 @@ The operator-norm is conserved to machine precision for Algorithm \ref{alg:funct
 
 \begin{figure}[h!]
 	\centering
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.4\textwidth}
 		\includegraphics[width=\textwidth]{./images/function_comparison.pdf}
 		\caption{Functions}
 		\label{fig:function}
 	\end{subfigure}
-	\begin{subfigure}{0.45\textwidth}
+	\begin{subfigure}{0.4\textwidth}
 		\includegraphics[width=\textwidth]{./images/L_inf_plot.pdf}
 		\caption{Operator norms}
 		\label{fig:sup norm}
