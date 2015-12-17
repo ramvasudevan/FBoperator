@@ -1323,11 +1323,12 @@ while particle methods can be seen as a reasonable discretization one would appl
 
 \appendix
 
-\section{Legacy algorithms}
+\section{A list of legacy algorithms}
 \label{app:algorithms}
 In this section we provide standard algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde}.
+The first algorithm we present is a particle method for solving \ref{eq:function pde} based upon the method of characteristics.
 
-\begin{algorithm} 
+\begin{algorithm}[h]
 	\KwData{An initial function $f_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T>0$.}
 	\KwResult{The value of the solution $f(x,t)$ to \eqref{eq:function pde} at time $t=1$ at a finite set of points.}.
 	Initialize a set of points $\{ x_{1},\dots,x_{n} \}$ on $M$ (e.g. a regular grid) \;
@@ -1338,7 +1339,11 @@ In this section we provide standard algorithms for solving \eqref{eq:function pd
 	\caption{The method of characteristics}\label{alg:particle}
 \end{algorithm}
 
-\begin{algorithm} 
+A similar particle method can be used to solve \eqref{eq:density pde}.
+In essence this is possible because distributions form the dual space to functions, and \eqref{eq:density pde} is the dual evolution equation to \eqref{eq:function pde}.
+In the case where our density is a probability distribution, this algorithm is commonly referred to as a Monte Carlo method.
+
+\begin{algorithm}[h]
 	\KwData{An initial probability density $\rho_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T>0$.}
 	\KwResult{An approximation of the solution $\rho(x,t)$ to \eqref{eq:desity pde} at time $t=1$ as a finite sum of Dirac delta distributions.}.
 	Initialize a set of points $\{ x_{1},\dots,x_{n} \}$ on $M$ by sampling the probability density $\rho_{0}$\;
@@ -1349,16 +1354,36 @@ In this section we provide standard algorithms for solving \eqref{eq:function pd
 	\caption{A Monte Carlo method}\label{alg:Monte Carlo}
 \end{algorithm}
 
-\begin{algorithm} 
+For vector-fields on the torus we can leverage Fast Fourier Transform libraries to represent \eqref{eq:function pde} and \eqref{eq:density pde} in the Fourier domain.
+In particular on the unit circle $S^{1}$ the vector-field $X$ is represented by a continuous function with a Fourier expansion $X(x) = \sum_{k=-\infty}^{\infty} \hat{X}_{k} \exp( 2\pi i kx)$.
+The PDEs \eqref{eq:function pde} and \eqref{eq:density pde} are then represented in the Fourier domain as
+ODEs on the Fourier coefficients
+\begin{align}
+	\frac{d \hat{f}_{k}}{dt} + 2\pi i \ell \hat{X}_{k-\ell} \hat{f}_{\ell} = 0 \\
+	\frac{d \hat{\rho}_{k}}{dt} + 2\pi i k \hat{X}_{k-\ell} \hat{f}_{\ell} = 0
+\end{align}
+where $\hat{f}_{k}$ and $\hat{\rho}_{k}$ represent the Fourier expansions of the solution to \eqref{eq:function pde} and \eqref{eq:density pde}.
+This inspires the following spectral methods.
+
+\begin{algorithm}[h]
 	\KwData{An initial density $\rho_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T > 0$.}
 	\KwResult{A truncated Fourier series which approximates the solution $\rho(x,t)$ to \eqref{eq:density pde}, at time $t=T$.}
 	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
 	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
 	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
 	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
-	\caption{A standard spectral method for \eqref{eq:density pde}}\label{alg:spectral}
+	\caption{A standard spectral method for \eqref{eq:density pde}}\label{alg:spectral density}
 \end{algorithm}
 
+\begin{algorithm}[h]
+	\KwData{An initial function $f_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T > 0$.}
+	\KwResult{A truncated Fourier series which approximates the solution $f(x,t)$ to \eqref{eq:function pde}, at time $t=T$.}
+	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
+	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
+	\caption{A standard spectral method for \eqref{eq:function pde}}\label{alg:spectral function}
+\end{algorithm}
 
 \section{Proof that $\pi$ is bracket preserving} \label{app:Lie}
 Here we prove that $\pi$ is a Lie algebra morphism.
