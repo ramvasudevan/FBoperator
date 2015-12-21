@@ -3,7 +3,7 @@ from scipy import sparse
 from scipy.integrate import ode
 import matplotlib.pyplot as plt
 
-N = 64
+N = 32
 
 def get_ddx(N):
     diag = 1j*np.arange(-N,N+1)
@@ -21,7 +21,7 @@ def mult_by_sin(k):
 def mult_by_cos(k):
     return (mult_by_e(k) + mult_by_e(-k))/2.
 
-x = np.linspace(-np.pi, np.pi,1000)
+x = np.linspace(-np.pi, np.pi,200)
 def ift( y ):
     global x,N
     store = np.zeros( x.size, dtype = complex)
@@ -104,81 +104,228 @@ for k in range(n_frames):
     #plt.clf()
 
 #plotting final condition
-psi_spatial = ift(psi_arr[-1])
-rho_spatial[0] = 0
-rho_spatial[-1] = 0
-psi_spatial[0] = 0
-psi_spatial[-1] = 0
-rho_exact[0] = 0
-rho_exact[-1] = 0
+plot_final_distributions = False
+if plot_final_distributions:
+    psi_spatial = ift(psi_arr[-1])
+    rho_spatial[0] = 0
+    rho_spatial[-1] = 0
+    psi_spatial[0] = 0
+    psi_spatial[-1] = 0
+    rho_exact[0] = 0
+    rho_exact[-1] = 0
 
-plt.fill( x , rho_exact )
-plt.title('Exact'), plt.xlabel('x'), plt.ylabel('mass density')
-plt.show()
+    plt.fill( x , rho_exact )
+    plt.title('Exact'), plt.xlabel('x'), plt.ylabel('mass density')
+    plt.show()
 
-plt.fill( x , rho_spatial )
-plt.title('Standard Spectral'), plt.xlabel('x'), plt.ylabel('mass density')
-plt.show()
+    plt.fill( x , rho_spatial )
+    plt.title('Standard Spectral'), plt.xlabel('x'), plt.ylabel('mass density')
+    plt.show()
 
-plt.fill( x , abs(psi_spatial)**2 )
-plt.title('GN Spectral'), plt.xlabel('x'), plt.ylabel('mass density')
-plt.show()
+    plt.fill( x , abs(psi_spatial)**2 )
+    plt.title('GN Spectral'), plt.xlabel('x'), plt.ylabel('mass density')
+    plt.show()
 
-#plotting L1 norm
-plt.plot( t , Louiville_L1, 'b-')
-plt.plot( t , quantum_L1, 'r-')
-plt.xlabel('time')
-plt.ylabel('$L^1$ norm')
-plt.grid()
-plt.show()
+    #plotting L1 norm
+    plt.plot( t , Louiville_L1, 'b-')
+    plt.plot( t , quantum_L1, 'r-')
+    plt.xlabel('time')
+    plt.ylabel('$L^1$ norm')
+    plt.grid()
+    plt.show()
 
 
 #NOW WE MAKE A CONVERGENCE PLOT
-t_final = 1.0
-n_trials = 15
-error_H = np.zeros(n_trials)
-error_FP = np.zeros(n_trials)
-for k in range(n_trials):
-    #Solving for psi
-    power = k+2
-    N = int(1.5**power)
-    psi_0 = np.zeros( 2*N+1 , dtype = complex )
-    psi_0[N] = 1.
-    H_op = get_H_op(N)
-    integrator = ode( lambda t,x : H_op.dot(x) )
-    integrator.set_integrator('zvode',method='bdf')
-    integrator.set_initial_value( psi_0 , 0 )
-    integrator.integrate(t_final)
-    psi = integrator.y
-    
-    #Solving for rho
-    rho_0 = np.zeros( 2*N+1 , dtype = complex )
-    rho_0[N] = 1.
-    FP_op = get_FP_op(N)
-    integrator = ode( lambda t,x : FP_op.dot(x) )
-    integrator.set_integrator('zvode',method='bdf')
-    integrator.set_initial_value( rho_0 , 0 )
-    integrator.integrate(t_final)
-    rho = integrator.y
-    
-    #Compute errors
-    rho_exact = (np.exp(2*t_final)*np.sin(x)**2 + np.exp(-2*t_final)*np.cos(x)**2)**(-1)
-    rho_spatial = ift(rho)
-    psi_spatial = ift(psi)
-    #plt.plot( x , rho_exact,'k')
-    #plt.plot( x , rho_spatial.real,'b')
-    #plt.plot( x , psi_spatial.real**2,'r')
-    #plt.show()
-    error_H[k] = 2*np.pi*np.mean( np.abs( np.abs(psi_spatial)**2 - rho_exact) )
-    error_FP[k] = 2*np.pi*np.mean( np.abs( rho_spatial - rho_exact) )
+make_convergence_plot = False
 
-res = 2**(np.arange(n_trials)+2)
-print res
-print error_H
-plt.loglog( res, error_H,'r' )
-plt.loglog( res, error_FP, 'b' )
+if make_convergence_plot:
+    t_final = 1.0
+    n_trials = 70
+    error_H = np.zeros(n_trials)
+    error_FP = np.zeros(n_trials)
+    for k in range(n_trials):
+        #Solving for psi
+        power = k+2
+        N = int(1.1**power)
+        psi_0 = np.zeros( 2*N+1 , dtype = complex )
+        psi_0[N] = 1.
+        H_op = get_H_op(N)
+        integrator = ode( lambda t,x : H_op.dot(x) )
+        integrator.set_integrator('zvode',method='bdf')
+        integrator.set_initial_value( psi_0 , 0 )
+        integrator.integrate(t_final)
+        psi = integrator.y
+        
+        #Solving for rho
+        rho_0 = np.zeros( 2*N+1 , dtype = complex )
+        rho_0[N] = 1.
+        FP_op = get_FP_op(N)
+        integrator = ode( lambda t,x : FP_op.dot(x) )
+        integrator.set_integrator('zvode',method='bdf')
+        integrator.set_initial_value( rho_0 , 0 )
+        integrator.integrate(t_final)
+        rho = integrator.y
+        
+        #Compute errors
+        rho_exact = (np.exp(2*t_final)*np.sin(x)**2 + np.exp(-2*t_final)*np.cos(x)**2)**(-1)
+        rho_spatial = ift(rho)
+        psi_spatial = ift(psi)
+        #plt.plot( x , rho_exact,'k')
+        #plt.plot( x , rho_spatial.real,'b')
+        #plt.plot( x , psi_spatial.real**2,'r')
+        #plt.show()
+        error_H[k] = 2*np.pi*np.mean( np.abs( np.abs(psi_spatial)**2 - rho_exact) )
+        error_FP[k] = 2*np.pi*np.mean( np.abs( rho_spatial - rho_exact) )
+
+    res = 1.1**(np.arange(n_trials)+2)
+    print res
+    print error_H
+    error_wavelets = np.array( [2.82689808601994,
+        1.12546699460215,
+        0.1980847118894,
+        0.0139577038454514,
+        0.000650046703770487,
+        0.000223111162371991,
+        0.00014807650626467])
+    res_wavelets = np.array([56,88,152,280,536,1048,2072])
+    plt.loglog( res, error_H,'r' )
+    plt.loglog( res, error_FP, 'b' )
+    plt.loglog( res_wavelets, error_wavelets, 'k' )
+    plt.grid(True)
+    plt.title('L^1 error')
+    plt.show()
+    quit()
+
+#Let's test conservation of scalar products!
+#Let function_1 = sin(x)
+#Let function_2 = cos(x)
+
+FS_1 = np.zeros( 2*N+1, dtype = complex)
+FS_1[1+N] = 1.0 / (2j)
+FS_1[-1+N] = -1.0 / (2j)
+FS_2 = np.zeros( 2*N+1, dtype = complex)
+FS_2[1+N] = 1.0 / (2)
+FS_2[-1+N] = 1.0 / (2)
+FS_3 = np.zeros( 2*N+1, dtype = complex)
+FS_3[2+N] = 0.5 / (2j)
+FS_3[-2+N] = -0.5/(2j)
+
+x_grid = np.linspace(0,1,2*N+1)
+
+def get_convolution_matrix( FS ):
+    #produces the convolution matrix associated to a given Fourier series
+    global N
+    store = FS.nonzero()
+    data = np.zeros( [store[0].size ,2*N+1] , dtype=complex)
+    offsets = np.zeros( store[0].size )
+    D = 2*N+1
+    i = 0
+    for k in FS.nonzero()[0]:
+        data[i,:] = FS[k]*np.ones(D)
+        offsets[i] = -(k-N)
+        i += 1
+    return sparse.dia_matrix( (data,offsets), shape = (D,D),dtype=complex )
+
+cnv1 = get_convolution_matrix( FS_1)
+cnv2 = get_convolution_matrix( FS_2)
+cnv3 = get_convolution_matrix( FS_3)
+
+#EVOLVE cnv1 and cnv2
+def bracket( A , B ):
+    return A.dot(B) - B.dot(A)
+t=0
+dt = 0.01
+t_final = 1.5
+while t < t_final:
+    k1 = bracket( H_op , cnv1)
+    k2 = bracket( H_op , cnv1 + dt*k1 / 2)
+    k3 = bracket( H_op , cnv1 + dt*k2 / 2)
+    k4 = bracket( H_op , cnv1 + dt*k3 )
+    cnv1 += dt*(k1+2*k2+2*k3+k4) / 6.
+    k1 = bracket( H_op , cnv2 )
+    k2 = bracket( H_op , cnv2 + dt*k1 / 2)
+    k3 = bracket( H_op , cnv2 + dt*k2 / 2)
+    k4 = bracket( H_op , cnv2 + dt*k3 )
+    cnv2 += dt*(k1+2*k2+2*k3+k4) / 6.
+    k1 = bracket( H_op , cnv3 )
+    k2 = bracket( H_op , cnv3 + dt*k1 / 2)
+    k3 = bracket( H_op , cnv3 + dt*k2 / 2)
+    k4 = bracket( H_op , cnv3 + dt*k3 )
+    cnv3 += dt*(k1+2*k2+2*k3+k4) / 6.
+    t += dt
+
+#EVOLVE FS_1 and FS_2 and FS_3
+dfdt = lambda f : -FP_op.transpose().conj().dot(f)
+t=0
+while t < t_final:
+    k1 = dfdt( FS_1 )
+    k2 = dfdt( FS_1 + dt*k1 / 2)
+    k3 = dfdt( FS_1 + dt*k2 / 2)
+    k4 = dfdt( FS_1 + dt*k3 )
+    FS_1 += dt*(k1+2*k2+2*k3+k4) / 6.
+    k1 = dfdt( FS_2 )
+    k2 = dfdt( FS_2 + dt*k1 / 2)
+    k3 = dfdt( FS_2 + dt*k2 / 2)
+    k4 = dfdt( FS_2 + dt*k3 )
+    FS_2 += dt*(k1+2*k2+2*k3+k4) / 6.
+    k1 = dfdt( FS_3 )
+    k2 = dfdt( FS_3 + dt*k1 / 2)
+    k3 = dfdt( FS_3 + dt*k2 / 2)
+    k4 = dfdt( FS_3 + dt*k3 )
+    FS_3 += dt*(k1+2*k2+2*k3+k4) / 6.
+    t += dt
+
+#PLOT cnv1,cnv2 and cnv1*cnv2
+from scipy.sparse import linalg
+y,psi = linalg.eigsh( cnv3 , 2*N-1 )
+rho_array = np.zeros( [ x.size , y.size] )
+for k in range(y.size):
+    rho_array[:,k] = np.abs(ift( psi[:,k] ))**2
+    rho_array[:,k] = rho_array[:,k] / rho_array[:,k].max()
+
+
+#This is the exact solution to func 1
+denominator = np.sqrt( np.cos(x)**2 + np.exp(4*t_final)*np.sin(x)**2)
+exact1= np.exp( 2*t_final ) * np.sin(x) / denominator
+
+#This is the exact solution to func 2
+denominator = np.sqrt( np.sin(x)**2 + np.exp(-4*t_final)*np.cos(x)**2)
+exact2= np.exp( -2*t_final ) * np.cos(x) / denominator
+
+#This is the exact solution to func 3
+denominator = np.sqrt( np.cos(2*x)**2 + np.exp(4*t_final)*np.sin(2*x)**2)
+exact3 = exact1*exact2
+
+segments = []
+colors = []
+for i in range(y.size):
+    for j in range(x.size-1):
+        segments.append( [ (x[j],y[i]),(x[j+1],y[i])] )
+        c = 1-rho_array[j,i]
+        colors.append( (c,c,c) )
+
+from matplotlib.collections import LineCollection
+lc = LineCollection( segments , cmap='Reds', colors=colors,
+        linewidths=2)
+f,ax = plt.subplots()
+ax.add_collection(lc)
+plt.axis( [-np.pi, np.pi , -1.5 , 1.5 ] )
 plt.grid(True)
-plt.title('L^1 error')
 plt.show()
 
+plt.plot( x , exact3,'k')
+plt.axis( [-np.pi, np.pi , -1.5 , 1.5 ] )
+plt.grid(True)
+plt.show()
+
+
+Koopman_am = ift(FS_2).real * ift(FS_1).real
+Koopman_ma = ift(FS_3).real
+discrepency = np.abs( Koopman_am - Koopman_ma)
+plt.plot( x , discrepency , 'b')
+#plt.axis( [-np.pi, np.pi , -1.5 , 1.5 ] )
+plt.grid(True)
+plt.show()
+
+#PLOT FS_1,FS_2, and FS_1*FS_1 and FS_3
 

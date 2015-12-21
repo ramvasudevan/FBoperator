@@ -72,7 +72,7 @@ Both equations occur in a variety of contexts.
 Equation \eqref{eq:function pde} describes how a scalar quantity (such as a particle label) is transported by the flow of $X$.
 Such a pde arises in the context of fluids when $X$ is the (time-dependent) velocity field of the fluid, and $f$ is the temperature, and the thermal diffusivity is $0$.
 In the context of imaging and computer vision, it is often desired that one evolve a surface under some prescribed dynamics.
-For such a problem, level-set methods provide a possible numerical solution.
+For such a problem, level-set methods provide a possible numerical solution \cite{OsherSethian1988}.
 Level set methods begin by converting the surface into the level set of some function, $f$, and then solving \eqref{eq:function pde}.
 
 Equation \eqref{eq:density pde} describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
@@ -108,26 +108,25 @@ of an ode
 \end{align}
 where $\hat{\rho}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $\rho$ and $X$.
 We see that we have converted our linear pde into a linear ode on the space of Fourier coefficients.
-A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients (see Algorithm \ref{alg:spectral}).
-
-
+A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients (see Algorithm \ref{alg:spectral density}).
 
 Such a numerical method is good for smooth data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-p})$ for any finite $p > 0$ over a fixed finite time interval.
 Such a convergence rate is known as \emph{spectral} or \emph{exponential}.
 In particular, spectral schemes converge must faster than particle based method whenever the initial conditions have more than a few derivatives.
 However, the standard spectral algorithm is not qualitatively accurate.
-Solutions to \eqref{eq:density pde} preserve positivity and the $L^{1}$-norm.  This is not the case with the numerical solutions produced by Algorithm \ref{alg:spectral}.
+Solutions to \eqref{eq:density pde} preserve positivity and the $L^{1}$-norm.  This is not the case with the numerical solutions produced by Algorithm \ref{alg:spectral density}.
 
 This motivates the primary goal of this paper:
 \emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously spectrally convergent and qualitatively accurate.}
 
 \subsection{Previous work}
-Papers to mention:
+
 \begin{enumerate}
 	\item \cite{HenrionKorda2014}
 	\item Froyland, Koopman papers
 	\item Representation theory stuff \cite{VershilGelfandGraev1975,Ismagilov1975}
 	\item Naimark-Gelfand transform 
+	\item Lax-Wendroff
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1068,7 +1067,7 @@ At low resolutions, wavelet based solutions come at some cost in terms of sparsi
 We also know the evolution for an initial function, $f_{0}(x)$.
 For example, if $f_{0}(x) = \sin(x)$ then the solution to \eqref{eq:function pde} under this vector-field is
 \begin{align}
-	f(x;t) = \frac{ e^{-2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{-4t} \sin^{2}(x) } }.
+	f(x;t) = \frac{ e^{2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{4t} \sin^{2}(x) } }.
 \end{align}
 
 Unfortunately, Algorithm \ref{alg:function} outputs $f$ as an operator on half-densities, and it is not clear how best to invert the hat-map.
@@ -1210,16 +1209,16 @@ Again we see that Algorithm \ref{alg:density} performs quite well.
 
 \section{Insights from operator theory}
 
-In this section we describe ``why these algorithms work'' from a different perspective, that of Operator theory.
+In this section we describe ``why these algorithms work'' from a different perspective, that of operator theory.
 Admittedly, this section is not crucial for a practitioner to benefit from the paper.
 Uninterested readers are free to skip it without consequence.
 Nonetheless, we consider the following informal discussion valuable from the perspective of research, and integration within the larger mathematics community.
-In the interest of pacing and being overly pedagogical we will provide references for theorems and claims made in this section rather than proving them here.
+In the interest of space, we will provide references for theorems and claims made in this section rather than proving them here.
 All of these theorems can be found in standard functional analysis textbooks such as \cite{Conway1990} or \cite{Rudin1991}.
 
 To begin, let us review some definitions.
 \begin{defn}
-	A \emph{Banach-algebra} is a Banach space, $A$, which is also equipped with a multiplication-like operation $(a,b) \in A \times A \mapsto ab \in A$
+	A \emph{Banach-algebra} is a Banach space, $A$, which is also equipped with a multiplication-like operation ``$(a,b) \in A \times A \mapsto ab \in A$''
 	which is bounded and associative in that $\| ab \| \leq \|a \| \|b \|$ and $(ab)c = a(bc)$ for any $a,b,c \in A$.
 	
 	A \emph{$C^{*}$-algebra} is a Banach algebra, $A$, over the field $\mathbb{C}$ with an involution ``$a \in A \mapsto a^{*} \in A$'' which satisfies
@@ -1238,7 +1237,7 @@ To begin, let us review some definitions.
 
 The notion of a $C^{*}$-algebra may appear abstract so we provide the two most important examples.
 
-\begin{example}
+\begin{example} \label{ex:function algebra}
 	Let $X$ be a topological space.  Then the space of complex valued continuous functions with compact support, $C_{0}(X;\mathbb{C})$, is a $C^{*}$-algebra under the sup-norm and addition/multiplication operations of functions.
 	In fact $C_{0}(X;\mathbb{C})$ is a commutative $C^{*}$-algebra.  If $X$ is compact, then the constant function $f(x) = 1$ serves as a multiplicative identity, and this algebra becomes unital.
 \end{example}
@@ -1265,7 +1264,7 @@ In particular we can consider the space of character as in \cite{Bondia2001}.
 \end{defn}
 
 \begin{prop}[Lemma 1.1 \cite{Bondia2001}]
-	If we equipp $A^{*}$ with the weak topology, the space $X_{A} \subset A^{*}$ is a compact Hausdorff space with respect to the relative topology.
+	If we equip $A^{*}$ with the weak topology, the space $X_{A} \subset A^{*}$ is a compact Hausdorff space with respect to the relative topology.
 \end{prop}
 \begin{proof}
 	We provide a sketch of the proof.
@@ -1278,6 +1277,7 @@ The following is really a corollary to \ref{thm:GN1}.
 
 \begin{thm}[The second Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN2}
 	Any commutative $C^{*}$-algebra is isomorphic to $C(X_{A} ; \mathbb{C})$.
+	In other words, all commutative $C^{*}$-algebras are represented by Example \ref{ex:function algebra}.
 \end{thm}
 
 Historically, theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into relatively concrete things, such as linear operators or continuous functions.
@@ -1310,16 +1310,65 @@ Moreover, by theorem \ref{thm:GN1} we can view $C(M)$ as a space of operators wi
 As a result, the spectral methods in this paper can be seen as a reasonable discretization one would apply to from the perspective of $C^{*}$-algebras,
 while particle methods can be seen as a reasonable discretization one would apply, after using the Gelfand transform.
 
+\section{Future work}
+There are a number of areas to consider for future research.  We propose the following:
+
+\subsection{Relaxing assumptions on $M$}
+In this paper we have assumed $M$ to be a compact manifold without boundary.
+While this provides a good starting point, the most common domains in engineering are various cartesian products of the unit interval, $[0,1]$ and $\mathbb{R}^{n}$.
+
+In the case where $M$ is compact with boundary, the methods described here can be imported without change as long as the vector field is tangential or vanishing on the boundary.
+However, when $X$ is transverse to the boundary of $M$, then we must find a way of dealing with flux.
+
+In the case $M = \mathbb{R}$, the primary issue is that $L^{2}(\mathbb{R})$ is not a separable Hilbert space.
+In order to handle such a scenario a sacrifice must be paid.  Perhaps we should resign ourselves to seek convergence on a subspace of $L^{2}(\mathbb{R})$.
+This can be done by using a basis, such as Hermite functions $\{ H_{n}(x) \exp^{-x^{2}/2}\}$ where $H_{n}(x)$ is the $n$th physicists polynomial.
+In this case we would be converging on the separable subspace $L^{2}( \mathbb{R};  w)$ where where the $L^{2}$-inner product is taken with respect to the weight function $w = \exp( -x^{2})$.
+
+\subsection{Systems with noise}
+The PDEs \eqref{eq:function pde} and \eqref{eq:density pde} can be seen as zero-noise limits of Kolmogorov equations (a.k.a. Fokker Plank equations, a.k.a. Master equations).
+When noise is added, equations \eqref{eq:function pde} and \eqref{eq:density pde} become
+\begin{align*}
+	\partial_{t} f + X^{i} \partial_{i} f = \Delta f \\
+	\partial_{t} \rho + \partial_{i} ( \rho X^{i}) = \Delta \rho
+\end{align*}
+
+In order to address such a change, we need to understand first how half-density are affected.
+It is easy to derive that an equation of the form
+\begin{align*}
+	\partial_{t} \psi + \frac{1}{2} X^{i} \partial_{i} \psi + \frac{1}{2} \partial_{i}( \psi X^{i} ) = D \cdot \psi
+\end{align*}
+where $D$ is any formal square root of $\Delta$ (i.e. a \emph{Dirac operator}).
+The approach of \cite{Crane2013} to discretize mean curvature flows by identifying ``mean-curvature modulo scaling'' as half-density could be a manifestation of this idea, but this has yet to be verified.
+
 
 \section{Conclusion}
 
-\subsection{Future work}
+In this paper we have found a spectral method for densities and functions which is both spectrally convergent
+and qualitatively accurate, in the sense that natural invariants are preserved.
+In particular, algorithm \ref{alg:density} preserves:
+\begin{itemize}
+	\item total mass ,
+	\item positivity,
+	\item The $L^{1}$-norm,
+\end{itemize}
+while algorithm \ref{alg:function} preserves:
+\begin{itemize}
+	\item The sup-norm,
+	\item the scalar product,
+	\item and the scalar addition of functions.
+\end{itemize}
+Finally, the scalar product of functions and densities is preserved in time when one uses algorithms \ref{alg:function} and \ref{alg:density} simultaneously.
+The result of obeying such conservation laws is an integration scheme with robust qualitative accuracy at a variety of resolutions in regimes where legacy spectral methods often fail.
+This claim was verified in a series of numerical experiments which directly compared our algorithms with standard Fourier spectral algorithms described in appendix \ref{app:algorithms}.
+The importance of these conservation laws was addressed in a short discussion on the Gelfand transform.
+We found that such conservation laws are the defining invariants of advection-type PDEs, and this explains the benefits of using these scheme at a more fundamental level.
 
-\todo[inline]{Boundary conditions, non-compact mfds}
 
 \subsection{Acknowledgements}
-
-\todo[inline]{Peter Michor, Stephen Marsland, Stefan Sommer,Dmitry Pavlov, Tilak Ratnanather.}
+This paper developed over the course of years from discussions with many people whom we'd like to thank:
+ 	Darrryl Holm, Stephen Marsland, Peter Michor, Michael Miller, Dmitry Pavlov, Tilak Ratnanather, and Stefan Sommer.
+\todo[inline]{Put funding information here}
 
 \appendix
 
