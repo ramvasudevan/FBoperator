@@ -1064,37 +1064,99 @@ At low resolutions, wavelet based solutions come at some cost in terms of sparsi
 \end{figure}
 
 
-We also know the evolution for an initial function, $f_{0}(x)$.
-For example, if $f_{0}(x) = \sin(x)$ then the solution to \eqref{eq:function pde} under this vector-field is
+In order to plot the output of algorithm \ref{alg:function} we must represent the operator $\hat{f}_{n}$ spectrally.
+The exact solution, $\hat{f}$, is represented via the spectral theorem by looking at it's level sets (see Appendix \ref{app:functions}).
+In the discrete case, we may use the same representation for the purpose of plotting.
+An eigenvector-eigenvalue pair $(\lambda , \psi_{\lambda})$ is an approximation of the $\lambda$th level-set of $f$ by the density $\psi_{\lambda}^{2}$.
+We implement algorithm \ref{alg:function} and plot with this in mind in figure \ref{fig:quantum function 1}
+with respect to the initial condition $f_{0}(x) = \sin(x)$ and final time $t=1.5$.
+The exact solution is given by 
 \begin{align}
-	f(x;t) = \frac{ e^{2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{4t} \sin^{2}(x) } }.
+	f(x;t) = \frac{ e^{2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{4t} \sin^{2}(x) } },
 \end{align}
+and is plotted in \ref{fig:exact function 1}.
+Finally the result of using a standard spectral scheme (\ref{alg:spectral function}) is depicted in figure \ref{fig:standard function 1}.
 
-Unfortunately, Algorithm \ref{alg:function} outputs $f$ as an operator on half-densities, and it is not clear how best to invert the hat-map.
-However, we can obtain one estimate by applying $\hat{f}_{n}$ to the half-density $\sqrt{dx}$, and then divide the result by $\sqrt{dx}$.
-The resulting function appears to approximate $f(x;t)$ well in the flat areas, and overshoot at the peaks.
-In comparison, a standard spectral discretization seems to have large spurious oscillations in the center.
-These estimates are plotted alongside the exact solution in figure \ref{fig:function}.
-We should note that our means of converting $\hat{f}_{n}$ into a function is probably not the best choice of a left inverse to the hat-map.
-Different choices yield different approximations to $f(x;t)$, some
-of which get the peaks correct, but do poorly in the valleys.
-
-We can see that the operator-norm behaves well using Algorithm \ref{alg:function}.
-The operator-norm is conserved to machine precision for Algorithm \ref{alg:function}, while it will drift using standard discretization.
-
-\begin{figure}[h!]
+\begin{figure}[h]
 	\centering
-	\begin{subfigure}{0.4\textwidth}
-		\includegraphics[width=\textwidth]{./images/function_comparison.pdf}
-		\caption{Functions}
-		\label{fig:function}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{./images/function_plots/quantum_1}
+		\caption{Algorithm \ref{alg:function}}
+		\label{fig:quantum function 1}
 	\end{subfigure}
-	\begin{subfigure}{0.4\textwidth}
-		\includegraphics[width=\textwidth]{./images/L_inf_plot.pdf}
-		\caption{Operator norms}
-		\label{fig:sup norm}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{./images/function_plots/exact_1.pdf}
+		\caption{Exact solution}
+		\label{fig:exact function 1}
 	\end{subfigure}
-	\caption{Numerical results for a one-dimensional system}
+	\begin{subfigure}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{./images/function_plots/Koopman_1.pdf}
+		\caption{Standard spectral}
+		\label{fig:standard function 1}
+	\end{subfigure}
+\end{figure}
+
+From these plots it is not entirely clear that Algorithm \ref{alg:function} is more accurate than a standard discretization.
+In particular, given the high cost of computation for Algorithm \ref{alg:function}  vs Algorithm \ref{alg:spectral function} ($O(n^{2})$ vs $O(n)$) we generally do not recommend this algorithm in practice.
+However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (as discussed in )\todo{Include your level set idea somewhere}
+We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article,
+in the interest of focusing on the strengths of this discretization.
+For example, if we consider the initial condition $g_{0}(x) = \cos(x)$ then the exact solution is
+\begin{align*}
+	g(x,t) =  \frac{ \cos(x) }{ \sqrt{ e^{4t} \sin^{2}(x) + \cos^{2}(x) } }.
+\end{align*}
+If we then consider the initial condition $h_{0} = f_{0} \cdot g_{0}  = \sin(x) \cos(x)$
+then the exact solution is
+\begin{align*}
+	h(x,t) = f(x,t) g(x,t) = \frac{ \cos(x) \sin(x) }{ \cos^{2}(x) + e^{4t} \sin^{2}(x) }.
+\end{align*}
+So we may solve for $h$ by first multiplying the initial condition and then using one of our algorithms to evolve in time, 
+or we may evolve in time first, and scalar multiply the outputs.
+If one uses algorithm \ref{alg:function} than both of these options yield the same result up to time discretization error (which is obtained with error tolerance $1e-8$ in our code).
+If one uses algorithm \ref{alg:spectral function} than these options yield different results with a discrepancy.
+We plot this discrepancy in \ref{fig:discrepancy}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{./images/function_plots/discrepancy}
+	\caption{The discrepancy due to non-preservation of scalar products by Algorithm \ref{alg:spectral function}}
+	\label{fig:discrepancy}
+\end{figure}  
+%However, we can obtain one estimate by applying $\hat{f}_{n}$ to the half-density $\sqrt{dx}$, and then divide the result by $\sqrt{dx}$.
+%The resulting function appears to approximate $f(x;t)$ well in the flat areas, and overshoot at the peaks.
+%In comparison, a standard spectral discretization seems to have large spurious oscillations in the center.
+%These estimates are plotted alongside the exact solution in figure \ref{fig:function}.
+%We should note that our means of converting $\hat{f}_{n}$ into a function is probably not the best choice of a left inverse to the hat-map.
+%Different choices yield different approximations to $f(x;t)$, some
+%of which get the peaks correct, but do poorly in the valleys.
+%\begin{figure}[h!]
+%	\centering
+%	\begin{subfigure}{0.4\textwidth}
+%		\includegraphics[width=\textwidth]{./images/function_comparison.pdf}
+%		\caption{Functions}
+%		\label{fig:function}
+%	\end{subfigure}
+%	\begin{subfigure}{0.4\textwidth}
+%		\includegraphics[width=\textwidth]{./images/L_inf_plot.pdf}
+%		\caption{Operator norms}
+%		\label{fig:sup norm}
+%	\end{subfigure}
+%	\caption{Numerical results for a one-dimensional system}
+%\end{figure}
+
+Finally, we know that the sup-norm is preserved by solution of \eqref{eq:function pde}.
+As shown in Theorem \ref{thm:quantize}, the sup-norm is equivalent to the operator norm when we represent functions as operators on $L^{2}(M)$.
+We can see that the operator-norm behaves well using Algorithm \ref{alg:function}.  This should be clear without plotting, as Algorithm \ref{alg:function} evolves an operator by
+an iso-spectral flow, and therefore must conserve the operator norm.
+We see that the operator-norm is conserved to machine precision for Algorithm \ref{alg:function}, while it will drift using standard discretization.
+In contrast, the sup-norm of the output from a standard spectral discretization (Algorithm \ref{alg:spectral function}) is not conserved.
+We observe the operator norm drifting upwards.  This is all depicted in figure \ref{fig:norms}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{./images/L_inf_plot.pdf}
+	\caption{Conservation and non-conservation of function norms}
+	\label{fig:norms}
 \end{figure}
 
 
