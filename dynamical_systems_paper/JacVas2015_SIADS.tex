@@ -1005,7 +1005,7 @@ The flow of this system is given explicitly by
 \end{align}
 If the initial density is given by a uniform distribution $\rho_{0} = dx$ then the the exact solution of the advection pde \eqref{eq:density pde} at time is
 \begin{align}
-	\rho(x;t) =  \frac{dx}{e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) } \label{eq:exact solution}
+	\rho(x;t) =  \left( e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) \right)^{-1}  dx \label{eq:exact solution}
 \end{align}
  In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=1.5$ with an initial condition given by a uniform distribution.
 Subfigure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution}.  Subfigure \ref{fig:standard spectral} depicts the numerical solution computed
@@ -1079,7 +1079,7 @@ We implement Algorithm \ref{alg:function} and plot with this in mind in figure \
 with respect to the initial condition $f_{0}(x) = \sin(x)$ and final time $t=1.5$.
 The exact solution is given by 
 \begin{align}
-	f(x;t) = \frac{ e^{2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{4t} \sin^{2}(x) } },
+	f(x;t) = e^{2t} \sin(x) \left( \cos^{2}(x) + e^{4t} \sin^{2}(x) \right)^{-1/2},
 \end{align}
 and is plotted in \ref{fig:exact function 1}.
 Finally the result of using a standard spectral scheme is depicted in figure \ref{fig:standard function 1}.
@@ -1104,18 +1104,18 @@ Finally the result of using a standard spectral scheme is depicted in figure \re
 \end{figure}
 
 From these plots it is not entirely clear that Algorithm \ref{alg:function} is more accurate than a standard discretization.
-In particular, given the high cost of computation for Algorithm \ref{alg:function}  vs Algorithm \ref{alg:spectral function} ($O(n^{2})$ vs $O(n)$) we generally do not recommend this algorithm in practice.
+In particular, given the high cost of computation for Algorithm \ref{alg:function}  ($O(n^{2})$) versus a stand spectral computation ($O(n)$) we generally do not recommend this algorithm in practice.
 However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (in particular, if one is only interested in a few level sets).
 We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article,
 in the interest of focusing on the strengths of this discretization.
 For example, if we consider the initial condition $g_{0}(x) = \cos(x)$ then the exact solution is
 \begin{align*}
-	g(x,t) =  \frac{ \cos(x) }{ \sqrt{ e^{4t} \sin^{2}(x) + \cos^{2}(x) } }.
+	g(x,t) =   \cos(x) \left( e^{4t} \sin^{2}(x) + \cos^{2}(x) \right)^{-1/2}.
 \end{align*}
 If we then consider the initial condition $h_{0} = f_{0} \cdot g_{0}  = \sin(x) \cos(x)$
 then the exact solution is
 \begin{align*}
-	h(x,t) = f(x,t) g(x,t) = \frac{ \cos(x) \sin(x) }{ \cos^{2}(x) + e^{4t} \sin^{2}(x) }.
+	h(x,t) = f(x,t) g(x,t) = \cos(x) \sin(x) \left( \cos^{2}(x) + e^{4t} \sin^{2}(x) \right)^{-1}.
 \end{align*}
 So we may solve for $h$ by first multiplying the initial condition and then using one of our algorithms to evolve in time, 
 or we may evolve in time first, and scalar multiply the outputs.
@@ -1240,7 +1240,7 @@ Consider the system on $\mathbb{T}^{3}$
 For constants $A,B,C,D \in \mathbb{R}$.  When $D=0$ this system is a well studied volume conserving system known as an ABC flow.
 When $A > B > C > D = 0$ and $C << 1$, then the solutions to this ODE are chaotic, with a uniform steady state distribution \cite{MajdaBertozzi2002}.
 When $D=0$ the operator $\pounds_{X}$ is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ which appears in equation \eqref{eq:density pde},
-and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is generically the case for any volume conserving system.  The benefits of our algorithm are not as strong in such cases.}
+and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is generically the case for any volume conserving system.}
 Therefore we will demonstrate the case where $D > 0$ and these discretization are different.
 When $D> 0$ volume is no longer conserved and there is a non-uniform steady-state distribution.
 
@@ -1350,7 +1350,7 @@ The following is really a corollary to \ref{thm:GN1}.
 Historically, theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into relatively concrete things, such as linear operators or continuous functions.
 In this paper, we appear to have gone the other direction.
 The map $f \in C(M) \to \hat{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand transform}!
-In particular, correspondence Theorem \ref{thmquantize} is simply the correspondence between advection pdes on $M$ and various odes on $L^{2}(M)$ and $B(L^{2}(M))$ under the Gelfand transform.
+In particular, correspondence Theorem \ref{thm:quantize} is simply the correspondence between advection pdes on $M$ and various odes on $L^{2}(M)$ and $B(L^{2}(M))$ under the Gelfand transform.
 Perhaps one of the reasons our algorithms were not done earlier, is because it is not intuitively a good idea to use the Gelfand transform to turn ``concrete'' objects into ``abstract'' ones like this.
 However, ``abstract'' does not mean easier to deal with numerically.
 In fact, it appears that the abstract characterization is easier to numerically discretize when it comes to advection pdes.
