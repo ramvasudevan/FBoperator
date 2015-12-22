@@ -1,7 +1,7 @@
-\documentclass[12pt]{amsart}
+\documentclass[final,leqno]{siamltex1213}
 \usepackage{amsmath,amssymb}
-\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
-\geometry{a4paper} % or letter or a5paper or ... etc
+%\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+%\geometry{a4paper} % or letter or a5paper or ... etc
 % \geometry{landscape} % rotated page geometry
 
 %  POSSIBLY USEFULE PACKAGES
@@ -15,10 +15,6 @@
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
 \newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial{align}
       #2 \partial #3} } }
-\newcommand{\R}{\ensuremath{\mathbb{R}}}
-\renewcommand{\H}{\ensuremath{\mathcal{H}}}
-\newcommand{\norm}[1]{\ensuremath{\left\| #1 \right\| }}
-\newcommand{\abs}[1]{\ensuremath{ | #1 | }}
 
 %  NEW THEOREM ENVIRONMENTS
 \newtheorem{thm}{Theorem}[section]
@@ -34,15 +30,9 @@
 %  MATH OPERATORS
 \DeclareMathOperator{\Diff}{Diff}
 \DeclareMathOperator{\Dens}{Dens}
-\DeclareMathOperator{\SO}{SO}
 \DeclareMathOperator{\U}{U}
-\DeclareMathOperator{\B}{B}
-\DeclareMathOperator{\Fr}{Fr}
 \DeclareMathOperator{\OdeSolve}{OdeSolve}
-\DeclareMathOperator{\Op}{Op}
 \DeclareMathOperator{\Tr}{Tr}
-\DeclareMathOperator{\card}{card}
-\DeclareMathOperator{\Con}{Con}
 
 %  TITLE, AUTHOR, DATE
 \title{Qualitatively accurate spectral schemes for advection and transport}
@@ -54,9 +44,6 @@
 
 \maketitle
 
-\begin{abstract}
-  blah blah blah.
-\end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
@@ -65,41 +52,36 @@
 Let $M$ be a compact manifold and let $X$ be a vector-field on $M$. The current paper is concerned with the following two equations
 \begin{align}
 	\partial_{t} f + X^{i} \partial_{i} f = 0 \label{eq:function pde} \\
-	\partial_{t} \rho + \partial_{t} (\rho X^{i}) = 0 \label{eq:density pde}
+	\partial_{t} \rho + \partial_{i} (\rho X^{i}) = 0 \label{eq:density pde}
 \end{align}
 for a time dependent function $f$ and a time dependent density $\rho$ on $M$.
 Both equations occur in a variety of contexts.
-Equation \eqref{eq:function pde} describes how a scalar quantity (such as a particle label) is transported by the flow of $X$.
-Such a pde arises in the context of fluids when $X$ is the (time-dependent) velocity field of the fluid, and $f$ is the temperature, and the thermal diffusivity is $0$.
-In the context of imaging and computer vision, it is often desired that one evolve a surface under some prescribed dynamics.
-For such a problem, level-set methods provide a possible numerical solution \cite{OsherSethian1988}.
-Level set methods begin by converting the surface into the level set of some function, $f$, and then solving \eqref{eq:function pde}.
-
+Equation \eqref{eq:function pde} describes how a scalar quantity (such as a particle label) is transported by the flow of $X$, and is sometimes called the ``transport equation''.
+Such a PDE arises in the context of fluids when $X$ is the (time-dependent) velocity field of the fluid, and $f$ is the temperature, and the thermal diffusivity is $0$.
 Equation \eqref{eq:density pde} describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
-In the context of classical mechanics, this equation is known as the Louiville equation.
-More generally, it can be seen as the zero-noise limit of the Fokker-Planck equation.
-In the context of fluids, such an equation describes how the density of a chemical tracer is transported by $X$.
+In the context of classical mechanics, this equation is known as the Louiville equation or the continuum equation.
 
 These equations have a number of conservation laws associated to them.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
 then so is the product and the sum $f\cdot g$ and $f+g$.
 Similarly, the $L^{1}$-norm is the natural norm associated to densities, and this norm is conserved in time under the evolution of \eqref{eq:density pde}.
-Other such conservation laws will be described in a future section, but suffice it to say,
-we will consider a numerical scheme to be qualitatively accurate if it exhibits a discretized version of these conservation laws. 
+Other such conservation laws will be described in a future section, but suffice it to say, this motivates our definition of qualitative accuracy.
+
+\begin{definition}
+	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if conserves discrete analogs of scalar multiplication/addition/the $L^{1}$-norm of densities and the sup-norm of functions.
+\end{definition}
 
 Both \eqref{eq:function pde} and \eqref{eq:density pde} can be numerically solved from a variety of schemes, each with its own benefit.
-For example, particle methods can be used, and do a decent job with regards to ``qualitative accuracy''.
+For example, particle methods can be used, and do a decent job with regards to qualitative accuracy.
 The method of characteristics tells us that
 the solution to \eqref{eq:function pde} with the initial condition $f_{0} \in C^{1}(M)$ is the time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
-This suggests using the particle method described in Algorithm \ref{alg:particle} in appendix \ref{app:algorithms}.
+This suggests using a particle method to solve for $f$ at a discrete set of points (possibly on a regular grid).
  
-We will see that this algorithm \eqref{alg:particle} retains many of the properties of \eqref{eq:function pde},
-and we think it deserves the label of \emph{qualitatively accurate}.
-For example, given the input $h_{0} = f_{0} \cdot g_{0}$, the output of Algorithm \ref{alg:particle} is identical to the componentwise product of the outputs obtained from inputing $f_{0}$ and $g_{0}$ separately.
-In other words, Algorithm \ref{alg:particle} conserves a (discrete version of) multiplication of functions just like the original pde \eqref{eq:function pde}.
-Moreover, this algorithm converges over finite time-intervals (using any reasonable interpolation method) at a rate $\mathcal{O}(n^{-1})$.
-Similarly, there is a particle based numerical solution to \eqref{eq:density pde} described in Algorithm \ref{alg:Monte Carlo} with similar convergence properties and qualitative accuracy.
-However, in the context of smooth data particle based algorithms do not perform well in comparison to spectral methods, which we describe next.
+In fact, a particle method would inherit many discrete analogs of the conservation laws of \eqref{eq:function pde},
+and by our definition it deserves the label of \emph{qualitatively accurate}.
+For example, given the input $h_{0} = f_{0} \cdot g_{0}$, the output of a particle method is identical to the (componentwise) product of the outputs obtained from inputing $f_{0}$ and $g_{0}$ separately.
+In other words, particle methods conserve a discrete version of multiplication of functions just like \eqref{eq:function pde}.
+However, particle methods do not converge as quickly as spectral methods when the function $f$ is highly differentiable.
 
 In the case where $M=S^{1}$ a spectral method can be obtained by converting \eqref{eq:density pde} to the Fourier domain where it takes the form
 of an ode
@@ -108,15 +90,13 @@ of an ode
 \end{align}
 where $\hat{\rho}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $\rho$ and $X$.
 We see that we have converted our linear pde into a linear ode on the space of Fourier coefficients.
-A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients (see Algorithm \ref{alg:spectral density}).
+A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients.
 
 Such a numerical method is good for smooth data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-p})$ for any finite $p > 0$ over a fixed finite time interval.
-Such a convergence rate is known as \emph{spectral} or \emph{exponential}.
 In particular, spectral schemes converge must faster than particle based method whenever the initial conditions have more than a few derivatives.
 However, the standard spectral algorithm is not qualitatively accurate.
-Solutions to \eqref{eq:density pde} preserve positivity and the $L^{1}$-norm.  This is not the case with the numerical solutions produced by Algorithm \ref{alg:spectral density}.
 
-This motivates the primary goal of this paper:
+This motivates the goal of this paper:
 \emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously spectrally convergent and qualitatively accurate.}
 
 \subsection{Previous work}
@@ -130,101 +110,100 @@ This motivates the primary goal of this paper:
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Qualitative properties of advection PDEs}
-\label{sec:properties}
-In this section we define specifically what we mean by ``advection PDEs'' in more precise mathematical terms.
-Throughout this paper let $\mathfrak{X}(M)$ denote the space of smooth vector-fields on a compact manifold $M$
-and let $X(t) \in \mathfrak{X}(M)$ be a time-dependent vector-field on $M$.
-Let $\Phi^{t_{0},t_{1}}_{X}:M\to M$ denote the flow map of $X$ from time $t_{0}$ to $t_{1}$.
-Given a bounded real-valued function $f_{0}$, we could consider the time-dependent function $f(x,t) := f_{0} ( (\Phi_{X}^{0,t})^{-1}(x) )$.
-The function $f$ represents how $f_{0}$ is pushed and stirred around by the flow of $X$.
-For a fixed $x \in M$ we observe, via the chain-rule,
-\begin{align}
-	 \frac{d}{dt}  f(x;t) &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} ( f(x;t+\epsilon) - f(x,t) ) \\
-	 &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} \left( f( (\Phi_{X}^{t,t+\epsilon})^{-1}(x) , t ) - f(x,t) \right) \\
-	 &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} \left( f(x,t) + \epsilon \pder{f}{x^{j}} [ (\Phi_{X}^{t,t+\epsilon})^{-1}(x) - x ]^{j} + \mathcal{O}(\epsilon^{2}) - f(x,t) \right) \\
-	 &= - X^{j}(x) \pder{f}{x^{j}} = - \pounds_{X}[f_{0}]
-\end{align}
-where $\pounds_{X}[f]$ denotes the Lie-derivative of $f$.
-This calculation yields the time-dependent advection PDE \eqref{eq:function pde}.
+%\section{Qualitative properties of advection PDEs}
+%\label{sec:properties}
+%In this section we define specifically what we mean by ``advection PDEs'' in more precise mathematical terms.
+%Throughout this paper let $\mathfrak{X}(M)$ denote the space of smooth vector-fields on a compact manifold $M$
+%and let $X(t) \in \mathfrak{X}(M)$ be a time-dependent vector-field on $M$.
+%Let $\Phi^{t_{0},t_{1}}_{X}:M\to M$ denote the flow map of $X$ from time $t_{0}$ to $t_{1}$.
+%Given a bounded real-valued function $f_{0}$, we could consider the time-dependent function $f(x,t) := f_{0} ( (\Phi_{X}^{0,t})^{-1}(x) )$.
+%The function $f$ represents how $f_{0}$ is pushed and stirred around by the flow of $X$.
+%For a fixed $x \in M$ we observe, via the chain-rule,
+%\begin{align}
+%	 \frac{d}{dt}  f(x;t) &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} ( f(x;t+\epsilon) - f(x,t) ) \\
+%	 &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} \left( f( (\Phi_{X}^{t,t+\epsilon})^{-1}(x) , t ) - f(x,t) \right) \\
+%	 &=  \left. \frac{d}{d \epsilon} \right|_{\epsilon=0} \left( f(x,t) + \epsilon \pder{f}{x^{j}} [ (\Phi_{X}^{t,t+\epsilon})^{-1}(x) - x ]^{j} + \mathcal{O}(\epsilon^{2}) - f(x,t) \right) \\
+%	 &= - X^{j}(x) \pder{f}{x^{j}} = - \pounds_{X}[f_{0}]
+%\end{align}
+%where $\pounds_{X}[f]$ denotes the Lie-derivative of $f$.
+%This calculation yields the time-dependent advection PDE \eqref{eq:function pde}.
+%
+%The same idea works if we consider the advection of a density $\rho_{0}$ by $X$.
+%In this case, the advected density is given by $\rho (x ; t) =  \det\left[ (D\Phi_{X}^{t,0})^{-1} (x) \right] \rho_{0}( (\Phi_{X}^{0,t})^{-1}(x) )$
+%and the advection PDE is \ref{eq:density pde}.
+%
+%Similarly, a (constant in time) vector-field $Y_{0}$ is advected by $X$ by the formula $Y(x ; t) =  (D\Phi_{X}^{t,0})|_{(\Phi_{X}^{t,0})^{-1}(x)} \cdot Y_{0}( (\Phi_{X}^{t,0})^{-1}(x))$
+%and satisfies the advection PDE
+%\begin{align} \label{eq:vector field pde}
+%	\pder{Y^{i}}{t} + \pder{Y^{i}}{x^{j}} \cdot X^{j} - \pder{X^{i}}{x^{j}} \cdot Y^{j} = 0.
+%\end{align}
 
-The same idea works if we consider the advection of a density $\rho_{0}$ by $X$.
-In this case, the advected density is given by $\rho (x ; t) =  \det\left[ (D\Phi_{X}^{t,0})^{-1} (x) \right] \rho_{0}( (\Phi_{X}^{0,t})^{-1}(x) )$
-and the advection PDE is \ref{eq:density pde}.
-
-Similarly, a (constant in time) vector-field $Y_{0}$ is advected by $X$ by the formula $Y(x ; t) =  (D\Phi_{X}^{t,0})|_{(\Phi_{X}^{t,0})^{-1}(x)} \cdot Y_{0}( (\Phi_{X}^{t,0})^{-1}(x))$
-and satisfies the advection PDE
-\begin{align} \label{eq:vector field pde}
-	\pder{Y^{i}}{t} + \pder{Y^{i}}{x^{j}} \cdot X^{j} - \pder{X^{i}}{x^{j}} \cdot Y^{j} = 0.
-\end{align}
-
-\section{Qualitative properties of advection}
-\label{sec:properties}
-Advection PDEs preserve a lot of natural structures.
-For example if $f(x,t)$ and $g(x,t)$ are solutions to \eqref{eq:function pde}, then the scalar product $f(x,t) g(x,t)$  and the sum $f(x,t) + g(x,t)$ is also a solution to \eqref{eq:function pde}.
-This observation can be summarized by the statement \emph{evolution by \eqref{eq:function pde} preserves the ring of functions on $M$}.
-In the same vein, if $\rho$ is a density which satisfies \eqref{eq:density pde} and $f$ is a function which satisfies \eqref{eq:function pde}, then the quantity $c = \int_{M} f \cdot \rho$ is constant in time.
-This can naturally be extended to the case where $\rho$ is a distribution, and we can summarize this conservation law by saying \emph{advection preserves the duality between functions and distributions on $M$}.
-
-More conservation laws can be found for vector-field advection.
-If $Y$ and $Z$ are vector-fields, then there is a natural Lie-bracket structure given by
-\begin{align}
-	[Y,Z]^{i} \equiv ( \pounds_{Y}[Z] )^{i} := \partial_{j}Z^{i} \, Y^{j} - \partial_{j}Y^{i} \, Z^{j}.
-\end{align}
-We can observe that if $Y$ and $Z$ satisfy \eqref{eq:vector field pde} then $[Y,Z]$ also satisfies \eqref{eq:vector field pde}.
-In summary, advection preserves the Lie algebra of vector fields.
-
-Lastly, the canonical relationships between vector-fields and functions and densities are also preserved.
-Given a vector-field $Y$ a function $f$ and a density $\rho$ we may define the Lie derivatives
-\begin{align}
-	\pounds_{Y}[f] = Y^{j} \partial_{j}f \quad , \quad \pounds_{Y}[\rho] = \pder{}{x^{j}} ( \rho Y^{j} ).
-\end{align}
-The quantity $\pounds_{Y}[f]$ is itself a function, and $\pounds_{Y}[\rho]$ is a density.
-If $f,\rho$ and $Y$ satisfy the advection PDEs \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde} respectively,
-then $\pounds_{Y}[f]$ satisfies \eqref{eq:function pde} and $\pounds_{Y}[\rho]$ satisfies \eqref{eq:density pde}.
-In summary, advection preserves the action of vector fields on functions and densities.
-
-In some sense these conservation laws are remarkable, since most PDEs do not conserve all the structures mentioned.
-Of course, there is no such thing as magic.
-The group of smooth diffeomorphisms of $M$ is in fact identical to the group of ring-automorphisms of $C^{\infty}(M)$.
-The formal Lie algebra of the group of Diffeomorphisms is the space of vector-fields $\mathfrak{X}(M)$.
-So it is no wonder that advection preserves the ring-structure of functions.
-Moreover, the space of distributions is \emph{defined} as the dual space to that of functions, and so the action of a vector-field on distributions is defined
-as the dual of the action on functions.
-So of course advection preserves the duality between functions and distributions.
-Lastly, any Lie group preserves it's own Lie algebra and its own group actions.
-So of course advection preserves the Lie bracket of vector fields and the Lie derivatives of functions and densities.
-These conservation laws are fundamental properties of advection, and this motivates the definition of qualitative accuracy
-which we shall use in this paper:
-
-\begin{center}
-    \fbox{
-    	\begin{minipage}{0.8\textwidth}
-    		A numerical method for an advection is {\bf qualitatively accurate} if it conserves (up to machine precision) the same properties as the exact advection PDE.
-    	\end{minipage}
-    }
-\end{center}
-
-This criterion is separate from numerical accuracy, and can be evaluated independently.
-Of course, numerical accuracy takes first priority,
-but the goal of this paper will be to go the extra length of constructing a scheme which is numerically
-\emph{and qualitatively} accurate.
+%\section{Qualitative properties of advection}
+%\label{sec:properties}
+%Advection PDEs preserve a lot of natural structures.
+%For example if $f(x,t)$ and $g(x,t)$ are solutions to \eqref{eq:function pde}, then the scalar product $f(x,t) g(x,t)$  and the sum $f(x,t) + g(x,t)$ is also a solution to \eqref{eq:function pde}.
+%This observation can be summarized by the statement \emph{evolution by \eqref{eq:function pde} preserves the ring of functions on $M$}.
+%In the same vein, if $\rho$ is a density which satisfies \eqref{eq:density pde} and $f$ is a function which satisfies \eqref{eq:function pde}, then the quantity $c = \int_{M} f \cdot \rho$ is constant in time.
+%This can naturally be extended to the case where $\rho$ is a distribution, and we can summarize this conservation law by saying \emph{advection preserves the duality between functions and distributions on $M$}.
+%
+%%More conservation laws can be found for vector-field advection.
+%%If $Y$ and $Z$ are vector-fields, then there is a natural Lie-bracket structure given by
+%%\begin{align}
+%%	[Y,Z]^{i} \equiv ( \pounds_{Y}[Z] )^{i} := \partial_{j}Z^{i} \, Y^{j} - \partial_{j}Y^{i} \, Z^{j}.
+%%\end{align}
+%%We can observe that if $Y$ and $Z$ satisfy \eqref{eq:vector field pde} then $[Y,Z]$ also satisfies \eqref{eq:vector field pde}.
+%%In summary, advection preserves the Lie algebra of vector fields.
+%%
+%%Lastly, the canonical relationships between vector-fields and functions and densities are also preserved.
+%%Given a vector-field $Y$ a function $f$ and a density $\rho$ we may define the Lie derivatives
+%%\begin{align}
+%%	\pounds_{Y}[f] = Y^{j} \partial_{j}f \quad , \quad \pounds_{Y}[\rho] = \pder{}{x^{j}} ( \rho Y^{j} ).
+%%\end{align}
+%%The quantity $\pounds_{Y}[f]$ is itself a function, and $\pounds_{Y}[\rho]$ is a density.
+%%If $f,\rho$ and $Y$ satisfy the advection PDEs \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde} respectively,
+%%then $\pounds_{Y}[f]$ satisfies \eqref{eq:function pde} and $\pounds_{Y}[\rho]$ satisfies \eqref{eq:density pde}.
+%%In summary, advection preserves the action of vector fields on functions and densities.
+%
+%In some sense these conservation laws are remarkable, since most PDEs do not conserve these structures.
+%Of course, there is no such thing as magic.
+%The group of smooth diffeomorphisms of $M$ is in fact identical to the group of ring-automorphisms of $C^{\infty}(M)$.
+%The formal Lie algebra of the group of Diffeomorphisms is the space of vector-fields $\mathfrak{X}(M)$.
+%Equations \eqref{eq:function pde} and \eqref{eq:density pde} are the natural PDEs which arise from the action of vector-fields on functions and densities.
+%So it is no wonder that advection preserves the algebra of functions because scalar multiplication and addition are natural operations.
+%Moreover, the space of distributions is \emph{defined} as the dual space to that of functions, and so the action of a vector-field on distributions is defined
+%as the dual of the action on functions.
+%So of course advection preserves the duality between functions and distributions.
+%These conservation laws are fundamental properties of advection, and this motivates the definition of qualitative accuracy
+%which we shall use in this paper:
+%
+%\begin{center}
+%    \fbox{
+%    	\begin{minipage}{0.8\textwidth}
+%    		A numerical method for an advection is {\bf qualitatively accurate} if it conserves the same properties as the exact advection PDE (in exact machine arithmetic).
+%    	\end{minipage}
+%    }
+%\end{center}
+%
+%This criterion is separate from numerical accuracy, and can be evaluated independently.
+%Of course, numerical accuracy takes first priority,
+%but the goal of this paper will be to go the extra length of constructing a scheme which is numerically
+%\emph{and qualitatively} accurate.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The canonical space $L^{2}(M)$}
 \label{sec:half densities}
 The goal of this paper is to construct a spectral advection scheme which exhibits a large number of invariants.
-At the core of many spectral schemes is the use of some Hilbert space upon which everything can be approximated via least squares projections.
+At the core of many spectral schemes is the use of a Hilbert space upon which everything can be approximated via least squares projections.
 Typically this Hilbert space is $L^{2}(M ; \mu)$ where the $L^{2}$-inner product is taken with respect to some non-canonical density or volume form $\mu$ on $M$.
 We do not have this luxury.
 The properties of advection that we desire to have are strictly properties of $M$ alone, i.e. they are canonical.
-Any non-canonical choices we make in constructing our scheme (such as the choice of a volume form) threaten to break these conservation laws by introducing non-canonical artifacts.
+The choice of $\mu$ is non-canonical and threatens to discard the conservation laws we aim to keep.
 
 In this section we define a geometric version of an $L^{2}$-space which foregoes the choice of a volume form, denoted simply by $L^{2}(M)$.
-The ``cost'' we pay for not choosing a volume form is that the elements of $L^{2}(M)$ are not (equivalence classes of) functions because they transform differently under a change of coordinates.
+The ``cost'' we pay is that the elements of $L^{2}(M)$ are not functions, but something a bit less familar.
 
-Again, let $M$ be a smooth compact $n$-manifold
-and we will let $\Dens(M)$ denote the space of continuous densities,
+For a smooth compact $n$-manifold, $M$,
+let $\Dens(M)$ denote the space of continuous densities,
 which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \cite[Chapter 16]{Lee2006}.
 
 \begin{defn}\label{def:half density}
@@ -236,7 +215,7 @@ which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \cite[
 This definition is an equivalent reformulation of the half densities defined in the context of geometric quantization \cite{GuilleminSternberg1970,BatesWeinstein1997}.
 In physical terms, $L^{2}(M)$ is precisely the Hilbert space of wave functions on $M$ used in quantum mechanics.
 It is unfortunate that physicists call these ``wave-functions''
-because elements of $L^{2}(M)$ and $\sqrt{\Dens(M)}$ are \emph{not} functions on $M$.\footnote{However, this sloppy use of names is consistent with others instances such as the fact that the ``Dirac-delta function'' is also not a function.}
+because elements of $L^{2}(M)$ and $\sqrt{\Dens(M)}$ are \emph{not} functions on $M$.
 One way to see this is to observe how elements of $\sqrt{\Dens(M)}$ transform.
 Under a change of coordinates $\Phi$ we observe $\psi$ will map to $\tilde \psi$ where
 \begin{align}
@@ -259,14 +238,14 @@ and observe that half densities are is naturally equipped with the norm $$\| \ps
 Lastly, as we know how to transform half-densities, we also know how to advect them.
 For a vector-field $X$, the Lie derivative of a half-density is given in local coordinates by
 \begin{align}
-	\pounds_{X}[\psi] = \frac{1}{2} X^{i} \pder{\psi}{x^{i}} + \frac{1}{2} \pder{}{x^{i}} \left( \psi X^{i} \right). \label{eq:half density pde}
+	\pounds_{X}[\psi] = \frac{1}{2} X^{i} \pder{\psi}{x^{i}} + \frac{1}{2} \pder{}{x^{i}} \left( \psi X^{i} \right). \label{eq:representation}
 \end{align}
-This is an unbounded anti-Hermetian operator on $L^{2}(M)$.
+This is a densely defined anti-Hermetian operator on $L^{2}(M)$.
 The advection equation can be written as
 \begin{align}
 	\partial_{t} \psi + \pounds_{X}[\psi] = 0.
 \end{align}
-By the Stone Von-Neumann theorem \cite{Conway1990}, there is a solution for all time, in spite of the fact that the Lie derivative is an unbounded operator.
+By the Stone's theorem \cite{Conway1990}, there is a solution for all time, in spite of the fact that the Lie derivative is an unbounded operator.
 Moreover, the solution is given by a unitary action.  For reference later, we restate this remark formally.
 \begin{prop} \label{prop:stone}
 	The solution to \eqref{eq:half density pde} is of the form $\psi(t) = U(t) \cdot \psi(0)$ where $U(t)$ is
@@ -320,7 +299,7 @@ This separation between $L^{2}(M)$ and $L^{1}(M)$ \emph{forces} us to think of t
 For example an operator on $L^{2}(M)$ can not generally be applied to $L^{1}(M)$ in the same way.
 Later we will find this is a good thing, because it allows us to have an operator act on $L^{1}(M)$ differently than how it acts on $L^{2}(M)$
 without leading to contradiction.
-Such safety mechanisms are analogous to the use of private/public functions in object oriented programming, which place constraints on a computer program in order to banish certain bugs from arising.
+Such safety mechanisms are analogous to the use of private/public functions in object oriented programming, which effectively banish certain bugs from arising.
 
 \subsection{Sobolev spaces}
 \label{sec:Sobolev spaces}
@@ -399,7 +378,7 @@ That $\psi$ is of class $H^{s}$ is topological statement, and not metric depende
 However, the norm $\| \psi \|_{2,s} = \| f \|_{2,s}$ is metric dependent.
 
 \section{A spectral discretization}
-The goal of this section will be to produce a spectral scheme for the advection equations \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde}
+The goal of this section will be to produce a spectral scheme for the advection equations \eqref{eq:function pde} and \eqref{eq:density pde}
 using the space $L^{2}(M)$.
 In order to realize this goal we must relate functions, densities, and vector-fields to $L^{2}(M)$ in a way that can be spectrally discretized without breaking any canonical structures.
 
@@ -415,13 +394,14 @@ Similarly, (and in the opposite direction) for any trace class operator $\hat{\r
 for any $f \in C(M)$.
 By construction, the surjection $\hat{\rho} \mapsto \rho$ and the injection $f \mapsto \hat{f}$ preserve the duality between functions and distributions.
 
-Finally, for any vector field $X$ there is a unique (unbounded) anti-symmetric operator $\pi(X)$ on $L^{2}(M)$
-given in coordinates by
-\begin{align}
-	\pi(X) \cdot \psi = \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ). \label{eq:representation}
-\end{align}
-After some minor computations (see Appendix \ref{app:Lie} \todo{need to write an appendix} ) we see that $\pi$ is a Lie algebra morphism which sends
-the Jacobi-Lie bracket to (minus) the commutator bracket.  That is to say, $\pi$ is linear and $\pi([X,Y]) = - [ \pi(X) , \pi(Y)]$.
+%Finally, for any vector field $X$ there is a unique (unbounded) anti-symmetric operator $\pounds_{X}$ on $L^{2}(M)$
+%given in coordinates by
+%\begin{align}
+%	\pounds_{X} [ \psi ] = \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ), \label{eq:representation}
+%\end{align}
+%where the right hand-side is written using the Einstein summation convention in a local coordinate system.
+%After some minor computations (see Appendix \ref{app:Lie} \todo{need to write an appendix} ) we see that $\pi$ is a Lie algebra morphism which sends
+%the Jacobi-Lie bracket to (minus) the commutator bracket.  That is to say, $\pi$ is linear and $\pi([X,Y]) = - [ \pounds_{X} , \pi(Y)]$.
 
 \begin{example}
 Let us describe what this means when $M$ is a torus.
@@ -430,12 +410,12 @@ In a Fourier basis $\{ \frac{1}{\sqrt{2\pi}} e^{ i \langle k , \theta \rangle}  
 a half density, $\psi$ is given by it's Fourier series $\mathcal{F}[\psi]$.
 Upon noting that $\mathcal{F}[ f \cdot \psi] = \mathcal{F}[f] * \mathcal{F}[\psi]$
 we find $\hat{f} = \mathcal{F}[f] * $, i.e. $\hat{f}$ is the convolution operator associated to the Fourier transform of $f$.
-We observe that $\pi \left( \pder{}{\theta^{j}} \right) \cdot e^{i \langle k , \theta \rangle}  = i k^{j} e^{i \langle k,\theta\rangle}$.
-That is to say, $\pi \left( \pder{}{\theta^{j}} \right)$ simply multiplies the $k$th mode by $k^{j}$.
+We observe that $\pounds_{ \pder{}{\theta^{j}} } [ e^{i \langle k , \theta \rangle}]  = i k_{j} e^{i \langle k,\theta\rangle}$.
+That is to say, $\pounds_{ \pder{}{\theta^{j}} }$ simply multiplies the $k = (k_{1},\dots,k_{d})$-th mode by $k^{j}$.
 This is the sparsest representation of this operator one can ever expect to obtain.
-We then see that $\pi(X) \cdot \psi = \mathcal{F}[X^{j}] *  [ \pi \left( \pder{}{\theta^{j}} \right) \cdot \psi ]$.
+We then see that $\pounds_{X} [\psi] = \mathcal{F}[X^{j}] *  \left( \pounds_{ \pder{}{\theta^{j}} }[ \psi ] \right)$.
 If $X$ is smooth, than $\mathcal{F}(X^{j})$ is well approximated by a sparse operator by truncation.
-As a result, we have a sparse spectral approximation of $\pi(X)$ when we use truncation.
+As a result, we have a sparse spectral approximation of $\pounds_{X}$ when we use truncation.
 
 Finally, given a sufficiently regular\footnote{e.g. $W^{1+\epsilon,1}$ for $\epsilon >0$ will do.} density, $\rho$,  we could 
 split $\rho$ into non-negative and non-positive components as $\rho = \rho^{+} - \rho^{-}$
@@ -443,33 +423,36 @@ so that $\psi = \sqrt{\rho^{+}} + i \sqrt{\rho^{-}}$ is a square root of $\rho$.
 Then $\hat{\rho}$ is represented in the Fourier domain by $\mathcal{F}(\psi) \otimes \mathcal{F}(\psi)^{\dagger}$.
 \end{example}
 
-We can now convert the evolution PDEs \eqref{eq:function pde}, \eqref{eq:density pde}, and \eqref{eq:vector field pde}
+We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:density pde}
 into ODE's of operators on $L^{2}(M)$.
 
 \begin{thm} \label{thm:quantize}
 	Let $X(t) \in \mathfrak{X}(M)$ be a time-dependent vector-field.
-	Then $f$, $\rho$, and $Y$ satisfy \eqref{eq:function pde},\eqref{eq:density pde}, and \eqref{eq:vector field pde} respectively
-	if and only if $\hat{f}$, $\hat{\rho}$, and $\pi(Y)$ satisfy the operator ODEs
+	Then $f$ and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde} respectively
+	if and only if $\hat{f}$ and $\hat{\rho}$ satisfy the operator ODEs
 	\begin{align}
-		&\frac{d \hat{f} }{dt} + [ \hat{f} , \pi(X) ] = 0 \label{eq:quantum observable ode} \\
-		&\frac{d \hat{\rho} }{dt} + [ \hat{\rho} , \pi(X) ] = 0 \label{eq:quantum density ode} \\
-		&\frac{d \pi(Y) }{dt} + [ \pi(Y), \pi(X) ] = 0 \label{eq:quantum vf ode}
+		&\frac{d \hat{f} }{dt} + [ \hat{f} , \pounds_{X} ] = 0 \label{eq:quantum observable ode} \\
+		&\frac{d \hat{\rho} }{dt} + [ \hat{\rho} , \pounds_{X} ] = 0 \label{eq:quantum density ode}
 	\end{align}
-	respectively.
-	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$ and $\psi$ satisfies \eqref{eq:half density pde}, then $\rho$ satisfies \eqref{eq:density pde}.
+	respectively, where $[ \cdot , \cdot ]$ denotes the commutator bracket.
+	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$ and $\psi$ satisfies
+	\begin{align}
+		 \partial_{t} \psi + \pounds_{X}[\psi] = 0, \label{eq:half density pde}
+	\end{align}
+	then $\rho$ satisfies \eqref{eq:density pde}.
 \end{thm}
 
 \begin{proof}
 	Let $f$ satisfy \eqref{eq:function pde}.
-	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ \hat{f} , \pi(X)] \cdot \psi$ is given in coordinates by
+	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ \hat{f} , \pounds_{X}] \cdot \psi$ is given in coordinates by
 	\begin{align}
-		[ \hat{f} , \pi(X) ] \cdot \psi = f \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right)
+		[ \hat{f} , \pounds_{X} ] \cdot \psi = f \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right)
 			- \frac{1}{2} X^{j} \pder{}{x^{j}}( f \psi)  + \frac{1}{2} \pder{}{x^{j}} (f \psi \, X^{j} )
 	\end{align}
 	where we have used \eqref{eq:representation}.  Application of the product rule to all these terms then yields
 	a number of cancellations and we find
 	\begin{align}
-		[ \hat{f} , \pi(X) ] \cdot \psi = - X^{j} \pder{f}{x^{j}} \psi = (\partial_{t} f )\psi = \frac{d \hat{f} }{dt} \cdot \psi.
+		[ \hat{f} , \pounds_{X} ] \cdot \psi = - X^{j} \pder{f}{x^{j}} \psi = (\partial_{t} f )\psi = \frac{d \hat{f} }{dt} \cdot \psi.
 	\end{align}
 	As $\psi$ is arbitrary we have managed to show that $\hat{f}$ satisfies \eqref{eq:quantum observable ode}.
 	Each line of reasoning is reversible, and so we have proven the converse as well.
@@ -481,23 +464,23 @@ into ODE's of operators on $L^{2}(M)$.
 	\begin{align}
 		0 = \frac{d}{dt} \left( \Tr( \hat{f}^{\dagger} \rho ) \right) = \Tr \left( \frac{d \hat{f}^{\dagger}}{dt} \hat{\rho} + \hat{f}^{\dagger} \frac{d \hat{\rho}}{dt} \right).
 	\end{align}
-	As was just shown, $\frac{d}{dt} \hat{f} =  - [\hat{f} , \pi(X) ]$ so we observe
+	As was just shown, $\frac{d}{dt} \hat{f} =  - [\hat{f} , \pounds_{X} ]$ so we observe
 	\begin{align}
-		0 = \Tr( - [\hat{f} , \pi(X) ]^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \hat{\rho} ) = \Tr( - \pi(X)^{\dagger} \hat{f}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \pi(X)^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \frac{d\hat{\rho}}{dt} ).
+		0 = \Tr( - [\hat{f} , \pounds_{X} ]^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \hat{\rho} ) = \Tr( - \pounds_{X}^{\dagger} \hat{f}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \pounds_{X}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \frac{d\hat{\rho}}{dt} ).
 	\end{align}
-	Upon noting that $\pi(X)^{\dagger} = - \pi(X)$ and use of identity $\Tr( a b c) = \Tr( bc a)$ we obtain
+	Upon noting that $\pounds_{X}^{\dagger} = - \pounds_{X}$ and use of identity $\Tr( a b c) = \Tr( bc a)$ we obtain
 	\begin{align}
-		0 = \Tr \left( \hat{f}^{\dagger}( [\hat{\rho} , \pi(X) ] + \frac{d \hat{\rho}}{dt} ) \right).
+		0 = \Tr \left( \hat{f}^{\dagger}( [\hat{\rho} , \pounds_{X} ] + \frac{d \hat{\rho}}{dt} ) \right).
 	\end{align}
 	As $\hat{f}$ was chosen arbitrarily, the desired result follows.
 	Again, this line of reasoning is reversible.
-	
-	Thirdly, if $Y$ satisfies \eqref{eq:vector field pde}, then we observe 
-	\begin{align}
-		\frac{d}{dt} \pi(Y) = \pi ( \partial_{t} Y ) = \pi( - [X,Y] ) = [\pi(X) , \pi(Y) ].
-	\end{align}
-	where we have used the fact that $\pi$ is bracket preserving.
-	
+%	
+%	Thirdly, if $Y$ satisfies \eqref{eq:vector field pde}, then we observe 
+%	\begin{align}
+%		\frac{d}{dt} \pi(Y) = \pi ( \partial_{t} Y ) = \pi( - [X,Y] ) = [\pounds_{X} , \pi(Y) ].
+%	\end{align}
+%	where we have used the fact that $\pi$ is bracket preserving.
+%	
 	Lastly, if $\psi$ satisfies \eqref{eq:half density pde} and $\rho = \psi^{2}$ then we see
 	\begin{align}
 		\partial_{t} \rho &= \partial_{t} ( \psi^{2}) = 2 (\partial_{t} \psi ) \, \psi \\
@@ -509,111 +492,112 @@ into ODE's of operators on $L^{2}(M)$.
 \end{proof}
 
 
-The benefit of representing our pde's in the form \eqref{eq:quantum observable ode},\eqref{eq:quantum density ode}, and \eqref{eq:quantum vf ode}
-is that we may \emph{canonically} discretize these ODEs using least squares projections.  In order to demonstrate this, we will illustrate a detailed implementation of how this would be done on the unit circle, $S^1$, before considering the case of a general compact manifold.
+The benefit of representing our pde's in the form \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode}
+is that we may discretize these ODEs using least squares projections.
+%In order to demonstrate this, we will illustrate a detailed implementation of how this would be done on the unit circle, $S^1$, before considering the case of a general compact manifold.
 
-\subsection{Discretization on $S^1$ using the Fourier Transform}
-In the case of $S^1$ we can discretize all the needed concepts using the Fourier transform.  In particular, let us consider the ODE $\dot{x} = g(x)$ where
-$g(x)$ is a continuous function of $x \in S^1$.
-Then the operator $\pi(X)$ is given by
-\begin{align}
-	\left( \pi(X) \cdot \psi \right)(x) = \frac{1}{2}
-	\left( g(x) \left.\frac{d\psi}{dx}\right|_x 
-	+ \left. \frac{d}{dx} \right|_x (g \cdot \psi ) \right). \label{eq:S1 op}
-\end{align}
+%\subsection{Discretization on $S^1$ using the Fourier Transform}
+%In the case of $S^1$ we can discretize all the needed concepts using the Fourier transform.  In particular, let us consider the ODE $\dot{x} = g(x)$ where
+%$g(x)$ is a continuous function of $x \in S^1$.
+%Then the operator $\pounds_{X}$ is given by
+%\begin{align}
+%	\left( \pounds_{X} \cdot \psi \right)(x) = \frac{1}{2}
+%	\left( g(x) \left.\frac{d\psi}{dx}\right|_x 
+%	+ \left. \frac{d}{dx} \right|_x (g \cdot \psi ) \right). \label{eq:S1 op}
+%\end{align}
+%
+%We will first describe how one can approximate the operator $\pounds_{X}$ with an operator on $\mathbb{C}^{2n+1}$ for a finite $n > 0$.
+%In essence what we will describe is a standard spectral scheme \cite{Boyd2001,NumericalRecipes}.
+%To begin, note that $\pounds_{X}$ consists of either multiplication by $g(x)$, or differentiation, or multiplication by $1/2$.  So our approach will be to discretize the linear operations of multiplication by $g(x)$ and the linear operation of differentiation.
+%
+%The first step is to transform everything to the Fourier domain.  Any $\psi \in L^2(M)$ can be viewed as a normal $L^2$-function with respect to the standard Haar measure on $S^1$.  We may then apply the Fourier transform to write $\psi$ as a complex series
+%\begin{align}
+%	\psi(x) = \sum_{k=-\infty}^\infty c_k e^{2\pi i k x}.
+%\end{align}
+%We find that differentiation takes the form
+%\begin{align}
+%	\frac{d}{dx} (\psi)(x) = \sum_{k} 2\pi i k c_k e^{2\pi i kx}.
+%\end{align}
+%Thus, in the Fourier domain, differentiation is given by
+%\begin{align}
+% 	c_k \mapsto 2 \pi ik c_k
+%\end{align}
+%for all $k \in \mathbb{Z}$.
+%For any $N \in \mathbb{N}$ we may approximate the differentiation operator with a complex matrix
+%\begin{align*}
+%	[D_N]_{k \ell } = \delta_{k \ell } 2\pi i k
+%\end{align*}
+%for $k,\ell \in \{ -N , \dots,-1,0,1,\dots N \}$.
+%If we define $\mathbf{c}_n = ( c_{-n}, \dots , c_{-1} , c_0 , c_{1},\dots,c_n ) \in \mathbb{C}^{2n+1}$, the vector $D_n \cdot {\bf c}_n$ is the truncated Fourier series of $\frac{d\psi}{dx}$.
+%
+%Similarly we may take the Fourier transform of the function $g$ to get the Fourier series expansion
+%\begin{align}
+%	g(x) = \sum_k g_k e^{2\pi i kx}.
+%\end{align}
+%Multiplication of $\psi \in L^2(S^1)$ by $g \in C^0(M)$ is given by
+%\begin{align}
+%	g(x) \cdot \psi(x) &= \sum_{k \ell} g_\ell c_k e^{2\pi i (k+\ell)x} \\
+%		&= \sum_{k \ell} g_{k-\ell} c_k e^{2\pi i kx}.
+%\end{align}
+%In other-words, the multiplication operator $\hat{g}$ is nothing but the convolution operator
+%\begin{align}
+%	( \hat{g} \cdot \psi )(x) = \sum_{k \ell} g_{k-\ell} c_k e^{2\pi i kx}.
+%\end{align}
+%
+%Again, we can approximate $\hat{g}$ with a complex $(2N+1) \times (2N+1)$ matrix
+%\begin{align}
+%	[\hat{G}_N]_{k\ell} = g_{k - \ell}
+%\end{align}
+%for $k,\ell \in \{ -N , \dots,-1,0,1,\dots,N\}$.
+%We will find that $\hat{G}_N$ converges to $\hat{g}$ as $n$ goes to infinity.
+%As a result the matrix-vector computation
+%\begin{align}
+%	 {\bf d}_N = {\bf X}_N \cdot {\bf c}_N
+%\end{align}
+%where
+%\begin{align}
+%	{\bf X}_N = \frac{1}{2} \hat{G}_N \cdot D_N + \frac{1}{2} D_N \cdot \hat{G}_N
+%\end{align}
+%serves as an approximation of the truncated Fourier series to \eqref{eq:S1 op}.
+%We will see that this approximation converges to order $\mathcal{O}( N^{1-s} )$ on the subspace $H^{s} \subset L^{2}$.
+%
+%This gives us the following numerical scheme for \eqref{eq:half density pde} for a fixed $n$:
+%
+%\begin{enumerate}
+%	\item Given the initial condition $\psi(0) \in L^2(S^1)$ compute ${\bf c}_N(0)$.
+%	\item Solve the ode $\frac{d {\bf c}_N }{dt} = {\bf X}_N \cdot {\bf c}_N$ over a finite time interval, $[0,T]$,
+%	with a trusted ode solver.\footnote{If ${\bf X}_n$ is constant in time, than one can solve this ode using a matrix exponential, but this could be treacherous
+%	and needlessly expensive \cite{Moler2003}.}
+%	\item Let $\psi_{N}(x,t) = \sum_{k=-N}^N c_k(t) e^{2\pi ikx}$. 
+%\end{enumerate}
+%We will later find that $\psi_{N}$ converges to the solution of \eqref{eq:half density pde} at a rate $\mathcal{O}( N^{1-s})$ when $\psi(0) \in H^{s}(M)$ for $s > 1$.
+%Moreover, we will find that $\rho^{(n)} = ( \psi^{(n)} )^2$ converges to solutions of \eqref{eq:density pde} at the same rate.
+%
+%Lastly, we can approximate solutions to \eqref{eq:function pde}
+%by discretizing \eqref{eq:quantum observable ode} in a similar way.
+%Given an initial condition $f(x,0) \in C^0(M)$ we can compute the truncated Fourier series $f_{-n},\dots,f_{-1},f_0,f_1,\dots,f_n$ and create the convolution matrix
+%\begin{align*}
+%	[ \widehat{F}_n(0) ]_{k \ell} = f_{k-\ell}.
+%\end{align*}
+%Again, $\widehat{F}_n(0)$ is a truncated approximation of the operator $\widehat{f( \cdot , 0)}$.
+%We then can approximate a solution to \eqref{eq:quantum observable ode}
+% by integrating the finite-dimensional matrix ode
+%\begin{align*}
+%	\frac{d \widehat{F}_n }{dt} + [ \widehat{F}_n , {\bf X}_n ] = 0.
+%\end{align*}
+%
+%Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this approach.  Another problem with this approach is the potential storage cost.
 
-We will first describe how one can approximate the operator $\pi(X)$ with an operator on $\mathbb{C}^{2n+1}$ for a finite $n > 0$.
-In essence what we will describe is a standard spectral scheme \cite{Boyd2001,NumericalRecipes}.
-To begin, note that $\pi(X)$ consists of either multiplication by $g(x)$, or differentiation, or multiplication by $1/2$.  So our approach will be to discretize the linear operations of multiplication by $g(x)$ and the linear operation of differentiation.
-
-The first step is to transform everything to the Fourier domain.  Any $\psi \in L^2(M)$ can be viewed as a normal $L^2$-function with respect to the standard Haar measure on $S^1$.  We may then apply the Fourier transform to write $\psi$ as a complex series
-\begin{align}
-	\psi(x) = \sum_{k=-\infty}^\infty c_k e^{2\pi i k x}.
-\end{align}
-We find that differentiation takes the form
-\begin{align}
-	\frac{d}{dx} (\psi)(x) = \sum_{k} 2\pi i k c_k e^{2\pi i kx}.
-\end{align}
-Thus, in the Fourier domain, differentiation is given by
-\begin{align}
- 	c_k \mapsto 2 \pi ik c_k
-\end{align}
-for all $k \in \mathbb{Z}$.
-For any $N \in \mathbb{N}$ we may approximate the differentiation operator with a complex matrix
-\begin{align*}
-	[D_N]_{k \ell } = \delta_{k \ell } 2\pi i k
-\end{align*}
-for $k,\ell \in \{ -N , \dots,-1,0,1,\dots N \}$.
-If we define $\mathbf{c}_n = ( c_{-n}, \dots , c_{-1} , c_0 , c_{1},\dots,c_n ) \in \mathbb{C}^{2n+1}$, the vector $D_n \cdot {\bf c}_n$ is the truncated Fourier series of $\frac{d\psi}{dx}$.
-
-Similarly we may take the Fourier transform of the function $g$ to get the Fourier series expansion
-\begin{align}
-	g(x) = \sum_k g_k e^{2\pi i kx}.
-\end{align}
-Multiplication of $\psi \in L^2(S^1)$ by $g \in C^0(M)$ is given by
-\begin{align}
-	g(x) \cdot \psi(x) &= \sum_{k \ell} g_\ell c_k e^{2\pi i (k+\ell)x} \\
-		&= \sum_{k \ell} g_{k-\ell} c_k e^{2\pi i kx}.
-\end{align}
-In other-words, the multiplication operator $\hat{g}$ is nothing but the convolution operator
-\begin{align}
-	( \hat{g} \cdot \psi )(x) = \sum_{k \ell} g_{k-\ell} c_k e^{2\pi i kx}.
-\end{align}
-
-Again, we can approximate $\hat{g}$ with a complex $(2N+1) \times (2N+1)$ matrix
-\begin{align}
-	[\hat{G}_N]_{k\ell} = g_{k - \ell}
-\end{align}
-for $k,\ell \in \{ -N , \dots,-1,0,1,\dots,N\}$.
-We will find that $\hat{G}_N$ converges to $\hat{g}$ as $n$ goes to infinity.
-As a result the matrix-vector computation
-\begin{align}
-	 {\bf d}_N = {\bf X}_N \cdot {\bf c}_N
-\end{align}
-where
-\begin{align}
-	{\bf X}_N = \frac{1}{2} \hat{G}_N \cdot D_N + \frac{1}{2} D_N \cdot \hat{G}_N
-\end{align}
-serves as an approximation of the truncated Fourier series to \eqref{eq:S1 op}.
-We will see that this approximation converges to order $\mathcal{O}( N^{1-s} )$ on the subspace $H^{s} \subset L^{2}$.
-
-This gives us the following numerical scheme for \eqref{eq:half density pde} for a fixed $n$:
-
-\begin{enumerate}
-	\item Given the initial condition $\psi(0) \in L^2(S^1)$ compute ${\bf c}_N(0)$.
-	\item Solve the ode $\frac{d {\bf c}_N }{dt} = {\bf X}_N \cdot {\bf c}_N$ over a finite time interval, $[0,T]$,
-	with a trusted ode solver.\footnote{If ${\bf X}_n$ is constant in time, than one can solve this ode using a matrix exponential, but this could be treacherous
-	and needlessly expensive \cite{Moler2003}.}
-	\item Let $\psi_{N}(x,t) = \sum_{k=-N}^N c_k(t) e^{2\pi ikx}$. 
-\end{enumerate}
-We will later find that $\psi_{N}$ converges to the solution of \eqref{eq:half density pde} at a rate $\mathcal{O}( N^{1-s})$ when $\psi(0) \in H^{s}(M)$ for $s > 1$.
-Moreover, we will find that $\rho^{(n)} = ( \psi^{(n)} )^2$ converges to solutions of \eqref{eq:density pde} at the same rate.
-
-Lastly, we can approximate solutions to \eqref{eq:function pde}
-by discretizing \eqref{eq:quantum observable ode} in a similar way.
-Given an initial condition $f(x,0) \in C^0(M)$ we can compute the truncated Fourier series $f_{-n},\dots,f_{-1},f_0,f_1,\dots,f_n$ and create the convolution matrix
-\begin{align*}
-	[ \widehat{F}_n(0) ]_{k \ell} = f_{k-\ell}.
-\end{align*}
-Again, $\widehat{F}_n(0)$ is a truncated approximation of the operator $\widehat{f( \cdot , 0)}$.
-We then can approximate a solution to \eqref{eq:quantum observable ode}
- by integrating the finite-dimensional matrix ode
-\begin{align*}
-	\frac{d \widehat{F}_n }{dt} + [ \widehat{F}_n , {\bf X}_n ] = 0.
-\end{align*}
-
-Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this approach.  Another problem with this approach is the potential storage cost.
-
-\subsection{Numerical algorithms on compact manifolds}
+\subsection{Semi-discretizations and algorithms on compact manifolds}
 
 In this section will will present numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
 The basic ingredient for all the algorithms in this section is a Hilbert basis and an ode solver.
 We will denote the Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$.
 For example we may choose a Riemannian metric, $g$, and let $\{ f_{0}, f_{1},\dots \}$ denote  eigen-functions of the Laplace operator.
 Then $\{ e_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemmannian density.
-In order to ensure convergence we will assume
+In order to ensure convergence we will assume:
 \begin{ass} \label{ass:basis}
-	There exists a metric such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$
+	There exists a basis such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$
 	is bounded on $H^{s}$ for some $s > 1$.
 \end{ass}
 The above assumption holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Louiville basis (e.g. Legendre functions, sufficiently regular wavelets, etc.).
@@ -645,7 +629,7 @@ Before solving \eqref{eq:function pde} and \eqref{eq:density pde}, let us solve 
 	\caption{An algorithm for half densities} \label{alg:half density}
 \end{algorithm}
 
-To summarize, algorithm \ref{alg:half density} produces a half-density $\psi_{n}(t_{k}) \in V_{n}$ where $V_{n} = \operatorname{span}( e_{1},\dots,e_{n}) \subset L^{2}(M)$.
+To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{n}(t_{k}) \in V_{n}$ where $V_{n} = \operatorname{span}( e_{1},\dots,e_{n}) \subset L^{2}(M)$.
 As $\lim_{n\to \infty} V_{n} = L^{2}(M)$ we can at least hope that $\psi_{n}(t_{k})$ converges.
 We will address convergence in a later section.
 For the moment we can state a sparsity result which will aide in choosing a basis.
@@ -665,9 +649,9 @@ The proof of this results is a matter of simple counting, and so we omit it.
 What Theorem \ref{thm:sparsity} and Corollary \ref{cor:sparsity} suggest is that we want to choose our basis such that $b$ is small.
 For example if $M$ were a torus, and the vector-field was sinusoidal with finitely many Fourier terms, then a Fourier basis would yield a $b$ equal to the maximum number of terms along all dimensions.
 
-By theorem \ref{thm:quantize} we can merely square the result of Algorithm \ref{alg:half density} to obtained a numerical solution to \eqref{eq:density pde}.
+By Theorem \ref{thm:quantize} we can merely square the result of Algorithm \ref{alg:half density} to obtained a numerical solution to \eqref{eq:density pde}.
 In order to make this into an algorithm for densities we must know how to take the square root of a density.
-It is not possible to take the square root of any density, such as a Dirac Delta functiona.
+It is not possible to take the square root of any density, such as a Dirac Delta functional.
 However, for any continuous $\rho \in L^{1}(M)$ we may find a square root.
 To begin, let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$.
 Then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ in the sense that $\rho = \psi^{2}$.
@@ -701,44 +685,40 @@ We present this algorithm more from the perspective of theoretical interest at t
 	\For{ $k = 1 ,\dots, m $}{
 		$F_{n}(t_{k}) = \OdeSolve( B , F_{n}(t_{k-1}) , t_{k})$\;
 	}
-	\KwOut{ The Operator $\hat{f}_{n}(t_{k}) = \sum_{i,j=1}^{n}[ F_{n}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
+	\KwOut{ The operator $\hat{f}_{n}(t_{k}) = \sum_{i,j=1}^{n}[ F_{n}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
 	\caption{An algorithm for functions} \label{alg:function}
 \end{algorithm}
 
-On the torus, a more practical approach which holds much of the numerical benefits would be to approximate $\hat{f}_{n}$ psuedo-spectrally,
-by evaluating $f$ on fixed grid points.
-Given the value of $f$ on a regular grid, one can efficiently compute (an approximation of) the Fourier series using the discrete Fourier transform.
-The corresponding operator $\hat{f}_{n}$ could then be reconstructed by assembling the convolution operator associated to the Fourier series.
-The resulting method is really the method of characteristics in disguise (i.e. a particle method).
-
-\begin{algorithm}[H]
-	\KwData{An initial condition $f(0) \in C( \mathbb{T}^{d})$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $n \in \mathbb{N}$.}
-	\KwResult{A numerical solution, $\hat{f}_{n}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
-	initialize a regular grid, $\Omega_{n}$, of size $n = r^{d}$\;
-	\For{$x_{i} \in \Omega_{n}$}{
-		initialize $y_{i}(0) = x_{i}$\;
-	}
-	$t_{0} = 0$\;
-	\For{$k=1,\dots,m$}{
-		\For{$x_{i} \in \Omega_{n}$}{
-			$y_{i}(t_{k}) = \OdeSolve( X , y_{i}(t_{k-1}) , t_{k})$\;
-		}
-		$s_{k} = \mathcal{DFT}[ \{ f(y_{i}(t_{k}) ) \} ]$ \;
-	}
-	\KwOut{ The Operator $\hat{f}_{n}(t_{k}) = \sum_{i,j}^{n}[ s_{k}]_{i-j} e^{i} \otimes e^{j \dagger}$}
-	\caption{A psuedo-spectral algorithm for toric functions} \label{alg:function2}
-\end{algorithm}
-
-We should note that the use of the discrete Fourier transform introduces errors which disrupt the conservation laws we seek to keep.
-This is not a new algorithm, and is only introduced here as an alternative to Algorithm \ref{alg:function}.
+%On the torus, a more practical approach which holds much of the numerical benefits would be to approximate $\hat{f}_{n}$ psuedo-spectrally,
+%by evaluating $f$ on fixed grid points.
+%Given the value of $f$ on a regular grid, one can efficiently compute (an approximation of) the Fourier series using the discrete Fourier transform.
+%The corresponding operator $\hat{f}_{n}$ could then be reconstructed by assembling the convolution operator associated to the Fourier series.
+%The resulting method is really the method of characteristics in disguise (i.e. a particle method).
+%
+%\begin{algorithm}[H]
+%	\KwData{An initial condition $f(0) \in C( \mathbb{T}^{d})$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $n \in \mathbb{N}$.}
+%	\KwResult{A numerical solution, $\hat{f}_{n}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
+%	initialize a regular grid, $\Omega_{n}$, of size $n = r^{d}$\;
+%	\For{$x_{i} \in \Omega_{n}$}{
+%		initialize $y_{i}(0) = x_{i}$\;
+%	}
+%	$t_{0} = 0$\;
+%	\For{$k=1,\dots,m$}{
+%		\For{$x_{i} \in \Omega_{n}$}{
+%			$y_{i}(t_{k}) = \OdeSolve( X , y_{i}(t_{k-1}) , t_{k})$\;
+%		}
+%		$s_{k} = \mathcal{DFT}[ \{ f(y_{i}(t_{k}) ) \} ]$ \;
+%	}
+%	\KwOut{ The Operator $\hat{f}_{n}(t_{k}) = \sum_{i,j}^{n}[ s_{k}]_{i-j} e^{i} \otimes e^{j \dagger}$}
+%	\caption{A psuedo-spectral algorithm for toric functions} \label{alg:function2}
+%\end{algorithm}
+%
+%We should note that the use of the discrete Fourier transform introduces errors which disrupt the conservation laws we seek to keep.
+%This is not a new algorithm, and is only introduced here as an alternative to Algorithm \ref{alg:function}.
 
 \section{Error analysis}
-
-This article concerns a collection of numerical schemes and, a priori, one might think we will need to perform a lot of error analysis.
-However, our schemes are all connected through relationships such that the error bounds of one scheme implies error bounds for the others.
-In particular, we will find that error bounds for Algorithm \ref{alg:half density} as solutions to \eqref{eq:half density pde}
-have this property.
-Therefore we will prioritize deriving a useful error bound for Algorithm \ref{alg:half density}.
+We will find that error bounds for Algorithm \ref{alg:half density} will induce error bounds for the other algorithms.
+Therefore we will prioritize deriving a useful error bound for Algorithm \ref{alg:half density} first.
 
 Let us begin by observing how well half densities in $V_{n} = \operatorname{span}( e_{1},\dots,e_{n})$ can approximate members of $H^{s}(M)$.
 In all that follows $\pi_{n}: L^{2}(M) \to V_{n}$ will denote the orthogonal projection.
@@ -772,11 +752,12 @@ In all that follows $\pi_{n}: L^{2}(M) \to V_{n}$ will denote the orthogonal pro
 	Where the last inequality is derived by bounding the above infinite sum with an integral.
 \end{proof}
 
-We should note that this error bound illustrates that we have a spectral convergence rate on smooth data.
-This rapid convergence for smooth data will cascade to bounds throughout this section.
+%We should note that this error bound illustrates that we have a spectral convergence rate on smooth data.
+%This rapid convergence for smooth data will cascade to bounds throughout this section.
 
 Now that we have derive an error bound for the approximation error of $V_{n}$ with respect to $H^{s}(M)$ we can 
 derive an error bound for Algorithm \ref{alg:half density}.
+
 
 \begin{thm} \label{thm:half density convergence}
 	Let $\psi_{0} \in H^{\bar{s}}(M)$ for $\bar{s} > s > 1$.
@@ -793,9 +774,22 @@ derive an error bound for Algorithm \ref{alg:half density}.
 	\end{align}
 \end{thm}
 
+In preparation for the proof of Theorem \ref{thm:half density convergence} we first prove the following perturbed version of Gronwal's inequality.
 
-
+\begin{lem} \label{lem:Gronwall}
+If $\frac{du}{dt} \leq Ku + \epsilon$ then $u(t) \leq (\epsilon t + u(0) ) e^{Kt}$.
+\end{lem}
 \begin{proof}
+	Let $w (t)= u (t) e^{-Kt}$.  Then for $t \geq 0$ we find
+	\begin{align}
+		\frac{dw}{dt} = \frac{du}{dt} e^{-Kt} - K w \leq (Ku+\epsilon) e^{-Kt} - Kw = \epsilon e^{-Kt} \leq \epsilon
+	\end{align}
+	Thus $w(t) \leq \epsilon t + w(0) = \epsilon t + u(0)$.
+\end{proof}
+
+Now we are ready to prove Theorem \ref{thm:half density convergence}.
+
+\begin{proof}[Proof of Theorem \ref{thm:half density convergence}]
 	Note that $\frac{dE_{n}}{dt} = \frac{1}{2E_{n}} \langle  \psi - \tilde{\psi} \mid \frac{d}{dt} ( \psi -\tilde{\psi} )\rangle_{H^{s}}$.
 	By the Cauchy-Schwarz inequality we see that
 	\begin{align}
@@ -813,7 +807,7 @@ derive an error bound for Algorithm \ref{alg:half density}.
 	We can explicitly compute $\| (1-\pi_{n})|_{H^{s-1}} \|_{op} = (1+\lambda_{n+1})^{-(s-1)}$ where $\lambda_{k}$ denotes the $k$th eigenvalue of the Laplace operator.
 	By Weyl's asymptotic formula \cite[Theorem B.2]{Chavel1984} we
 	can derive that $\lambda_{n}$ asymptotically behaves like $n^{2/d}$ where $d = \dim(M)$.
-	Therefore by a perturbed version of Gronwall's inequality (see Lemma \ref{lem:Gronwall} on page \pageref{lem:Gronwall}) with $\epsilon = C_{1,T} n^{-2(s-1) / d} \, \| \psi_{0}\|_{H^{s}}$
+	Therefore by Lemma \ref{lem:Gronwall} with $\epsilon = C_{1,T} n^{-2(s-1) / d} \, \| \psi_{0}\|_{H^{s}}$
 	we find
 	\begin{align}
 		E(t) \leq ( K' n^{-2(s-1) / d} \| \psi_{0} \|_{H^{s}} t+  E(0) ) e^{C t}.
@@ -926,7 +920,7 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 
 
 \subsection{Qualitative accuracy}
-In this section we list a number of properties which algorithms 1 through 3 exhibit.  Let us begin with norm-preservation.
+In this section we list a number of properties which our algorithms exhibit.  Let us begin with norm-preservation.
 
 \begin{thm} \label{thm:norms}
 	Let $\hat{f}_{n}, \rho_{n}$, and $\psi_{n}$ be numerical solutions derived from algorithms 1, 2, and 3.
@@ -940,14 +934,14 @@ In this section we list a number of properties which algorithms 1 through 3 exhi
 \end{thm}
 \begin{proof}
 	To prove $\| \hat{f}_{n} \|_{op}$ is conserved note that the evolution is isospectral.
-	In particular, the solution is given by $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$
-	where $U_{n}(t)$ is the the solution to $\dot{U}_{n} = X_{n} \cdot U_{n}$ with $U_{n}(0)$ as the identity.
-	As $U_{n}(t)$ is unitary, we can observe that 
-	\begin{align}
-		\| \hat{f}_{n}(t) \|_{op}  &= \sup_{\psi}( \langle \psi \mid \hat{f}_{n}(t) \mid \psi \rangle) = \sup_{\psi}\left( \langle \psi \mid U_{n}(t) \cdot \hat{f}_{n}(0) \cdot U_{n}(t)^{\dagger} \mid \psi \rangle \right) \\
-			&= \sup_{\psi} \left( \langle U_{n}(t)^{\dagger} \cdot \psi \mid \hat{f}_{n}(0) \mid U_{n}(t)^{\dagger} \psi \rangle \right) = \sup_{\psi} \langle \psi \mid \hat{f}_{n}(0) \mid \psi \rangle \\
-			&= \| \hat{f}_{n}(0) \|_{op}.
-	\end{align}
+%	In particular, the solution is given by $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$
+%	where $U_{n}(t)$ is the the solution to $\dot{U}_{n} = X_{n} \cdot U_{n}$ with $U_{n}(0)$ as the identity.
+%	As $U_{n}(t)$ is unitary, we can observe that 
+%	\begin{align}
+%		\| \hat{f}_{n}(t) \|_{op}  &= \sup_{\psi}( \langle \psi \mid \hat{f}_{n}(t) \mid \psi \rangle) = \sup_{\psi}\left( \langle \psi \mid U_{n}(t) \cdot \hat{f}_{n}(0) \cdot U_{n}(t)^{\dagger} \mid \psi \rangle \right) \\
+%			&= \sup_{\psi} \left( \langle U_{n}(t)^{\dagger} \cdot \psi \mid \hat{f}_{n}(0) \mid U_{n}(t)^{\dagger} \psi \rangle \right) = \sup_{\psi} \langle \psi \mid \hat{f}_{n}(0) \mid \psi \rangle \\
+%			&= \| \hat{f}_{n}(0) \|_{op}.
+%	\end{align}
 	We've already shown that $\hat{f}_{n}(t)$ converges to $\hat{f}(t)$ in the operator norm.
 	Convergence of the norms follows from the fact that $\| \hat{f} \|_{op} = \| f \|_{\sup}$.
 	
@@ -1001,7 +995,9 @@ We have a discrete analog of this.
 
 \section{Numerical experiments}
 
-\subsection{A one dimensional example}
+In this section we demonstrate a few numerical experiments.  We begin with a benchmark computation to illustrate the spectral convergence of our method and the conservation properties in the case of a known solution.
+
+\subsection{A one dimensional benchmark computation}
 Let us consider the vector field $\dot{x} = -\sin(2 x)$ for $x \in S^{1}$.
 The flow of this system is given explicitly by
 \begin{align}
@@ -1052,30 +1048,41 @@ A plot of the $L^{1}$-norm is given in figure \ref{fig:L1}
 	\label{fig:L1}
 \end{figure}
 
-While a Fourier basis is convenient due to our ability to leverage existing fast Fourier transform packages, it is notable that we may use other basis.
-In particular, if we consider Daubechies wavelets with mother wavelet that have $4$ vanishing moments, then we may obtain solutions with much greater
-accuracy with fewer degrees of freedom. \todo[inline]{Ram should elaborate on this and include some pics.}
-At low resolutions, wavelet based solutions come at some cost in terms of sparsity, but this cost vanishes for large resolutions.
 
-\begin{figure}[h]
+Finally, a convergence plot is depicted in Figure \ref{fig:convergence}.  We observe the spectral convergence of Algorithm \ref{alg:density}.
+In terms of numerical accuracy, Algorithm \ref{alg:density} appears to performe better than a standard spectral method by a constant factor over a range of resolutions.
+
+\begin{figure}
 	\centering
-	\includegraphics[width=0.2\textwidth]{./images/placeholder}
-	\caption{Algorithm \ref{alg:density} in a wavelet basis}
+	\includegraphics[width=0.7\textwidth]{./images/convergence_plot.pdf}
+	\caption{Convergence plot for Algorithm \ref{alg:density} (red) and a standard spectral method (blue) in the $L^{1}$-norm.}
+	\label{fig:convergence}
 \end{figure}
 
+%While a Fourier basis is convenient due to our ability to leverage existing fast Fourier transform packages, it is notable that we may use other basis.
+%In particular, if we consider Daubechies wavelets with mother wavelet that have $4$ vanishing moments, then we may obtain solutions with much greater
+%accuracy with fewer degrees of freedom. \todo[inline]{Ram should elaborate on this and include some pics.}
+%At low resolutions, wavelet based solutions come at some cost in terms of sparsity, but this cost vanishes for large resolutions.
+%
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=0.2\textwidth]{./images/placeholder}
+%	\caption{Algorithm \ref{alg:density} in a wavelet basis}
+%\end{figure}
 
-In order to plot the output of algorithm \ref{alg:function} we must represent the operator $\hat{f}_{n}$ spectrally.
-The exact solution, $\hat{f}$, is represented via the spectral theorem by looking at it's level sets (see Appendix \ref{app:functions}).
+
+In order to plot the output of Algorithm \ref{alg:function} we must represent the operator $\hat{f}_{n}$ spectrally.
+The exact solution, $\hat{f}$, is represented via the spectral theorem by looking at it's level sets.
 In the discrete case, we may use the same representation for the purpose of plotting.
 An eigenvector-eigenvalue pair $(\lambda , \psi_{\lambda})$ is an approximation of the $\lambda$th level-set of $f$ by the density $\psi_{\lambda}^{2}$.
-We implement algorithm \ref{alg:function} and plot with this in mind in figure \ref{fig:quantum function 1}
+We implement Algorithm \ref{alg:function} and plot with this in mind in figure \ref{fig:quantum function 1}
 with respect to the initial condition $f_{0}(x) = \sin(x)$ and final time $t=1.5$.
 The exact solution is given by 
 \begin{align}
 	f(x;t) = \frac{ e^{2t} \sin(x) }{ \sqrt{ \cos^{2}(x) + e^{4t} \sin^{2}(x) } },
 \end{align}
 and is plotted in \ref{fig:exact function 1}.
-Finally the result of using a standard spectral scheme (\ref{alg:spectral function}) is depicted in figure \ref{fig:standard function 1}.
+Finally the result of using a standard spectral scheme is depicted in figure \ref{fig:standard function 1}.
 
 \begin{figure}[h]
 	\centering
@@ -1098,7 +1105,7 @@ Finally the result of using a standard spectral scheme (\ref{alg:spectral functi
 
 From these plots it is not entirely clear that Algorithm \ref{alg:function} is more accurate than a standard discretization.
 In particular, given the high cost of computation for Algorithm \ref{alg:function}  vs Algorithm \ref{alg:spectral function} ($O(n^{2})$ vs $O(n)$) we generally do not recommend this algorithm in practice.
-However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (as discussed in )\todo{Include your level set idea somewhere}
+However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (in particular, if one is only interested in a few level sets).
 We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article,
 in the interest of focusing on the strengths of this discretization.
 For example, if we consider the initial condition $g_{0}(x) = \cos(x)$ then the exact solution is
@@ -1112,16 +1119,24 @@ then the exact solution is
 \end{align*}
 So we may solve for $h$ by first multiplying the initial condition and then using one of our algorithms to evolve in time, 
 or we may evolve in time first, and scalar multiply the outputs.
-If one uses algorithm \ref{alg:function} than both of these options yield the same result up to time discretization error (which is obtained with error tolerance $1e-8$ in our code).
-If one uses algorithm \ref{alg:spectral function} than these options yield different results with a discrepancy.
-We plot this discrepancy in \ref{fig:discrepancy}.
+If one uses Algorithm \ref{alg:function}, then both of these options yield the same result up to time discretization error (which is obtained with error tolerance $1e-8$ in our code).
+This is the context of Theorem \ref{thm:algebra}.
+In contrast, if one uses Algorithm \ref{alg:spectral function}, then these options yield different results with a discrepancy.
+We plot this discrepancy in Figure \ref{fig:discrepancy}.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{./images/function_plots/discrepancy}
-	\caption{The discrepancy due to non-preservation of scalar products by Algorithm \ref{alg:spectral function}}
+	\caption{The discrepancy due to non-preservation of scalar products under a standard spectral discretization (blue).
+	The discrepancy which arises under our discretization (red) is difficult to see because it is of order $10^{-8}$. }
 	\label{fig:discrepancy}
 \end{figure}  
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{./images/L_inf_plot.pdf}
+	\caption{Conservation and non-conservation of function norms}
+	\label{fig:norms}
+\end{figure}
 %However, we can obtain one estimate by applying $\hat{f}_{n}$ to the half-density $\sqrt{dx}$, and then divide the result by $\sqrt{dx}$.
 %The resulting function appears to approximate $f(x;t)$ well in the flat areas, and overshoot at the peaks.
 %In comparison, a standard spectral discretization seems to have large spurious oscillations in the center.
@@ -1146,18 +1161,8 @@ We plot this discrepancy in \ref{fig:discrepancy}.
 
 Finally, we know that the sup-norm is preserved by solution of \eqref{eq:function pde}.
 As shown in Theorem \ref{thm:quantize}, the sup-norm is equivalent to the operator norm when we represent functions as operators on $L^{2}(M)$.
-We can see that the operator-norm behaves well using Algorithm \ref{alg:function}.  This should be clear without plotting, as Algorithm \ref{alg:function} evolves an operator by
-an iso-spectral flow, and therefore must conserve the operator norm.
-We see that the operator-norm is conserved to machine precision for Algorithm \ref{alg:function}, while it will drift using standard discretization.
-In contrast, the sup-norm of the output from a standard spectral discretization (Algorithm \ref{alg:spectral function}) is not conserved.
-We observe the operator norm drifting upwards.  This is all depicted in figure \ref{fig:norms}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{./images/L_inf_plot.pdf}
-	\caption{Conservation and non-conservation of function norms}
-	\label{fig:norms}
-\end{figure}
+As predicted by Theorem \ref{thm:norms}, we can see that the operator-norm is conserved by Algorithm \ref{alg:function}.
+In contrast, the sup-norm will drift using standard discretization.  This is all depicted in figure \ref{fig:norms}
 
 
 \subsection{A system on the 2-torus}
@@ -1201,28 +1206,28 @@ The dominance of this function can be seen visually at time $0.6$ in figure \ref
 	\label{fig:2 torus}
 \end{figure}
 
-Even at dimension $d=2$ Algorithm \ref{alg:function} becomes troublesome, although still feasible.
-Instead we implement Algorithm \ref{alg:function2}, which is nothing but a combination of the method of characteristics and a Fourier collocation.
-Using the initial function $f_{0}(x,y) = \sin(2\pi y)$ we observe the numerical results shown in Figure \ref{fig:psuedo}
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.7\textwidth]{./images/psuedo_spec_Koopman.png}
-	\caption{The result of Algorithm \ref{alg:function2} with initial condition $f_{0}(x,y) = \sin(2\pi y)$.}
-	\label{fig:psuedo}
-\end{figure}
-
-We can take the inner-product of a density the function output by our respective algorithms.
-This inner-product is constant in time for exact solutions to the pdes.
-For our numerical solutions these inner-products drift.
-However, there is substantially greater drift and variation when using a standard spectral discretization.
-These results are shown in Figure \ref{fig:inner}. 
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.7\textwidth]{./images/inner_product_plot.pdf}
-	\caption{The inner product between numerically densities and functions.  Blue depicts standard spectral discretization, red depicts the results from Algorithm \ref{alg:density}.}
-	\label{fig:inner}
-\end{figure}
+%Even at dimension $d=2$ Algorithm \ref{alg:function} becomes troublesome, although still feasible.
+%Instead we implement a particle method based upon the method of characteristics.
+%Using the initial function $f_{0}(x,y) = \sin(2\pi y)$ we observe the numerical results shown in Figure \ref{fig:particle function}
+%
+%\begin{figure}[h!]
+%	\centering
+%	\includegraphics[width=0.7\textwidth]{./images/psuedo_spec_Koopman.png}
+%	\caption{The result of a particle method with initial condition $f_{0}(x,y) = \sin(2\pi y)$.}
+%	\label{fig:particle function}
+%\end{figure}
+%
+%We can take the inner-product of a density the function output by our respective algorithms.
+%This inner-product is constant in time for exact solutions to the pdes.
+%For our numerical solutions these inner-products drift.
+%However, there is substantially greater drift and variation when using a standard spectral discretization.
+%These results are shown in Figure \ref{fig:inner}. 
+%\begin{figure}[h!]
+%	\centering
+%	\includegraphics[width=0.7\textwidth]{./images/inner_product_plot.pdf}
+%	\caption{The inner product between numerically densities and functions.  Blue depicts standard spectral discretization, red depicts the results from Algorithm \ref{alg:density}.}
+%	\label{fig:inner}
+%\end{figure}
 
 
 \subsection{A modified ABC flow}
@@ -1234,7 +1239,7 @@ Consider the system on $\mathbb{T}^{3}$
 \end{align}
 For constants $A,B,C,D \in \mathbb{R}$.  When $D=0$ this system is a well studied volume conserving system known as an ABC flow.
 When $A > B > C > D = 0$ and $C << 1$, then the solutions to this ODE are chaotic, with a uniform steady state distribution \cite{MajdaBertozzi2002}.
-When $D=0$ the operator $\pi(X)$ is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ which appears in equation \eqref{eq:density pde},
+When $D=0$ the operator $\pounds_{X}$ is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ which appears in equation \eqref{eq:density pde},
 and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is generically the case for any volume conserving system.  The benefits of our algorithm are not as strong in such cases.}
 Therefore we will demonstrate the case where $D > 0$ and these discretization are different.
 When $D> 0$ volume is no longer conserved and there is a non-uniform steady-state distribution.
@@ -1345,7 +1350,7 @@ The following is really a corollary to \ref{thm:GN1}.
 Historically, theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into relatively concrete things, such as linear operators or continuous functions.
 In this paper, we appear to have gone the other direction.
 The map $f \in C(M) \to \hat{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand transform}!
-In particular, correspondence theorem \ref{thm:quantize} is simply the correspondence between advection pdes on $M$ and various odes on $L^{2}(M)$ and $B(L^{2}(M))$ under the Gelfand transform.
+In particular, correspondence Theorem \ref{thmquantize} is simply the correspondence between advection pdes on $M$ and various odes on $L^{2}(M)$ and $B(L^{2}(M))$ under the Gelfand transform.
 Perhaps one of the reasons our algorithms were not done earlier, is because it is not intuitively a good idea to use the Gelfand transform to turn ``concrete'' objects into ``abstract'' ones like this.
 However, ``abstract'' does not mean easier to deal with numerically.
 In fact, it appears that the abstract characterization is easier to numerically discretize when it comes to advection pdes.
@@ -1368,61 +1373,49 @@ In particular, particle methods take $M$ as the fundamental object to use for di
 As discussed in the introduction, particle methods conserve (a discrete notion of) sums and products, and therefore we can consider them qualitatively accurate.
 The spectral methods considered in this article considers the commutative $C^{*}$-algebra, $C(M)$ as fundamental.
 By Theorem \ref{thm:GN2}, the space $C(M)$ has the same data as $M$ itself.
-Moreover, by theorem \ref{thm:GN1} we can view $C(M)$ as a space of operators without any loss in data.
+Moreover, by Theorem \ref{thm:GN1} we can view $C(M)$ as a space of operators without any loss in data.
 As a result, the spectral methods in this paper can be seen as a reasonable discretization one would apply to from the perspective of $C^{*}$-algebras,
 while particle methods can be seen as a reasonable discretization one would apply, after using the Gelfand transform.
 
-\section{Future work}
-There are a number of areas to consider for future research.  We propose the following:
-
-\subsection{Relaxing assumptions on $M$}
-In this paper we have assumed $M$ to be a compact manifold without boundary.
-While this provides a good starting point, the most common domains in engineering are various cartesian products of the unit interval, $[0,1]$ and $\mathbb{R}^{n}$.
-
-In the case where $M$ is compact with boundary, the methods described here can be imported without change as long as the vector field is tangential or vanishing on the boundary.
-However, when $X$ is transverse to the boundary of $M$, then we must find a way of dealing with flux.
-
-In the case $M = \mathbb{R}$, the primary issue is that $L^{2}(\mathbb{R})$ is not a separable Hilbert space.
-In order to handle such a scenario a sacrifice must be paid.  Perhaps we should resign ourselves to seek convergence on a subspace of $L^{2}(\mathbb{R})$.
-This can be done by using a basis, such as Hermite functions $\{ H_{n}(x) \exp^{-x^{2}/2}\}$ where $H_{n}(x)$ is the $n$th physicists polynomial.
-In this case we would be converging on the separable subspace $L^{2}( \mathbb{R};  w)$ where where the $L^{2}$-inner product is taken with respect to the weight function $w = \exp( -x^{2})$.
-
-\subsection{Systems with noise}
-The PDEs \eqref{eq:function pde} and \eqref{eq:density pde} can be seen as zero-noise limits of Kolmogorov equations (a.k.a. Fokker Plank equations, a.k.a. Master equations).
-When noise is added, equations \eqref{eq:function pde} and \eqref{eq:density pde} become
-\begin{align*}
-	\partial_{t} f + X^{i} \partial_{i} f = \Delta f \\
-	\partial_{t} \rho + \partial_{i} ( \rho X^{i}) = \Delta \rho
-\end{align*}
-
-In order to address such a change, we need to understand first how half-density are affected.
-It is easy to derive that an equation of the form
-\begin{align*}
-	\partial_{t} \psi + \frac{1}{2} X^{i} \partial_{i} \psi + \frac{1}{2} \partial_{i}( \psi X^{i} ) = D \cdot \psi
-\end{align*}
-where $D$ is any formal square root of $\Delta$ (i.e. a \emph{Dirac operator}).
-The approach of \cite{Crane2013} to discretize mean curvature flows by identifying ``mean-curvature modulo scaling'' as half-density could be a manifestation of this idea, but this has yet to be verified.
-
+%\section{Future work}
+%There are a number of areas to consider for future research.  We propose the following:
+%
+%\subsection{Relaxing assumptions on $M$}
+%In this paper we have assumed $M$ to be a compact manifold without boundary.
+%While this provides a good starting point, the most common domains in engineering are various cartesian products of the unit interval, $[0,1]$ and $\mathbb{R}^{n}$.
+%
+%In the case where $M$ is compact with boundary, the methods described here can be imported without change as long as the vector field is tangential or vanishing on the boundary.
+%However, when $X$ is transverse to the boundary of $M$, then we must find a way of dealing with flux.
+%
+%In the case $M = \mathbb{R}$, the primary issue is that $L^{2}(\mathbb{R})$ is not a separable Hilbert space.
+%In order to handle such a scenario a sacrifice must be paid.  Perhaps we should resign ourselves to seek convergence on a subspace of $L^{2}(\mathbb{R})$.
+%This can be done by using a basis, such as Hermite functions $\{ H_{n}(x) \exp^{-x^{2}/2}\}$ where $H_{n}(x)$ is the $n$th physicists polynomial.
+%In this case we would be converging on the separable subspace $L^{2}( \mathbb{R};  w)$ where where the $L^{2}$-inner product is taken with respect to the weight function $w = \exp( -x^{2})$.
+%
+%\subsection{Systems with noise}
+%The PDEs \eqref{eq:function pde} and \eqref{eq:density pde} can be seen as zero-noise limits of Kolmogorov equations (a.k.a. Fokker Plank equations, a.k.a. Master equations).
+%When noise is added, equations \eqref{eq:function pde} and \eqref{eq:density pde} become
+%\begin{align*}
+%	\partial_{t} f + X^{i} \partial_{i} f = \Delta f \\
+%	\partial_{t} \rho + \partial_{i} ( \rho X^{i}) = \Delta \rho
+%\end{align*}
+%
+%In order to address such a change, we need to understand first how half-density are affected.
+%It is easy to derive that an equation of the form
+%\begin{align*}
+%	\partial_{t} \psi + \frac{1}{2} X^{i} \partial_{i} \psi + \frac{1}{2} \partial_{i}( \psi X^{i} ) = D \cdot \psi
+%\end{align*}
+%where $D$ is any formal square root of $\Delta$ (i.e. a \emph{Dirac operator}).
+%The approach of \cite{Crane2013} to discretize mean curvature flows by identifying ``mean-curvature modulo scaling'' as half-density could be a manifestation of this idea, but this has yet to be verified.
+%
 
 \section{Conclusion}
 
-In this paper we have found a spectral method for densities and functions which is both spectrally convergent
-and qualitatively accurate, in the sense that natural invariants are preserved.
-In particular, algorithm \ref{alg:density} preserves:
-\begin{itemize}
-	\item total mass ,
-	\item positivity,
-	\item The $L^{1}$-norm,
-\end{itemize}
-while algorithm \ref{alg:function} preserves:
-\begin{itemize}
-	\item The sup-norm,
-	\item the scalar product,
-	\item and the scalar addition of functions.
-\end{itemize}
+In this paper we have found a spectral method for densities and functions which is spectrally convergent
+and qualitatively accurate, in the sense that natural invariants (such as moments and the scalar products of functions) are preserved.
 Finally, the scalar product of functions and densities is preserved in time when one uses algorithms \ref{alg:function} and \ref{alg:density} simultaneously.
 The result of obeying such conservation laws is an integration scheme with robust qualitative accuracy at a variety of resolutions in regimes where legacy spectral methods often fail.
-This claim was verified in a series of numerical experiments which directly compared our algorithms with standard Fourier spectral algorithms described in appendix \ref{app:algorithms}.
+This claim was verified in a series of numerical experiments which directly compared our algorithms with standard Fourier spectral algorithms.
 The importance of these conservation laws was addressed in a short discussion on the Gelfand transform.
 We found that such conservation laws are the defining invariants of advection-type PDEs, and this explains the benefits of using these scheme at a more fundamental level.
 
@@ -1432,85 +1425,70 @@ This paper developed over the course of years from discussions with many people 
  	Darrryl Holm, Stephen Marsland, Peter Michor, Michael Miller, Dmitry Pavlov, Tilak Ratnanather, and Stefan Sommer.
 \todo[inline]{Put funding information here}
 
-\appendix
+%\appendix
+%\section{A list of legacy algorithms}
+%\label{app:algorithms}
+%In this section we provide standard algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde}.
+%The first algorithm we present is a particle method for solving \ref{eq:function pde} based upon the method of characteristics.
+%
+%\begin{algorithm}[h]
+%	\KwData{An initial function $f_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T>0$.}
+%	\KwResult{The value of the solution $f(x,t)$ to \eqref{eq:function pde} at time $t=1$ at a finite set of points.}.
+%	Initialize a set of points $\{ x_{1},\dots,x_{n} \}$ on $M$ (e.g. a regular grid) \;
+%	\For{i = 1,\dots,n}{
+%		Backward integrate the ode $\dot{x} = X(x)$ from final condition $x_{i}(T)$ using a method of choice (e.g. Euler's method) up to time $t=0$\;
+%	}
+%	\KwOut{ $f_{0}( x_{1}(0) ), \dots, f_{0}(x_{n}(0) )$. }
+%	\caption{The method of characteristics}\label{alg:particle}
+%\end{algorithm}
+%
+%A similar particle method can be used to solve \eqref{eq:density pde}.
+%In essence this is possible because distributions form the dual space to functions, and \eqref{eq:density pde} is the dual evolution equation to \eqref{eq:function pde}.
+%In the case where our density is a probability distribution, this algorithm is commonly referred to as a Monte Carlo method.
+%
+%\begin{algorithm}[h]
+%	\KwData{An initial probability density $\rho_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T>0$.}
+%	\KwResult{An approximation of the solution $\rho(x,t)$ to \eqref{eq:desity pde} at time $t=1$ as a finite sum of Dirac delta distributions.}.
+%	Initialize a set of points $\{ x_{1},\dots,x_{n} \}$ on $M$ by sampling the probability density $\rho_{0}$\;
+%	\For{i = 1,\dots,n}{
+%		Integrate the ode $\dot{x} = X(x)$ and the Jacobian matrix equation $\dot{J} = DX(x)\cdot J$ with the initial conditions $x_{i}$ using a method of choice (e.g. Euler's method) up to time $t=T$\;
+%	}
+%	\KwOut{ $\sum_{i} \frac{1}{\det(J)} \delta_{x_{i}(T)}$ where $\delta_{x}$ denotes the Dirac delta distribution centered at $x$. }
+%	\caption{A Monte Carlo method}\label{alg:Monte Carlo}
+%\end{algorithm}
+%
+%For vector-fields on the torus we can leverage Fast Fourier Transform libraries to represent \eqref{eq:function pde} and \eqref{eq:density pde} in the Fourier domain.
+%In particular on the unit circle $S^{1}$ the vector-field $X$ is represented by a continuous function with a Fourier expansion $X(x) = \sum_{k=-\infty}^{\infty} \hat{X}_{k} \exp( 2\pi i kx)$.
+%The PDEs \eqref{eq:function pde} and \eqref{eq:density pde} are then represented in the Fourier domain as
+%ODEs on the Fourier coefficients
+%\begin{align}
+%	\frac{d \hat{f}_{k}}{dt} + 2\pi i \ell \hat{X}_{k-\ell} \hat{f}_{\ell} = 0 \\
+%	\frac{d \hat{\rho}_{k}}{dt} + 2\pi i k \hat{X}_{k-\ell} \hat{f}_{\ell} = 0
+%\end{align}
+%where $\hat{f}_{k}$ and $\hat{\rho}_{k}$ represent the Fourier expansions of the solution to \eqref{eq:function pde} and \eqref{eq:density pde}.
+%This inspires the following spectral methods.
+%
+%\begin{algorithm}[h]
+%	\KwData{An initial density $\rho_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T > 0$.}
+%	\KwResult{A truncated Fourier series which approximates the solution $\rho(x,t)$ to \eqref{eq:density pde}, at time $t=T$.}
+%	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+%	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+%	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
+%	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
+%	\caption{A standard spectral method for \eqref{eq:density pde}}\label{alg:spectral density}
+%\end{algorithm}
+%
+%\begin{algorithm}[h]
+%	\KwData{An initial function $f_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T > 0$.}
+%	\KwResult{A truncated Fourier series which approximates the solution $f(x,t)$ to \eqref{eq:function pde}, at time $t=T$.}
+%	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+%	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
+%	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
+%	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
+%	\caption{A standard spectral method for \eqref{eq:function pde}}\label{alg:spectral function}
+%\end{algorithm}
 
-\section{A list of legacy algorithms}
-\label{app:algorithms}
-In this section we provide standard algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde}.
-The first algorithm we present is a particle method for solving \ref{eq:function pde} based upon the method of characteristics.
 
-\begin{algorithm}[h]
-	\KwData{An initial function $f_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T>0$.}
-	\KwResult{The value of the solution $f(x,t)$ to \eqref{eq:function pde} at time $t=1$ at a finite set of points.}.
-	Initialize a set of points $\{ x_{1},\dots,x_{n} \}$ on $M$ (e.g. a regular grid) \;
-	\For{i = 1,\dots,n}{
-		Backward integrate the ode $\dot{x} = X(x)$ from final condition $x_{i}(T)$ using a method of choice (e.g. Euler's method) up to time $t=0$\;
-	}
-	\KwOut{ $f_{0}( x_{1}(0) ), \dots, f_{0}(x_{n}(0) )$. }
-	\caption{The method of characteristics}\label{alg:particle}
-\end{algorithm}
-
-A similar particle method can be used to solve \eqref{eq:density pde}.
-In essence this is possible because distributions form the dual space to functions, and \eqref{eq:density pde} is the dual evolution equation to \eqref{eq:function pde}.
-In the case where our density is a probability distribution, this algorithm is commonly referred to as a Monte Carlo method.
-
-\begin{algorithm}[h]
-	\KwData{An initial probability density $\rho_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T>0$.}
-	\KwResult{An approximation of the solution $\rho(x,t)$ to \eqref{eq:desity pde} at time $t=1$ as a finite sum of Dirac delta distributions.}.
-	Initialize a set of points $\{ x_{1},\dots,x_{n} \}$ on $M$ by sampling the probability density $\rho_{0}$\;
-	\For{i = 1,\dots,n}{
-		Integrate the ode $\dot{x} = X(x)$ and the Jacobian matrix equation $\dot{J} = DX(x)\cdot J$ with the initial conditions $x_{i}$ using a method of choice (e.g. Euler's method) up to time $t=T$\;
-	}
-	\KwOut{ $\sum_{i} \frac{1}{\det(J)} \delta_{x_{i}(T)}$ where $\delta_{x}$ denotes the Dirac delta distribution centered at $x$. }
-	\caption{A Monte Carlo method}\label{alg:Monte Carlo}
-\end{algorithm}
-
-For vector-fields on the torus we can leverage Fast Fourier Transform libraries to represent \eqref{eq:function pde} and \eqref{eq:density pde} in the Fourier domain.
-In particular on the unit circle $S^{1}$ the vector-field $X$ is represented by a continuous function with a Fourier expansion $X(x) = \sum_{k=-\infty}^{\infty} \hat{X}_{k} \exp( 2\pi i kx)$.
-The PDEs \eqref{eq:function pde} and \eqref{eq:density pde} are then represented in the Fourier domain as
-ODEs on the Fourier coefficients
-\begin{align}
-	\frac{d \hat{f}_{k}}{dt} + 2\pi i \ell \hat{X}_{k-\ell} \hat{f}_{\ell} = 0 \\
-	\frac{d \hat{\rho}_{k}}{dt} + 2\pi i k \hat{X}_{k-\ell} \hat{f}_{\ell} = 0
-\end{align}
-where $\hat{f}_{k}$ and $\hat{\rho}_{k}$ represent the Fourier expansions of the solution to \eqref{eq:function pde} and \eqref{eq:density pde}.
-This inspires the following spectral methods.
-
-\begin{algorithm}[h]
-	\KwData{An initial density $\rho_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T > 0$.}
-	\KwResult{A truncated Fourier series which approximates the solution $\rho(x,t)$ to \eqref{eq:density pde}, at time $t=T$.}
-	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
-	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
-	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
-	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
-	\caption{A standard spectral method for \eqref{eq:density pde}}\label{alg:spectral density}
-\end{algorithm}
-
-\begin{algorithm}[h]
-	\KwData{An initial function $f_{0}$, a resolution $n \in \mathbb{N}$, and a final time $T > 0$.}
-	\KwResult{A truncated Fourier series which approximates the solution $f(x,t)$ to \eqref{eq:function pde}, at time $t=T$.}
-	Compute the Fourier expansion of $X = \hat{X}_{k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
-	Compute the Fourier expansion of $f_{0} = \hat{f}_{0,k} \exp( 2\pi i k)$ for $k=-n,\dots,0,\dots,n$\;
-	Solve a truncated version of the linear system \eqref{eq:standard spectral} up to time $t=1$.\;
-	\KwOut{$\hat{f}_{1,k}$ for $k= -n , \dots, 0 ,\dots,n$.}
-	\caption{A standard spectral method for \eqref{eq:function pde}}\label{alg:spectral function}
-\end{algorithm}
-
-\section{Proof that $\pi$ is bracket preserving} \label{app:Lie}
-Here we prove that $\pi$ is a Lie algebra morphism.
-
-\section{A perturbed Gronwall's inequality}
-\begin{lem} \label{lem:Gronwall}
-If $\frac{du}{dt} \leq Ku + \epsilon$ then $u(t) \leq (\epsilon t + u(0) ) e^{Kt}$.
-\end{lem}
-\begin{proof}
-	Let $w (t)= u (t) e^{-Kt}$.  Then for $t \geq 0$ we find
-	\begin{align}
-		\frac{dw}{dt} = \frac{du}{dt} e^{-Kt} - K w \leq (Ku+\epsilon) e^{-Kt} - Kw = \epsilon e^{-Kt} \leq \epsilon
-	\end{align}
-	Thus $w(t) \leq \epsilon t + w(0) = \epsilon t + u(0)$.
-\end{proof}
-
-\bibliographystyle{amsalpha}
+\bibliographystyle{siam}
 \bibliography{hoj.bib}
 \end{document}
