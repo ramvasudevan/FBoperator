@@ -40,11 +40,10 @@
 \maketitle
 
 \begin{abstract}
-	The transport equation and the continuum equation exhibit a number of conservation laws.
-	For example, the scalar multiplication is conserved by the transport equation, while
-	the notion of positivity is conserved by the continuum equation.
-	Particle based methods provide a reasonable discretization of these PDEs which conserve these properties.
-	However, particle based methods do not converge as quickly as spectral methods when the initial condition is smooth.
+	The transport and continuum equations exhibit a number of conservation laws.
+	For example, scalar multiplication is conserved by the transport equation, while
+	positivity of probabilities is conserved by the continuum equation.
+	Particle based methods conserve these properties, but they do not converge as quickly as spectral methods on smooth data.
 	On the other hand, a standard spectral discretizations will not conserve the invariants of the transport equation and the continuum equation.
 	In this article we provide a non-standard spectral discretization that does conserve these invariants and simultaneously exhibits spectral convergence rates. 
 \end{abstract}
@@ -66,12 +65,12 @@ In the context of classical mechanics, this equation is known as the Louiville e
 
 These equations have a number of conservation laws associated to them.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
-then so is the product and the sum $f\cdot g$ and $f+g$.
-Similarly, the $L^{1}$-norm is the natural norm associated to densities, and this norm is conserved in time under the evolution of \eqref{eq:density pde}.
+then so is the product, $f \cdot g$, and the sum, $f+g$.
+Similarly, the $L^{1}$-norm is conserved in time under the evolution of \eqref{eq:density pde}.
 This motivates our definition of qualitative accuracy.
 
-\begin{definition}
-	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if conserves discrete analogs of scalar multiplication/addition/the $L^{1}$-norm of densities and the sup-norm of functions.
+\begin{definition} \label{def:quality}
+	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if it conserves discrete analogs of scalar multiplication/addition/the $L^{1}$-norm of densities and the sup-norm of functions.
 \end{definition}
 
 Both \eqref{eq:function pde} and \eqref{eq:density pde} can be numerically solved from a variety of schemes, each with its own benefit.
@@ -93,9 +92,9 @@ where $\hat{\rho}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $\
 We see that we have converted \eqref{eq:density pde} into an ODE on the space of Fourier coefficients.
 A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients.
 
-Such a numerical method is good for smooth data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-p})$ for any finite $p > 0$ over a fixed finite time interval.
+Such a numerical method is good for $C^{k}$-data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-k})$ over a fixed finite time interval \cite{Gottlieb2001}.
 In particular, spectral schemes converge must faster than particle based method whenever the initial conditions have more than a few derivatives.
-However, the standard spectral algorithm is not qualitatively accurate.
+However, the standard spectral algorithm is not qualitatively accurate under Definition \ref{def:quality}.
 
 This motivates the goal of this paper:
 \emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously spectrally convergent and qualitatively accurate.}
@@ -103,19 +102,24 @@ This motivates the goal of this paper:
 \subsection{Previous work}
 Within mechanics, spectral methods for the continuum and transport equation are common-place
 where they are viewed as special cases of first order hyperbolic PDEs \cite{Boyd2001,Gottlieb2001}.
-More recently, Galerkin discretization of the Koopman operator\footnote{Briefly, the Koopman operator is the linear operator ``$K$'' which yields the solution $f = K \cdot f_{0}$ to \eqref{eq:function pde}.} have been successfully used
-in a variety of contexts for generic dynamic systems \cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems \cite{Rowley2009} where such discretization serve as a modification and reinterpretation of dynamic mode decomposition \cite{Schmid2010}.
-Dually, discretization of the Frobenius-Perron operator have been successfully used to find the invariant manifolds of systems with small/large Gaussian noise \cite{FroylandJungeKoltai2013,FroylandPadberg2009}.
-Such methods are inspired by Ulam's method \cite{Ulam1947,LasotaMackey1994}.
-For continuous time systems, a Petrov-Galerkin discretization is applied to the infinitesimal generator of the Frobenius Perron operator.
-Such methods behave well in the presence of noise \cite{BittracherKoltaiJunge2015}.
-The goal of this article is different than many of the papers cited thus far, in that we are interested in resolving our PDEs in finite time, rather than determining the infinite time behavior.
+Various galerkin discretization of the Koopman operator\footnote{Briefly, the Koopman operator a linear operator ``$K$'' which yields the solution $f = K \cdot f_{0}$ to \eqref{eq:function pde}. We refer the reader to \cite{BudisicMohrMezic2012} for a survey of recent applications.} have been successfully used
+in a variety of contexts for generic dynamic systems \cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems \cite{Rowley2009} where such discretization serve as a generalization of dynamic mode decomposition \cite{Schmid2010}.
+Dually, Ulam-type discretizations of the Frobenius-Perron operator  \cite{Ulam1947,LasotaMackey1994} can be used to find invariant manifolds of systems with uniform Gaussian noise \cite{FroylandJungeKoltai2013,FroylandPadberg2009}.
+In continuous time, Petrov-Galerkin discretization of the infinitesimal generator of the Frobenius Perron operator converge in the presence of noise \cite{BittracherKoltaiJunge2015}
+and preserved positivity in a Haar basis \cite{koltai2011thesis}.
+%The goal of this article is different than many of the papers cited thus far, in that we are interested in resolving our PDEs in finite time, rather than determining the infinite time behavior.
 %Both of these representation of diffeomorphisms are natural, in the sense that the Koopman operator is the natural action of diffeomorphisms upon functions, and therefore must preserve the natural norm associated to functions, the sup-norm.
 %Dually, the Frobenius-Perron operator (and it's discretization, the Transfer operator), represents the natural action of diffeomorphisms upon distributions and preserves the $L^{1}$-norm (the norm dual to the sup-norm).
 
 In this article we will use a unitary representation of diffeomorphisms, which represents the natural action of diffeomorphisms on the space of half-densities.
-It is difficult to determine where this action first appeared, but it is clear that this representation was known to representation theorists \cite{VershilGelfandGraev1975,Ismagilov1975}.
-This representation also has appeared in the context of mathematical quantum mechanics \cite{Meyer1998,Parthasarathy2012}.
+It is difficult to determine where this action first appeared, but it was known to representation theorists \cite{VershilGelfandGraev1975,Ismagilov1975}
+and people involved with quantum probability theory \cite{Meyer1998,Parthasarathy2012}.
+To be more specific, a half-density can be abstractly summarized as an objects whos ``square'' is a density.
+Alternatively, it can be understood as the mathematician's nomenclature for the physicists ``wave functions''.
+One of the benefits of working with half-densities, over probability densities, is that the space of half-densities is a Hilbert space, while the space of probability densities is a convex cone.
+This ``square-root'' type of transformation to a Hilbert space has been used to solve a nonlinear problem throughout mathematics, such as the invention of the complex numbers to solve polynomials.
+For example, the space of positive semi-definite tensor fields which occur in non-Newtonian fluids, can be transformed into the space of symmetric tensors \cite{Balci2011}.
+Similarly, an alternative notion of half-densities has been used in the context mean curvature flow in a similar vein \cite{Crane2013}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Qualitative properties of advection PDEs}
@@ -200,15 +204,16 @@ This representation also has appeared in the context of mathematical quantum mec
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The canonical space $L^{2}(M)$}
 \label{sec:half densities}
-The goal of this paper is to construct a spectral advection scheme which exhibits a large number of invariants.
-At the core of many spectral schemes is the use of a Hilbert space upon which everything can be approximated via least squares projections.
-Typically this Hilbert space is $L^{2}(M ; \mu)$ where the $L^{2}$-inner product is taken with respect to some non-canonical density or volume form $\mu$ on $M$.
-We do not have this luxury.
-The properties of advection that we desire to have are strictly properties of $M$ alone, i.e. they are canonical.
-The choice of $\mu$ is non-canonical and threatens to discard the conservation laws we aim to keep.
+%The goal of this paper is to construct a spectral advection scheme which exhibits a large number of invariants.
+%At the core of many spectral schemes is the use of a Hilbert space upon which everything can be approximated via least squares projections.
+%Typically this Hilbert space is $L^{2}(M ; \mu)$ where the $L^{2}$-inner product is taken with respect to some non-canonical density or volume form $\mu$ on $M$.
+%We do not have this luxury.
+%The properties of advection that we desire to have are strictly properties of $M$ alone, i.e. they are canonical.
+%The choice of $\mu$ is non-canonical and threatens to discard the conservation laws we aim to keep.
 
 In this section we define a geometric version of an $L^{2}$-space which foregoes the choice of a volume form, denoted simply by $L^{2}(M)$.
-The ``cost'' we pay is that the elements of $L^{2}(M)$ are not functions, but something a bit less familar.
+This is in contrast to the standard $L^{2}$-space, in which a volume form, or a reference density must be chosen first \cite{Adams2003}.
+The cost we pay is that the elements of $L^{2}(M)$ are not functions, but something less familiar, they are half-densities.
 
 For a smooth compact $n$-manifold, $M$,
 let $\Dens(M)$ denote the space of continuous densities,
@@ -253,9 +258,8 @@ The advection equation can be written as
 \begin{align}
 	\partial_{t} \psi + \pounds_{X}[\psi] = 0.
 \end{align}
-By the Stone's theorem \cite{Conway1990}, there is a solution for all time, in spite of the fact that the Lie derivative is an unbounded operator.
-Moreover, the solution is given by a unitary action.  For reference later, we restate this remark formally.
-\begin{proposition} \label{prop:stone}
+By the Stone's theorem, there is a solution for all time, in spite of the fact that the Lie derivative is unbounded.
+\begin{proposition}[Stone's Theorem \cite{Conway1990,Rudin1991}] \label{prop:stone}
 	The solution to \eqref{eq:half density pde} is of the form $\psi(t) = U(t) \cdot \psi(0)$ where $U(t)$ is
 	the unitary operator.
 \end{proposition}
@@ -263,13 +267,11 @@ Moreover, the solution is given by a unitary action.  For reference later, we re
 %	Again, the existence of $U(t)$ as a unitary operator is simply an instance of the Stone Von-Neumann theorem.
 %\end{proof}
 
-In fact, $U(t)$ is merely the push-forward operator given in \eqref{eq:transformation law} with ``$\Phi$'' replaced by the flow-map of the dynamics.
-We will generally avoid using this explicit expression though, as it can be cumbersome.
-
+In fact, $U(t)$ is merely the push-forward operator given in \eqref{eq:transformation law} with ``$\Phi$'' replaced by the flow-map of the vector-field, $X$.
 
 \subsection{The relationship with classical $L^{2}$ spaces}
 \label{sec:classical_Lebesgue}
-For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$.
+For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$ \cite[Chapter 16]{Lee2006}.
 Upon choosing some $\mu$, the $2$-norm of a complex function $f$ with respect to $\mu$ is
 \begin{align}
 	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
@@ -305,25 +307,23 @@ Additionally, a more useful difference for us is that $L^{2}(M)$ is \emph{not} c
 because each of these spaces consists of objects with different transformation properties.
 This separation between $L^{2}(M)$ and $L^{1}(M)$ \emph{forces} us to think of these objects as distinct.
 For example an operator on $L^{2}(M)$ can not generally be applied to $L^{1}(M)$ in the same way.
-Later we will find this is a good thing, because it allows us to have an operator act on $L^{1}(M)$ differently than how it acts on $L^{2}(M)$
-without leading to contradiction.
+We will find such limitations to be helpful, because they will allows us to have vector-fields act on $L^{1}(M)$ differently then they act on $L^{2}(M)$
+without contradiction.
 Such safety mechanisms are analogous to the use of private/public functions in object oriented programming, which effectively banish certain bugs from arising.
 
 \subsection{Sobolev spaces}
 \label{sec:Sobolev spaces}
-For each $X \in \mathfrak{X}(M)$ the operator $\pounds_{X}$ on $L^{2}(M)$ is unbounded.
-In the parlance of functional analysis, the domain of $\pounds_{X}$ is
+For each $X \in \mathfrak{X}(M)$ the operator $\pounds_{X}$ on $L^{2}(M)$ of \eqref{eq:representation} is unbounded.
+The domain of $\pounds_{X}$ is
 \begin{align}
 	\operatorname{dom}( \pounds_{X} ) := \{ \psi \in L^{2}(M) \mid  \| \pounds_{X}[\psi] \|_{L^{2}} < \infty \}.
 \end{align}
-One can then show that $\operatorname{dom}( \pounds_{X} )$ is a closed subspace of $L^{2}(M)$ and then define
+One can show that $\operatorname{dom}( \pounds_{X} )$ is a closed subspace of $L^{2}(M)$ and define
 a \emph{canonical} Sobolev space
 \begin{align}
 	H^{1}(M) := \bigcap_{X \in \mathfrak{X}(M)} \operatorname{dom}( \pounds_{X} ).
 \end{align}
-Where we view $\pounds_{X}$ as an unbounded operator on $L^{2}(M)$.
-More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative operators,
-and we can even consider fraction degrees of regularity as well.
+More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative operators.
 %As $\pounds_{X}$ is anti-Hermetian we can invoke the spectral theorem of functional analysis
 %and consider the operator
 %\begin{align}
@@ -332,40 +332,40 @@ and we can even consider fraction degrees of regularity as well.
 %where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denotes the set of eigenvectors of $\pounds_{X}$. 
 %This fractional power of $\pounds_{X}$ allows us to consider Sobolev spaces of fractional orders as well.
 
-  However, while the canonicalism of $L^{2}(M)$ will be quite useful to us,
-  \emph{canonical} (metric-free) Sobolev spaces will not be.
-  We will find that our algorithms only converge on spaces of sufficient regularity,
-  but in order to perform our error-analysis we will need to choose a non-canonical norm.
+  However, while the canonicalism of $L^{2}(M)$ will be useful,
+  \emph{canonical} Sobolev spaces will not be.
+  We will find our algorithms converge on Sobelev spaces and we will need to choose a norm.
+  The choice of a norm is not canonical, and so we may just as well use the standard metric dependent defintions.
   
-To begin the process of choosing a norm for $H^{s}(M)$, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
-The metric induces a positive density $\mu_g$,
-known as the \emph{metric density}. 
-The Riemmanian density induces the $L^2$ inner-product on $C^\infty(M)$ via
+To begin, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
+The metric, $g$, induces a positive density $\mu_g$,
+known as the \emph{metric density} and an inner-product on $C^\infty(M)$
+given by
 \begin{align}
-	\langle f_1 , f_1 \rangle_{g} = \int \overline{f_1} \cdot f_2 \mu_g
+	\langle f_1 , f_1 \rangle_{g} = \int \overline{f_1} \cdot f_2 \mu_g.
 \end{align}
-and $L^{2}(M;\mu_{g})$ is the completion of the inner-product space $( C^{\infty}(M) , \langle \cdot , \cdot \rangle_{g})$ under 
-the inner-product norm.
+%Then $L^{2}(M;\mu_{g})$ is the completion of the inner-product space $( C^{\infty}(M) , \langle \cdot , \cdot \rangle_{g})$ under 
+%the inner-product norm.
 The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is is positive-semidefinite
 with respect to $\langle \cdot , \cdot \rangle_{g}$.
 If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert space
-and the Helmholtz operator, $1 + \Delta$, is then a positive definite operator
-with a discrete spectrum.
+and the Helmholtz operator, $1 + \Delta$, is  a positive definite operator
+with a discrete spectrum \cite{Taylor1974}.
 For any $s \geq 0$ we may define the Sobolev norm
 \begin{align}
 	\| f \|_{s,2} =  \left( \langle f , (1+\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
 \end{align}
-and $H^s(M ; g)$ is then the function space obtained by completion with respect to this norm, and modulo discrepancies of measure zero.
+and $H^s(M ,g)$ is then the function space obtained by completion with respect to this norm.
 Note that $H^0(M;g) = L^2(M;\mu_g)$.
 
 The following proposition will be of use later when we need to prove a notion of convergence
 via sequences of finite rank operators.
 
-\begin{proposition} \label{prop:compact_embedding}
+\begin{proposition}[Sobelev embedding Theorem \cite{Taylor1974}] \label{prop:compact_embedding}
 	Let $(M,g)$ be a compact Riemmanian manifold.  If $s > t \geq 0$ then $H^s(M;g)$ is compactly embedded within $H^t(M,g)$.
 \end{proposition}
 \begin{proof}
-	As $M$ is compact we know that the spectrum of $\Delta$ is discrete and $L^{2}(M)$ is separable.
+	%As $M$ is compact we know that the spectrum of $\Delta$ is discrete and $L^{2}(M)$ is separable.
 	Let $e_0, e_1,\dots$ be the Hilbert basis for $L^2(M;\mu_g)$ which diagonalizes $\Delta$
 	in the sense that $\Delta e_i = \lambda_i e_i$ for a sequence $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \cdots$.
 	The operator $(1+\Delta)^s$ is given by
@@ -386,14 +386,14 @@ That $\psi$ is of class $H^{s}$ is topological statement, and not metric depende
 However, the norm $\| \psi \|_{2,s} = \| f \|_{2,s}$ is metric dependent.
 
 \section{A spectral discretization}
-The goal of this section will be to produce a spectral scheme for the advection equations \eqref{eq:function pde} and \eqref{eq:density pde}
-using the space $L^{2}(M)$.
-In order to realize this goal we must relate functions, densities, and vector-fields to $L^{2}(M)$ in a way that can be spectrally discretized without breaking any canonical structures.
+In this section we will spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde}.
+In order to realize this goal we must obtain canonical relationships between functions, densities, and vector-fields with $L^{2}(M)$ which are
+amenable to spectral discretizion.
 
 To begin, let us consider the space of continuous real-valued functions $C(M)$.
 For each $f \in C(M)$ there is a unique bounded Hermetian operator, $\hat{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
-That is to say $(\hat{f} \cdot \psi) (x) = f(x) \psi(x)$.
-We see that the hat-map, $f \mapsto \hat{f}$, preserves the ring structure because $\widehat{f \cdot g + h} = \hat{f} \cdot \hat{g} + \hat{h}$.
+That is to say $(\hat{f} \cdot \psi) (x) = f(x) \psi(x)$ for any $\psi \in L^{2}(M)$.
+We see that the map, $f \mapsto \hat{f}$, preserves the ring structure because $\widehat{f \cdot g + h} = \hat{f} \cdot \hat{g} + \hat{h}$.
 
 Similarly, (and in the opposite direction) for any trace class operator $\hat{\rho}:L^{2}(M) \to L^{2}(M)$ there is a unique distribution $\rho \in C(M)'$ such that 
 \begin{align}
@@ -443,11 +443,11 @@ into ODE's of operators on $L^{2}(M)$.
 		&\frac{d \hat{\rho} }{dt} + [ \hat{\rho} , \pounds_{X} ] = 0 \label{eq:quantum density ode}
 	\end{align}
 	respectively, where $[ \cdot , \cdot ]$ denotes the commutator bracket.
-	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$ and $\psi$ satisfies
+	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$, then $\psi$ satisfies
 	\begin{align}
 		 \partial_{t} \psi + \pounds_{X}[\psi] = 0, \label{eq:half density pde}
 	\end{align}
-	then $\rho$ satisfies \eqref{eq:density pde}.
+	if and only if $\rho$ satisfies \eqref{eq:density pde}.
 \end{theorem}
 
 \begin{proof}
@@ -612,8 +612,8 @@ In order to ensure convergence we will assume:
 Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Louiville basis (e.g. Legendre functions).
 
 For the ODE solver, one can consider any legacy method such as Euler's method or 4th order Runge-Kutta or even well tested software such as \cite{VODE}.
-Most notably, the method of \cite{Calvo1997} is specialized to isospectral flows such as  \eqref{eq:function pde} and \eqref{eq:density pde} and preserves the invariants of isospectral flows over large time-step sizes.
-This article is concerned purely with the semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}, and so we will assume that this ode solver 
+Most notably, the method of \cite{Calvo1997} is specialized to isospectral flows such as  \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} and preserves the invariants of isospectral flows over large time-step sizes.
+This article is concerned purely with semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}, and so we will assume that this ode solver 
 efficiently solves finite dimensional ODEs to any prescribed accuracy.
 More explicitly, we will let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final})$ when $x(t)$ is the solution to the ode $\dot{x} = F(x)$ with initial condition $x_{init}$.
 
@@ -729,7 +729,7 @@ We present this algorithm more from the perspective of theoretical interest at t
 \section{Error analysis}
 We will find that error bounds for Algorithm \ref{alg:half density} will induce error bounds for the other algorithms.
 Therefore we will prioritize deriving a useful error bound for Algorithm \ref{alg:half density} first.
-
+Our proof is a generalization of the convergence proof in \cite{Pasciak1980}, where \eqref{eq:half density pde} is studied (modulo a factor of two) is studied on the $n$-torus.
 Let us begin by observing how well half densities in $V_{n} = \operatorname{span}( e_{1},\dots,e_{n})$ can approximate members of $H^{s}(M)$.
 In all that follows $\pi_{n}: L^{2}(M) \to V_{n}$ will denote the orthogonal projection.
 
@@ -1339,7 +1339,7 @@ In particular we can consider the space of character as in \cite{Bondia2001}.
 
 \begin{definition}
 	A \emph{character} of a $C^{*}$-algebra, $A$, is an element of the dual space $x \in A^{*}$ such that
-	$x(ab) = x(a) x(c)$.  We denote the space of characters by $X_{A}$.
+	$x(ab) = x(a) x(b)$ for any $a,b \in A$.  We denote the space of characters by $X_{A}$.
 	The map $A \to X_{A}$ is known as the \emph{Gelfand transform}.
 \end{definition}
 
@@ -1363,10 +1363,9 @@ The following is really a Corollary to \ref{thm:GN1}.
 Historically, theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into relatively concrete things, such as linear operators or continuous functions.
 In this paper, we appear to have gone the other direction.
 The map $f \in C(M) \to \hat{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand transform}!
-In particular, correspondence Theorem \ref{thm:quantize} is simply the correspondence between advection pdes on $M$ and various odes on $L^{2}(M)$ and $B(L^{2}(M))$ under the Gelfand transform.
+In particular, Theorem \ref{thm:quantize} is simply the correspondence between advection PDEs on $M$ and isospectral flows on $B(L^{2}(M))$ under the Gelfand transform.
 Perhaps one of the reasons our algorithms were not done earlier, is because it is not intuitively a good idea to use the Gelfand transform to turn ``concrete'' objects into ``abstract'' ones like this.
 However, ``abstract'' does not mean easier to deal with numerically.
-In fact, it appears that the abstract characterization is easier to numerically discretize when it comes to advection pdes.
 As we have seen, it is easier to represent conservation laws for advection in this form.
 In essence this is related to the following corollary of Theorem \ref{thm:GN2}
 
@@ -1380,15 +1379,21 @@ In essence this is related to the following corollary of Theorem \ref{thm:GN2}
 Said more plainly, any bounded and invertible transformation of $C(M)$ that preserves sums and products is necessarily a homeomorphism.
 Thus, conservation of sums of products is more than just a fundamental property of advection.
 \emph{Conservation of sums and products is the defining property of advection}.
+
+\begin{corollary}
+	An evolution equation on $C^{0}(M)$ given by $\partial_{t} f + F[f] = 0$ will preserve scalar addition and multiplication and extrema of functions if and only if $F[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
+	The dual operator $F^{*}$ is then necessarily of the form $\rho \mapsto \pder{}{x^{i}}( \rho X^{i})$.
+\end{corollary}
+
 Consequently, numerical schemes that respect these conservation laws are exhibiting defining property of \eqref{eq:function pde} and \eqref{eq:density pde}.
-The methods presented in this article provide a case in point, as do particle methods.
-In particular, particle methods take $M$ as the fundamental object to use for discretization.
-As discussed in the introduction, particle methods conserve (a discrete notion of) sums and products, and therefore we can consider them qualitatively accurate.
-The spectral methods considered in this article considers the commutative $C^{*}$-algebra, $C(M)$ as fundamental.
-By Theorem \ref{thm:GN2}, the space $C(M)$ has the same data as $M$ itself.
-Moreover, by Theorem \ref{thm:GN1} we can view $C(M)$ as a space of operators without any loss in data.
-As a result, the spectral methods in this paper can be seen as a reasonable discretization one would apply to from the perspective of $C^{*}$-algebras,
-while particle methods can be seen as a reasonable discretization one would apply, after using the Gelfand transform.
+The methods presented in this article provide a case in point.%, as do particle methods.
+%In particular, particle methods take $M$ as the fundamental object to use for discretization.
+%As discussed in the introduction, particle methods conserve (a discrete notion of) sums and products, and therefore we can consider them qualitatively accurate.
+%The spectral methods considered in this article considers the commutative $C^{*}$-algebra, $C(M)$ as fundamental.
+%By Theorem \ref{thm:GN2}, the space $C(M)$ has the same data as $M$ itself.
+%Moreover, by Theorem \ref{thm:GN1} we can view $C(M)$ as a space of operators without any loss in data.
+%As a result, the spectral methods in this paper can be seen as a reasonable discretization one would apply to from the perspective of $C^{*}$-algebras,
+%while particle methods can be seen as a reasonable discretization one would apply, after using the Gelfand transform.
 
 %\section{Future work}
 %There are a number of areas to consider for future research.  We propose the following:
@@ -1424,13 +1429,13 @@ while particle methods can be seen as a reasonable discretization one would appl
 
 \section{Conclusion}
 
-In this paper we have found a spectral method for densities and functions which is spectrally convergent
-and qualitatively accurate, in the sense that natural invariants (such as moments and the scalar products of functions) are preserved.
-Finally, the scalar product of functions and densities is preserved in time when one uses Algorithms \ref{alg:function} and \ref{alg:density} simultaneously.
-The result of obeying such conservation laws is an integration scheme with robust qualitative accuracy at a variety of resolutions in regimes where legacy spectral methods often fail.
+In this paper we have found a spectral scheme for \eqref{eq:function pde} and \eqref{eq:density pde} which is spectrally convergent
+and qualitatively accurate, in the sense that natural invariants are preserved.
+The result of obeying such conservation laws is a robustly well-behaved numerical scheme at a variety of resolutions.
+In particular, we obtained superior behavior in regimes and resolutions where legacy spectral methods fail.
 This claim was verified in a series of numerical experiments which directly compared our algorithms with standard Fourier spectral algorithms.
 The importance of these conservation laws was addressed in a short discussion on the Gelfand transform.
-We found that such conservation laws are the defining invariants of advection-type PDEs, and this explains the benefits of using these scheme at a more fundamental level.
+We found that conservation laws completely characterize \eqref{eq:function pde} and \eqref{eq:density pde}, and this explains the benefits of using qualitatively accuracte scheme at a more fundamental level.
 
 
 \subsection{Acknowledgements}
