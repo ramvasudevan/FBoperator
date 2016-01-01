@@ -12,6 +12,7 @@
 \usepackage{todonotes}
 
 %  NEW COMMANDS
+\newcommand{\ram}[1]{{\normalsize{\textbf{({\color{red}RAMBO:\ }#1)}}}}
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
 \newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial{align}
       #2 \partial #3} } }
@@ -43,81 +44,76 @@
 	The transport and continuum equations exhibit a number of conservation laws.
 	For example, scalar multiplication is conserved by the transport equation, while
 	positivity of probabilities is conserved by the continuum equation.
-	Particle based methods conserve these properties, but they do not converge as quickly as spectral methods on smooth data.
-	On the other hand, a standard spectral discretizations will not conserve the invariants of the transport equation and the continuum equation.
-	In this article we provide a non-standard spectral discretization that does conserve these invariants and simultaneously exhibits spectral convergence rates. 
+	Certain discretization techniques, such as particle based methods, conserve these properties, but converge slower than spectral discretization methods on smooth data.
+	Standard spectral discretization methods, on the other hand, do not conserve the invariants of the transport equation and the continuum equation.
+	This article constructs a novel spectral discretization technique that conserves these important invariants while simultaneously preserving spectral convergence rates. 
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 \label{sec:intro}
 
-Let $M$ be a compact manifold and let $X$ be a vector-field on $M$. The current paper is concerned with the following two equations
+Let $M$ be a compact manifold and let $X$ be a vector-field on $M$. 
+This paper is concerned with the following pair of equations:
 \begin{align}
 	\partial_{t} f + X^{i} \partial_{i} f = 0 \label{eq:function pde} \\
 	\partial_{t} \rho + \partial_{i} (\rho X^{i}) = 0 \label{eq:density pde}
 \end{align}
 for a time dependent function $f$ and a time dependent density $\rho$ on $M$.
-Equation \eqref{eq:function pde} describes how a scalar quantity is transported by the flow of $X$, and is sometimes called the ``transport equation''.
-Such a PDE arises in the context of fluids when $X$ is the (time-dependent) velocity field of the fluid, and $f$ is the temperature, and the thermal diffusivity is $0$.
+Equation \eqref{eq:function pde}, which is sometimes called the ``transport equation,'' describes how a scalar quantity is transported by the flow of $X$.
+Such a Partial Differential Equation (PDE) arises in the context of fluids when $X$ is the (time-dependent) velocity field of the fluid, $f$ is the temperature, and the thermal diffusivity is $0$ \ram{a citation here would probably be useful}.
 Equation \eqref{eq:density pde} describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
-In the context of classical mechanics, this equation is known as the Louiville equation or the continuum equation.
+In the context of classical mechanics, this equation is known as the Liouville equation or the continuum equation\ram{a citation here would probably be useful}.
 
-These equations have a number of conservation laws associated to them.
+These equations satisfy a number of conservation laws.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
-then so is the product, $f \cdot g$, and the sum, $f+g$.
+then so is their product, $f \cdot g$, and their sum, $f+g$.
 Similarly, the $L^{1}$-norm is conserved in time under the evolution of \eqref{eq:density pde}.
-This motivates our definition of qualitative accuracy.
+This motivates our definition of qualitative accuracy:
 
 \begin{definition} \label{def:quality}
 	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if it conserves discrete analogs of scalar multiplication/addition/the $L^{1}$-norm of densities and the sup-norm of functions.
 \end{definition}
 
-Both \eqref{eq:function pde} and \eqref{eq:density pde} can be numerically solved from a variety of schemes, each with its own benefit.
-The method of characteristics tells us that
-the solution to \eqref{eq:function pde} with the initial condition $f_{0} \in C^{1}(M)$ is the time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
-This suggests using a particle method to solve for $f$ at a discrete set of points (possibly on a regular grid).
- 
-In fact, a particle method would inherit many discrete analogs of the conservation laws of \eqref{eq:function pde},
-and by our definition it deserves the label of \emph{qualitatively accurate}.
+Both \eqref{eq:function pde} and \eqref{eq:density pde} can be numerically solved by a variety of schemes.
+For a continuous initial condition, $f_0$, for example, the method of characteristics \ram{citation here} describes a solution to \eqref{eq:function pde} as a time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
+This suggests using a particle method to solve for $f$ at a discrete set of points (possibly on a regular grid) \ram{citation here}.
+ In fact, a particle method would inherit many discrete analogs of the conservation laws of \eqref{eq:function pde}, and would as a result be \emph{qualitatively accurate}.
 For example, given the input $h_{0} = f_{0} \cdot g_{0}$, the output of a particle method is identical to the (componentwise) product of the outputs obtained from inputing $f_{0}$ and $g_{0}$ separately.
-However, particle methods do not converge as quickly as spectral methods when the function $f$ is highly differentiable.
+However, particle methods converge much slower than their spectral counterparts when the function $f$ is highly differentiable \ram{citation here}.
 
-In the case where $M=S^{1}$ a spectral method can be obtained by converting \eqref{eq:density pde} to the Fourier domain where it takes the form
-of an ode
+In the case where $M=S^{1}$, a spectral method can be obtained by converting \eqref{eq:density pde} to the Fourier domain where it takes the form
+of an Ordinary Differential Equation (ODE):
 \begin{align}
 	\frac{d \hat{\rho}_{k}}{dt} + 2\pi i k  \widehat{X}_{k-\ell} \hat{f}_{\ell} \label{eq:standard spectral}
 \end{align}
-where $\hat{\rho}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $\rho$ and $X$.
-We see that we have converted \eqref{eq:density pde} into an ODE on the space of Fourier coefficients.
-A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients.
+where $\hat{\rho}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $\rho$ and $X$ \ram{ a citation would be useful here}.
+In particular, this transformation converts \eqref{eq:density pde} into an ODE on the space of Fourier coefficients.
+Discretization are constructed by considering only the first finite number of coefficients. 
+%A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients.
 
 Such a numerical method is good for $C^{k}$-data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-k})$ over a fixed finite time interval \cite{Gottlieb2001}.
 In particular, spectral schemes converge must faster than particle based method whenever the initial conditions have more than a few derivatives.
-However, the standard spectral algorithm is not qualitatively accurate under Definition \ref{def:quality}.
+Unfortunately the standard spectral algorithm is not \emph{qualitatively accurate}.
 
-This motivates the goal of this paper:
+The goal of this paper:
 \emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously spectrally convergent and qualitatively accurate.}
 
 \subsection{Previous work}
-Within mechanics, spectral methods for the continuum and transport equation are common-place
-where they are viewed as special cases of first order hyperbolic PDEs \cite{Boyd2001,Gottlieb2001}.
-Various galerkin discretization of the Koopman operator\footnote{Briefly, the Koopman operator a linear operator ``$K$'' which yields the solution $f = K \cdot f_{0}$ to \eqref{eq:function pde}. We refer the reader to \cite{BudisicMohrMezic2012} for a survey of recent applications.} have been successfully used
-in a variety of contexts for generic dynamic systems \cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems \cite{Rowley2009} where such discretization serve as a generalization of dynamic mode decomposition \cite{Schmid2010}.
-Dually, Ulam-type discretizations of the Frobenius-Perron operator  \cite{Ulam1947,LasotaMackey1994} can be used to find invariant manifolds of systems with uniform Gaussian noise \cite{FroylandJungeKoltai2013,FroylandPadberg2009}.
-In continuous time, Petrov-Galerkin discretization of the infinitesimal generator of the Frobenius Perron operator converge in the presence of noise \cite{BittracherKoltaiJunge2015}
-and preserved positivity in a Haar basis \cite{koltai2011thesis}.
+Within mechanics, spectral methods for the continuum and transport equation are a common-place where they are viewed as special cases of first order hyperbolic PDEs \cite{Boyd2001,Gottlieb2001}.
+Various Galerkin discretizations of the Koopman operator\footnote{Briefly, the Koopman operator a linear operator ``$K$'' which yields the solution $f = K \cdot f_{0}$ to \eqref{eq:function pde}. We refer the reader to \cite{BudisicMohrMezic2012} for a survey of recent applications.} have been successfully used for a variety of generic dynamic systems \cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems \cite{Rowley2009} where such discretizations serve as a generalization of dynamic mode decomposition~\cite{Schmid2010}.
+Dually, Ulam-type discretizations of the Frobenius-Perron operator~\cite{Ulam1947,LasotaMackey1994} have been used to find invariant manifolds of systems with uniform Gaussian noise \cite{FroylandJungeKoltai2013,FroylandPadberg2009}.
+In continuous time, Petrov-Galerkin discretization of the infinitesimal generator of the Frobenius Perron operator converge in the presence of noise \cite{BittracherKoltaiJunge2015} and preserve positivity in a Haar basis \cite{koltai2011thesis}.
 %The goal of this article is different than many of the papers cited thus far, in that we are interested in resolving our PDEs in finite time, rather than determining the infinite time behavior.
 %Both of these representation of diffeomorphisms are natural, in the sense that the Koopman operator is the natural action of diffeomorphisms upon functions, and therefore must preserve the natural norm associated to functions, the sup-norm.
 %Dually, the Frobenius-Perron operator (and it's discretization, the Transfer operator), represents the natural action of diffeomorphisms upon distributions and preserves the $L^{1}$-norm (the norm dual to the sup-norm).
 
-In this article we will use a unitary representation of diffeomorphisms, which represents the natural action of diffeomorphisms on the space of half-densities.
-It is difficult to determine where this action first appeared, but it was known to representation theorists \cite{VershilGelfandGraev1975,Ismagilov1975}
-and people involved with quantum probability theory \cite{Meyer1998,Parthasarathy2012}.
-To be more specific, a half-density can be abstractly summarized as an objects whos ``square'' is a density.
-Alternatively, it can be understood as the mathematician's nomenclature for the physicists ``wave functions''.
-One of the benefits of working with half-densities, over probability densities, is that the space of half-densities is a Hilbert space, while the space of probability densities is a convex cone.
-This ``square-root'' type of transformation to a Hilbert space has been used to solve a nonlinear problem throughout mathematics, such as the invention of the complex numbers to solve polynomials.
+In this article, we use a unitary representation of diffeomorphisms, which represents the natural action of diffeomorphisms on the space of half-densities.
+This approach was known to representation theorists \cite{VershilGelfandGraev1975,Ismagilov1975} and those involved with quantum probability theory \cite{Meyer1998,Parthasarathy2012}.
+To be more specific, a half-density can be abstractly summarized as an object whose ``square'' is a density.
+Alternatively, it can be understood as a mathematician's nomenclature for a physicist's ``wave functions.''
+One of the benefits of working with half-densities, over probability densities, is that the space of half-densities is a Hilbert space, while the space of probability densities is a convex cone \ram{probably need to cite someone here}.
+This ``square-root'' transformation to a Hilbert space has been used to solve various nonlinear problem throughout mathematics, such as the invention of the complex numbers to find the roots of polynomials.
 For example, the space of positive semi-definite tensor fields which occur in non-Newtonian fluids, can be transformed into the space of symmetric tensors \cite{Balci2011}.
 Similarly, an alternative notion of half-densities has been used in the context mean curvature flow in a similar vein \cite{Crane2013}.
 
