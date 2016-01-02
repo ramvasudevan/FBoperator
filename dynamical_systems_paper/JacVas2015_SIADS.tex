@@ -215,7 +215,7 @@ In this section, we define a geometric version of an $L^{2}$-space, denoted by $
 This is in contrast to the standard $L^{2}$-space, in which a volume form, or a reference density is chosen first \cite{Adams2003}.
 Elements of $L^{2}(M)$ are not functions, but instead are half-densities, which we define next.
 
-For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \cite[Chapter 16]{Lee2006}.
+For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \ram{probably need to define what this is} \cite[Chapter 16]{Lee2006}.
 \begin{definition}\label{def:half density}
 	A half-density is a continous complex function $\psi : \bigoplus^n TM \to \mathbb{C}$
 	such that $| \psi |^{2} \in \Dens(M)$.
@@ -270,7 +270,7 @@ Upon choosing some $\mu$, the $2$-norm of a complex function $f$ with respect to
 \begin{align}
 	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
 \end{align}
-and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
+and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm. \ram{Pet peeve: you are calling $\psi$ which is a half density a complex function with domain in $TM$, on the other hand you are also calling $f$ a function with domain on $M$, it would be clearer for the reader to either be given the domain and range of the function in each case explicitly or refer to each object distinctly. This becomes especially problematic when you sometimes refer to functions in $L^2$ as you do in Theorem 3.3.}
 The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are equivalent topological vector-spaces under an isomorphism:
 \begin{proposition}
 	Choose a non-vanishing density $\mu$.
@@ -383,21 +383,22 @@ Note that saying $\psi$ is of class $H^{s}$ is a topological statement and is no
 However, the norm $\| \psi \|_{2,s} = \| f \|_{2,s}$ is metric dependent. \ram{you switched the $_{s,2}$ earlier with $_{2,s}$ here}.
 
 \section{A spectral discretization}
-In this section we will spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde}.
-In order to realize this goal we must obtain canonical relationships between functions, densities, and vector-fields with $L^{2}(M)$ which are
-amenable to spectral discretizion.
+\ram{its awkward that this section only has a subsection 3.1...it may be worth creating a separate subsection for Theorem 3.1}
 
-To begin, let us consider the space of continuous real-valued functions $C(M)$.
-For each $f \in C(M)$ there is a unique bounded Hermetian operator, $\hat{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
+In this section, we spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner.
+To realize this goal, we first obtain canonical relationships that are amenable to spectral discretization between $L^{2}(M)$ and functions, densities, and vector-fields.
+
+To begin, let us consider the space of continuous real-valued functions $C(M)$ \ram{you've used this object several times already, it may just be worth defining it in a preliminary section}.
+For each $f \in C(M)$, there is a unique bounded Hermitian operator, $\hat{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
 That is to say $(\hat{f} \cdot \psi) (x) = f(x) \psi(x)$ for any $\psi \in L^{2}(M)$.
-We see that the map, $f \mapsto \hat{f}$, preserves the ring structure because $\widehat{f \cdot g + h} = \hat{f} \cdot \hat{g} + \hat{h}$.
+Notice that $f \mapsto \hat{f}$, preserves the ring structure because $\widehat{f \cdot g + h} = \hat{f} \cdot \hat{g} + \hat{h}$.
 
-Similarly, (and in the opposite direction) for any trace class operator $\hat{\rho}:L^{2}(M) \to L^{2}(M)$ there is a unique distribution $\rho \in C(M)'$ such that 
+Similarly, (and in the opposite direction) for any trace class operator $\hat{\rho}:L^{2}(M) \to L^{2}(M)$ there is a unique distribution $\rho \in C(M)'$ \ram{need to define this} such that: 
 \begin{align}
 	 \int f \, \rho = \Tr ( \hat{f}^{\dagger} \cdot \hat{\rho} )
 \end{align}
-for any $f \in C(M)$.
-By construction, the surjection $\hat{\rho} \mapsto \rho$ and the injection $f \mapsto \hat{f}$ preserve the duality between functions and distributions.
+for any $f \in C(M)$ \ram{need to define $\Tr$ and $^{\dagger}$}.
+By construction, the surjection $\hat{\rho} \mapsto \rho$ and the injection $f \mapsto \hat{f}$ preserve the duality between functions and distributions \ram{why are they surjections and injections}.
 
 %Finally, for any vector field $X$ there is a unique (unbounded) anti-symmetric operator $\pounds_{X}$ on $L^{2}(M)$
 %given in coordinates by
@@ -428,8 +429,7 @@ By construction, the surjection $\hat{\rho} \mapsto \rho$ and the injection $f \
 %Then $\hat{\rho}$ is represented in the Fourier domain by $\mathcal{F}(\psi) \otimes \mathcal{F}(\psi)^{\dagger}$.
 %\end{example}
 
-We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:density pde}
-into ODE's of operators on $L^{2}(M)$.
+We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:density pde} into ODEs of operators on $L^{2}(M)$.
 
 \begin{theorem} \label{thm:quantize}
 	Let $X(t) \in \mathfrak{X}(M)$ be a time-dependent vector-field.
@@ -439,7 +439,7 @@ into ODE's of operators on $L^{2}(M)$.
 		&\frac{d \hat{f} }{dt} + [ \hat{f} , \pounds_{X} ] = 0 \label{eq:quantum observable ode} \\
 		&\frac{d \hat{\rho} }{dt} + [ \hat{\rho} , \pounds_{X} ] = 0 \label{eq:quantum density ode}
 	\end{align}
-	respectively, where $[ \cdot , \cdot ]$ denotes the commutator bracket.
+	respectively, where $[ \cdot , \cdot ]$ denotes the commutator bracket \ram{may just want to define in a preliminary notation section}.
 	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$, then $\psi$ satisfies
 	\begin{align}
 		 \partial_{t} \psi + \pounds_{X}[\psi] = 0, \label{eq:half density pde}
@@ -449,31 +449,31 @@ into ODE's of operators on $L^{2}(M)$.
 
 \begin{proof}
 	Let $f$ satisfy \eqref{eq:function pde}.
-	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ \hat{f} , \pounds_{X}] \cdot \psi$ is given in coordinates by
+	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ \hat{f} , \pounds_{X}] \cdot \psi$ is given in coordinates by:
 	\begin{align}
 		[ \hat{f} , \pounds_{X} ] \cdot \psi = f \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right)
 			- \frac{1}{2} X^{j} \pder{}{x^{j}}( f \psi)  + \frac{1}{2} \pder{}{x^{j}} (f \psi \, X^{j} )
 	\end{align}
-	where we have used \eqref{eq:representation}.  Application of the product rule to all these terms then yields
-	a number of cancellations and we find
+	where we have used \eqref{eq:representation}.  
+	Application of the product rule to each of these terms yields a number of cancellations and we find:
 	\begin{align}
 		[ \hat{f} , \pounds_{X} ] \cdot \psi = - X^{j} \pder{f}{x^{j}} \psi = (\partial_{t} f )\psi = \frac{d \hat{f} }{dt} \cdot \psi.
 	\end{align}
-	As $\psi$ is arbitrary we have managed to show that $\hat{f}$ satisfies \eqref{eq:quantum observable ode}.
+	As $\psi$ is arbitrary, we have shown that $\hat{f}$ satisfies \eqref{eq:quantum observable ode}.
 	Each line of reasoning is reversible, and so we have proven the converse as well.
 	
-	In order to handle densities note that $\langle f , \rho \rangle = \int_{M} f\rho$ is constant in time when $f$
-	and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde} respectively.
-	By the definition of $\hat{\rho}$ we observe $\Tr( \hat{f}^{\dagger} \hat{\rho}) = \langle f , \rho \rangle$.
-	Thus we find
+	In order to handle densities note that $\langle f , \rho \rangle = \int_{M} f\rho$ is constant in time when $f$ and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde}, respectively \ram{This is probably obvious, but a citation or a brief argument would be useful since its the crux of the next portion of the argument}.
+	By the definition of $\hat{\rho}$, $\Tr( \hat{f}^{\dagger} \hat{\rho}) = \langle f , \rho \rangle$.
+	Therefore:
 	\begin{align}
 		0 = \frac{d}{dt} \left( \Tr( \hat{f}^{\dagger} \rho ) \right) = \Tr \left( \frac{d \hat{f}^{\dagger}}{dt} \hat{\rho} + \hat{f}^{\dagger} \frac{d \hat{\rho}}{dt} \right).
 	\end{align}
-	As was just shown, $\frac{d}{dt} \hat{f} =  - [\hat{f} , \pounds_{X} ]$ so we observe
+	As was just shown, $\frac{d}{dt} \hat{f} =  - [\hat{f} , \pounds_{X} ]$ so:
 	\begin{align}
 		0 = \Tr( - [\hat{f} , \pounds_{X} ]^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \hat{\rho} ) = \Tr( - \pounds_{X}^{\dagger} \hat{f}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \pounds_{X}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \frac{d\hat{\rho}}{dt} ).
 	\end{align}
-	Upon noting that $\pounds_{X}^{\dagger} = - \pounds_{X}$ and use of identity $\Tr( a b c) = \Tr( bc a)$ we obtain
+	\ram{I believe it should be $\hat{f}^{\dagger} \frac{d\hat{\rho}}{dt}$ not $\hat{f}^{\dagger} \hat{\rho}$ in the middle equation in the previous line}
+	Upon noting that $\pounds_{X}^{\dagger} = - \pounds_{X}$ and that $\Tr( a b c) = \Tr( bc a)$:
 	\begin{align}
 		0 = \Tr \left( \hat{f}^{\dagger}( [\hat{\rho} , \pounds_{X} ] + \frac{d \hat{\rho}}{dt} ) \right).
 	\end{align}
@@ -497,8 +497,7 @@ into ODE's of operators on $L^{2}(M)$.
 \end{proof}
 
 
-The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} to represent the PDEs of concern
-is that we may discretize \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} using a standard least squares projections on $L^{2}(M)$.
+The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} to represent the PDEs of concern is that \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} may then be discretized using a standard least squares projections on $L^{2}(M)$.
 %In order to demonstrate this, we will illustrate a detailed implementation of how this would be done on the unit circle, $S^1$, before considering the case of a general compact manifold.
 
 %\subsection{Discretization on $S^1$ using the Fourier Transform}
@@ -595,26 +594,26 @@ is that we may discretize \eqref{eq:quantum observable ode} and \eqref{eq:quantu
 
 \subsection{Semi-discretizations and algorithms on compact manifolds}
 
-In this section will will present numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
-The basic ingredient for all the algorithms in this section is a Hilbert basis and an ODE solver.
-We will denote the Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$.
-For example we may choose a Riemannian metric, $g$, and let $\{ f_{0}, f_{1},\dots \}$ denote  eigen-functions of the Laplace operator.
-Then $\{ e_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemmannian density.
-In order to ensure convergence we will assume:
+This section presents the numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
+The basic ingredient for all the algorithms in this section are a Hilbert basis and an ODE solver.
+Denote a Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$ \ram{maybe worth moving to a notation section}.
+For example, for a Riemannian metric, $g$ if $\{ f_{0}, f_{1},\dots \}$ denote eigen-functions of the Laplace operator, then $\{ e_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemannian density.
+To ensure convergence, we assume:
 \begin{ass} \label{ass:basis}
-	There exists a basis such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$
-	is bounded on $H^{s}$ for some $s > 1$.
+	There exists a basis such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$ is bounded on $H^{s}$ for some $s > 1$.
+	\ram{ I think saying something like this may be more clear:
+	There exists a Hilbert basis $\{ e_{k} \}$ and unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$ and is bounded on $H^{s}$ for some $s > 1$.}
 \end{ass}
 
-Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Louiville basis (e.g. Legendre functions).
+\noindent Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Liouville basis (e.g. Legendre functions) \ram{citation}.
 
-For the ODE solver, one can consider any legacy method such as Euler's method or 4th order Runge-Kutta or even well tested software such as \cite{VODE}.
+Any ODE solver such as Euler's method, Runge-Kutta, or even well tested software such as \cite{VODE} satisfy the requirements for the algorithm described in this section.
+\ram{this next sentence feels like a non-sequitur}
 Most notably, the method of \cite{Calvo1997} is specialized to isospectral flows such as  \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} and preserves the invariants of isospectral flows over large time-step sizes.
-This article is concerned purely with semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}, and so we will assume that this ode solver 
-efficiently solves finite dimensional ODEs to any prescribed accuracy.
-More explicitly, we will let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final})$ when $x(t)$ is the solution to the ode $\dot{x} = F(x)$ with initial condition $x_{init}$.
+This article is concerned purely with semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}, and we only require that this ode solver efficiently \ram{what does efficiently mean here} solves finite dimensional ODEs to any prescribed accuracy.
+More explicitly, let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final})$ when $x(t)$ is the solution to the ode $\dot{x} = F(x)$ with initial condition $x_{init}$.
 
-Before solving \eqref{eq:function pde} and \eqref{eq:density pde}, let us solve \eqref{eq:half density pde} using a standard spectral discretization \cite{Boyd2001,NumericalRecipes}.
+Before constructing an algorithm to spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner, we first solve \eqref{eq:half density pde} using a standard spectral discretization~\cite{Boyd2001,NumericalRecipes} in Algorithm \ref{alg:half density}.
 
 \begin{algorithm}
 	\KwData{An initial condition $\psi(0) \in L^{2}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
@@ -633,29 +632,31 @@ Before solving \eqref{eq:function pde} and \eqref{eq:density pde}, let us solve 
 		$z(t_{k}) = \operatorname{OdeSolve}(  F , z(t_{k-1}) , t_{k})$\;
 	}
 	\KwOut{ $\psi_{n}(t_{k} , x) = \sum_{i=1}^{n} [z(t_{k})]_{i} e_{i}(x)$ for $k=1,\dots,m$.}
-	\caption{An algorithm for half densities} \label{alg:half density}
+	\caption{A spectral discretization to solve \eqref{eq:half density pde} for half densities.} \label{alg:half density}
 \end{algorithm}
 
 To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{n}(t_{k}) \in V_{n}$ where $V_{n} = \operatorname{span}( e_{1},\dots,e_{n}) \subset L^{2}(M)$.
+\ram{these next two sentences are so informal, why not just say we prove in theorem \cite{} that the result $\psi_n$ converges to ...}
 As $\lim_{n\to \infty} V_{n} = L^{2}(M)$ we can at least hope that $\psi_{n}(t_{k})$ converges.
 We will address convergence in a later section.
-For the moment we can state a sparsity result which will aide in choosing a basis.
-The proof of this results is a matter of simple counting, and so we omit it.
+Before continuing, we briefly state a sparsity result that aides in selecting a basis.
+The proof of this results follows from simple arithmetic, and so we omit it.
 
 \begin{theorem} \label{thm:sparsity}
-	Let $x^{1},\dots,x^{d}$ be a dense coordinate chart for $M$.\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus.\cite{Sakai1996,MO_dense_charts} }
-	Then we may write the half density basis $e_{k} (x)= f_{k}(x) \sqrt{dx^{1} \wedge \cdots dx^{d}}$ for $L^{2}$-functions $f_{k}(x)$.
-	If the vector-field $X = X^{\alpha} \pder{}{x^{\alpha}}$ is such that $X^{\alpha} = c^{k} f_{k}$ where fewer than $b$ of $c_{k}$'s are non-zero, then
-	the operator $X_{n}$ in Algorithm \ref{alg:half density} is sparse, and banded diagonal with fewer than $db$ bands.
+\ram{ I think avoiding the use of d to count the number of coordinates would be smart since you are already using d for the differential, it would probably also make sense to use $n,m,$ or $k$ to refer to integer values instead of $b$ or $d$}
+	Let $x^{1},\dots,x^{d}$ be a dense coordinate chart for $M$\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus.\cite{Sakai1996,MO_dense_charts} },
+	then $e_{k} (x)= f_{k}(x) \sqrt{dx^{1} \wedge \cdots dx^{d}}$ for $L^{2}$-functions $f_{k}(x)$ is a half-density basis. \ram{what space does $f_k$ belong to? is it in $L^2(M;\mu)$?}
+	If the vector-field $X = X^{\alpha} \pder{}{x^{\alpha}}$ is such that $X^{\alpha} = c^{k} f_{k}$ where fewer than $b$ of $c_{k}$'s are non-zero \ram{for each $\alpha$?}, then the operator $X_{n}$ in Algorithm \ref{alg:half density} is banded diagonal with fewer than $db$ bands.
 \end{theorem}
 
 \begin{corollary} \label{cor:sparsity}
-	Given the same setting as Theorem \ref{thm:sparsity} the integration step of Algorithm \ref{alg:half density} is of complexity $\mathcal{O}( dbn)$.
+	If the same hypotheses of Theorem \ref{thm:sparsity} are satisfied, then the integration step of Algorithm \ref{alg:half density} is of complexity $\mathcal{O}( dbn)$.
 \end{corollary}
 
-What Theorem \ref{thm:sparsity} and Corollary \ref{cor:sparsity} suggest is that we want to choose our basis such that $b$ is small.
-For example if $M$ were a torus, and the vector-field was sinusoidal with finitely many Fourier terms, then a Fourier basis would yield a $b$ equal to the maximum number of terms along all dimensions.
+Theorem \ref{thm:sparsity} and Corollary \ref{cor:sparsity} suggest selecting a basis where $b$ is small.
+For example if $M$ were a torus, and the vector-field was made up of a finite number of sinusoids, then a Fourier basis would yield a $b$ equal to the maximum number of terms along all dimensions.
 
+\ram{stopped editing here}
 By Theorem \ref{thm:quantize} we can merely square the result of Algorithm \ref{alg:half density} to obtained a numerical solution to \eqref{eq:density pde}.
 In order to make this into an algorithm for densities we must know how to take the square root of a density.
 It is not possible to take the square root of an arbitrarily irregular density, such as a Dirac delta functional.
