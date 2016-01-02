@@ -53,6 +53,8 @@
 \section{Introduction}
 \label{sec:intro}
 
+\ram{One high level comment, it feels like we need a small notation section to just define all the notation and basic definitions that we consider throughout the paper. Several things are standard, but a brief reminder may be useful.}
+
 Let $M$ be a compact manifold and let $X$ be a vector-field on $M$. 
 This paper is concerned with the following pair of equations:
 \begin{align}
@@ -101,7 +103,7 @@ The goal of this paper:
 
 \subsection{Previous work}
 Within mechanics, spectral methods for the continuum and transport equation are a common-place where they are viewed as special cases of first order hyperbolic PDEs \cite{Boyd2001,Gottlieb2001}.
-Various Galerkin discretizations of the Koopman operator\footnote{Briefly, the Koopman operator a linear operator ``$K$'' which yields the solution $f = K \cdot f_{0}$ to \eqref{eq:function pde}. We refer the reader to \cite{BudisicMohrMezic2012} for a survey of recent applications.} have been successfully used for a variety of generic dynamic systems \cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems \cite{Rowley2009} where such discretizations serve as a generalization of dynamic mode decomposition~\cite{Schmid2010}.
+Various Galerkin discretizations of the Koopman operator\footnote{The Koopman operator is a linear operator ``$K$'' which yields the solution $f = K \cdot f_{0}$ to \eqref{eq:function pde}. We refer the reader to \cite{BudisicMohrMezic2012} for a survey of recent applications.} have been successfully used for a variety of generic dynamic systems \cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems \cite{Rowley2009} where such discretizations serve as a generalization of dynamic mode decomposition~\cite{Schmid2010}.
 Dually, Ulam-type discretizations of the Frobenius-Perron operator~\cite{Ulam1947,LasotaMackey1994} have been used to find invariant manifolds of systems with uniform Gaussian noise \cite{FroylandJungeKoltai2013,FroylandPadberg2009}.
 In continuous time, Petrov-Galerkin discretization of the infinitesimal generator of the Frobenius Perron operator converge in the presence of noise \cite{BittracherKoltaiJunge2015} and preserve positivity in a Haar basis \cite{koltai2011thesis}.
 %The goal of this article is different than many of the papers cited thus far, in that we are interested in resolving our PDEs in finite time, rather than determining the infinite time behavior.
@@ -116,6 +118,8 @@ One of the benefits of working with half-densities, over probability densities, 
 This ``square-root'' transformation to a Hilbert space has been used to solve various nonlinear problem throughout mathematics, such as the invention of the complex numbers to find the roots of polynomials.
 For example, the space of positive semi-definite tensor fields which occur in non-Newtonian fluids, can be transformed into the space of symmetric tensors \cite{Balci2011}.
 Similarly, an alternative notion of half-densities has been used in the context mean curvature flow in a similar vein \cite{Crane2013}.
+
+\ram{can you summarize how the remainder of the document will be organized and what our principle contributions are here?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Qualitative properties of advection PDEs}
@@ -207,36 +211,30 @@ Similarly, an alternative notion of half-densities has been used in the context 
 %The properties of advection that we desire to have are strictly properties of $M$ alone, i.e. they are canonical.
 %The choice of $\mu$ is non-canonical and threatens to discard the conservation laws we aim to keep.
 
-In this section we define a geometric version of an $L^{2}$-space which foregoes the choice of a volume form, denoted simply by $L^{2}(M)$.
-This is in contrast to the standard $L^{2}$-space, in which a volume form, or a reference density must be chosen first \cite{Adams2003}.
-The cost we pay is that the elements of $L^{2}(M)$ are not functions, but something less familiar, they are half-densities.
+In this section, we define a geometric version of an $L^{2}$-space, denoted by $L^{2}(M)$, which foregoes the choice of a volume form. \ram{it would be useful if you described everything that you plan on doing in this section}
+This is in contrast to the standard $L^{2}$-space, in which a volume form, or a reference density is chosen first \cite{Adams2003}.
+Elements of $L^{2}(M)$ are not functions, but instead are half-densities, which we define next.
 
-For a smooth compact $n$-manifold, $M$,
-let $\Dens(M)$ denote the space of continuous densities,
-which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \cite[Chapter 16]{Lee2006}.
-
+For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \cite[Chapter 16]{Lee2006}.
 \begin{definition}\label{def:half density}
 	A half-density is a continous complex function $\psi : \bigoplus^n TM \to \mathbb{C}$
 	such that $| \psi |^{2} \in \Dens(M)$.
-	We denote the space of half densities by $\sqrt{\Dens(M)}$.
+	The space of half densities is denoted by $\sqrt{\Dens(M)}$.
 \end{definition}
 
 This definition is an equivalent reformulation of the half densities defined in the context of geometric quantization \cite{GuilleminSternberg1970,BatesWeinstein1997}.
 In physical terms, $L^{2}(M)$ is precisely the Hilbert space of wave functions on $M$ used in quantum mechanics.
-It is unfortunate that physicists call these ``wave-functions''
-because elements of $L^{2}(M)$ and $\sqrt{\Dens(M)}$ are \emph{not} functions on $M$.
-One way to see this is to observe how elements of $\sqrt{\Dens(M)}$ transform.
-Under a change of coordinates $\Phi$ we observe $\psi$ will map to $\tilde \psi$ where
+It is unfortunate that physicists call these ``wave-functions'' since elements of $L^{2}(M)$ and $\sqrt{\Dens(M)}$ are \emph{not} functions on $M$.
+To see this, recall how elements of $\sqrt{\Dens(M)}$ transform:
+under a change of coordinates $\Phi: M \to M$ $\psi$ will map to $\tilde \psi$ where \ram{I still think a 1 sentence explanation here of how you constructed this result would really help the reader}
 \begin{align}
 	\tilde{\psi}(x)  =  \left| \det \left[ \left. \pder{\Phi^{i}}{x^{j}} \right|_{\Phi^{-1}(x)} \right]_{i,j=1}^{n} \right|^{1/2} \psi( \Phi^{-1}(x) ). \label{eq:transformation law}
 \end{align}
 
 
-As $|\psi|^{2} \in \Dens(M)$ for any $\psi \in \sqrt{\Dens(M)}$ we can integrate $|\psi|^{2}$
-and observe that half densities are is naturally equipped with the norm $$\| \psi \|_2 :=  \left( \int_M |\psi|^2 \right)^{1/2}$$ which we call the $2$-norm.
-
+As $|\psi|^{2} \in \Dens(M)$ for any $\psi \in \sqrt{\Dens(M)}$, $|\psi|^{2}$ can be integrated and observe that half densities are naturally equipped with the norm: $$\| \psi \|_2 :=  \left( \int_M |\psi|^2 \right)^{1/2}$$ which we call the \emph{$2$-norm}.
 \begin{definition}
-	We define $L^{2}(M)$ as the completion of $\sqrt{ \Dens(M)}$ with respect to the $2$-norm.
+	$L^{2}(M)$ is defined as the completion of $\sqrt{ \Dens(M)}$ with respect to the $2$-norm.
 	The space $L^{2}(M)$ is equipped with a complex inner-product given by
 	\begin{align}
 		\langle \psi \mid \phi \rangle = \int_{M} \bar \psi \phi
@@ -244,17 +242,17 @@ and observe that half densities are is naturally equipped with the norm $$\| \ps
 	through polar decomposition, and so $L^{2}(M)$ is a Hilbert space.
 \end{definition}
 
-Lastly, as we know how to transform half-densities, we also know how to advect them.
-For a vector-field $X$, the Lie derivative of a half-density is given in local coordinates by
+Lastly, given the transformation law for half-densities under a change of coordinates \eqref{eq:transformation law}, one can describe how half-densities are transported or \emph{advected} by the flow of a vector field. 
+For a vector-field $X$, the Lie derivative of a half-density is given in local coordinates by:
 \begin{align}
 	\pounds_{X}[\psi] = \frac{1}{2} X^{i} \pder{\psi}{x^{i}} + \frac{1}{2} \pder{}{x^{i}} \left( \psi X^{i} \right). \label{eq:representation}
 \end{align}
-This is a densely defined anti-Hermetian operator on $L^{2}(M)$.
-The advection equation can be written as
+This is a densely defined anti-Hermitian operator on $L^{2}(M)$.
+The advection equation can then be written as:
 \begin{align}
 	\partial_{t} \psi + \pounds_{X}[\psi] = 0.
 \end{align}
-By the Stone's theorem, there is a solution for all time, in spite of the fact that the Lie derivative is unbounded.
+Despite the Lie derivative being unbounded, a solution is defined for all time:
 \begin{proposition}[Stone's Theorem \cite{Conway1990,Rudin1991}] \label{prop:stone}
 	The solution to \eqref{eq:half density pde} is of the form $\psi(t) = U(t) \cdot \psi(0)$ where $U(t)$ is
 	the unitary operator.
@@ -263,25 +261,24 @@ By the Stone's theorem, there is a solution for all time, in spite of the fact t
 %	Again, the existence of $U(t)$ as a unitary operator is simply an instance of the Stone Von-Neumann theorem.
 %\end{proof}
 
-In fact, $U(t)$ is merely the push-forward operator given in \eqref{eq:transformation law} with ``$\Phi$'' replaced by the flow-map of the vector-field, $X$.
+\noindent In fact, $U(t)$ is merely the push-forward operator given in \eqref{eq:transformation law} with ``$\Phi$'' replaced by the flow-map of the vector-field, $X$.
 
 \subsection{The relationship with classical $L^{2}$ spaces}
 \label{sec:classical_Lebesgue}
-For any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$ \cite[Chapter 16]{Lee2006}.
+To understand the relationship to classical $L^2$ spaces, recall that for any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$ \cite[Chapter 16]{Lee2006}.
 Upon choosing some $\mu$, the $2$-norm of a complex function $f$ with respect to $\mu$ is
 \begin{align}
 	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
 \end{align}
 and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
-The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are identical as topological vector-spaces.
-In fact, the isomorphism can be given fairly explicitly.
-
+The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are equivalent topological vector-spaces under an isomorphism:
 \begin{proposition}
 	Choose a non-vanishing density $\mu$.
 	Let $\sqrt{\mu}$ be any half-density such that $| \sqrt{\mu} |^{2} = \mu$.
 	For any $\psi \in L^2(M)$ there exists a unique $f \in L^2(M ; \mu)$ such that $\psi = f \cdot  \sqrt{\mu}$.
 	This yields a continuous isomorphism between $L^2(M)$ and $L^2(M ; \mu)$.
 \end{proposition}
+\ram{it may be worth at least summarizing this proof.}
 %\begin{proof}
 %	First note that if we view $\mu$ as a positive function on $\bigoplus^n TM$, then we can simply set $\sqrt{\mu}$ to be it's classical square root.
 %	It suffices to prove that the dense subspace $\sqrt{\Dens(M)} \subset L^{2}(M)$ can be mapped to a dense subspace of $L^{2}(M;\mu)$ through a map that sends $\| \cdot \|_{2}$ to $\| \cdot \|_{\mu,2}$.
@@ -295,31 +292,42 @@ In fact, the isomorphism can be given fairly explicitly.
 %	The inverse of the map is given by $f \in C^{0}(M;\mathbb{C}) \mapsto f \, \sqrt{\mu} \in \sqrt{\Dens(M)}$.
 %\end{proof}
 
-At this point the reader might ask ``If both space are the same, then why don't we use the one that is more familiar?  i.e. the space $L^{2}(M;\mu)$''.
-The answer is that these space are really not the same in all aspects.
-One difference that we've already discussed is that they transform differently.
-Elements of $L^{2}(M)$ transform according to \eqref{eq:transformation law} while elements of $L^{2}(M;\mu)$ transform like functions.
-Additionally, a more useful difference for us is that $L^{2}(M)$ is \emph{not} contained within $L^{1}(M)$ and $L^{\infty}(M)$ is not contained in $L^{2}(M)$
-because each of these spaces consists of objects with different transformation properties.
-This separation between $L^{2}(M)$ and $L^{1}(M)$ \emph{forces} us to think of these objects as distinct.
-For example an operator on $L^{2}(M)$ can not generally be applied to $L^{1}(M)$ in the same way.
-We will find such limitations to be helpful, because they will allows us to have vector-fields act on $L^{1}(M)$ differently then they act on $L^{2}(M)$
-without contradiction.
-Such safety mechanisms are analogous to the use of private/public functions in object oriented programming, which effectively banish certain bugs from arising.
+If the spaces are nearly identical the reader may wonder why $L^2(M)$ matters.
+In fact, the pair are not identical in all aspects.
+As described earlier, under change of coordinates or advection, the elements of each space transform differently.
+More importantly, $L^{2}(M)$ is \emph{not} contained within $L^{1}(M)$, and $L^{\infty}(M)$ is not contained in $L^{2}(M)$ since each of these spaces consist of objects with different transformation properties \ram{just because they transform differently doesn't mean that they have to be distinct though right? I mean we could have an isomorphism between elements?}.
+Objects within each space must be treated distinctly as a result. 
+For example, an operator with domain on $L^{2}(M)$ can not generally be applied to objects in $L^{1}(M)$ in the same way.
+Such limitations can be helpful, since they permit vector fields to act differently on objects in $L^{1}(M)$ than on objects in $L^{2}(M)$,
+Such safety mechanisms are analogous to the use of overloaded functions in object oriented programs, which due to their argument type distinctions, effectively banish certain bugs from arising.
+
+%At this point the reader might ask ``If both space are the same, then why don't we use the one that is more familiar?  i.e. the space $L^{2}(M;\mu)$''.
+%The answer is that these space are really not the same in all aspects.
+%One difference that we've already discussed is that they transform differently.
+%Elements of $L^{2}(M)$ transform according to \eqref{eq:transformation law} while elements of $L^{2}(M;\mu)$ transform like functions.
+%Additionally, a more useful difference for us is that $L^{2}(M)$ is \emph{not} contained within $L^{1}(M)$ and $L^{\infty}(M)$ is not contained in $L^{2}(M)$
+%because each of these spaces consists of objects with different transformation properties.
+%This separation between $L^{2}(M)$ and $L^{1}(M)$ \emph{forces} us to think of these objects as distinct.
+%For example an operator on $L^{2}(M)$ can not generally be applied to $L^{1}(M)$ in the same way.
+%We will find such limitations to be helpful, because they will allows us to have vector-fields act on $L^{1}(M)$ differently then they act on $L^{2}(M)$
+%without contradiction.
+%Such safety mechanisms are analogous to the use of private/public functions in object oriented programming, which effectively banish certain bugs from arising.
 
 \subsection{Sobolev spaces}
 \label{sec:Sobolev spaces}
-For each $X \in \mathfrak{X}(M)$ the operator $\pounds_{X}$ on $L^{2}(M)$ of \eqref{eq:representation} is unbounded.
-The domain of $\pounds_{X}$ is
+
+\ram{Do we need the first portion of this section, where a canonical sobolev space is defined since its not used anywhere else?}
+For each $X \in \mathfrak{X}(M)$ \ram{this object is undefined} the operator $\pounds_{X}$ on $L^{2}(M)$ of \eqref{eq:representation} is unbounded \ram{why?}.
+The domain of $\pounds_{X}$ is:
 \begin{align}
 	\operatorname{dom}( \pounds_{X} ) := \{ \psi \in L^{2}(M) \mid  \| \pounds_{X}[\psi] \|_{L^{2}} < \infty \}.
 \end{align}
-One can show that $\operatorname{dom}( \pounds_{X} )$ is a closed subspace of $L^{2}(M)$ and define
-a \emph{canonical} Sobolev space
+\ram{is the norm in the previous equation supposed to be $\|_{L^2}$ (which is undefined) or just $\|_2$?} One can show that $\operatorname{dom}( \pounds_{X} )$ is a closed subspace of $L^{2}(M)$ and define
+a \emph{canonical} Sobolev space:
 \begin{align}
 	H^{1}(M) := \bigcap_{X \in \mathfrak{X}(M)} \operatorname{dom}( \pounds_{X} ).
 \end{align}
-More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative operators.
+By composing multiple Lie derivative operators, one can construct $H^{k}(M)$ . \ram{you may want to mention why this connects nicely to the conventional notion of sobolev norm}.
 %As $\pounds_{X}$ is anti-Hermetian we can invoke the spectral theorem of functional analysis
 %and consider the operator
 %\begin{align}
@@ -328,36 +336,29 @@ More generally, we can construct $H^{k}(M)$ by composing multiple Lie derivative
 %where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denotes the set of eigenvectors of $\pounds_{X}$. 
 %This fractional power of $\pounds_{X}$ allows us to consider Sobolev spaces of fractional orders as well.
 
-  However, while the canonicalism of $L^{2}(M)$ will be useful,
-  \emph{canonical} Sobolev spaces will not be.
-  We will find our algorithms converge on Sobelev spaces and we will need to choose a norm.
-  The choice of a norm is not canonical, and so we may just as well use the standard metric dependent defintions.
-  
+However, while the canonicalism of $L^{2}(M)$ is useful for this discussion, \emph{canonical} Sobolev spaces will not be.
+Since the algorithms proposed in this paper are proven to converge in a Sobolev space, we must still choose a norm and we rely upon traditional metric dependent definitions.  
 To begin, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
-The metric, $g$, induces a positive density $\mu_g$,
-known as the \emph{metric density} and an inner-product on $C^\infty(M)$
-given by
+The metric, $g$, induces a positive density $\mu_g$, known as the \emph{metric density} and an inner-product on $C^\infty(M)$
+given by:
 \begin{align}
 	\langle f_1 , f_1 \rangle_{g} = \int \overline{f_1} \cdot f_2 \mu_g.
 \end{align}
 %Then $L^{2}(M;\mu_{g})$ is the completion of the inner-product space $( C^{\infty}(M) , \langle \cdot , \cdot \rangle_{g})$ under 
 %the inner-product norm.
-The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is is positive-semidefinite
+The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is positive-semidefinite \ram{reminding the readers what this means in terms of operator arithmetic maybe useful}
 with respect to $\langle \cdot , \cdot \rangle_{g}$.
-If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert space
-and the Helmholtz operator, $1 + \Delta$, is  a positive definite operator
+If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert space and the Helmholtz operator, $1 + \Delta$, is a positive definite operator
 with a discrete spectrum \cite{Taylor1974}.
-For any $s \geq 0$ we may define the Sobolev norm
+For any $s \geq 0$ we may define the \emph{Sobolev norm}:
 \begin{align}
 	\| f \|_{s,2} =  \left( \langle f , (1+\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
 \end{align}
 and $H^s(M ,g)$ is then the function space obtained by completion with respect to this norm.
 Note that $H^0(M;g) = L^2(M;\mu_g)$.
 
-The following proposition will be of use later when we need to prove a notion of convergence
-via sequences of finite rank operators.
-
-\begin{proposition}[Sobelev embedding Theorem \cite{Taylor1974}] \label{prop:compact_embedding}
+The following proposition will be of use later when we need to prove a notion of convergence via sequences of finite rank operators.
+\begin{proposition}[Sobelev Embedding Theorem \cite{Taylor1974}] \label{prop:compact_embedding}
 	Let $(M,g)$ be a compact Riemmanian manifold.  If $s > t \geq 0$ then $H^s(M;g)$ is compactly embedded within $H^t(M,g)$.
 \end{proposition}
 \begin{proof}
@@ -377,9 +378,9 @@ via sequences of finite rank operators.
 	this embedding is a compact operator \cite[see Proposition 4.6]{Conway1990}.
 \end{proof}
 
-In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if $\psi = f \sqrt{\mu_g}$, and $f \in H^s(M,g)$.
-That $\psi$ is of class $H^{s}$ is topological statement, and not metric dependent.
-However, the norm $\| \psi \|_{2,s} = \| f \|_{2,s}$ is metric dependent.
+In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if there exists $f \in H^s(M,g)$ such that $\psi = f \sqrt{\mu_g}$.
+Note that saying $\psi$ is of class $H^{s}$ is a topological statement and is not metric dependent.
+However, the norm $\| \psi \|_{2,s} = \| f \|_{2,s}$ is metric dependent. \ram{you switched the $_{s,2}$ earlier with $_{2,s}$ here}.
 
 \section{A spectral discretization}
 In this section we will spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde}.
