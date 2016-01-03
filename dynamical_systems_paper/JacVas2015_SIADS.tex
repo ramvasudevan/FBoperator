@@ -654,16 +654,15 @@ The proof of this results follows from simple arithmetic, and so we omit it.
 \end{corollary}
 
 Theorem \ref{thm:sparsity} and Corollary \ref{cor:sparsity} suggest selecting a basis where $b$ is small.
-For example if $M$ were a torus, and the vector-field was made up of a finite number of sinusoids, then a Fourier basis would yield a $b$ equal to the maximum number of terms along all dimensions.
+For example, if $M$ were a torus, and the vector-field was made up of a finite number of sinusoids, then a Fourier basis would yield a $b$ equal to the maximum number of terms along all dimensions.
 
-\ram{stopped editing here}
-By Theorem \ref{thm:quantize} we can merely square the result of Algorithm \ref{alg:half density} to obtained a numerical solution to \eqref{eq:density pde}.
-In order to make this into an algorithm for densities we must know how to take the square root of a density.
-It is not possible to take the square root of an arbitrarily irregular density, such as a Dirac delta functional.
-However, for any continuous $\rho \in L^{1}(M)$ we may find a square root.
-To begin, let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$.
-Then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ in the sense that $\rho = \psi^{2}$.
-This yields the following algorithm for densities.
+By Theorem \ref{thm:quantize}, the square of the result of Algorithm \ref{alg:half density} is a numerical solution to \eqref{eq:density pde}.
+To apply this algorithm to densities, one must know how to take the square root of a density.
+It is not possible to take the square root of an arbitrarily irregular density, such as a Dirac delta functional \ram{why not?}.
+However, one can find the square root of any continuous $\rho \in L^{1}(M)$ \ram{if you aren't speaking about $L^1(M;\mu)$ then this space is never formally defined.}:
+Let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$, 
+then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ since $\rho = \psi^{2}$.
+This yields Algorithm \ref{alg:denesity} to spectrally discretize \eqref{eq:density pde} in a qualitatively accurate manner for densities.
 
 \begin{algorithm}[H] 
 	\KwData{An initial condition $\rho(0) \in L^{1}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
@@ -671,12 +670,12 @@ This yields the following algorithm for densities.
 	Initialize $\psi(0) =  \sqrt{\rho^{+}(0)} - i \sqrt{\rho^{-}(0)}$\;
 	Set $\psi_{n}(t_{1}),\dots,\psi_{n}(t_{m}) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t_{1} , \dots,t_{m}, n )$\;
 	\KwOut{ $\rho_{n}(t_{k} , x) = \psi_{n}(t_{k} , x)^{2}$ for $k=1,\dots,m$.}
-	\caption{An algorithm for densities} \label{alg:density}
+	\caption{A spectral discretization to solve \eqref{eq:density pde} for densities} \label{alg:density}
 \end{algorithm}
 
 
 Finally, we present an algorithm to solve \eqref{eq:quantum observable ode} (in lieu of solving \eqref{eq:function pde}).
-We present this algorithm more from the perspective of theoretical interest at the moment, as it does not scale well with the problem size in terms of memory.
+This algorithm is presented for theoretical interest at the moment, as it does not scale well with the problem size in terms of memory usage.
 
 \begin{algorithm}[H]
 	\KwData{An initial condition $f(0) \in C(M)$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $n \in \mathbb{N}$.}
@@ -694,7 +693,7 @@ We present this algorithm more from the perspective of theoretical interest at t
 		$F_{n}(t_{k}) = \OdeSolve( B , F_{n}(t_{k-1}) , t_{k})$\;
 	}
 	\KwOut{ The operator $\hat{f}_{n}(t_{k}) = \sum_{i,j=1}^{n}[ F_{n}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
-	\caption{An algorithm for functions} \label{alg:function}
+	\caption{A spectral discretization to solve \eqref{eq:quantum observable ode} for functions} \label{alg:function}
 \end{algorithm}
 
 %On the torus, a more practical approach which holds much of the numerical benefits would be to approximate $\hat{f}_{n}$ psuedo-spectrally,
