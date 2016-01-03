@@ -593,6 +593,7 @@ The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum den
 %Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this approach.  Another problem with this approach is the potential storage cost.
 
 \subsection{Semi-discretizations and algorithms on compact manifolds}
+\ram{why do you call it a semi-discretization...this term is never defined anywhere else}
 
 This section presents the numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
 The basic ingredient for all the algorithms in this section are a Hilbert basis and an ODE solver.
@@ -724,11 +725,12 @@ This algorithm is presented for theoretical interest at the moment, as it does n
 %This is not a new algorithm, and is only introduced here as an alternative to Algorithm \ref{alg:function}.
 
 \section{Error analysis}
-We will find that error bounds for Algorithm \ref{alg:half density} will induce error bounds for the other algorithms.
-Therefore we will prioritize deriving a useful error bound for Algorithm \ref{alg:half density} first.
-Our proof is a generalization of the convergence proof in \cite{Pasciak1980}, where \eqref{eq:half density pde} is studied (modulo a factor of two) is studied on the $n$-torus.
-Let us begin by observing how well half densities in $V_{n} = \operatorname{span}( e_{1},\dots,e_{n})$ can approximate members of $H^{s}(M)$.
-In all that follows $\pi_{n}: L^{2}(M) \to V_{n}$ will denote the orthogonal projection.
+\ram{its awkward that this section only has a subsection 4.1}
+
+Since the error bounds for Algorithm \ref{alg:half density} induce error bounds for the Algorithms \ref{alg:density} and \ref{alg:function}, we first derive a useful error bound for Algorithm \ref{alg:half density}.
+Our proof is a generalization of the convergence proof in \cite{Pasciak1980}, where \eqref{eq:half density pde} is studied (modulo a factor of two) on the $n$-torus.
+We begin by proving an approximation bound between half densities in $V_{n} = \operatorname{span}( e_{1},\dots,e_{n})$ \ram{may just want to put in a preliminary notation section} and $H^{s}(M)$.
+In all that follows, let $\pi_{n}: L^{2}(M) \to V_{n}$ \ram{may want to put in a preliminary notation section} denote the orthogonal projection.
 
 \begin{proposition} \label{prop:approximation}
 	Let $\psi \in H^{\bar{s}}(M)$ for $\bar{s} > s \geq 0$.
@@ -739,15 +741,16 @@ In all that follows $\pi_{n}: L^{2}(M) \to V_{n}$ will denote the orthogonal pro
 	for some constant $C_{\bar{s},s}$ and $d = \dim(M)$.
 \end{proposition}
 \begin{proof}
-	Without loss of generality we will assume that $e_{1},e_{2},\dots$ is a Fourier basis with respect to some Riemannian metric.
+	Without loss of generality, assume that $e_{1},e_{2},\dots$ is a Fourier basis with respect to some Riemannian metric.
 	The results are unchanged upon applying Assumption \ref{ass:basis} and converting everything to the Fourier domain.
-	The Fourier decomposition of $\psi$ satisfies
+	The Fourier decomposition of $\psi$ satisfies \ram{citation}:
 	\begin{align}
 		\| \psi \|^{2}_{H^{\bar{s} }} = \sum_{k=0}^{\infty} \hat{\psi}_{k}^{2} (1+\lambda_{k})^{\bar{s}} < \infty
+		\label{eq:propapprox_eq1}
 	\end{align}
-	Weyl's asymptotic formula tells us that $\lambda_{k} \sim k^{2/d}$.
-	Substitution of this asymptotic result into the above inline equation for large $k$ tells us that $\hat{\psi}_{k}^{2}$ is asymptotically dominated by  $C k^{-1- 2\bar{s}/d}$
-	for some constant $C$.
+	\ram{You are using $\hat{\psi}$ to denote Fourier coefficients (which you defined only in the introduction) and to denote the bounded Hermitian operator associated with $\psi$, this is confusing.}
+	According to Weyl's asymptotic formula $\lambda_{k} \sim k^{2/d}$ \ram{citation}.
+	After substitution of this asymptotic result into \eqref{eq:propapprox_eq1} for large $k$, $\hat{\psi}_{k}^{2}$ is asymptotically dominated by  $C k^{-1- 2\bar{s}/d}$ for some constant $C$ \ram{I don't understand why this follows from Weyl's formula}.
 	Let $n$ be such that this dominance occurs for all $k>n$.  Then we find
 	\begin{align}
 		\| \psi - \pi_{n}(\psi) \|_{H^{s}} = \sum_{k>n} (1+\lambda_{k})^{s} \hat{\psi}_{k}^{2} \leq C \sum_{k>n} (1+\lambda_{k})^{s} k^{-1- 2\bar{s}/d}
@@ -756,35 +759,30 @@ In all that follows $\pi_{n}: L^{2}(M) \to V_{n}$ will denote the orthogonal pro
 	\begin{align}
 		\| \psi - \pi_{n}(\psi) \|_{H^{s}} \leq \tilde{C} \sum_{k>n} \frac{1}{k^{1+2(\bar{s}-s)/d}} \leq C_{s,\bar{s}}  \frac{d }{ \bar{s}-s} n^{-2(\bar{s}-s)/d}.
 	\end{align}
-	Where the last inequality is derived by bounding the above infinite sum with an integral.
+	Where the last inequality is derived by bounding the infinite sum with an integral.
 \end{proof}
 
 %We should note that this error bound illustrates that we have a spectral convergence rate on smooth data.
 %This rapid convergence for smooth data will cascade to bounds throughout this section.
 
-Now that we have derive an error bound for the approximation error of $V_{n}$ with respect to $H^{s}(M)$ we can 
-derive an error bound for Algorithm \ref{alg:half density}.
-
+With this error bound for the approximation error of $V_{n}$ with respect to $H^{s}(M)$ we can derive an error bound for Algorithm \ref{alg:half density}:
 
 \begin{theorem} \label{thm:half density convergence}
 	Let $\psi_{0} \in H^{\bar{s}}(M)$ for $\bar{s} > s > 1$.
-	Let $\psi(t)$ be the exact solution to \eqref{eq:half density pde} with initial condition $\psi_{0}$ and let
-	and $\psi_{n}(t)$ be the output of Algorithm \ref{alg:half density} on the interval $[0,T]$ for $T < \infty$ with initial condition $\psi_{n}(0) = \pi_{n}(\psi_{0})$.
-	Then the error $E_{n}(t) := \| \psi(t) - \psi_{n}(t) \|_{H^{s}}$ satisfies the bound
+	Let $\psi(t)$ be the exact solution to \eqref{eq:half density pde} with initial condition $\psi_{0}$ \ram{we may need to assert with a lemma that such a solution exists} and let $\psi_{n}(t)$ be the output of Algorithm \ref{alg:half density} on the interval $[0,T]$ for $T < \infty$ with initial condition $\psi_{n}(0) = \pi_{n}(\psi_{0})$.
+	Then the error $E_{n}(t) := \| \psi(t) - \psi_{n}(t) \|_{H^{s}}$ satisfies:
 	\begin{align}
 		E_{n}(t) \leq \| \psi_{0} \|_{H^{\bar{s}}} \, K \left( n^{-2(s-1)} t+  \frac{d}{\bar{s}-s} n^{-2(\bar{s}-s)/d} \right) e^{C t}
 	\end{align}
-	for all $t \in [0,T]$, where $K$ and $C$ are positive constants with respect to $n$,$s$, and $\bar{s}$.
-	In particular for $s = (\bar{s}+1)/2$ we get
+	for all $t \in [0,T]$, where $K$ and $C$ are positive constants with respect to $n$,$s$, and $\bar{s}$. In particular for $s = (\bar{s}+1)/2$:
 	\begin{align}
 			E_{n}(t) \leq \| \psi_{0} \|_{H^{\bar{s}}} \, K \left( n^{1-\bar{s}} t+  \frac{d}{\bar{s}-1} n^{(1-\bar{s})/d} \right) e^{C t}.
 	\end{align}
 \end{theorem}
 
-In preparation for the proof of Theorem \ref{thm:half density convergence} we first prove the following perturbed version of Gronwal's inequality.
-
+\noindent To prove Theorem \ref{thm:half density convergence}, we need a perturbed version of Gronwall's inequality:
 \begin{lemma} \label{lem:Gronwall}
-If $\frac{du}{dt} \leq Ku + \epsilon$ then $u(t) \leq (\epsilon t + u(0) ) e^{Kt}$.
+If $\frac{du}{dt} \leq Ku + \epsilon$ then $u(t) \leq (\epsilon t + u(0) ) e^{Kt}$. \ram{I am pretty sure you need $K>0$}
 \end{lemma}
 \begin{proof}
 	Let $w (t)= u (t) e^{-Kt}$.  Then for $t \geq 0$ we find
@@ -794,51 +792,49 @@ If $\frac{du}{dt} \leq Ku + \epsilon$ then $u(t) \leq (\epsilon t + u(0) ) e^{Kt
 	Thus $w(t) \leq \epsilon t + w(0) = \epsilon t + u(0)$.
 \end{proof}
 
-Now we are ready to prove Theorem \ref{thm:half density convergence}.
+Now we can prove Theorem \ref{thm:half density convergence}:
 
 \begin{proof}[Proof of Theorem \ref{thm:half density convergence}]
-	Note that $\frac{dE_{n}}{dt} = \frac{1}{2E_{n}} \langle  \psi - \tilde{\psi} \mid \frac{d}{dt} ( \psi -\tilde{\psi} )\rangle_{H^{s}}$.
-	By the Cauchy-Schwarz inequality we see that
+	Note that $\frac{dE_{n}}{dt} = \frac{1}{2E_{n}} \langle  \psi - \tilde{\psi} \mid \frac{d}{dt} ( \psi -\tilde{\psi} )\rangle_{H^{s}}$ \ram{Should this last inner product have $H^{s}$ as a subscript? Should't it just be with the Helmholtz operator?}
+	By the Cauchy-Schwarz inequality \ram{shouldn't this be the Lie derivative of $X$ not just $X$ applied to $\psi$ in the next equations?}:
 	\begin{align}
-		\frac{dE_{n}}{dt} &\leq  \frac{1}{2} \| X[\psi] - \pi_{n}(X[\psi_{n}]) \|_{H^{s}} = \| X[\psi] - \pi_{n}( X[\psi- (\psi-\psi_{n})]) \|_{H^{s}} \\
-	\intertext{By the triangle inequality we may split this sum and use the definition of the operator norm to find}
-		&\leq \| (1-\pi_{n})|_{H^{s-1}} \|_{op} \, \|X|_{H^{s}} \|_{op} \, \| \psi \|_{H^{s}} + \| \pi_{n} \| \, \|X|_{H^{s}} \| \, E_{n} \\
+		\frac{dE_{n}}{dt} &\leq  \frac{1}{2} \| X[\psi] - \pi_{n}(X[\psi_{n}]) \|_{H^{s}} = \| X[\psi] - \pi_{n}( X[\psi- (\psi-\psi_{n})]) \|_{H^{s}}. \\
+	\intertext{By the triangle inequality and the definition of the operator norm:}
+		\frac{dE_{n}}{dt}&\leq \| (1-\pi_{n})|_{H^{s-1}} \|_{op} \, \|X|_{H^{s}} \|_{op} \, \| \psi \|_{H^{s}} + \| \pi_{n} \| \, \|X|_{H^{s}} \| \, E_{n}
 	\end{align}
+	\ram{why do you have subscripts with $H^{s}$'s next to the operators? Isn't the standard notation for them to be alongside the operator subscript?}
 	We know $\psi(t) = \Phi^{t}_{*}\psi_{0}$ where $\Phi^{t}$ is the flow of $X$.
-	As $\Phi$ is as smooth as $X$ we can see that $\| \psi(t) \|_{H^{s}}$ is bounded by a scalar multiple of $\| \psi_{0} \|_{H^{s}}$.
+	As $\Phi$ is as smooth as $X$ \ram{we need a citation to that fact and don't we need to include the smoothness of $X$ somewhere in the hypothesis?}, $\| \psi(t) \|_{H^{s}}$ is bounded by a scalar multiple of $\| \psi_{0} \|_{H^{s}}$.
 	Thus we may write the above bound in the form
 	\begin{align}
 		\frac{dE_{n}}{dt} \leq K' \, \| (1- \pi_{n})|_{H^{s-1}} \| \, \| \psi_{0}\|_{H^{s}}+ C E_{n}
 	\end{align}
 	for constants $C$ and $K'$.
-	We can explicitly compute $\| (1-\pi_{n})|_{H^{s-1}} \|_{op} = (1+\lambda_{n+1})^{-(s-1)}$ where $\lambda_{k}$ denotes the $k$th eigenvalue of the Laplace operator.
-	By Weyl's asymptotic formula \cite[Theorem B.2]{Chavel1984} we
-	can derive that $\lambda_{n}$ asymptotically behaves like $n^{2/d}$ where $d = \dim(M)$.
-	Therefore by Lemma \ref{lem:Gronwall} with $\epsilon = C_{1,T} n^{-2(s-1) / d} \, \| \psi_{0}\|_{H^{s}}$
-	we find
+	We can explicitly compute $\| (1-\pi_{n})|_{H^{s-1}} \|_{op} = (1+\lambda_{n+1})^{-(s-1)}$ where $\lambda_{k}$ denotes the $k$th eigenvalue of the Laplace operator \ram{how?}.
+	By Weyl's asymptotic formula \cite[Theorem B.2]{Chavel1984}, $\lambda_{n}$ asymptotically behaves like $n^{2/d}$ where $d = \dim(M)$.
+	Therefore by Lemma \ref{lem:Gronwall} with $\epsilon = C_{1,T} n^{-2(s-1) / d} \, \| \psi_{0}\|_{H^{s}}$:
 	\begin{align}
 		E(t) \leq ( K' n^{-2(s-1) / d} \| \psi_{0} \|_{H^{s}} t+  E(0) ) e^{C t}.
 	\end{align}
-	That $E_{n}(0)$ behaves as $K'' \| \psi_{0} \|_{H^{\bar{s}}} n^{-2(\bar{s}-s)/d}$ is merely a re-statement of Proposition \ref{prop:approximation}.
+	\ram{I am pretty sure this previous equation is missing $n$ subscripts everywhere}.That $E_{n}(0)$ behaves as $K'' \| \psi_{0} \|_{H^{\bar{s}}} n^{-2(\bar{s}-s)/d}$ is merely a re-statement of Proposition \ref{prop:approximation}.
 	We then set $K = \max(K', K'')$.
 \end{proof}
 
-Having derived an error bound for algorithm 3, we can also derive an error bound for algorithm 2.
+Having derived an error bound for Algorithm \ref{alg:half density}, we can derive an error bound for Algorithm \ref{alg:density}.
 
 \begin{theorem} \label{thm:density convergence}
-	Let $\rho(0)$ be a distribution in $W^{\bar{s},1}(M)$ for $\bar{s} > s >1$.
+	Let $\rho(0)$ be a distribution in $W^{\bar{s},1}(M)$ for $\bar{s} > s >1$. \ram{You haven't defined W, this should probably appear in the preliminary notation section}
 	Let $\rho(t)$ be the solution of \eqref{eq:density pde} on the time interval $[0,T]$.
-	Let $\rho_{n}(t)$ be the output of Algorithm \ref{alg:density} on the time interval $[0,T]$.
-	Then we find
+	Let $\rho_{n}(t)$ be the output of Algorithm \ref{alg:density} on the time interval $[0,T]$, then:
 	\begin{align}
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}} \leq \| \rho(0) \|_{W^{\bar{s},1}} \, \bar{K} \left( n^{-2(s-1)} t+  \frac{d}{\bar{s}-s} n^{-2(\bar{s}-s)/d} \right) e^{C t}
 	\end{align}
-	for all $t \in [0,T]$, $\bar{K}$ is constant with respect to $n$ and $C$ is the same constant as in Theorem \ref{thm:half density convergence}.
+	 \ram{You haven't defined $W$} for all $t \in [0,T]$, $\bar{K}$ is constant with respect to $n$, and $C$ is the same constant as in Theorem \ref{thm:half density convergence}.
 \end{theorem}
 
 \begin{proof}
-	Without loss of generality, we can assume that $\rho$ is non-negative (otherwise split it into it's non-negative and non-positive components).
-	Let $\psi \in L^{2}(M)$ be such that $\rho =  \psi ^{2}$, as described in algorithm 2.
+	Without loss of generality, assume that $\rho$ is non-negative (otherwise split it into its non-negative and non-positive components).
+	Let $\psi \in L^{2}(M)$ be such that $\rho =  \psi ^{2}$, as described in Algorithm \ref{alg:density}.
 	It follows that $\psi \in H^{s}(M)$ and we compute
 	\begin{align}
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}} = \int_{M} | \rho(t) - \rho_{n}(t)| = \int_{M} | \psi^{2} - \psi_{n}^{2} |
@@ -848,18 +844,19 @@ Having derived an error bound for algorithm 3, we can also derive an error bound
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}}  &= \int_{M} | \psi^{2} - (\psi - \phi_{n})^{2} | = \int_{M} | 2 \psi \phi_{n} - \phi_{n}^{2} | \\
 			&\leq 2 \| \psi \|_{L^{2}} \| \phi_{n}\|_{L^{2}} + \| \phi_{n} \|_{L^{2}}^{2} = 2 \| \rho \|_{L^{1}}^{1/2} \cdot \| \phi_{n} \|_{L^{2}} + \| \phi_{n} \|_{L^{2}}^{2}
 	\end{align}
-	By Theorem \ref{thm:half density convergence} provides a bound for $\| \phi_{n} \|$.
+	\ram{You've applied Holder's Inequality here, I am pretty sure it holds, since its proven with Young's inequality but since you are working with a funky definition of $L^2$ its probably worth mentioning.}
+	Theorem \ref{thm:half density convergence} provides a bound for $\| \phi_{n} \|$.
 	Substitution of this bound into the above inequality yields the theorem.
 \end{proof}
 
-Finally, we show that algorithm 1 converges to a solution of \eqref{eq:quantum observable ode}, which is morally equivalent to a solution
-of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
+Finally, we prove that Algorithm \ref{alg:function} converges to a solution of \eqref{eq:quantum observable ode}, which is equivalent to a solution of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}:
 
 \begin{proposition} \label{prop:function approximation}
 	Let $f \in C^{k}(M)$ and let $\hat{f}_{n} = \pi_{n} \circ \hat{f} \circ \pi_{n}$.  Then
 	\begin{align}
 		\| ( \hat{f} - \hat{f}_{n} )|_{H^{s}} \|_{op} \leq D \frac{d}{s} n^{-2s/d} \| \hat{f} \|_{op}
 	\end{align}
+	\ram{why do you have subscripts with $H^{s}$'s next to the operators? Isn't the standard notation for them to be alongside the operator subscript?}
 	where $d= \dim(M)$, $s > k \geq 1$, and $D$ is constant.
 \end{proposition}
 \begin{proof}
@@ -867,7 +864,7 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 	\begin{align}
 		\| \pi_{n}^{\perp}(\psi) \|_{L^{2}} \leq \frac{d}{s} n^{-2s/d} \| \psi \|_{H^{s}} \label{eq:hot inequality}
 	\end{align}
-	for $s>0$.  We now use this to compute the desired bound.  We find
+	for $s>0$, then:
 	\begin{align}
 		\| (\hat{f} - \hat{f}_{n})|_{H^{s}} \|_{op} &= \sup_{\| \psi \|_{H^{s}}=1} \langle \psi \mid \hat{f} - \hat{f}_{n} \mid \psi \rangle \\
 			&= \sup_{\| \psi \|_{H^{s}}=1} \left( \langle \psi \mid \hat{f}  \mid \psi \rangle - \langle \psi - \pi_{n}^{\perp}(\psi) \mid \hat{f} \mid \psi - \pi_{n}^{\perp}(\psi) \rangle \right) \\
@@ -878,17 +875,17 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 \end{proof}
 
 \begin{theorem} \label{thm:function convergence}
-	Let $f(t) \in C^{k}(M)$ be a solution to \eqref{eq:function pde} so that $\hat{f}(t)$ is a solution to \eqref{eq:quantum observable ode}.
-	Let $\hat{f}_{n}$ denote the output of Algorithm \ref{alg:function}.
-	Then
+	Let $f(t) \in C^{k}(M)$ be a solution to \eqref{eq:function pde} \ram{do we need a quick note on the existence of solutions?} so that $\hat{f}(t)$ is a solution to \eqref{eq:quantum observable ode}.
+	Let $\hat{f}_{n}$ denote the output of Algorithm \ref{alg:function}, then:
 	\begin{align}
 		\| ( \hat{f} - \hat{f}_{n})|_{H^{s}} \|_{op} \leq D \frac{d}{s} n^{-2s/d} \| \hat{f} \|_{op}+  K \| \hat{f}_{n} \|_{op} \left( n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}
 	\end{align}
-	for the same constants $D$ as in Proposition \ref{prop:function approximation} and the same constants $C,K$ as in \ref{thm:half density convergence}.
+	\ram{why do you have subscripts with $H^{s}$'s next to the operators? Isn't the standard notation for them to be alongside the operator subscript?}
+	for the same constants $D$ as in Proposition \ref{prop:function approximation} and the same constants $C,K$ as in Theorem \ref{thm:half density convergence}.
 \end{theorem}
 
 \begin{proof}
-	We find
+	We find \ram{what is $U(t)$? Is it the unitary transformation from Assumption \ref{ass:basis}? I don't think its supposed to be (since its time varying here), but its the only other time I see $U$}
 	\begin{align}
 		\| ( \hat{f}(t) - \hat{f}_{n}(t))|_{H^{s}} \|_{op} &= \sup_{\| \psi \|_{H^{s}} =1} \langle \psi \mid \hat{f}(t) - \hat{f}_{n}(t) \mid \psi \rangle \\
 			&= \sup_{ \| \psi \|_{H^{s}} =1} \langle \psi \mid U(t) \cdot \hat{f}(0) U(t)^{\dagger} - U_{n}(t) \cdot \hat{f}_{n}(0) U_{n}(t)^{\dagger} \mid \psi \rangle \\
@@ -902,23 +899,22 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 	\end{align}
 	where $\phi(t) = U_{n}(t)^{\dagger} \psi - U(t)^{\dagger} \psi$.
 	
-	We see that the first term will be bounded by Proposition \ref{prop:function approximation}. Thus we will focus on the second term.
-	In order to bound the second term we must bound $\phi$.
-	As $U_{n}(t)^{\dagger} \psi$ is the backwards time numerical solution to \eqref{eq:half density pde}
-	and $U_{n}(t)^{\dagger}\psi$ is the exact backward time solution to \eqref{eq:half density pde} we know by Theorem \ref{thm:half density convergence} that
-	there exists constants $K$ and $C$ such that
+	The first term is bounded by Proposition \ref{prop:function approximation}.
+	To bound the second term we must bound $\phi$.
+	As $U_{n}(t)^{\dagger} \psi$ is the backwards time numerical solution to \eqref{eq:half density pde} and $U_{n}(t)^{\dagger}\psi$ is the exact backward time solution to \eqref{eq:half density pde}, Theorem \ref{thm:half density convergence} prescribes the existence of constants $K$ and $C$ such that:
 	\begin{align}
 		\| \phi \|_{H^{\underline{s}}} = \| U_{n}(t)^{\dagger} \psi - U(t)^{\dagger} \psi \|_{H^{\underline{s}}}  \leq K \| \psi \|_{H^{s}} \left(  n^{-2(\underline{s}-1)} + \frac{d}{s - \underline{s}} n^{-2(s-\underline{s})/d} \right) e^{Ct} 
 	\end{align}
 	for any $\underline{s} <s$.
-	We can simplify this expression by noting that $\| \psi \|_{H^{s}} = 1$, setting $\underline{s} = (1+s)/2$, and using that the $H^{\underline{s}}$ norm is stronger than the $L^{2}$-norm we get
+	This expression can be simplified by noting that $\| \psi \|_{H^{s}} = 1$, setting $\underline{s} = (1+s)/2$, and noting that the $H^{\underline{s}}$ norm is stronger than the $L^{2}$-norm to get:
 	\begin{align}
 		 \| \phi \|_{L^{2}}  \leq  K \left(  n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}.
 	\end{align}
-	By applying the Cauchy-Schwarz inequality to \eqref{eq:final line} and our newly derived bound on $\phi$ we find
+	By applying the Cauchy-Schwarz inequality to \eqref{eq:final line} and our derived bound on $\phi$:
 	\begin{align}
 		\| ( \hat{f}(t) - \hat{f}_{n}(t))|_{H^{s}} \|_{op} \leq \| ( \hat{f}(0) - \hat{f}_{n}(0) )|_{H^{s}} \|_{op} +  K \| \hat{f}_{n} \|_{op} \left( n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}
 	\end{align}
+	\ram{why do you have subscripts with $H^{s}$'s next to the operators? Isn't the standard notation for them to be alongside the operator subscript?}
 	Upon invoking Proposition \ref{prop:function approximation} we get the desired result.
 %	\begin{align}
 %		\| ( \hat{f}(t) - \hat{f}_{n}(t))|_{H^{s}} \|_{op} \leq D \frac{d}{s} n^{-2s/d} \| \hat{f} \|_{op}+  K \| \hat{f}_{n} \|_{op} \left( n^{1-s} + \frac{2d}{s -1} n^{(1-s)/d} \right) e^{Ct}
@@ -926,21 +922,21 @@ of \eqref{eq:function pde} courtesy of Theorem \ref{thm:quantize}.
 \end{proof}
 
 
-\subsection{Qualitative accuracy}
-In this section we list a number of properties which our algorithms exhibit.  Let us begin with norm-preservation.
+\subsection{Qualitative Accuracy}
+This section proves the qualitative accuracy of our algorithms exhibit.
 
 \begin{theorem} \label{thm:norms}
-	Let $\hat{f}_{n}, \rho_{n}$, and $\psi_{n}$ be numerical solutions derived from algorithms 1, 2, and 3.
-	Then $\| \hat{f}_{n}(t) \|_{op}, \|\rho_{n}(t)\|_{L^{1}} , \| \psi (t)\|_{L^{2}}$ are all constant in time
-	and
+	Let $\psi_{n}$, $\rho_{n}$, and $\hat{f}_{n}$ be the result of Algorithms \ref{alg:half density}, \ref{alg:density}, and \ref{alg:function}, respectively.
+	Then $\| \psi (t)\|_{L^{2}}, \|\rho_{n}(t)\|_{L^{1}},$ and $\|\hat{f}_{n}(t) \|_{op}$ are constant in time and
 	\begin{align}
-		\lim_{n \to \infty} \| \hat{f}_{n} \|_{op} = \| f \|_{\sup} \quad,\quad
-		\lim_{n \to \infty} \| \rho_{n} \|_{nuc} = \| \rho \|_{L^{1}} \quad,\quad
-		\lim_{n \to \infty} \| \psi_{n} \|_{L^{2}} = \| \psi \|_{L^{2}}.
+		\lim_{n \to \infty} \| \psi_{n} \|_{L^{2}} = \| \psi \|_{L^{2}}, \quad \quad
+		\lim_{n \to \infty} \| \rho_{n} \|_{nuc} = \| \rho \|_{L^{1}}, \quad \textrm{and} \quad
+		\lim_{n \to \infty} \| \hat{f}_{n} \|_{op} = \| f \|_{\sup}.
 	\end{align}
+	\ram{the relationship $\psi$,$\rho$ and $f$ have to the discretization has to be stated explicitly, moreover, $nuc$ and $L^1$ norms aren't defined. It would probably also be worth defining $op$ and $nuc$ in a preliminary notation section.}
 \end{theorem}
 \begin{proof}
-	To prove $\| \hat{f}_{n} \|_{op}$ is conserved note that the evolution is isospectral.
+	To prove $\| \hat{f}_{n} \|_{op}$ is conserved note that the evolution is isospectral \ram{citation}.
 %	In particular, the solution is given by $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$
 %	where $U_{n}(t)$ is the the solution to $\dot{U}_{n} = X_{n} \cdot U_{n}$ with $U_{n}(0)$ as the identity.
 %	As $U_{n}(t)$ is unitary, we can observe that 
@@ -949,29 +945,29 @@ In this section we list a number of properties which our algorithms exhibit.  Le
 %			&= \sup_{\psi} \left( \langle U_{n}(t)^{\dagger} \cdot \psi \mid \hat{f}_{n}(0) \mid U_{n}(t)^{\dagger} \psi \rangle \right) = \sup_{\psi} \langle \psi \mid \hat{f}_{n}(0) \mid \psi \rangle \\
 %			&= \| \hat{f}_{n}(0) \|_{op}.
 %	\end{align}
-	We've already shown that $\hat{f}_{n}(t)$ converges to $\hat{f}(t)$ in the operator norm.
-	Convergence of the norms follows from the fact that $\| \hat{f} \|_{op} = \| f \|_{\sup}$.
+	We have already shown that $\hat{f}_{n}(t)$ converges to $\hat{f}(t)$ in the operator norm.
+	Convergence of the norms follows from the fact that $\| \hat{f} \|_{op} = \| f \|_{\sup}$ \ram{so its worth noting that the natural notion of norm for continuous functions is the sup norm somewhere in a preliminary notation section}.
 	
-	The idea of this proof works for $\| \rho_{n} \|_{nuc}$ and $\| \psi_{n} \|_{L^{2}}$ as well.
+	This approach is able to prove that $\| \rho_{n} \|_{nuc}$ and $\| \psi_{n} \|_{L^{2}}$ as well.
 \end{proof}
 
-Theorem \ref{thm:norms} is valuable because each of the norms is naturally associated to the entity which it bounds, and these quantities are conserved for the PDEs we wish to approximate.
+Theorem \ref{thm:norms} is valuable because each of the norms is naturally associated to the entity which it bounds, and these quantities are conserved for the PDEs \ram{citation} that this paper approximates.
 For example, $\| \hat{f} \|_{op} = \| f \|_{\sup}$ for a function $f$, and this is constant in time when $f$ is a solution to \eqref{eq:function pde}.
-Theorem \ref{thm:norms} tells us that our discrete manifestation of the $\sup$-norm is constant for any $n$, no matter how small.
-Similarly, the conservation of $\| \rho \|_{L^{1}}$ is a statement on how advection preserves the total mass of a density, and Theorem \ref{thm:norms} tells us that we have mass conservation at the discrete level as well.
+A discretization constructed according to Algorithm \ref{alg:function} according to Theorem \ref{thm:norms} is constant for any $n$, no matter how small.
+Similarly, since advection preserves the total mass of a density, $\rho$, \ram{citation} $\|\rho \|_{L^{1}}$ is conserved.
+Theorem \ref{thm:norms} proves that mass is conserved by discretizations generated by Algorithm \ref{alg:density}.
 
-Norms are merely the tip of the ice-berg in terms of conservation laws for advection.
+%Norms are merely the tip of the ice-berg in terms of conservation laws for advection.
 The full Banach algebra of continuous function is conserved by advection too.
-We find that our integrator has this property as well.
+This property is also conserved by our discretization.
 \begin{theorem} \label{thm:algebra}
-	Let $f(x;t),g(x;t)$, and $h(x;t)$ be solutions of \eqref{eq:function pde}.
-	It follows that $k= f \cdot g + h $ is also a solution of \eqref{eq:function pde}.
-	Let $\hat{f}_{n}, \hat{g}_{n}$ and $\hat{h}_{n}$ be numerical solutions derived from algorithm 1
-	so that each satisfies the ode \eqref{eq:quantum observable ode}, with ``$X$'' replaced by it $n$-rank approximation.
-	Then $\hat{k}_{n}(t) = \hat{f}_{n}(t) \cdot \hat{g}_{n}(t) + \hat{h}_{n}(t)$ also satisfies \eqref{eq:quantum observable ode}, with ``$X$'' replaced by it $n$-rank approximation.
-	Moreover, $\hat{k}_{n}(t)$ converges to the solution $\hat{k}$ as $n \to \infty$ in the operator norm on $H^{s}(M)$ when $f,g,h \in W^{s,\infty}(M)$ for $s>1$.
+	Let $f(x;t),g(x;t)$, and $h(x;t)$ be solutions of \eqref{eq:function pde}, then $k= f \cdot g + h $ is also a solution of \eqref{eq:function pde}.
+	Let $\hat{f}_{n}, \hat{g}_{n}$ and $\hat{h}_{n}$ be numerical solutions constructed by Algorithm \ref{alg:function}, then each satisfies \eqref{eq:quantum observable ode} with ``$X$'' replaced by it $n$-rank approximation \ram{what does this mean?}.
+	$\hat{k}_{n}(t) = \hat{f}_{n}(t) \cdot \hat{g}_{n}(t) + \hat{h}_{n}(t)$ also satisfies \eqref{eq:quantum observable ode}, with ``$X$'' replaced by it $n$-rank approximation.
+	Moreover, $\hat{k}_{n}(t)$ converges to the solution $\hat{k}$ as $n \to \infty$ in the operator norm on $H^{s}(M)$ when $f,g,h \in W^{s,\infty}(M)$ for $s>1$ \ram{W hasn't been defined}.
 \end{theorem}
 \begin{proof}
+\ram{what is $U(t)$? Is it the unitary transformation from Assumption \ref{ass:basis}? I don't think its supposed to be (since its time varying here), but its the only other time I see $U$}
 	Note that 
 	\begin{align}
 		\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} \\
@@ -987,17 +983,17 @@ We find that our integrator has this property as well.
 	Convergence follows as a result of Theorem \ref{thm:function convergence}.
 \end{proof}
 
-Finally, the duality between functions and densities is preserved by advection.  If $f$ satisfies \eqref{eq:function pde} and $\rho $ satisfies \eqref{eq:density pde} then $\int f \rho$ is conserved in time.
-We have a discrete analog of this.
+Finally, the duality between functions and densities is preserved by advection.  If $f$ satisfies \eqref{eq:function pde} and $\rho $ satisfies \eqref{eq:density pde} then $\int f \rho$ is conserved in time \ram{still think a citation or a brief proof of this idea would help the reader}.
+Discretizations constructed by Algorithms \ref{alg:density} and \ref{alg:function} satisfy this same equality:
 \begin{theorem}
-	Let $\hat{f}_{n}$ and $\hat{\rho}_{n}$ be numerical solutions derived from algorithms 1 and 2 respectively.
-	Then $\Tr( \hat{f}_{n} \rho_{n} )$ is constant in time and converges to the constant $\int f \rho$ as $n \to \infty$
-	for $f \in W^{s,\infty}$ and $\rho \in W^{s,1}$ for $s>1$.
+	Let $\hat{f}_{n}$ and $\hat{\rho}_{n}$ be numerical solutions derived from Algorithms \ref{alg:function} and \ref{alg:density}, respectively.
+	Then for each $n \in \mathbb{N}$, $\Tr( \hat{f}_{n} \rho_{n} )$ is constant in time and converges to the constant $\int f \rho$ as $n \to \infty$ for $f \in W^{s,\infty}$ and $\rho \in W^{s,1}$ for $s>1$ \ram{never defined W}.
 \end{theorem}
 \begin{proof}
-	As $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$ and $\hat{\rho}_{n}(t) = U_{n}(t) \hat{\rho}_{n}(0) U_{n}(t)^{\dagger}$
-	we see that $\Tr( \hat{f}_{n}(t)^{\dagger} \rho_{n}(t) ) = \Tr( U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} U_{n}(t) \rho_{n}(0) U_{n}(t)^{\dagger}) = \Tr( \hat{f}_{n} \rho_{n}(0) )$.
-	Convergence follows from Theorem \ref{thm:function convergence} and Theorem \ref{thm:density convergence}.
+\ram{what is $U(t)$? Is it the unitary transformation from Assumption \ref{ass:basis}? I don't think its supposed to be (since its time varying here), but its the only other time I see $U$}
+
+	As $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$ and $\hat{\rho}_{n}(t) = U_{n}(t) \hat{\rho}_{n}(0) U_{n}(t)^{\dagger}$, $\Tr( \hat{f}_{n}(t)^{\dagger} \rho_{n}(t) ) = \Tr( U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} U_{n}(t) \rho_{n}(0) U_{n}(t)^{\dagger}) = \Tr( \hat{f}_{n} \rho_{n}(0) )$.
+	Convergence follows from Theorems \ref{thm:function convergence} and \ref{thm:density convergence}.
 \end{proof}
 
 \section{Numerical experiments}
