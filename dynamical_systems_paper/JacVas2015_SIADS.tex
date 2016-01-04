@@ -72,6 +72,8 @@ These equations satisfy a number of conservation laws.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
 then so is their product, $f \cdot g$, and their sum, $f+g$.
 Similarly, the $L^{1}$-norm is conserved in time under the evolution of \eqref{eq:density pde}.
+Finally, \eqref{eq:density pde} is the adjoint evolution equation to \eqref{eq:function pde} in the sense that the integral $\langle f , \rho \rangle := \int f \rho$ is constant in time.\footnote{To see this compute
+$\frac{d}{dt} \langle f , \rho \rangle = \int ( \partial_{t} f ) \rho + f ( \partial_{t} \rho) $.  One will find that the final integral vanishes upon substitution of \eqref{eq:function pde} and \eqref{eq:density pde} and applying integration by parts.}
 This motivates our definition of qualitative accuracy:
 
 \begin{definition} \label{def:quality}
@@ -142,7 +144,7 @@ Things:
 \begin{enumerate}
 	\item $C(M), C(M)'$
 	\item $W^{k,p}$
-	\item Densities, $\bigoplus^{n} TM$.
+	\item Densities, $\bigoplus^{n} TM$. $L^{1}(M)$.  Dual pairing.
 	\item Commutator brackets
 	\item Operator theory stuff like trace/adjoint/bounded/unitary.
 \end{enumerate}
@@ -241,7 +243,7 @@ At the core of any spectral scheme is the use of a Hilbert space upon which ever
 In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$, which foregoes the choice of a volume form.
 We will also define the Sobolev spaces $H^{s}(M ; g)$ which arise from equipping $M$ with a Riemannian metric, $g$.
 
-For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \ram{probably need to define what this is} \cite[Chapter 16]{Lee2006}.
+For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$.
 \begin{definition}\label{def:half density}
 	A half-density is a continous complex function $\psi : \bigoplus^n TM \to \mathbb{C}$
 	such that $| \psi |^{2} \in \Dens(M)$.
@@ -416,23 +418,23 @@ In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if there exi
 Note that saying $\psi$ is of class $H^{s}$ is a topological statement and is not metric dependent \cite[Proposition 2.2]{Hebey1999}.
 However, the norm $\| \psi \|_{s,2} = \| f \|_{s,2}$ is metric dependent.
 
-\section{A spectral discretization}
-\ram{its awkward that this section only has a subsection 3.1...it may be worth creating a separate subsection for Theorem 3.1}
-
-In this section, we spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner.
+\section{Quantization} \label{sec:quantization}
+In physics, ``quantization'' refers to the process of substituting certain physically relevant functions with operators on a Hilbert space, while attempting to preserve the symmetries and conservation laws of the classical theory.
+In this section, we will quantize \eqref{eq:function pde} and \eqref{eq:density pde} in preparation for a spectral discretization in section \ref{sec:discretize}.
 To realize this goal, we first obtain canonical relationships that are amenable to spectral discretization between $L^{2}(M)$ and functions, densities, and vector-fields.
 
-To begin, let us consider the space of continuous real-valued functions $C(M)$ \ram{you've used this object several times already, it may just be worth defining it in a preliminary section}.
-For each $f \in C(M)$, there is a unique bounded Hermitian operator, $\hat{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
-That is to say $(\hat{f} \cdot \psi) (x) = f(x) \psi(x)$ for any $\psi \in L^{2}(M)$.
-Notice that $f \mapsto \hat{f}$, preserves the ring structure because $\widehat{f \cdot g + h} = \hat{f} \cdot \hat{g} + \hat{h}$.
+To begin, let us quantize the space of continuous real-valued functions $C(M)$.
+For each $f \in C(M)$, there is a unique bounded Hermitian operator, $H_{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
+That is to say $(H_{f} \cdot \psi) (x) = f(x) \psi(x)$ for any $\psi \in L^{2}(M)$.
+By inspection one can observe that the map ``$f \mapsto H_{f}$'' is injective and preserves the algebra of $C(M)$ because $H_{f\cdot g + h} = H_{f} \cdot H_{g} + H_{h}$ and $\| H_{f} \|_{op} = \| f \|_{\infty}$.
 
-Similarly, (and in the opposite direction) for any trace class operator $\hat{\rho}:L^{2}(M) \to L^{2}(M)$ there is a unique distribution $\rho \in C(M)'$ \ram{need to define this} such that: 
+Similarly, (and in the opposite direction) for any trace class operator $A:L^{2}(M) \to L^{2}(M)$ there is a unique distribution $\rho_{A} \in C(M)'$ such that: 
 \begin{align}
-	 \int f \, \rho = \Tr ( \hat{f}^{\dagger} \cdot \hat{\rho} )
+	 \int f \, \rho_{A} = \Tr ( H_{f}^{\dagger} \cdot A )
 \end{align}
-for any $f \in C(M)$ \ram{need to define $\Tr$ and $^{\dagger}$}.
-By construction, the surjection $\hat{\rho} \mapsto \rho$ and the injection $f \mapsto \hat{f}$ preserve the duality between functions and distributions \ram{why are they surjections and injections}.
+for any $f \in C(M)$.
+The map ``$A \mapsto \rho_{A}$'' is merely the adjoint of the injection ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is surjective.
+By construction, these maps preserve the duality between functions and distributions.
 
 %Finally, for any vector field $X$ there is a unique (unbounded) anti-symmetric operator $\pounds_{X}$ on $L^{2}(M)$
 %given in coordinates by
@@ -467,48 +469,51 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 
 \begin{theorem} \label{thm:quantize}
 	Let $X(t) \in \mathfrak{X}(M)$ be a time-dependent vector-field.
-	Then $f$ and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde} respectively
-	if and only if $\hat{f}$ and $\hat{\rho}$ satisfy the operator ODEs
+	Then $f$ satisfies \eqref{eq:function pde}
+	if and only if $H_{f}$ satisfies
 	\begin{align}
-		&\frac{d \hat{f} }{dt} + [ \hat{f} , \pounds_{X} ] = 0 \label{eq:quantum observable ode} \\
-		&\frac{d \hat{\rho} }{dt} + [ \hat{\rho} , \pounds_{X} ] = 0 \label{eq:quantum density ode}
+		\frac{d H_{f} }{dt} + [ H_{f} , \pounds_{X} ] = 0. \label{eq:quantum observable ode}
 	\end{align}
-	respectively, where $[ \cdot , \cdot ]$ denotes the commutator bracket \ram{may just want to define in a preliminary notation section}.
-	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$, then $\psi$ satisfies \eqref{eq:half density pde}
-	if and only if $\rho$ satisfies \eqref{eq:density pde}.
+	If $A$ satisfies
+	\begin{align}
+		\frac{dA}{dt} + [ A , \pounds_{X} ] = 0, \label{eq:quantum density ode}
+	\end{align}
+	then $\rho_{A}$ satisfies \eqref{eq:density pde}.
+	Finally, $\psi$ satisfies \eqref{eq:half density pde}
+	if and only if $\rho = \psi^{2}$ satisfies \eqref{eq:density pde}.
 \end{theorem}
 
 \begin{proof}
 	Let $f$ satisfy \eqref{eq:function pde}.
-	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ \hat{f} , \pounds_{X}] \cdot \psi$ is given in coordinates by:
+	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ H_{f} , \pounds_{X}] \cdot \psi$ is given in coordinates by:
 	\begin{align}
-		[ \hat{f} , \pounds_{X} ] \cdot \psi = f \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right)
-			- \frac{1}{2} X^{j} \pder{}{x^{j}}( f \psi)  + \frac{1}{2} \pder{}{x^{j}} (f \psi \, X^{j} )
+		\left( [ H_{f}, \pounds_{X} ] \cdot \psi \right)(x) &= f(x) \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right) (x) \\
+			&\quad- \frac{1}{2} X^{j} \left. \pder{}{x^{j}} \right|_{x}( f \psi)  + \frac{1}{2} \left. \pder{}{x^{j}} \right|_{x}(f \psi \, X^{j} )
 	\end{align}
 	where we have used \eqref{eq:representation}.  
 	Application of the product rule to each of these terms yields a number of cancellations and we find:
 	\begin{align}
-		[ \hat{f} , \pounds_{X} ] \cdot \psi = - X^{j} \pder{f}{x^{j}} \psi = (\partial_{t} f )\psi = \frac{d \hat{f} }{dt} \cdot \psi.
+		[ H_{f} , \pounds_{X} ] \cdot \psi = - X^{j} \pder{f}{x^{j}} \psi = (\partial_{t} f )\psi = \frac{d H_{f} }{dt} \cdot \psi.
 	\end{align}
-	As $\psi$ is arbitrary, we have shown that $\hat{f}$ satisfies \eqref{eq:quantum observable ode}.
+	As $\psi$ is arbitrary, we have shown that $H_{f}$ satisfies \eqref{eq:quantum observable ode}.
 	Each line of reasoning is reversible, and so we have proven the converse as well.
 	
-	In order to handle densities note that $\langle f , \rho \rangle = \int_{M} f\rho$ is constant in time when $f$ and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde}, respectively \ram{This is probably obvious, but a citation or a brief argument would be useful since its the crux of the next portion of the argument}.
-	By the definition of $\hat{\rho}$, $\Tr( \hat{f}^{\dagger} \hat{\rho}) = \langle f , \rho \rangle$.
+	In order to handle densities note that $\langle f , \rho \rangle$ is constant in time when $f$ and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde}, respectively.
+	By the definition of $\rho_{A}$, $\Tr( H_{f}^{\dagger} \cdot A) = \langle f , \rho_{A} \rangle$.
 	Therefore:
 	\begin{align}
-		0 = \frac{d}{dt} \left( \Tr( \hat{f}^{\dagger} \rho ) \right) = \Tr \left( \frac{d \hat{f}^{\dagger}}{dt} \hat{\rho} + \hat{f}^{\dagger} \frac{d \hat{\rho}}{dt} \right).
+		0 = \frac{d}{dt} \left( \Tr( H_{f}^{\dagger} \cdot A ) \right) = \Tr \left( \frac{d H_{f}^{\dagger}}{dt} \cdot A + H_{f}^{\dagger} \cdot \frac{d A}{dt} \right).
 	\end{align}
-	As was just shown, $\frac{d}{dt} \hat{f} =  - [\hat{f} , \pounds_{X} ]$ so:
+	As was just shown, $\frac{dH_{f}}{dt} =  - [H_{f} , \pounds_{X} ]$ so:
 	\begin{align}
-		0 = \Tr( - [\hat{f} , \pounds_{X} ]^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \hat{\rho} ) = \Tr( - \pounds_{X}^{\dagger} \hat{f}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \pounds_{X}^{\dagger} \hat{\rho} + \hat{f}^{\dagger} \frac{d\hat{\rho}}{dt} ).
+		0 = \Tr \left( - [H_{f} , \pounds_{X} ]^{\dagger} \cdot A + H_{f}^{\dagger} \cdot \frac{d A}{dt} \right) 
+		= \Tr( - \pounds_{X}^{\dagger} H_{f}^{\dagger} \cdot A + H_{f}^{\dagger} \pounds_{X}^{\dagger} \cdot A + H_{f}^{\dagger}  \cdot \frac{dA}{dt} ).
 	\end{align}
-	\ram{I believe it should be $\hat{f}^{\dagger} \frac{d\hat{\rho}}{dt}$ not $\hat{f}^{\dagger} \hat{\rho}$ in the middle equation in the previous line}
 	Upon noting that $\pounds_{X}^{\dagger} = - \pounds_{X}$ and that $\Tr( a b c) = \Tr( bc a)$:
 	\begin{align}
-		0 = \Tr \left( \hat{f}^{\dagger}( [\hat{\rho} , \pounds_{X} ] + \frac{d \hat{\rho}}{dt} ) \right).
+		0 = \Tr \left( H_{f}^{\dagger}( [\hat{\rho} , \pounds_{X} ] + \frac{d \hat{\rho}}{dt} ) \right).
 	\end{align}
-	As $\hat{f}$ was chosen arbitrarily, the desired result follows.
+	As $H_f$ was chosen arbitrarily, the desired result follows.
 	Again, this line of reasoning is reversible.
 %	
 %	Thirdly, if $Y$ satisfies \eqref{eq:vector field pde}, then we observe 
@@ -623,26 +628,23 @@ The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum den
 %
 %Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this approach.  Another problem with this approach is the potential storage cost.
 
-\section{Semi-discretizations and algorithms on compact manifolds} \label{sec:discretization}
-\ram{why do you call it a semi-discretization...this term is never defined anywhere else}
-
+\section{Discretization} \label{sec:discretization}
 This section presents the numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
 The basic ingredient for all the algorithms in this section are a Hilbert basis and an ODE solver.
 Denote a Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$ \ram{maybe worth moving to a notation section}.
 For example, for a Riemannian metric, $g$ if $\{ f_{0}, f_{1},\dots \}$ denote eigen-functions of the Laplace operator, then $\{ e_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemannian density.
 To ensure convergence, we assume:
 \begin{ass} \label{ass:basis}
-	There exists a basis such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$ is bounded on $H^{s}$ for some $s > 1$.
-	\ram{ I think saying something like this may be more clear:
-	There exists a Hilbert basis $\{ e_{k} \}$ and unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$ and is bounded on $H^{s}$ for some $s > 1$.}
+	There exists a metric $g$ such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$ is bounded on $H^{s}(M;g)$ for some $s > 1$.
 \end{ass}
 
-\noindent Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Liouville basis (e.g. Legendre functions) \ram{citation}.
+%\noindent Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Liouville basis (e.g. Legendre functions) \ram{citation}.
 
-Any ODE solver such as Euler's method, Runge-Kutta, or even well tested software such as \cite{VODE} satisfy the requirements for the algorithm described in this section.
-\ram{this next sentence feels like a non-sequitur}
+In this section we will provide a semi-discretization in that we will not discretize the operator $\partial_{t}$.
+We will solve the resulting ODEs using standard methods.
+For example, any ODE solver such as Euler's method, Runge-Kutta, or even well tested software such as \cite{VODE} satisfy the requirements for the algorithm described in this section.
 Most notably, the method of \cite{Calvo1997} is specialized to isospectral flows such as  \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} and preserves the invariants of isospectral flows over large time-step sizes.
-This article is concerned purely with semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}, and we only require that this ode solver efficiently \ram{what does efficiently mean here} solves finite dimensional ODEs to any prescribed accuracy.
+In this article we assume this ode solver can efficiently \ram{what does efficiently mean here} solve finite dimensional ODEs to any prescribed accuracy.
 More explicitly, let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final})$ when $x(t)$ is the solution to the ode $\dot{x} = F(x)$ with initial condition $x_{init}$.
 
 Before constructing an algorithm to spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner, we first solve \eqref{eq:half density pde} using a standard spectral discretization~\cite{Boyd2001,NumericalRecipes} in Algorithm \ref{alg:half density}.
