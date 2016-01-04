@@ -66,7 +66,7 @@ for a time dependent function $f$ and a time dependent density $\rho$ on $M$.
 In the above PDEs we are following the Einstein summation convention, and summing over the dummy index ``$i$''.
 Equation \eqref{eq:function pde}, which is sometimes called the ``transport equation,'' describes how a scalar quantity is transported by the flow of $X$ \cite{Truesdell1991}.
 Equation \eqref{eq:density pde}, which is sometimes called the ``continuum equation'' or ``Louiville's equation'' describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
-Such PDEs arises in a variety of contexts, ranging from  mechanics \cite{Batchelor1999,Truesdell1991} to control theory \cite{HenrionKorda2014}, and can be seen as zero-noise limits of the Forward/Backward Kolmogorov equations \cite{Oksendal2003}.
+Such PDEs arises in a variety of contexts, ranging from  mechanics \cite{Batchelor1999,Truesdell1991} to control theory \cite{HenrionKorda2014}, and can be seen as zero-noise limits of the forward and backward Kolmogorov equations \cite{Oksendal2003}.
 
 These equations satisfy a number of conservation laws.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
@@ -75,7 +75,7 @@ Similarly, the $L^{1}$-norm is conserved in time under the evolution of \eqref{e
 This motivates our definition of qualitative accuracy:
 
 \begin{definition} \label{def:quality}
-	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if it conserves discrete analogs of scalar multiplication/addition/the $L^{1}$-norm of densities and the sup-norm of functions.
+	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if it conserves discrete analogs of scalar multiplication/addition, the $L^{1}$-norm and total mass of densities, and the sup-norm of functions.
 \end{definition}
 
 Both \eqref{eq:function pde} and \eqref{eq:density pde} can be numerically solved by a variety of schemes.
@@ -132,9 +132,18 @@ by the following sequence of accomplishments.
 	\item Our auxiliary scheme will induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
 	\item We will derive a spectral convergence rate for our auxiliary scheme in section \ref{sec:analysis}.
 	\item The spectral convergence rate for our auxiliary scheme will induce spectral convergence rates for the numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
-	\item We will prove our schemes are qualitatively accurate (i.e. preserves scalar addition/multiplication, total mass, $L^{1}-norms$, etc.) in section \ref{sec:qualitative}
+	\item We will prove our schemes are qualitatively accurate (\`a la Definition \ref{def:quality}) in section \ref{sec:qualitative}.
 	\item We will demonstrate these findings in numerical experiments in section \ref{sec:numerics}.
-	Furthermore, we will observe our algorithm for \eqref{eq:density pde} to be superior to a standard spectral discretization.
+	and observe our algorithm for \eqref{eq:density pde} to be superior to standard spectral discretization.
+\end{enumerate}
+
+\subsection{Notation}
+Things:
+\begin{enumerate}
+	\item $C(M), C(M)'$
+	\item Densities
+	\item Commutator brackets
+	\item Operator theory stuff like trace/adjoint/bounded/unitary.
 \end{enumerate}
 
 
@@ -222,15 +231,14 @@ by the following sequence of accomplishments.
 \section{The canonical space $L^{2}(M)$}
 \label{sec:half densities}
 %The goal of this paper is to construct a spectral advection scheme which exhibits a large number of invariants.
-%At the core of many spectral schemes is the use of a Hilbert space upon which everything can be approximated via least squares projections.
 %Typically this Hilbert space is $L^{2}(M ; \mu)$ where the $L^{2}$-inner product is taken with respect to some non-canonical density or volume form $\mu$ on $M$.
 %We do not have this luxury.
 %The properties of advection that we desire to have are strictly properties of $M$ alone, i.e. they are canonical.
 %The choice of $\mu$ is non-canonical and threatens to discard the conservation laws we aim to keep.
 
-In this section, we define a geometric version of an $L^{2}$-space, denoted by $L^{2}(M)$, which foregoes the choice of a volume form. \ram{it would be useful if you described everything that you plan on doing in this section}
-This is in contrast to the standard $L^{2}$-space, in which a volume form, or a reference density is chosen first \cite{Adams2003}.
-Elements of $L^{2}(M)$ are not functions, but instead are half-densities, which we define next.
+At the core of any spectral scheme is the use of a Hilbert space upon which everything can be approximated via some least squares projections.
+In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$, which foregoes the choice of a volume form.
+We will also define the Sobolev spaces $H^{s}(M ; g)$ which arise from equipping $M$ with a Riemannian metric, $g$.
 
 For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$ \ram{probably need to define what this is} \cite[Chapter 16]{Lee2006}.
 \begin{definition}\label{def:half density}
