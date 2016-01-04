@@ -104,7 +104,7 @@ for k in range(n_frames):
     #plt.clf()
 
 #plotting final condition
-plot_final_distributions = False
+plot_final_distributions = True
 if plot_final_distributions:
     psi_spatial = ift(psi_arr[-1])
     rho_spatial[0] = 0
@@ -190,7 +190,7 @@ if make_convergence_plot:
     res_wavelets = np.array([56,88,152,280,536,1048,2072])
     plt.loglog( res, error_H,'r' )
     plt.loglog( res, error_FP, 'b' )
-    plt.loglog( res_wavelets, error_wavelets, 'k' )
+    #plt.loglog( res_wavelets, error_wavelets, 'k' )
     plt.grid(True)
     plt.title('L^1 error')
     plt.show()
@@ -229,6 +229,19 @@ def get_convolution_matrix( FS ):
 cnv1 = get_convolution_matrix( FS_1)
 cnv2 = get_convolution_matrix( FS_2)
 cnv3 = get_convolution_matrix( FS_3)
+D = 2*N+1
+sigma = 0.1
+data = np.zeros([1,D])
+data[0,:] = np.exp( - sigma**2 * (np.arange(-N,N+1))**2)
+offsets = np.zeros(1)
+Smooth = sparse.dia_matrix( (data,offsets), shape=(D,D),dtype=complex)
+data[0,:] = np.exp(  sigma**2 * (np.arange(-N,N+1))**2)
+Sharpen = sparse.dia_matrix( (data,offsets), shape=(D,D),dtype=complex)
+
+cnv0 = Smooth.dot( cnv1.dot( Sharpen) )
+cnv1 = cnv0.copy()
+
+from scipy.sparse import linalg
 
 #EVOLVE cnv1 and cnv2
 def bracket( A , B ):
@@ -236,27 +249,40 @@ def bracket( A , B ):
 t=0
 dt = 0.01
 t_final = 1.5
+plot_norms = False
+if plot_norms:
+    operator_norm = []
+    u,s,v = linalg.svds( cnv1 , k=1)
+    operator_norm.append( s[0] )
 while t < t_final:
     k1 = bracket( H_op , cnv1)
     k2 = bracket( H_op , cnv1 + dt*k1 / 2)
     k3 = bracket( H_op , cnv1 + dt*k2 / 2)
     k4 = bracket( H_op , cnv1 + dt*k3 )
     cnv1 += dt*(k1+2*k2+2*k3+k4) / 6.
-    k1 = bracket( H_op , cnv2 )
-    k2 = bracket( H_op , cnv2 + dt*k1 / 2)
-    k3 = bracket( H_op , cnv2 + dt*k2 / 2)
-    k4 = bracket( H_op , cnv2 + dt*k3 )
-    cnv2 += dt*(k1+2*k2+2*k3+k4) / 6.
-    k1 = bracket( H_op , cnv3 )
-    k2 = bracket( H_op , cnv3 + dt*k1 / 2)
-    k3 = bracket( H_op , cnv3 + dt*k2 / 2)
-    k4 = bracket( H_op , cnv3 + dt*k3 )
-    cnv3 += dt*(k1+2*k2+2*k3+k4) / 6.
+    #k1 = bracket( H_op , cnv2 )
+    #k2 = bracket( H_op , cnv2 + dt*k1 / 2)
+    #k3 = bracket( H_op , cnv2 + dt*k2 / 2)
+    #k4 = bracket( H_op , cnv2 + dt*k3 )
+    #cnv2 += dt*(k1+2*k2+2*k3+k4) / 6.
+    #k1 = bracket( H_op , cnv3 )
+    #k2 = bracket( H_op , cnv3 + dt*k1 / 2)
+    #k3 = bracket( H_op , cnv3 + dt*k2 / 2)
+    #k4 = bracket( H_op , cnv3 + dt*k3 )
+    #cnv3 += dt*(k1+2*k2+2*k3+k4) / 6.
+    if plot_norms:
+        u,s,v = linalg.svds( cnv1 , k=1)
+        operator_norm.append( s[0] )
     t += dt
 
 #EVOLVE FS_1 and FS_2 and FS_3
 dfdt = lambda f : -FP_op.transpose().conj().dot(f)
 t=0
+if plot_norms:
+    sup_norm = []
+    sup_norm.append( ift(FS_1).real.max() )
+t_array = []
+t_array.append(t)
 while t < t_final:
     k1 = dfdt( FS_1 )
     k2 = dfdt( FS_1 + dt*k1 / 2)
@@ -273,16 +299,28 @@ while t < t_final:
     k3 = dfdt( FS_3 + dt*k2 / 2)
     k4 = dfdt( FS_3 + dt*k3 )
     FS_3 += dt*(k1+2*k2+2*k3+k4) / 6.
+    if plot_norms:
+        sup_norm.append( ift(FS_1).real.max() )
     t += dt
+    t_array.append(t)
+
+#PLOT norms
+if plot_norms:
+    plt.plot( t_array, sup_norm )
+    plt.plot( t_array, operator_norm )
+    plt.xlabel('time')
+    plt.ylabel('sup/operator norm')
+    plt.grid(True)
+    plt.show()
+
 
 #PLOT cnv1,cnv2 and cnv1*cnv2
-from scipy.sparse import linalg
-y,psi = linalg.eigsh( cnv3 , 2*N-1 )
+from scipy.linalg import eig
+y,psi = eig( cnv1.todense() )
 rho_array = np.zeros( [ x.size , y.size] )
 for k in range(y.size):
     rho_array[:,k] = np.abs(ift( psi[:,k] ))**2
     rho_array[:,k] = rho_array[:,k] / rho_array[:,k].max()
-
 
 #This is the exact solution to func 1
 denominator = np.sqrt( np.cos(x)**2 + np.exp(4*t_final)*np.sin(x)**2)
@@ -313,19 +351,21 @@ plt.axis( [-np.pi, np.pi , -1.5 , 1.5 ] )
 plt.grid(True)
 plt.show()
 
-plt.plot( x , exact3,'k')
+plt.plot( x , exact1,'k')
 plt.axis( [-np.pi, np.pi , -1.5 , 1.5 ] )
 plt.grid(True)
 plt.show()
 
 
-Koopman_am = ift(FS_2).real * ift(FS_1).real
-Koopman_ma = ift(FS_3).real
-discrepency = np.abs( Koopman_am - Koopman_ma)
-plt.plot( x , discrepency , 'b')
-#plt.axis( [-np.pi, np.pi , -1.5 , 1.5 ] )
-plt.grid(True)
-plt.show()
+#Koopman_am = ift(FS_2).real * ift(FS_1).real
+#Koopman_ma = ift(FS_3).real
+#discrepency = np.abs( Koopman_am - Koopman_ma)
+#plt.plot( x , discrepency , 'b')
+#plt.grid(True)
+#plt.show()
 
 #PLOT FS_1,FS_2, and FS_1*FS_1 and FS_3
-
+plt.plot( x , ift(FS_1).real , 'b')
+plt.grid(True)
+plt.axis( [-np.pi, np.pi , -1.5 , 1.5 ] )
+plt.show()
