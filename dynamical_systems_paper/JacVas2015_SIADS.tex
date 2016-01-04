@@ -996,69 +996,67 @@ Discretizations constructed by Algorithms \ref{alg:density} and \ref{alg:functio
 	Convergence follows from Theorems \ref{thm:function convergence} and \ref{thm:density convergence}.
 \end{proof}
 
-\section{Numerical experiments}
+\section{Numerical Experiments}
 
-In this section we demonstrate a few numerical experiments.  We begin with a benchmark computation to illustrate the spectral convergence of our method and the conservation properties in the case of a known solution.
+This section describes several numerical experiments.  First, a benchmark computation to illustrate the spectral convergence of our method and the conservation properties in the case of a known solution is considered.
 
 \subsection{A one dimensional benchmark computation}
-Let us consider the vector field $\dot{x} = -\sin(2 x)$ for $x \in S^{1}$.
-The flow of this system is given explicitly by
+\label{sec:benchmark}
+Consider the vector field $\dot{x} = -\sin(2 x)$ for $x \in S^{1}$.
+The flow of this system is given by:
 \begin{align}
 	\Phi_{X}^{t}(x) = \operatorname{atan} \left( e^{2t} \tan( x) \right).
 \end{align}
-If the initial density is given by a uniform distribution $\rho_{0} = dx$ then the the exact solution of the advection pde \eqref{eq:density pde} at time is
+If the initial density is a uniform distribution, $\rho_{0} = dx$, then the the exact solution of \eqref{eq:density pde} is:
 \begin{align}
 	\rho(x;t) =  \left( e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) \right)^{-1}  dx \label{eq:exact solution}
 \end{align}
- In figure \ref{fig:S1} three subfigures depict $\rho(x;t)$ at $t=1.5$ with an initial condition given by a uniform distribution.
-Subfigure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution}.  Subfigure \ref{fig:standard spectral} depicts the numerical solution computed
-from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes.
-Finally, subfigure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
+Figure \ref{fig:S1} depicts the evolution of $\rho(x;t)$ at $t=1.5$ with an initial condition.
+Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution},  figure \ref{fig:standard spectral} depicts the numerical solution computed from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes, and Figure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
 
 \begin{figure}
-	\begin{subfigure}{0.3\textwidth}
+	\hspace*{-.5cm}
+	\begin{subfigure}{0.36\textwidth}
 		\includegraphics[width=\textwidth]{./images/exact_1D.pdf}
 		\caption{Exact}
 		\label{fig:exact}
 	\end{subfigure}
-	\begin{subfigure}{0.3\textwidth}
+	\hspace*{-.65cm}
+	\begin{subfigure}{0.36\textwidth}
 		\includegraphics[width=\textwidth]{./images/standard_spectral_1D.pdf}
 		\caption{Standard spectral}
 		\label{fig:standard spectral}
 	\end{subfigure}
-	\begin{subfigure}{0.3\textwidth}
+	\hspace*{-.65cm}
+	\begin{subfigure}{0.36\textwidth}
 		\includegraphics[width=\textwidth]{./images/gn_spectral_1D.pdf}
 		\caption{Algorithm \ref{alg:density}}
 		\label{fig:gn spectral}
 	\end{subfigure}
-	\caption{A benchmark computation}
+	\caption{A benchmark illustration of Algorithm \ref{alg:density} on the example described in Section \ref{sec:benchmark} \ram{it would be easier to appreciate the accuracy if all the axes were identical. In addition you may not need the title on each of the plots but it would be easier to see if the labels on the axes were larger}}
 	\label{fig:S1}
 \end{figure}
 
-From these figures, it is tempting to suggest that Algorithm \ref{alg:density} has greater qualitative accuracy than a standard spectral discretization.
-For one, standard spectral discretization exhibits negative mass, which is not achievable in the exact system.
-Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  In contrast, by Theorem \ref{thm:norms}, we know that
-the $L^{1}$-norm is conserved in Algorithm \ref{alg:density}.
-A plot of the $L^{1}$-norm is given in figure \ref{fig:L1}
+It is tempting to believe that Algorithm \ref{alg:density} has greater qualitative accuracy than a standard spectral discretization.
+For example, standard spectral discretization exhibits negative mass, which is not achievable in the exact system.
+Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  
+In contrast, Theorem \ref{thm:norms} proves that the $L^{1}$-norm is conserved by Algorithm \ref{alg:density}.
+A plot of the $L^{1}$-norm is given in Figure \ref{fig:L1}.
+Finally, a convergence plot is depicted in Figure \ref{fig:convergence}.  
+Note the spectral convergence of Algorithm \ref{alg:density}.
+In terms of numerical accuracy, Algorithm \ref{alg:density} appears to perform better than a standard spectral method by a constant factor over a range of resolutions.
 
 \begin{figure}
-	\centering
-	\includegraphics[width=0.8\textwidth]{./images/L1_plot.pdf}
-	\caption{A plot of the $L^{1}$-norm vs time.
-		The blue line denotes the $L^{1}$ norm under standard spectral discretization.
-		The red line denotes the $L^{1}$ norm under Algorithm \ref{alg:density}.
-	}
+	\hspace*{-1.2cm}
+	\includegraphics[width=1.17\textwidth]{./images/L1_plot.pdf}
+	\caption{A plot of the $L^{1}$-norm vs time of a standard spectral discretization (blue) and the result of Algorithm \ref{alg:density} (red) on the example described in Section \ref{sec:benchmark}. \ram{can you label the x-axis and make the markings larger since it is hard to see them now.}}
 	\label{fig:L1}
 \end{figure}
 
-
-Finally, a convergence plot is depicted in Figure \ref{fig:convergence}.  We observe the spectral convergence of Algorithm \ref{alg:density}.
-In terms of numerical accuracy, Algorithm \ref{alg:density} appears to performe better than a standard spectral method by a constant factor over a range of resolutions.
-
 \begin{figure}
-	\centering
-	\includegraphics[width=0.7\textwidth]{./images/convergence_plot.pdf}
-	\caption{Convergence plot for Algorithm \ref{alg:density} (red) and a standard spectral method (blue) in the $L^{1}$-norm.}
+	\hspace*{-1.2cm}
+	\includegraphics[width=1.17\textwidth]{./images/convergence_plot.pdf}
+	\caption{Convergence plot for Algorithm \ref{alg:density} (red) and a standard spectral method (blue) in the $L^{1}$-norm. \ram{do not need a title for the plot, but it would be useful to label the axes larger}}
 	\label{fig:convergence}
 \end{figure}
 
@@ -1074,10 +1072,11 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to performe 
 %\end{figure}
 
 
-In order to plot the output of Algorithm \ref{alg:function} we must represent the operator $\hat{f}_{n}$ spectrally.
-The exact solution, $\hat{f}$, is represented via the spectral theorem by looking at its level sets.
-In the discrete case, we may use the same representation for the purpose of plotting.
+To plot the output of Algorithm \ref{alg:function}, we must represent the operator $\hat{f}_{n}$ spectrally.
+The exact solution, $\hat{f}$, is represented via the Spectral Theorem \ram{citation} by considering its level sets.
+In the discrete case, we use the same representation for the purpose of plotting.
 An eigenvector-eigenvalue pair $(\lambda , \psi_{\lambda})$ is an approximation of the $\lambda$th level-set of $f$ by the density $\psi_{\lambda}^{2}$.
+\ram{this next portion of the discussion where the Gaussian smoothing is incorporated is adhoc. I understand that the results are not well defined, but why is Gaussian smoothing the right thing to show? It seems better discussion to ignore plotting and instead just speak about the tractability of the algorithm on functions and then the discussion on the Banach algebra.}
 In order to produce a reasonable output though these eigenvectors must be smoothed (they are not even well defined elements of $L^{2}(M)$ let alone $H^{1}$ in the high-resolution limit)
 We implement Algorithm \ref{alg:function} and plot with this in mind in Figure \ref{fig:quantum function 1} with respect to the initial condition $f_{0}(x) = \sin(x)$ and final time $t=1.5$.
 We have used a Gaussian smoothing of $\sigma=0.1$ in Figure \ref{fig:quantum 1}.
@@ -1109,38 +1108,41 @@ Finally the result of using a standard spectral scheme is depicted in figure \re
 	\label{fig:function}
 \end{figure}
 
-From these plots it is not entirely clear that Algorithm \ref{alg:function} is more accurate than a standard discretization.
-In particular, given the high cost of computation for Algorithm \ref{alg:function}  ($O(n^{2})$) versus a stand spectral computation ($O(n)$) we generally do not recommend this algorithm in practice.
+From these plots it is unclear whether Algorithm \ref{alg:function} is more accurate than a standard spectral discretization.
+This is particularly problematic given the high cost of computation for Algorithm \ref{alg:function}  ($O(n^{2})$) versus a stand spectral computation ($O(n)$).
 However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (in particular, if one is only interested in a few level sets).
-We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article,
-in the interest of focusing on the strengths of this discretization.
-For example, if we consider the initial condition $g_{0}(x) = \cos(x)$ then the exact solution is
+%We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article,in the interest of focusing on the strengths of this discretization.
+For example, under the initial condition $g_{0}(x) = \cos(x)$ the exact solution to \eqref{eq:quantum observable ode} is:
 \begin{align*}
 	g(x,t) =   \cos(x) \left( e^{4t} \sin^{2}(x) + \cos^{2}(x) \right)^{-1/2}.
 \end{align*}
-If we then consider the initial condition $h_{0} = f_{0} \cdot g_{0}  = \sin(x) \cos(x)$
-then the exact solution is
+Under the initial condition $h_{0} = f_{0} \cdot g_{0}  = \sin(x) \cos(x)$ the exact solution to \eqref{eq:quantum observable ode} is:
 \begin{align*}
 	h(x,t) = f(x,t) g(x,t) = \cos(x) \sin(x) \left( \cos^{2}(x) + e^{4t} \sin^{2}(x) \right)^{-1}.
 \end{align*}
-So we may solve for $h$ by first multiplying the initial condition and then using one of our algorithms to evolve in time, 
-or we may evolve in time first, and scalar multiply the outputs.
-If one uses Algorithm \ref{alg:function}, then both of these options yield the same result up to time discretization error (which is obtained with error tolerance $1e-8$ in our code).
-This is the context of Theorem \ref{thm:algebra}.
+One can compute $h$ by first multiplying the initial conditions and then using Algorithm \ref{alg:function} to evolve in time, or we may evolve each initial condition in time first, and multiply the outputs.
+If one uses Algorithm \ref{alg:function}, then both options, as a result of Theorem \ref{thm:algebra}, yield the same result up to time discretization error (which is obtained with error tolerance $1e-8$ in our code).
 In contrast, if one uses a standard spectral discretization, then these options yield different results with a discrepancy.
-We plot this discrepancy in Figure \ref{fig:discrepancy}.
+This discrepancy between the order of operations for both discretization methods is depicted in Figure \ref{fig:discrepancy}.
+
+Finally, the sup-norm is preserved by the solution of \eqref{eq:function pde} \ram{citation}.
+As shown in Theorem \ref{thm:quantize}, the sup-norm is equivalent to the operator norm when the functions are represented as operators on $L^{2}(M)$.
+As proven by Theorem \ref{thm:norms}, the operator-norm is conserved by Algorithm \ref{alg:function}.
+In contrast, the sup-norm drifts over time under a standard discretization.  
+This is depicted in Figure \ref{fig:norms}
 
 \begin{figure}[h]
-	\centering
-	\includegraphics[width=0.8\textwidth]{./images/function_plots/discrepancy}
-	\caption{The discrepancy due to non-preservation of scalar products under a standard spectral discretization (blue).
-	The discrepancy which arises under our discretization (red) is difficult to see because it is of order $10^{-8}$. }
+	\hspace*{-1.2cm}
+	\includegraphics[width=1.15\textwidth]{./images/function_plots/discrepancy}
+	\caption{The discrepancy due to non-preservation of scalar products under a standard spectral discretization (blue) and under the discretization described in Algorithm \ref{alg:function} (red). 
+	Note that the discrepancy due to Algorithm \ref{alg:function} is difficult to see because it is of order $10^{-8}$. \ram{why not use a logarithmic plot? Also could you label the axes?} }
 	\label{fig:discrepancy}
 \end{figure}  
+
 \begin{figure}[h]
-	\centering
-	\includegraphics[width=0.7\textwidth]{./images/L_inf_plot.pdf}
-	\caption{Conservation and non-conservation of function norms}
+	\hspace*{-1.2cm}
+	\includegraphics[width=1.15\textwidth]{./images/L_inf_plot.pdf}
+	\caption{A plot of the sup-norm vs time of a standard spectral discretization (blue) and the result of Algorithm \ref{alg:function} (green) on the example described in Section \ref{sec:benchmark}. \ram{can you label the x-axis and make the markings larger since it is hard to see them now. Also it would probably be useful if you kept the color consistent throughout (blue for standard discretization and red for our methods)}}
 	\label{fig:norms}
 \end{figure}
 %However, we can obtain one estimate by applying $\hat{f}_{n}$ to the half-density $\sqrt{dx}$, and then divide the result by $\sqrt{dx}$.
@@ -1159,16 +1161,11 @@ We plot this discrepancy in Figure \ref{fig:discrepancy}.
 %	\end{subfigure}
 %	\begin{subfigure}{0.4\textwidth}
 %		\includegraphics[width=\textwidth]{./images/L_inf_plot.pdf}
-%		\caption{Operator norms}
+%		\caption{Operator norms}s
 %		\label{fig:sup norm}
 %	\end{subfigure}
 %	\caption{Numerical results for a one-dimensional system}
 %\end{figure}
-
-Finally, we know that the sup-norm is preserved by solution of \eqref{eq:function pde}.
-As shown in Theorem \ref{thm:quantize}, the sup-norm is equivalent to the operator norm when we represent functions as operators on $L^{2}(M)$.
-As predicted by Theorem \ref{thm:norms}, we can see that the operator-norm is conserved by Algorithm \ref{alg:function}.
-In contrast, the sup-norm will drift using standard discretization.  This is all depicted in figure \ref{fig:norms}
 
 
 %\subsection{A system on the 2-torus}
@@ -1237,17 +1234,19 @@ In contrast, the sup-norm will drift using standard discretization.  This is all
 
 
 \subsection{A modified ABC flow}
-Consider the system on $\mathbb{T}^{3}$
+\label{sec:ABC_flow}
+
+Consider the system
 \begin{align}
 	\dot{x} = A \sin( 2\pi z) + C \cos(2\pi y)  + D \cos(2\pi x)\\
 	\dot{y} = B \sin( 2\pi z) + A \cos(2\pi y)  + D \cos(2\pi y)\\
 	\dot{z} = A \sin( 2\pi z) + B \cos(2\pi y)  + D \cos(2\pi z)
 \end{align}
-For constants $A,B,C,D \in \mathbb{R}$.  When $D=0$ this system is a well studied volume conserving system known as an Arnold-Beltrami-Childress flow.
+on the three-torus for constants $A,B,C,D \in \mathbb{R}$.  
+When $D=0$ this system is the well studied volume conserving system known as an Arnold-Beltrami-Childress flow \ram{citation}.
 When $A > B > C > 0$, $D=0$, and $C << 1$, then the solutions to this ODE are chaotic, with a uniform steady state distribution \cite{MajdaBertozzi2002}.
-When $D=0$ the operator $\pounds_{X}$ is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ which appears in equation \eqref{eq:density pde},
-and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is generically the case for any volume conserving system.}
-Therefore we will demonstrate the case where $D > 0$ and these discretization are different.
+When $D=0$ the operator $\pounds_{X}$ \ram{undefined} is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ that appears in \eqref{eq:density pde}, and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is generically the case for any volume conserving system.}
+Therefore we consider the case where $D > 0$ and these discretizations are different.
 When $D> 0$ volume is no longer conserved and there is a non-uniform steady-state distribution.
 
 %Given any probability distribution on $\mathbb{R}^{3}$ we can get a probability distribution on $\mathbb{T}^{3}$ by wrapping it around.
@@ -1262,82 +1261,78 @@ When $D> 0$ volume is no longer conserved and there is a non-uniform steady-stat
 %	p(x,y,z) = \frac{1}{ (\sigma_{x} \sigma_{y} \sigma_{z} )\sqrt{ 2\pi } } e^{ - \frac{1}{2} ( (x/\sigma_{x})^{2} + (y/\sigma_{y})^{2} +  (z/\sigma_{z})^{2} )}
 %\end{align}
 %with $\sigma_{x} = 0.2, \sigma_{y} = 0.3, \sigma_{z} = 0.3$.
-Let us consider the following numerical experiment with $A=1.0,B=0.5,C=0.2,D=0.5$.
-As an initial condition we use a wrapped Gaussian distribution with anisotropic variance $\sigma= (0.2, 0.3, 0.3)$ centered at $(0,0,0)$.
-Then we numerically solve \eqref{eq:density pde} using Algorithm \ref{alg:density}, Monte-Carlo, and a standard spectral method respectively.
-The results are shown in figure \ref{fig:ABCD} where we only plot the $z$-marginal of these distributions.
-The top row depicts the results from using Algorithm \ref{alg:density} using 33 modes along each dimension.
+For the following numerical experiment let $A=1.0,B=0.5,C=0.2,$ and $D=0.5$.
+As an initial condition consider a wrapped Gaussian distribution with anisotropic variance $\sigma= (0.2, 0.3, 0.3)$ centered at $(0,0,0)$.
+\eqref{eq:density pde} is approximately solved using Algorithm \ref{alg:density}, Monte-Carlo, and a standard spectral method.
+The results of the $z$-marginal of these distributions are illustrated in Figure \ref{fig:ABCD}.
+The top row depicts the results from using Algorithm \ref{alg:density} using $33$ modes along each dimension.
 The middle row depicts the results from using a Monte-Carlo method with $15^{3} = 3375$ particles as a benchmark computation.
 Finally, the bottom row depicts the results from using a direct Fourier based discretization of \eqref{eq:density pde} using 33 modes along each dimension.
-Again we see that Algorithm \ref{alg:density} performs quite well.
-
+Notice that Algorithm \ref{alg:density} performs well when compared to the standard discretization approach.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\textwidth]{./images/ABCD_flow.png}
-	\caption{ \tiny {\bf Top:} Algorithm \ref{alg:density}, {\bf Middle:} Monte Carlo, {\bf Bottom:} Standard Spectral}
+	\includegraphics[width=1\textwidth]{./images/ABCD_flow.png}
+	\caption{An illustration of the performance of Algorithm \ref{alg:density} (top row), Monte Carlo (middle row) and a standard spectral approach (bottom row) on the example described in Section \ref{sec:ABC_flow} \ram{what does black and white represent? Also it would be useful to label the x axes of the bottom row and the y axes of the left column}}
 	\label{fig:ABCD}
 \end{figure}
 
 
-\section{Insights from operator theory}
+\section{Insights from Operator Theory}
+\ram{I like this section but I feel as if we should talk about moving it earlier and trying to make the argument even more explicit so that simpletons like me can really appreciate it. Lets talk about this in person.} 
 
-In this section we describe we describe the importance of conservation laws in \eqref{eq:function pde} and \eqref{eq:density pde} from a different perspective, that of operator theory.
-Admittedly, this section is not crucial and
-uninterested readers are free to skip it without consequence.
-Nonetheless, we consider the following informal discussion valuable from the perspective of research, and integration within the larger mathematics community.
-In the interest of space, we will provide references for theorems and claims made in this section rather than proving them here.
+In this section, we describe the importance of the conservation laws in \eqref{eq:function pde} and \eqref{eq:density pde} from the perspective of operator theory.
+%Admittedly, this section is not crucial and uninterested readers are free to skip it without consequence.
+%Nonetheless, we consider the following informal discussion valuable from the perspective of research, and integration within the larger mathematics community.
+In the interest of space, we provide references for theorems and claims made in this section rather than proving them here.
 All of these theorems can be found in standard functional analysis textbooks such as \cite{Conway1990} or \cite{Rudin1991}.
 
-To begin, let us review some definitions.
+To begin, recall the following definitions:
 \begin{definition}
-	A \emph{Banach-algebra} is a Banach space, $A$, which is also equipped with a multiplication-like operation ``$(a,b) \in A \times A \mapsto ab \in A$''
-	which is bounded and associative in that $\| ab \| \leq \|a \| \|b \|$ and $(ab)c = a(bc)$ for any $a,b,c \in A$.
+	A \emph{Banach-algebra} is a Banach space, $A$, which is equipped with a multiplication-like operation, `` $(a,b) \in A \times A \mapsto ab \in A$,''  that is bounded, `` $\| ab \| \leq \|a \| \|b \|$,'' and associative `` $(ab)c = a(bc)$ for any $a,b,c \in A$.''
 	
-	A \emph{$C^{*}$-algebra} is a Banach algebra, $A$, over the field $\mathbb{C}$ with an involution ``$a \in A \mapsto a^{*} \in A$'' which satisfies
+	A \emph{$C^{*}$-algebra} is a Banach algebra, $A$, over the field $\mathbb{C}$ with an involution, `` $a \in A \mapsto a^{*} \in A$,'' that satisfies:
 	\begin{align}
 		(ab)^{*} = b^{*} a^{*} \quad,\quad
 		(\lambda a)^{*} = \bar{\lambda} a^{*} \quad,\quad
 		\| a \| = \| a^{*}\|,
 	\end{align}
 	for all $a,b \in A$ and $\lambda \in \mathbb{C}$.
-	We call $A$ \emph{unital} if $A$ has a multiplicative identity.
-	We call $A$ commutative if $ab = ba$ for all $a,b \in A$.
+	$A$ is \emph{unital} if $A$ has a multiplicative identity.
+	$A$ is \emph{commutative} if $ab = ba$ for all $a,b \in A$.
 	
 	Finally, a map $T:A \to A$ is called a $*$-automorphism if $T$ is a bounded linear automorphism that preserves products, i.e. $T(ab) = T(a) T(b)$.
 	We denote the space of $*$-automorphisms of $A$ by $\operatorname{Aut}(A)$.
 \end{definition}
 
-The notion of a $C^{*}$-algebra may appear abstract so we provide the two most important examples.
+The notion of a $C^{*}$-algebra may appear abstract so we provide the two important examples.
 
 \begin{example} \label{ex:function algebra}
-	Let $X$ be a topological space.  Then the space of complex valued continuous functions with compact support, $C_{0}(X;\mathbb{C})$, is a $C^{*}$-algebra under the sup-norm and addition/multiplication operations of functions.
+	Let $X$ be a topological space, then the space of complex valued continuous functions with compact support, $C_{0}(X;\mathbb{C})$, is a $C^{*}$-algebra under the sup-norm and addition/multiplication operations of functions. \ram{what is the involution operation? If its just the traditional dual, then $*$ is not an involution unless it is the space of bounded continuous functions with compact support.}
 	In fact $C_{0}(X;\mathbb{C})$ is a commutative $C^{*}$-algebra.  If $X$ is compact, then the constant function $f(x) = 1$ serves as a multiplicative identity, and this algebra becomes unital.
 \end{example}
 
 \begin{example}
-	Let $\mathcal{H}$ be a complex Hilbert space. Then the space of bounded operators on $\mathcal{H}$, denoted $B(\mathcal{H})$, is a (non-commutative) $C^{*}$-algebra.
+	Let $\mathcal{H}$ be a complex Hilbert space. Then the space of bounded operators on $\mathcal{H}$, denoted $B(\mathcal{H})$, is a (non-commutative) $C^{*}$-algebra. \ram{what are the multiplication and involution operations?}
 \end{example}
 
-While the notion of a general $C^{*}$-algebra is, apriori, more abstract than the examples above, this feeling of abstraction is an illusion.
-One of the cornerstones of operator theory is that \emph{all} $C^{*}$-algebras are contained within these examples.
-This is formally given by
+While the notion of a general $C^{*}$-algebra is, \textit{a priori}, more abstract than the examples above, this feeling of abstraction is an illusion.
+One of the cornerstones of operator theory is that \emph{all} $C^{*}$-algebras are contained within these examples:
 
 \begin{theorem}[The Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN1}
 	Any $C^{*}$-algebra is isomorphic to a sub-algebra of $B(\mathcal{H})$ for some Hilbert space, $\mathcal{H}$.
 \end{theorem}
 
-For commutative $C^{*}$-algebras more can be said.
-In particular we can consider the space of character as in \cite{Bondia2001}.
+For commutative $C^{*}$-algebras a stronger result holds if one considers the space of character as in \cite{Bondia2001}:
 
 \begin{definition}
-	A \emph{character} of a $C^{*}$-algebra, $A$, is an element of the dual space $x \in A^{*}$ such that
-	$x(ab) = x(a) x(b)$ for any $a,b \in A$.  We denote the space of characters by $X_{A}$.
-	The map $A \to X_{A}$ is known as the \emph{Gelfand transform}.
+	A \emph{character} of a $C^{*}$-algebra, $A$, is an element of the dual space $x \in A^{*}$ such that $x(ab) = x(a) x(b)$ for all $a,b \in A$ \ram{doesn't $x$ have to be non-zero usually?}.  
+	We denote the space of characters by $X_{A}$.
+	The map $A \to X_{A}$ is known as the \emph{Gelfand Transform} \ram{do you mind being a bit more explicit here since this is a bit confusing (e.g. Given $a \in A$ one can define the function $\hat{a}: X_{A} \to \mathbb{C}$ by $\hat{a}(\phi) = \phi(a)$. The map from $a \to \hat{a}$ is called the Gelfand Transform.)} 
 \end{definition}
 
 \begin{proposition}[Lemma 1.1 \cite{Bondia2001}]
-	If we equip $A^{*}$ with the weak topology, the space $X_{A} \subset A^{*}$ is a compact Hausdorff space with respect to the relative topology.
+	Consider $A^{*}$ with the weak topology, then the space $X_{A} \subset A^{*}$ is a compact Hausdorff space with respect to the relative topology.
 \end{proposition}
 \begin{proof}
 	We provide a sketch of the proof.
@@ -1346,35 +1341,37 @@ In particular we can consider the space of character as in \cite{Bondia2001}.
 \end{proof}
 
 For example, if $A$ is a space of continuous complex functions on a manifold $M$, then $X_{A}$ is the space of Dirac-delta distributions, which is homeomorphic to $M$ itself.
-The following is really a Corollary to \ref{thm:GN1}.
+The following is a Corollary to \ref{thm:GN1}:
 
 \begin{theorem}[The second Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN2}
 	Any commutative $C^{*}$-algebra is isomorphic to $C(X_{A} ; \mathbb{C})$.
-	In other words, all commutative $C^{*}$-algebras are represented by Example \ref{ex:function algebra}.
 \end{theorem}
 
-Historically, theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into relatively concrete things, such as linear operators or continuous functions.
-In this paper, we appear to have gone the other direction.
-The map $f \in C(M) \to \hat{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand transform}!
-In particular, Theorem \ref{thm:quantize} is simply the correspondence between advection PDEs on $M$ and isospectral flows on $B(L^{2}(M))$ under the Gelfand transform.
-Perhaps one of the reasons our algorithms were not done earlier, is because it is not intuitively a good idea to use the Gelfand transform to turn ``concrete'' objects into ``abstract'' ones like this.
-However, ``abstract'' does not mean easier to deal with numerically.
-As we have seen, it is easier to represent conservation laws for advection in this form.
-In essence this is related to the following corollary of Theorem \ref{thm:GN2}
+The result of Theorem \ref{thm:GN2} is that all commutative $C^{*}$-algebras are represented by Example \ref{ex:function algebra}.
+Historically, Theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into concrete things, such as linear operators or continuous functions.
+In this paper, we have gone the opposite direction.
+The map $f \in C(M) \to \hat{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand Transform}. 
+\ram{I am confused by this point, we are treating $A$ for example as the continuous complex functions on $M$ then $X_{A}$ is the space of dirac delta distributions, in which case the Gelfand Transform is going between continuous complex functions to dirac delta functions. The $\hat{f}$ operation seems to be doing exactly the same thing...}
+In particular, Theorem \ref{thm:quantize} is simply the correspondence between advection PDEs on $M$ and isospectral flows on $B(L^{2}(M))$ under the Gelfand Transform.
+The non-triviality of using the inverse Gelfand Transform to turn ``concrete'' objects into ``abstract'' objects is perhaps one of the reasons that Algorithms \ref{alg:density} and \ref{alg:function} have not been considered earlier.
+However, ``abstract'' does not necessarily imply difficulty with respect to devising a numerical scheme.
+In fact, as this paper illustrates, it is easier to represent conservation laws for advection in this form.
+In essence, this is related to a corollary to Theorem \ref{thm:GN2}:
 
 \begin{corollary}[Corollary 1.7 of \cite{Bondia2001}]
-	If $A$ is a commutative $C^{*}$-algebra, and $T:A\to A$ is $*$-automorphism such that $T(a)T(b) = T(ab)$,
-	then there is a unique homeomorphism $\Phi_{T} \in \Diff_{0}(X_{A})$
-	such that $\Phi_{T}(x) (a) = T^{-1}(a)$.
-	In other words, $\Diff_{0}(X_{A}) \equiv \operatorname{Aut}(A)$ as a topological group.
+	If $A$ is a commutative $C^{*}$-algebra, and $T:A\to A$ is $*$-automorphism such that $T(a)T(b) = T(ab)$, then there is a unique homeomorphism $\Phi_{T} \in \Diff_{0}(X_{A})$ such that $\Phi_{T}(x) (a) = T^{-1}(a)$.
+	That is, $\Diff_{0}(X_{A}) \equiv \operatorname{Aut}(A)$ as a topological group.
 \end{corollary}
 
 Said more plainly, any bounded and invertible transformation of $C(M)$ that preserves sums and products is necessarily a homeomorphism.
+\ram{It would probably be useful to the reader if you connected this more explicitly to advection here (i.e. state that advection is naturally just a bounded, invertible transformation of $C(M)$...)}
 Thus, conservation of sums of products is more than just a fundamental property of advection.
 \emph{Conservation of sums and products is the defining property of advection}.
+\ram{I like this connection, but I feel like you need another sentence here. 
+Basically you are arguing that the numerical scheme is natural, but I feel like I am missing something here, maybe chatting in person would help}
 
 \begin{corollary}
-	An evolution equation on $C^{0}(M)$ given by $\partial_{t} f + F[f] = 0$ will preserve scalar addition and multiplication and extrema of functions if and only if $F[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
+	An evolution equation on $C^{0}(M)$ given by $\partial_{t} f + F[f] = 0$ preserves scalar addition and multiplication and extrema of functions if and only if $F[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
 	The dual operator $F^{*}$ is then necessarily of the form $\rho \mapsto \pder{}{x^{i}}( \rho X^{i})$.
 \end{corollary}
 
@@ -1422,19 +1419,17 @@ The methods presented in this article provide a case in point.%, as do particle 
 
 \section{Conclusion}
 
-In this paper we have found a spectral scheme for \eqref{eq:function pde} and \eqref{eq:density pde} which is spectrally convergent
-and qualitatively accurate, in the sense that natural invariants are preserved.
-The result of obeying such conservation laws is a robustly well-behaved numerical scheme at a variety of resolutions.
-In particular, we obtained superior behavior in regimes and resolutions where legacy spectral methods fail.
+In this paper we constructed a numerical scheme for \eqref{eq:function pde} and \eqref{eq:density pde} that is spectrally convergent and qualitatively accurate, in the sense that natural invariants are preserved.
+The result of obeying such conservation laws is a robustly well-behaved numerical scheme at a variety of resolutions where legacy spectral methods fail.
 This claim was verified in a series of numerical experiments which directly compared our algorithms with standard Fourier spectral algorithms.
-The importance of these conservation laws was addressed in a short discussion on the Gelfand transform.
+The importance of these conservation laws was addressed in a short discussion on the Gelfand Transform.
 We found that conservation laws completely characterize \eqref{eq:function pde} and \eqref{eq:density pde}, and this explains the benefits of using qualitatively accurate scheme at a more fundamental level.
 
 
 \subsection{Acknowledgements}
 This paper developed over the course of years from discussions with many people whom we would like to thank: Jaap Eldering, Gary Froyland,
- 	Darryl Holm, Peter Koltai, Stephen Marsland, Igor Mezic, Peter Michor, Dmitry Pavlov, Tilak Ratnanather, and Stefan Sommer.
-\todo[inline]{Put funding information here}
+ 	Darryl Holm, Peter Koltai, Stephen Marsland, Igor Mezic, Peter Michor, Dmitry Pavlov, Tilak Ratnanather, and Stefan Sommer. 
+This research was made possible by funding from the University of Michigan.
 
 %\appendix
 %\section{A list of legacy algorithms}
