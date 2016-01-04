@@ -13,6 +13,7 @@
 
 %  NEW COMMANDS
 \newcommand{\ram}[1]{{\normalsize{\textbf{({\color{red}RAMBO:\ }#1)}}}}
+\newcommand{\hoj}[1]{{\normalsize{\textbf{({\color{blue}HOJ:\ }#1)}}}}
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
 \newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial{align}
       #2 \partial #3} } }
@@ -140,14 +141,23 @@ by the following sequence of accomplishments.
 \end{enumerate}
 
 \subsection{Notation}
-Things:
-\begin{enumerate}
-	\item $C(M), C(M)'$
-	\item $W^{k,p}$
-	\item Densities, $\bigoplus^{n} TM$. $L^{1}(M)$.  Dual pairing.
-	\item Commutator brackets
-	\item Operator theory stuff like trace/adjoint/bounded/unitary.
-\end{enumerate}
+Throughout the paper $M$ will denote a smooth compact $n$-manifold without boundary.
+\begin{itemize}
+	\item The space of continuous functions will be denoted $C(M)$.
+	We will topologize $C(M)$ by the sup-norm, $\| \cdot \|_{\infty}$ (see \cite{Taylor1974,Rudin1991,MTA,Conway1990}).
+	\item Given a Riemannian metric, $g$, the resulting Sobolev spaces on $M$ will be denoted $W^{k,p}(M ; g)$ (see \cite{Hebey1999}).
+	\item The tangent bundle to $M$ will be denoted by $TM$, and the $n$th iterated Whitney sum will be denoted by $\bigoplus^{n} TM$ (see \cite{Lee2006,MTA}).
+	\item The space of densities on $M$ will be denoted by $\Dens(M)$ 
+	and the integral of a density $\rho \in \Dens(M)$ will be denoted by $\int \rho$.
+	We associate the norm $\| \rho \|_{1} =  \int | \rho |$ to densities.  By completion this builds a (canonical) Banach space, which we call $L^{1}(M)$.
+	In fact $L^{1}(M)$ is just the (pre)-dual space to $C(M)$.  Given a function $f \in C(M)$ we denote the multiplication of the density $\rho \in L^{1}(M)$ by $f \rho$
+	and we denote the dual-pairing by $\langle f , \rho \rangle := \int f \rho$.
+	\item Given a separable Hilbert space $\mathcal{H}$ we will denote the space of bounded operators by $B( \mathcal{H})$
+	and the space of unitary operators by $U( \mathcal{H})$.
+	\item The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ will be denoted by $L^{\dagger}$.
+	\item The trace of a trace class operator, $L$, will be denoted by $\Tr(L)$.
+	\item The commutator bracket for operators $A,B$ on $\mathcal{H}$ will be denoted by $[A,B] := A \cdot B - B \cdot A$.
+\end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -670,25 +680,22 @@ Before constructing an algorithm to spectrally discretize \eqref{eq:function pde
 \end{algorithm}
 
 To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{n}(t_{k}) \in V_{n}$ where $V_{n} = \operatorname{span}( e_{1},\dots,e_{n}) \subset L^{2}(M)$.
-\ram{these next two sentences are so informal, why not just say we prove in theorem \cite{} that the result $\psi_n$ converges to ...}
-As $\lim_{n\to \infty} V_{n} = L^{2}(M)$ we can at least hope that $\psi_{n}(t_{k})$ converges.
-We will address convergence in a later section.
+In section \ref{sec:analysis} we will prove that $\psi_{n}(t_{k})$ converges to the solution of \eqref{eq:half density pde} as $n \to \infty$.
 Before continuing, we briefly state a sparsity result that aides in selecting a basis.
 The proof of this results follows from simple arithmetic, and so we omit it.
 
 \begin{theorem} \label{thm:sparsity}
-\ram{ I think avoiding the use of d to count the number of coordinates would be smart since you are already using d for the differential, it would probably also make sense to use $n,m,$ or $k$ to refer to integer values instead of $b$ or $d$}
-	Let $x^{1},\dots,x^{d}$ be a dense coordinate chart for $M$\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus.\cite{Sakai1996,MO_dense_charts} },
-	then $e_{k} (x)= f_{k}(x) \sqrt{dx^{1} \wedge \cdots dx^{d}}$ for $L^{2}$-functions $f_{k}(x)$ is a half-density basis. \ram{what space does $f_k$ belong to? is it in $L^2(M;\mu)$?}
-	If the vector-field $X = X^{\alpha} \pder{}{x^{\alpha}}$ is such that $X^{\alpha} = c^{k} f_{k}$ where fewer than $b$ of $c_{k}$'s are non-zero \ram{for each $\alpha$?}, then the operator $X_{n}$ in Algorithm \ref{alg:half density} is banded diagonal with fewer than $db$ bands.
+	Let $x^{1},\dots,x^{n}$ be a dense coordinate chart for $M$\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus.\cite{Sakai1996,MO_dense_charts} },
+	then $e_{k}= f_{k} \, \sqrt{\mu}$ for functions $f_{k} \in L^2(M; \mu)$ where $\mu = | dx^{1} \wedge \cdots \wedge dx^{n}|$ (see Proposition \ref{prop:non canonical}).
+	If the vector-field $X$ is such that $X^{i} = \sum_{k} c_{k}^{i} f_{k}$ with fewer than $K>0$ of $c^{i}_{k}$'s being non-zero for each $i=1,\dots,n$, then the operator $X_{m}$ in Algorithm \ref{alg:half density} is banded diagonal with fewer than $nK$ bands.
 \end{theorem}
 
 \begin{corollary} \label{cor:sparsity}
-	If the same hypotheses of Theorem \ref{thm:sparsity} are satisfied, then the integration step of Algorithm \ref{alg:half density} is of complexity $\mathcal{O}( dbn)$.
+	If the same hypotheses of Theorem \ref{thm:sparsity} are satisfied, then the integration step of Algorithm \ref{alg:half density} is of complexity $\mathcal{O}( K m n)$.
 \end{corollary}
 
-Theorem \ref{thm:sparsity} and Corollary \ref{cor:sparsity} suggest selecting a basis where $b$ is small.
-For example, if $M$ were a torus, and the vector-field was made up of a finite number of sinusoids, then a Fourier basis would yield a $b$ equal to the maximum number of terms along all dimensions.
+Theorem \ref{thm:sparsity} and Corollary \ref{cor:sparsity} suggest selecting a basis where $K$ is small.
+For example, if $M$ were a torus, and the vector-field was made up of a finite number of sinusoids, then a Fourier basis would yield a $K$ equal to the maximum number of terms along all dimensions.
 
 By Theorem \ref{thm:quantize}, the square of the result of Algorithm \ref{alg:half density} is a numerical solution to \eqref{eq:density pde}.
 To apply this algorithm to densities, one must know how to take the square root of a density.
@@ -696,7 +703,7 @@ It is not possible to take the square root of an arbitrarily irregular density, 
 However, one can find the square root of any continuous $\rho \in L^{1}(M)$ \ram{if you aren't speaking about $L^1(M;\mu)$ then this space is never formally defined.}:
 Let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$, 
 then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ since $\rho = \psi^{2}$.
-This yields Algorithm \ref{alg:denesity} to spectrally discretize \eqref{eq:density pde} in a qualitatively accurate manner for densities.
+This yields Algorithm \ref{alg:density} to spectrally discretize \eqref{eq:density pde} in a qualitatively accurate manner for densities.
 
 \begin{algorithm}[H] 
 	\KwData{An initial condition $\rho(0) \in L^{1}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
