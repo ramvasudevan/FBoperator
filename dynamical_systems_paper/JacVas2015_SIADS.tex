@@ -120,7 +120,23 @@ This ``square-root'' transformation to a Hilbert space has been used to solve va
 For example, the space of positive semi-definite tensor fields which occur in non-Newtonian fluids, can be transformed into the space of symmetric tensors \cite{Balci2011}.
 Similarly, an alternative notion of half-densities has been used in the context mean curvature flow in a similar vein \cite{Crane2013}.
 
-\ram{can you summarize how the remainder of the document will be organized and what our principle contributions are here?}
+\subsection{Main contributions}
+
+In this paper we will be to develop numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}
+by the following sequence of accomplishments.
+
+\begin{enumerate}
+	\item We will derive an auxiliary PDE, \eqref{eq:half density pde}, on the space of half-densities in section \ref{sec:half densities}.
+	\item We will relate solutions of \eqref{eq:half density pde} to solutions of \eqref{eq:function pde} and \eqref{eq:density pde}  in Theorem \ref{thm:quantize}.
+	\item We will pose an auxiliary spectral scheme for \eqref{eq:half density pde} in section \ref{sec:discretization}.
+	\item Our auxiliary scheme will induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
+	\item We will derive a spectral convergence rate for our auxiliary scheme in section \ref{sec:analysis}.
+	\item The spectral convergence rate for our auxiliary scheme will induce spectral convergence rates for the numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
+	\item We will prove our schemes are qualitatively accurate (i.e. preserves scalar addition/multiplication, total mass, $L^{1}-norms$, etc.) in section \ref{sec:qualitative}
+	\item We will demonstrate these findings in numerical experiments in section \ref{sec:numerics}.
+	Furthermore, we will observe our algorithm for \eqref{eq:density pde} to be superior to a standard spectral discretization.
+\end{enumerate}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Qualitative properties of advection PDEs}
@@ -251,7 +267,7 @@ For a vector-field $X$, the Lie derivative of a half-density is given in local c
 This is a densely defined anti-Hermitian operator on $L^{2}(M)$.
 The advection equation can then be written as:
 \begin{align}
-	\partial_{t} \psi + \pounds_{X}[\psi] = 0.
+	\partial_{t} \psi + \pounds_{X}[\psi] = 0. \label{eq:half density pde}
 \end{align}
 Despite the Lie derivative being unbounded, a solution is defined for all time:
 \begin{proposition}[Stone's Theorem \cite{Conway1990,Rudin1991}] \label{prop:stone}
@@ -441,10 +457,7 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 		&\frac{d \hat{\rho} }{dt} + [ \hat{\rho} , \pounds_{X} ] = 0 \label{eq:quantum density ode}
 	\end{align}
 	respectively, where $[ \cdot , \cdot ]$ denotes the commutator bracket \ram{may just want to define in a preliminary notation section}.
-	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$, then $\psi$ satisfies
-	\begin{align}
-		 \partial_{t} \psi + \pounds_{X}[\psi] = 0, \label{eq:half density pde}
-	\end{align}
+	Moreover, if $\psi \in L^{2}(M)$ is such that $\psi^{2} = \rho$, then $\psi$ satisfies \eqref{eq:half density pde}
 	if and only if $\rho$ satisfies \eqref{eq:density pde}.
 \end{theorem}
 
@@ -593,7 +606,7 @@ The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum den
 %
 %Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this approach.  Another problem with this approach is the potential storage cost.
 
-\subsection{Semi-discretizations and algorithms on compact manifolds}
+\section{Semi-discretizations and algorithms on compact manifolds} \label{sec:discretization}
 \ram{why do you call it a semi-discretization...this term is never defined anywhere else}
 
 This section presents the numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
@@ -725,9 +738,7 @@ This algorithm is presented for theoretical interest at the moment, as it does n
 %We should note that the use of the discrete Fourier transform introduces errors which disrupt the conservation laws we seek to keep.
 %This is not a new algorithm, and is only introduced here as an alternative to Algorithm \ref{alg:function}.
 
-\section{Error analysis}
-\ram{its awkward that this section only has a subsection 4.1}
-
+\section{Error analysis} \label{sec:analysis}
 Since the error bounds for Algorithm \ref{alg:half density} induce error bounds for the Algorithms \ref{alg:density} and \ref{alg:function}, we first derive a useful error bound for Algorithm \ref{alg:half density}.
 Our proof is a generalization of the convergence proof in \cite{Pasciak1980}, where \eqref{eq:half density pde} is studied (modulo a factor of two) on the $n$-torus.
 We begin by proving an approximation bound between half densities in $V_{n} = \operatorname{span}( e_{1},\dots,e_{n})$ \ram{may just want to put in a preliminary notation section} and $H^{s}(M)$.
@@ -923,8 +934,9 @@ Finally, we prove that Algorithm \ref{alg:function} converges to a solution of \
 \end{proof}
 
 
-\subsection{Qualitative Accuracy}
-This section proves the qualitative accuracy of our algorithms exhibit.
+\section{Qualitative Accuracy} \label{sec:qualitative}
+In this section we will prove that our numerical schemes are qualitatively accurate.
+We will begin by illustrating the preservation of appropriate norms.
 
 \begin{theorem} \label{thm:norms}
 	Let $\psi_{n}$, $\rho_{n}$, and $\hat{f}_{n}$ be the result of Algorithms \ref{alg:half density}, \ref{alg:density}, and \ref{alg:function}, respectively.
@@ -998,7 +1010,7 @@ Discretizations constructed by Algorithms \ref{alg:density} and \ref{alg:functio
 \end{proof}
 
 \section{Numerical experiments}
-
+\label{sec:numerics}
 In this section we demonstrate a few numerical experiments.  We begin with a benchmark computation to illustrate the spectral convergence of our method and the conservation properties in the case of a known solution.
 
 \subsection{A one dimensional benchmark computation}
