@@ -55,17 +55,18 @@
 
 \ram{One high level comment, it feels like we need a small notation section to just define all the notation and basic definitions that we consider throughout the paper. Several things are standard, but a brief reminder may be useful.}
 
-Let $M$ be a compact manifold and let $X$ be a vector-field on $M$. 
-This paper is concerned with the following pair of equations:
+Let $M$ be a compact manifold with local coordinates $(x^{1},\dots,x^{n})$
+and let $X$ be a vector-field on $M$, whose local components are given by $(X^{1}(x), \dots, X^{n}(x) )$. 
+This paper is concerned with the following pair of partial differential equations (PDEs):
 \begin{align}
 	\partial_{t} f + X^{i} \partial_{i} f = 0 \label{eq:function pde} \\
 	\partial_{t} \rho + \partial_{i} (\rho X^{i}) = 0 \label{eq:density pde}
 \end{align}
 for a time dependent function $f$ and a time dependent density $\rho$ on $M$.
-Equation \eqref{eq:function pde}, which is sometimes called the ``transport equation,'' describes how a scalar quantity is transported by the flow of $X$.
-Such a Partial Differential Equation (PDE) arises in the context of fluids when $X$ is the (time-dependent) velocity field of the fluid, $f$ is the temperature, and the thermal diffusivity is $0$ \ram{a citation here would probably be useful}.
-Equation \eqref{eq:density pde} describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
-In the context of classical mechanics, this equation is known as the Liouville equation or the continuum equation\ram{a citation here would probably be useful}.
+In the above PDEs we are following the Einstein summation convention, and summing over the dummy index ``$i$''.
+Equation \eqref{eq:function pde}, which is sometimes called the ``transport equation,'' describes how a scalar quantity is transported by the flow of $X$ \cite{Truesdell1991}.
+Equation \eqref{eq:density pde}, which is sometimes called the ``continuum equation'' or ``Louiville's equation'' describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
+Such PDEs arises in a variety of contexts, ranging from  mechanics \cite{Batchelor1999,Truesdell1991} to control theory \cite{HenrionKorda2014}, and can be seen as zero-noise limits of the Forward/Backward Kolmogorov equations \cite{Oksendal2003}.
 
 These equations satisfy a number of conservation laws.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
@@ -78,28 +79,28 @@ This motivates our definition of qualitative accuracy:
 \end{definition}
 
 Both \eqref{eq:function pde} and \eqref{eq:density pde} can be numerically solved by a variety of schemes.
-For a continuous initial condition, $f_0$, for example, the method of characteristics \ram{citation here} describes a solution to \eqref{eq:function pde} as a time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
-This suggests using a particle method to solve for $f$ at a discrete set of points (possibly on a regular grid) \ram{citation here}.
+For a continuous initial condition, $f_0$, for example, the method of characteristics \cite{Evans2010,MTA} describes a solution to \eqref{eq:function pde} as a time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
+This suggests using a particle method to solve for $f$ at a discrete set of points \cite{Leveque1992}.
  In fact, a particle method would inherit many discrete analogs of the conservation laws of \eqref{eq:function pde}, and would as a result be \emph{qualitatively accurate}.
 For example, given the input $h_{0} = f_{0} \cdot g_{0}$, the output of a particle method is identical to the (componentwise) product of the outputs obtained from inputing $f_{0}$ and $g_{0}$ separately.
-However, particle methods converge much slower than their spectral counterparts when the function $f$ is highly differentiable \ram{citation here}.
+However, particle methods converge much slower than their spectral counterparts when the function $f$ is highly differentiable \cite{Boyd2001,Gottlieb2001}.
 
-In the case where $M=S^{1}$, a spectral method can be obtained by converting \eqref{eq:density pde} to the Fourier domain where it takes the form
+In the case where $M$ is the unit circle, $S^{1}$, a spectral method can be obtained by converting \eqref{eq:density pde} to the Fourier domain where it takes the form
 of an Ordinary Differential Equation (ODE):
 \begin{align}
 	\frac{d \hat{\rho}_{k}}{dt} + 2\pi i k  \widehat{X}_{k-\ell} \hat{f}_{\ell} \label{eq:standard spectral}
 \end{align}
-where $\hat{\rho}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $\rho$ and $X$ \ram{ a citation would be useful here}.
+where $\hat{\rho}_{k}$ and $\widehat{X}_{k}$ denote the Fourier transforms of $\rho$ and $X$ \cite{Taylor1974}.
 In particular, this transformation converts \eqref{eq:density pde} into an ODE on the space of Fourier coefficients.
 Discretization are constructed by considering only the first finite number of coefficients. 
 %A good numerical algorithm is obtained by considering only the first $2n+1$ such coefficients.
 
-Such a numerical method is good for $C^{k}$-data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-k})$ over a fixed finite time interval \cite{Gottlieb2001}.
+Such a numerical method is good for $C^{k}$-data, in the sense that the convergence rate is faster than $\mathcal{O}(n^{-k})$ over a fixed finite time interval \cite{Boyd2001,Gottlieb2001}.
 In particular, spectral schemes converge must faster than particle based method whenever the initial conditions have more than a few derivatives.
-Unfortunately the standard spectral algorithm is not \emph{qualitatively accurate}.
+Unfortunately the standard spectral algorithm is not \emph{qualitatively accurate}, as shall be demonstrated.
 
 The goal of this paper:
-\emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously spectrally convergent and qualitatively accurate.}
+\emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously stable, spectrally convergent, and qualitatively accurate.}
 
 \subsection{Previous work}
 Within mechanics, spectral methods for the continuum and transport equation are a common-place where they are viewed as special cases of first order hyperbolic PDEs \cite{Boyd2001,Gottlieb2001}.
@@ -114,7 +115,7 @@ In this article, we use a unitary representation of diffeomorphisms, which repre
 This approach was known to representation theorists \cite{VershilGelfandGraev1975,Ismagilov1975} and those involved with quantum probability theory \cite{Meyer1998,Parthasarathy2012}.
 To be more specific, a half-density can be abstractly summarized as an object whose ``square'' is a density.
 Alternatively, it can be understood as a mathematician's nomenclature for a physicist's ``wave functions.''
-One of the benefits of working with half-densities, over probability densities, is that the space of half-densities is a Hilbert space, while the space of probability densities is a convex cone \ram{probably need to cite someone here}.
+One of the benefits of working with half-densities, over probability densities, is that the space of half-densities is a Hilbert space, while the space of probability densities is a convex cone \cite{GuilleminSternberg1970}.
 This ``square-root'' transformation to a Hilbert space has been used to solve various nonlinear problem throughout mathematics, such as the invention of the complex numbers to find the roots of polynomials.
 For example, the space of positive semi-definite tensor fields which occur in non-Newtonian fluids, can be transformed into the space of symmetric tensors \cite{Balci2011}.
 Similarly, an alternative notion of half-densities has been used in the context mean curvature flow in a similar vein \cite{Crane2013}.
