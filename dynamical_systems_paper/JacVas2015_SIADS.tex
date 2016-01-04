@@ -54,9 +54,7 @@
 \section{Introduction}
 \label{sec:intro}
 
-\ram{One high level comment, it feels like we need a small notation section to just define all the notation and basic definitions that we consider throughout the paper. Several things are standard, but a brief reminder may be useful.}
-
-Let $M$ be a compact manifold with local coordinates $(x^{1},\dots,x^{n})$
+Let $M$ be a compact $n$-manifold with local coordinates $(x^{1},\dots,x^{n})$
 and let $X$ be a vector-field on $M$, whose local components are given by $(X^{1}(x), \dots, X^{n}(x) )$. 
 This paper is concerned with the following pair of partial differential equations (PDEs):
 \begin{align}
@@ -154,9 +152,9 @@ Throughout the paper $M$ will denote a smooth compact $n$-manifold without bound
 	and we denote the dual-pairing by $\langle f , \rho \rangle := \int f \rho$.
 	\item Given a separable Hilbert space $\mathcal{H}$ we will denote the space of bounded operators by $B( \mathcal{H})$
 	and the space of unitary operators by $U( \mathcal{H})$.
-	\item The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ will be denoted by $L^{\dagger}$.
-	\item The trace of a trace class operator, $L$, will be denoted by $\Tr(L)$.
-	\item The commutator bracket for operators $A,B$ on $\mathcal{H}$ will be denoted by $[A,B] := A \cdot B - B \cdot A$.
+	The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ will be denoted by $L^{\dagger}$.
+	The trace of a trace class operator, $L$, will be denoted by $\Tr(L)$.
+	The commutator bracket for operators $A,B$ on $\mathcal{H}$ will be denoted by $[A,B] := A \cdot B - B \cdot A$ (see Chapter 9 of \cite{Conway1990}).
 \end{itemize}
 
 
@@ -249,9 +247,9 @@ Throughout the paper $M$ will denote a smooth compact $n$-manifold without bound
 %The properties of advection that we desire to have are strictly properties of $M$ alone, i.e. they are canonical.
 %The choice of $\mu$ is non-canonical and threatens to discard the conservation laws we aim to keep.
 
-At the core of any spectral scheme is the use of a Hilbert space upon which everything can be approximated via some least squares projections.
-In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$, which foregoes the choice of a volume form.
-We will also define the Sobolev spaces $H^{s}(M ; g)$ which arise from equipping $M$ with a Riemannian metric, $g$.
+At the core of any spectral scheme is the use of a Hilbert space upon which everything can be approximated via least squares projections.
+In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$.
+We will also define the Sobelev spaces $H^{s}(M ; g)$ which arise from equipping $M$ with a Riemannian metric, $g$.
 
 For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$.
 \begin{definition}\label{def:half density}
@@ -314,16 +312,17 @@ Despite the Lie derivative being unbounded, a solution is defined for all time:
 
 \subsection{The relationship with classical $L^{2}$ spaces}
 \label{sec:classical_Lebesgue}
-To understand the relationship to classical $L^2$ spaces, recall that for any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative density $\mu$ \cite[Chapter 16]{Lee2006}.
-Upon choosing some $\mu$, the $2$-norm of a complex function $f$ with respect to $\mu$ is
+To understand the relationship to classical Lebesgue spaces, recall that for any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative reference density $\mu$ \cite[Chapter 16]{Lee2006}.
+Upon choosing such a $\mu \in \Dens(M)$, the $2$-norm of a continuous complex function $f:M \to \mathbb{C}$ with respect to $\mu$ is
 \begin{align}
 	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
 \end{align}
-and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm. \ram{Pet peeve: you are calling $\psi$ which is a half density a complex function with domain in $TM$, on the other hand you are also calling $f$ a function with domain on $M$, it would be clearer for the reader to either be given the domain and range of the function in each case explicitly or refer to each object distinctly. This becomes especially problematic when you sometimes refer to functions in $L^2$ as you do in Theorem 3.3.}
+and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
 The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are equivalent topological vector-spaces under an isomorphism:
 \begin{proposition} \label{prop:non canonical}
-	Choose a non-vanishing density $\mu$.
-	Let $\sqrt{\mu}$ be the unique positive real-valued half-density such that $| \sqrt{\mu} |^{2} = \mu$.
+	Choose a non-vanishing positive density $\mu : \bigoplus^{n}TM \to \mathbb{R}^{+}$.
+	Let $\sqrt{\mu}$ denote the square root of $\mu$.\footnote{Explicitly, if $\sqrt{\cdot}: \mathbb{R}^{+} \to \mathbb{R}^{+}$ is the standard square-root function.
+	Then $\sqrt{\mu} := \sqrt{\cdot} \circ \mu : \bigoplus^{n} TM \to \mathbb{R}^{+} \subset \mathbb{C}$ is the half-density which we are considering.}
 	For any $\psi \in L^2(M)$ there exists a unique $f \in L^2(M ; \mu)$ such that $\psi = f \cdot  \sqrt{\mu}$.
 	This yields a continuous isomorphism between $L^2(M)$ and $L^2(M ; \mu)$.
 \end{proposition}
@@ -345,8 +344,8 @@ More importantly, $L^{2}(M)$ is \emph{not} canonically contained within the spac
 Such an embedding may only be obtained by choosing a non-canonical ``reference density'', as in Proposition \ref{prop:non canonical}.
 This has numerous consequences in terms of what we can and can not do.
 For example, an operator with domain on $L^{2}(M)$ can not generally be applied to objects in $L^{1}(M)$ in the same way.
-Such limitations can be helpful, since they permit vector fields to act differently on objects in $L^{1}(M)$ than on objects in $L^{2}(M)$,
-Such safety mechanisms are analogous to the use of overloaded functions in object oriented programs, which due to their argument type distinctions, effectively banish certain bugs from arising.
+These limitations can be helpful, since they permit vector fields to act differently on objects in $L^{1}(M)$ than on objects in $L^{2}(M)$.
+These prohibitions serve as safety mechanisms, analogous to the use of overloaded functions in object oriented programs, which due to their argument type distinctions, effectively banish certain bugs from arising.
 
 %At this point the reader might ask ``If both space are the same, then why don't we use the one that is more familiar?  i.e. the space $L^{2}(M;\mu)$''.
 %The answer is that these space are really not the same in all aspects.
