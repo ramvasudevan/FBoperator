@@ -104,7 +104,7 @@ for k in range(n_frames):
     #plt.clf()
 
 #plotting final condition
-plot_final_distributions = True
+plot_final_distributions = False
 if plot_final_distributions:
     psi_spatial = ift(psi_arr[-1])
     rho_spatial[0] = 0
@@ -115,28 +115,39 @@ if plot_final_distributions:
     rho_exact[-1] = 0
 
     plt.fill( x , rho_exact )
-    plt.title('Exact'), plt.xlabel('x'), plt.ylabel('mass density')
+    #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
+    plt.axis([-3.14,3.14,-1,20])
+    plt.grid()
+    plt.tight_layout()
     plt.show()
 
     plt.fill( x , rho_spatial )
-    plt.title('Standard Spectral'), plt.xlabel('x'), plt.ylabel('mass density')
+    #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
+    plt.axis([-3.14,3.14,-1,20])
+    plt.grid()
+    plt.tight_layout()
     plt.show()
 
     plt.fill( x , abs(psi_spatial)**2 )
-    plt.title('GN Spectral'), plt.xlabel('x'), plt.ylabel('mass density')
+    #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
+    plt.axis([-3.14,3.14,-1,20])
+    plt.grid()
+    plt.tight_layout()
     plt.show()
 
     #plotting L1 norm
     plt.plot( t , Louiville_L1, 'b-')
     plt.plot( t , quantum_L1, 'r-')
-    plt.xlabel('time')
+    plt.xlabel('time',fontsize=15)
     plt.ylabel('$L^1$ norm')
     plt.grid()
+    plt.tight_layout()
     plt.show()
+    quit()
 
 
 #NOW WE MAKE A CONVERGENCE PLOT
-make_convergence_plot = False
+make_convergence_plot = True
 
 if make_convergence_plot:
     t_final = 1.0
@@ -192,7 +203,8 @@ if make_convergence_plot:
     plt.loglog( res, error_FP, 'b' )
     #plt.loglog( res_wavelets, error_wavelets, 'k' )
     plt.grid(True)
-    plt.title('L^1 error')
+    #plt.title('L^1 error')
+    plt.tight_layout()
     plt.show()
     quit()
 

@@ -1096,23 +1096,23 @@ Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solu
 \begin{figure}
 	\hspace*{-.5cm}
 	\begin{subfigure}{0.36\textwidth}
-		\includegraphics[width=\textwidth]{./images/exact_1D.pdf}
+		\includegraphics[width=0.9\textwidth]{./images/exact_1D.pdf}
 		\caption{Exact}
 		\label{fig:exact}
 	\end{subfigure}
 	\hspace*{-.65cm}
 	\begin{subfigure}{0.36\textwidth}
-		\includegraphics[width=\textwidth]{./images/standard_spectral_1D.pdf}
+		\includegraphics[width=0.9\textwidth]{./images/standard_spectral_1D.pdf}
 		\caption{Standard spectral}
 		\label{fig:standard spectral}
 	\end{subfigure}
 	\hspace*{-.65cm}
 	\begin{subfigure}{0.36\textwidth}
-		\includegraphics[width=\textwidth]{./images/gn_spectral_1D.pdf}
+		\includegraphics[width=0.9\textwidth]{./images/gn_spectral_1D.pdf}
 		\caption{Algorithm \ref{alg:density}}
 		\label{fig:gn spectral}
 	\end{subfigure}
-	\caption{A benchmark illustration of Algorithm \ref{alg:density} on the example described in Section \ref{sec:benchmark} \ram{it would be easier to appreciate the accuracy if all the axes were identical. In addition you may not need the title on each of the plots but it would be easier to see if the labels on the axes were larger}}
+	\caption{A benchmark illustration of Algorithm \ref{alg:density} on the example described in Section \ref{sec:benchmark}.}
 	\label{fig:S1}
 \end{figure}
 
@@ -1127,15 +1127,17 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to perform b
 
 \begin{figure}
 	\hspace*{-1.2cm}
-	\includegraphics[width=1.17\textwidth]{./images/L1_plot.pdf}
-	\caption{A plot of the $L^{1}$-norm vs time of a standard spectral discretization (blue) and the result of Algorithm \ref{alg:density} (red) on the example described in Section \ref{sec:benchmark}. \ram{can you label the x-axis and make the markings larger since it is hard to see them now.}}
+	\centering
+	\includegraphics[width=\textwidth]{./images/L1_plot.pdf}
+	\caption{A plot of the $L^{1}$-norm vs time of a standard spectral discretization (blue) and the result of Algorithm \ref{alg:density} (red) on the example described in Section \ref{sec:benchmark}.}
 	\label{fig:L1}
 \end{figure}
 
 \begin{figure}
 	\hspace*{-1.2cm}
-	\includegraphics[width=1.17\textwidth]{./images/convergence_plot.pdf}
-	\caption{Convergence plot for Algorithm \ref{alg:density} (red) and a standard spectral method (blue) in the $L^{1}$-norm. \ram{do not need a title for the plot, but it would be useful to label the axes larger}}
+	\centering
+	\includegraphics[width=0.9\textwidth]{./images/convergence_plot.pdf}
+	\caption{Convergence plot for Algorithm \ref{alg:density} (red) and a standard spectral method (blue) in the $L^{1}$-norm.}
 	\label{fig:convergence}
 \end{figure}
 
