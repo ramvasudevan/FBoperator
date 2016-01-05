@@ -399,8 +399,8 @@ For any $s \geq 0$ we may define the \emph{Sobolev norm}:
 \begin{align}
 	\| f \|_{s,2} =  \left( \langle f , (1-\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
 \end{align}
-and $H^s(M ,g)$ is then the function space obtained by completion with respect to this norm.  Such a definition is equivalent to the one provided in \cite{Hebey1999} for example.
-%Note that $H^0(M;g) = L^2(M;\mu_g)$.
+and $H^s(M ,g)$ is then the function space obtained by completion with respect to this norm.  Such a definition is equivalent to the one provided in \cite{Hebey1999}.
+In particular, note that $H^0(M;g) = L^2(M;\mu_g)$.
 
 The following proposition will be of use later when we need to prove a notion of convergence via sequences of finite rank operators.
 \begin{proposition}[Sobelev Embedding Theorem \cite{Taylor1974}] \label{prop:compact_embedding}
@@ -428,9 +428,10 @@ Note that saying $\psi$ is of class $H^{s}$ is a topological statement and is no
 However, the norm $\| \psi \|_{s,2} = \| f \|_{s,2}$ is metric dependent.
 
 \section{Quantization} \label{sec:quantization}
-In physics, ``quantization'' refers to the process of substituting certain physically relevant functions with operators on a Hilbert space, while attempting to preserve the symmetries and conservation laws of the classical theory.
-In this section, we will quantize \eqref{eq:function pde} and \eqref{eq:density pde} in preparation for a spectral discretization in section \ref{sec:discretize}.
-To realize this goal, we first obtain canonical relationships that are amenable to spectral discretization between $L^{2}(M)$ and functions, densities, and vector-fields.
+In physics, ``quantization'' refers to the process of substituting certain physically relevant functions with operators on a Hilbert space, while attempting to preserve the symmetries and conservation laws of the classical theory
+\cite{BatesWeinstein1997,Dirac2013,GuilleminSternberg1970}.
+In this section, we will quantize \eqref{eq:function pde} and \eqref{eq:density pde} by replacing functions and densities with bounded and trace-class operators on $L^{2}(M)$.
+This will be useful later, in section \ref{sec:discretization}, when we discretize.
 
 To begin, let us quantize the space of continuous real-valued functions $C(M)$.
 For each $f \in C(M)$, there is a unique bounded Hermitian operator, $H_{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
@@ -488,8 +489,8 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 		\frac{dA}{dt} + [ A , \pounds_{X} ] = 0, \label{eq:quantum density ode}
 	\end{align}
 	then $\rho_{A}$ satisfies \eqref{eq:density pde}.
-	Finally, $\psi$ satisfies \eqref{eq:half density pde}
-	if and only if $\rho = \psi^{2}$ satisfies \eqref{eq:density pde}.
+	Finally, if $\psi$ satisfies \eqref{eq:half density pde}
+	then $\rho = \psi^{2}$ satisfies \eqref{eq:density pde}.
 \end{theorem}
 
 \begin{proof}
@@ -534,15 +535,15 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 	Lastly, if $\psi$ satisfies \eqref{eq:half density pde} and $\rho = \psi^{2}$ then we see
 	\begin{align}
 		\partial_{t} \rho &= \partial_{t} ( \psi^{2}) = 2 (\partial_{t} \psi ) \, \psi \\
-		&= 2 \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \psi \\
-		&= \left( - X^{i} \partial_{i} \psi - \psi \partial_{i} X^{i}  \right) \psi \\
-		&= - 2 \psi (\partial_{i} \psi) X^{i} - (\partial_{i}X^{i}) \psi^{2}\\
-		&= - \partial_{i}(\rho) X^{i} - (\partial_{i}X^{i}) \rho = - \partial_{i} ( \rho X^{i}).
+		&= 2 \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \psi 
+		= \left( - X^{i} \partial_{i} \psi - \psi \partial_{i} X^{i}  \right) \psi \\
+		&= - 2 \psi (\partial_{i} \psi) X^{i} - (\partial_{i}X^{i}) \psi^{2}
+		= - \partial_{i}(\rho) X^{i} - (\partial_{i}X^{i}) \rho = - \partial_{i} ( \rho X^{i}).
 	\end{align}
 \end{proof}
 
 
-The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} to represent the PDEs of concern is that \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} may then be discretized using a standard least squares projections on $L^{2}(M)$.
+The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} to represent the PDEs of concern is that \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} may be discretized using a standard least squares projections on $L^{2}(M)$ without sacrificing qualitative accuracy.
 %In order to demonstrate this, we will illustrate a detailed implementation of how this would be done on the unit circle, $S^1$, before considering the case of a general compact manifold.
 
 %\subsection{Discretization on $S^1$ using the Fourier Transform}
@@ -638,10 +639,10 @@ The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum den
 %Conversion of the matrix $\widehat{F}_n$ is admittedly a problem with this approach.  Another problem with this approach is the potential storage cost.
 
 \section{Discretization} \label{sec:discretization}
-This section presents the numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde} given a vector field $X \in \mathfrak{X}(M)$.
+This section presents the numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde}.
 The basic ingredient for all the algorithms in this section are a Hilbert basis and an ODE solver.
-Denote a Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$ \ram{maybe worth moving to a notation section}.
-For example, for a Riemannian metric, $g$ if $\{ f_{0}, f_{1},\dots \}$ denote eigen-functions of the Laplace operator, then $\{ e_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemannian density.
+Denote a Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$.
+For example, for a Riemannian metric, $g$ if $\{ f_{0}, f_{1},\dots \}$ denote eigen-functions of the Laplace operator, then $\{ E_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemannian density.  We call $\{ E_{k} \}$ the Fourier basis.
 To ensure convergence, we assume:
 \begin{ass} \label{ass:basis}
 	There exists a metric $g$ such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$ is bounded on $H^{s}(M;g)$ for some $s > 1$.
@@ -659,57 +660,52 @@ More explicitly, let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final
 Before constructing an algorithm to spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner, we first solve \eqref{eq:half density pde} using a standard spectral discretization~\cite{Boyd2001,NumericalRecipes} in Algorithm \ref{alg:half density}.
 
 \begin{algorithm}
-	\KwData{An initial condition $\psi(0) \in L^{2}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
-	\KwResult{A numerical solution, $\psi_{n}(t_{k})$, to \eqref{eq:half density pde} for $k = 1,\dots,m$.}
-	initialize $z(0) \in \mathbb{C}^{n}$.\;
-	initialize $X_{n} \in \mathbb{C}^{n \times n}$\;
+	\KwIn{An initial condition $\psi(0) \in L^{2}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $N$.}
+	%\KwResult{A numerical solution, $\psi_{n}(t_{k})$, to \eqref{eq:half density pde} at times $t_{k}$ for $k = 1,\dots,m$.}
+	initialize $z(0) \in \mathbb{C}^{N}$.\;
+	initialize $X_{n} \in \mathbb{C}^{N \times N}$\;
 	\For{ $i = 1 , \dots , n$}{
 		$[z(0)]_{i} = \int_{M} \bar{e}_{i}(x) \psi(0,x)$\;
 		\For{$j=1,\dots,n$}{
 			$[X_{n}]\indices{^{i}_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$
 		} 
 	}
-	initialize the function $F: \mathbb{C}^{n} \to \mathbb{C}^{n}$ given by $F(z) = X_{n} \cdot z$.\;
+	initialize the function $F: \mathbb{C}^{N} \to \mathbb{C}^{N}$ given by $F(z) = X_{N} \cdot z$.\;
 	$t_{0} = 0$\;
 	\For{ k = 1,\dots,m}{
 		$z(t_{k}) = \operatorname{OdeSolve}(  F , z(t_{k-1}) , t_{k})$\;
 	}
-	\KwOut{ $\psi_{n}(t_{k} , x) = \sum_{i=1}^{n} [z(t_{k})]_{i} e_{i}(x)$ for $k=1,\dots,m$.}
+	\KwOut{ $\psi_{N}(t_{k}) = \sum_{i=1}^{n} [z(t_{k})]_{i} e_{i}$ for $k=1,\dots,m$.}
 	\caption{A spectral discretization to solve \eqref{eq:half density pde} for half densities.} \label{alg:half density}
 \end{algorithm}
 
-To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{n}(t_{k}) \in V_{n}$ where $V_{n} = \operatorname{span}( e_{1},\dots,e_{n}) \subset L^{2}(M)$.
-In section \ref{sec:analysis} we will prove that $\psi_{n}(t_{k})$ converges to the solution of \eqref{eq:half density pde} as $n \to \infty$.
+To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{N}(t_{k}) \in V_{N}$ where $V_{N} = \operatorname{span}( e_{1},\dots,e_{N}) \subset L^{2}(M)$.
+In section \ref{sec:analysis} we will prove that $\psi_{N}(t_{k})$ converges to the solution of \eqref{eq:half density pde} as $N \to \infty$.
 Before continuing, we briefly state a sparsity result that aides in selecting a basis.
 The proof of this results follows from simple arithmetic, and so we omit it.
 
 \begin{theorem} \label{thm:sparsity}
-	Let $x^{1},\dots,x^{n}$ be a dense coordinate chart for $M$\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus.\cite{Sakai1996,MO_dense_charts} },
+	Let $x^{1},\dots,x^{n}$ be a dense coordinate chart for $M$ on some dense open set\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus.\cite{Sakai1996,MO_dense_charts} },
 	then $e_{k}= f_{k} \, \sqrt{\mu}$ for functions $f_{k} \in L^2(M; \mu)$ where $\mu = | dx^{1} \wedge \cdots \wedge dx^{n}|$ (see Proposition \ref{prop:non canonical}).
-	If the vector-field $X$ is such that $X^{i} = \sum_{k} c_{k}^{i} f_{k}$ with fewer than $K>0$ of $c^{i}_{k}$'s being non-zero for each $i=1,\dots,n$, then the operator $X_{m}$ in Algorithm \ref{alg:half density} is banded diagonal with fewer than $nK$ bands.
+	If differentiation and multiplication of the functions $f_{k}$ is sparse (in terms of series expansions) and 
+	if the vector-field $X$ is such that $X^{i} = \sum_{k} c_{k}^{i} f_{k}$ with fewer than $K>0$ of $c^{i}_{k}$'s being non-zero for each $i=1,\dots,n$, then the matrix $X_{N}$ in Algorithm \ref{alg:half density} is banded diagonal and the sparsity of $X_{N}$ is $\mathcal{O}( K / N )$.
 \end{theorem}
 
-\begin{corollary} \label{cor:sparsity}
-	If the same hypotheses of Theorem \ref{thm:sparsity} are satisfied, then the integration step of Algorithm \ref{alg:half density} is of complexity $\mathcal{O}( K m n)$.
-\end{corollary}
-
-Theorem \ref{thm:sparsity} and Corollary \ref{cor:sparsity} suggest selecting a basis where $K$ is small.
+Theorem \ref{thm:sparsity} suggests selecting a basis where $K$ is small, or at least finite.
 For example, if $M$ were a torus, and the vector-field was made up of a finite number of sinusoids, then a Fourier basis would yield a $K$ equal to the maximum number of terms along all dimensions.
 
 By Theorem \ref{thm:quantize}, the square of the result of Algorithm \ref{alg:half density} is a numerical solution to \eqref{eq:density pde}.
-To apply this algorithm to densities, one must know how to take the square root of a density.
-It is not possible to take the square root of an arbitrarily irregular density, such as a Dirac delta functional \ram{why not?}.
-However, one can find the square root of any continuous $\rho \in L^{1}(M)$ \ram{if you aren't speaking about $L^1(M;\mu)$ then this space is never formally defined.}:
-Let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$, 
+We can use this to produce a numerical scheme to \eqref{eq:density pde} by finding the square root of a density.
+Given a $\rho \in \Dens(M)$, let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$, 
 then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ since $\rho = \psi^{2}$.
-This yields Algorithm \ref{alg:density} to spectrally discretize \eqref{eq:density pde} in a qualitatively accurate manner for densities.
+This yields Algorithm \ref{alg:density} to spectrally discretize \eqref{eq:density pde} in a qualitatively accurate manner for densities which admit a square root.
 
 \begin{algorithm}[H] 
-	\KwData{An initial condition $\rho(0) \in L^{1}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $n$.}
+	\KwData{An initial condition $\rho(0) \in L^{1}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $N$.}
 	\KwResult{A numerical solution, $\rho_{n}(t_{k})$, to \eqref{eq:density pde} for $k = 1,\dots,m$.}
 	Initialize $\psi(0) =  \sqrt{\rho^{+}(0)} - i \sqrt{\rho^{-}(0)}$\;
-	Set $\psi_{n}(t_{1}),\dots,\psi_{n}(t_{m}) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t_{1} , \dots,t_{m}, n )$\;
-	\KwOut{ $\rho_{n}(t_{k} , x) = \psi_{n}(t_{k} , x)^{2}$ for $k=1,\dots,m$.}
+	Set $\psi_{N}(t_{1}),\dots,\psi_{n}(t_{m}) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t_{1} , \dots,t_{m}, N )$\;
+	\KwOut{ $\rho_{N}(t_{k} , x) = \psi_{N}(t_{k} , x)^{2}$ for $k=1,\dots,m$.}
 	\caption{A spectral discretization to solve \eqref{eq:density pde} for densities} \label{alg:density}
 \end{algorithm}
 
@@ -718,21 +714,21 @@ Finally, we present an algorithm to solve \eqref{eq:quantum observable ode} (in 
 This algorithm is presented for theoretical interest at the moment, as it does not scale well with the problem size in terms of memory usage.
 
 \begin{algorithm}[H]
-	\KwData{An initial condition $f(0) \in C(M)$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $n \in \mathbb{N}$.}
-	\KwResult{A numerical solution, $\hat{f}_{n}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
+	\KwData{An initial condition $f(0) \in C(M)$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $N \in \mathbb{N}$.}
+	\KwResult{A numerical solution, $\hat{f}_{N}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
 	
-	initialize $F_{n}(0), X_{n} \in \mathbb{C}^{n \times n}$.\;
-	initialize the function $B: \mathbb{C}^{n \times n} \to \mathbb{C}^{n \times n}$
-	given by $B(M) = - [M , X_{n}]$.\;
+	initialize $F_{N}(0), X_{n} \in \mathbb{C}^{N \times N}$.\;
+	initialize the function $B: \mathbb{C}^{N \times N} \to \mathbb{C}^{N \times N}$
+	given by $B(M) = - [M , X_{N}]$.\;
 	\For{ $i , j = 1 , \dots , n$ }{
-		$[F_{n}(0)]\indices{^i_{j}} =  \int_{M} \bar{e}_{i}(x) f(x) e_{j}(x)$ \;
-		$[X_{n}]\indices{^i_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$ \;
+		$[F_{N}(0)]\indices{^i_{j}} =  \int_{M} \bar{e}_{i}(x) f(x) e_{j}(x)$ \;
+		$[X_{N}]\indices{^i_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$ \;
 	}
 	$t_{0} = 0$\;
 	\For{ $k = 1 ,\dots, m $}{
-		$F_{n}(t_{k}) = \OdeSolve( B , F_{n}(t_{k-1}) , t_{k})$\;
+		$F_{n}(t_{k}) = \OdeSolve( B , F_{N}(t_{k-1}) , t_{k})$\;
 	}
-	\KwOut{ The operator $\hat{f}_{n}(t_{k}) = \sum_{i,j=1}^{n}[ F_{n}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
+	\KwOut{ The operator $\hat{f}_{N}(t_{k}) = \sum_{i,j=1}^{N}[ F_{N}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
 	\caption{A spectral discretization to solve \eqref{eq:quantum observable ode} for functions} \label{alg:function}
 \end{algorithm}
 
@@ -764,10 +760,12 @@ This algorithm is presented for theoretical interest at the moment, as it does n
 %This is not a new algorithm, and is only introduced here as an alternative to Algorithm \ref{alg:function}.
 
 \section{Error analysis} \label{sec:analysis}
-Since the error bounds for Algorithm \ref{alg:half density} induce error bounds for the Algorithms \ref{alg:density} and \ref{alg:function}, we first derive a useful error bound for Algorithm \ref{alg:half density}.
+In this sections we will derive convergence rates for all the algorithms mentioned thus far.
+We will find that the error bound for Algorithm \ref{alg:half density} induces error bounds for the Algorithms \ref{alg:density} and \ref{alg:function}.
+Therefore, we first derive a useful error bound for Algorithm \ref{alg:half density}.
 Our proof is a generalization of the convergence proof in \cite{Pasciak1980}, where \eqref{eq:half density pde} is studied (modulo a factor of two) on the $n$-torus.
-We begin by proving an approximation bound between half densities in $V_{n} = \operatorname{span}( e_{1},\dots,e_{n})$ \ram{may just want to put in a preliminary notation section} and $H^{s}(M)$.
-In all that follows, let $\pi_{n}: L^{2}(M) \to V_{n}$ \ram{may want to put in a preliminary notation section} denote the orthogonal projection.
+We begin by proving an approximation bound between half densities in $V_{N} = \operatorname{span}( e_{1},\dots,e_{N})$ \ram{may just want to put in a preliminary notation section} and $H^{s}(M)$.
+In all that follows, let $\pi_{N}: L^{2}(M) \to V_{N}$ \ram{may want to put in a preliminary notation section} denote the orthogonal projection.
 
 \begin{proposition} \label{prop:approximation}
 	Let $\psi \in H^{\bar{s}}(M)$ for $\bar{s} > s \geq 0$.
