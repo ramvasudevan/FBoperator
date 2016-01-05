@@ -768,35 +768,36 @@ In this sections we will derive convergence rates for all the algorithms mention
 We will find that the error bound for Algorithm \ref{alg:half density} induces error bounds for the Algorithms \ref{alg:density} and \ref{alg:function}.
 Therefore, we first derive a useful error bound for Algorithm \ref{alg:half density}.
 Our proof is a generalization of the convergence proof in \cite{Pasciak1980}, where \eqref{eq:half density pde} is studied (modulo a factor of two) on the $n$-torus.
-We begin by proving an approximation bound between half densities in $V_{N} = \operatorname{span}( e_{1},\dots,e_{N})$ \ram{may just want to put in a preliminary notation section} and $H^{s}(M)$.
-In all that follows, let $\pi_{N}: L^{2}(M) \to V_{N}$ \ram{may want to put in a preliminary notation section} denote the orthogonal projection.
+We begin by proving an approximation bound between half densities in $V_{N} = \operatorname{span}( e_{1},\dots,e_{N})$ \ram{may just want to put in a preliminary notation section} and $H^{s}(M;g)$.
+In all that follows, let $\pi_{N}: L^{2}(M) \to V_{N}$ denote the orthogonal projection.
 
+First let us bound the approximation error induced by approximating the space of all half-densities with $V_{N}$.
 \begin{proposition} \label{prop:approximation}
 	Let $\psi \in H^{\bar{s}}(M)$ for $\bar{s} > s \geq 0$.
 	Then
 	\begin{align}
-		\| \psi - \pi_{n}(\psi) \|_{H^{s}} <  \frac{d \, C_{\bar{s},s} }{ \bar{s}-s} \| \psi \|_{H^{\bar{s}}} \, n^{-2(\bar{s}-s)/d}
+		\| \psi - \pi_{N}(\psi) \|_{H^{s}} <  \frac{d \, C_{\bar{s},s} }{ \bar{s}-s} \| \psi \|_{H^{\bar{s}}} \, N^{-2(\bar{s}-s)/n}
 	\end{align}
 	for some constant $C_{\bar{s},s}$ and $d = \dim(M)$.
 \end{proposition}
 \begin{proof}
 	Without loss of generality, assume that $e_{1},e_{2},\dots$ is a Fourier basis with respect to some Riemannian metric.
-	The results are unchanged upon applying Assumption \ref{ass:basis} and converting everything to the Fourier domain.
-	The Fourier decomposition of $\psi$ satisfies \ram{citation}:
+	The results are unchanged upon applying Assumption \ref{ass:basis} and converting everything to the Fourier basis.
+	For any $\psi \in H^{s}(M;g)$ we can expand it in our basis as $\psi = \hat{\psi}_{k} e_{k}$ where $\hat{\psi}_{k} = \langle e_{k} \mid \psi \rangle$.
+	As $\psi \in H^{s}(M;g)$ it follows that
 	\begin{align}
-		\| \psi \|^{2}_{H^{\bar{s} }} = \sum_{k=0}^{\infty} \hat{\psi}_{k}^{2} (1+\lambda_{k})^{\bar{s}} < \infty
+		\| \psi \|^{2}_{H^{\bar{s} }} = \sum_{k=0}^{\infty} \| \hat{\psi}_{k}\|^{2} (1+\lambda_{k})^{\bar{s}} < \infty.
 		\label{eq:propapprox_eq1}
 	\end{align}
-	\ram{You are using $\hat{\psi}$ to denote Fourier coefficients (which you defined only in the introduction) and to denote the bounded Hermitian operator associated with $\psi$, this is confusing.}
-	According to Weyl's asymptotic formula $\lambda_{k} \sim k^{2/d}$ \ram{citation}.
-	After substitution of this asymptotic result into \eqref{eq:propapprox_eq1} for large $k$, $\hat{\psi}_{k}^{2}$ is asymptotically dominated by  $C k^{-1- 2\bar{s}/d}$ for some constant $C$ \ram{I don't understand why this follows from Weyl's formula}.
-	Let $n$ be such that this dominance occurs for all $k>n$.  Then we find
+	A corollary of Weyl's asymptotic formula is that $\lambda_{k}$ is $\mathcal{O}( k^{2/n})$ for large $k$ \cite[page 155]{Chavel1984}.
+	After substitution of this asymptotic result into \eqref{eq:propapprox_eq1} for large $k$, we see that $\|\hat{\psi}_{k}\|^{2}$ is asymptotically dominated by  $C k^{-1- 2\bar{s}/n}$ for some constant $C$ \ram{I don't understand why this follows from Weyl's formula}.
+	Let $N$ be such that this dominance occurs for all $k>N$.  Then we find
 	\begin{align}
-		\| \psi - \pi_{n}(\psi) \|_{H^{s}} = \sum_{k>n} (1+\lambda_{k})^{s} \hat{\psi}_{k}^{2} \leq C \sum_{k>n} (1+\lambda_{k})^{s} k^{-1- 2\bar{s}/d}
+		\| \psi - \pi_{N}(\psi) \|_{H^{s}} = \sum_{k>N} (1+\lambda_{k})^{s} \hat{\psi}_{k}^{2} \leq C \sum_{k>N} (1+\lambda_{k})^{s} k^{-1- 2\bar{s}/n}
 	\end{align}
 	and by another application of the Weyl formula
 	\begin{align}
-		\| \psi - \pi_{n}(\psi) \|_{H^{s}} \leq \tilde{C} \sum_{k>n} \frac{1}{k^{1+2(\bar{s}-s)/d}} \leq C_{s,\bar{s}}  \frac{d }{ \bar{s}-s} n^{-2(\bar{s}-s)/d}.
+		\| \psi - \pi_{N}(\psi) \|_{H^{s}} \leq \tilde{C} \sum_{k>n} \frac{1}{k^{1+2(\bar{s}-s)/n}} \leq C_{s,\bar{s}}  \frac{d }{ \bar{s}-s} N^{-2(\bar{s}-s)/n}.
 	\end{align}
 	Where the last inequality is derived by bounding the infinite sum with an integral.
 \end{proof}
@@ -804,7 +805,7 @@ In all that follows, let $\pi_{N}: L^{2}(M) \to V_{N}$ \ram{may want to put in a
 %We should note that this error bound illustrates that we have a spectral convergence rate on smooth data.
 %This rapid convergence for smooth data will cascade to bounds throughout this section.
 
-With this error bound for the approximation error of $V_{n}$ with respect to $H^{s}(M)$ we can derive an error bound for Algorithm \ref{alg:half density}:
+With this error bound for the approximation error we can derive an error bound for Algorithm \ref{alg:half density}:
 
 \begin{theorem} \label{thm:half density convergence}
 	Let $\psi_{0} \in H^{\bar{s}}(M)$ for $\bar{s} > s > 1$.
