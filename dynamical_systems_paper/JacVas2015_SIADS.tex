@@ -683,11 +683,11 @@ Before constructing an algorithm to spectrally discretize \eqref{eq:function pde
 	\KwIn{An initial condition $\psi(0) \in L^{2}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $N$.}
 	%\KwResult{A numerical solution, $\psi_{n}(t_{k})$, to \eqref{eq:half density pde} at times $t_{k}$ for $k = 1,\dots,m$.}
 	initialize $z(0) \in \mathbb{C}^{N}$.\;
-	initialize $X_{n} \in \mathbb{C}^{N \times N}$\;
-	\For{ $i = 1 , \dots , n$}{
+	initialize $X_{N} \in \mathbb{C}^{N \times N}$\;
+	\For{ $i = 1 , \dots , N$}{
 		$[z(0)]_{i} = \int_{M} \bar{e}_{i}(x) \psi(0,x)$\;
-		\For{$j=1,\dots,n$}{
-			$[X_{n}]\indices{^{i}_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$
+		\For{$j=1,\dots,N$}{
+			$[X_{N}]\indices{^{i}_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$
 		} 
 	}
 	initialize the function $F: \mathbb{C}^{N} \to \mathbb{C}^{N}$ given by $F(z) = X_{N} \cdot z$.\;
@@ -733,7 +733,7 @@ This yields Algorithm \ref{alg:density} to spectrally discretize \eqref{eq:densi
 
 \begin{algorithm}[H] 
 	\KwData{An initial condition $\rho(0) \in L^{1}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $N$.}
-	\KwResult{A numerical solution, $\rho_{n}(t_{k})$, to \eqref{eq:density pde} for $k = 1,\dots,m$.}
+	%\KwResult{A numerical solution, $\rho_{n}(t_{k})$, to \eqref{eq:density pde} for $k = 1,\dots,m$.}
 	Initialize $\psi(0) =  \sqrt{\rho^{+}(0)} - i \sqrt{\rho^{-}(0)}$\;
 	Set $\psi_{N}(t_{1}),\dots,\psi_{n}(t_{m}) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t_{1} , \dots,t_{m}, N )$\;
 	\KwOut{ $\rho_{N}(t_{k} , x) = \psi_{N}(t_{k} , x)^{2}$ for $k=1,\dots,m$.}
@@ -747,26 +747,26 @@ This algorithm is presented for theoretical interest at the moment, as it does n
 
 \begin{algorithm}[H]
 	\KwData{An initial condition $f(0) \in C(M)$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $N \in \mathbb{N}$.}
-	\KwResult{A numerical solution, $\hat{f}_{N}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
+	%\KwResult{A numerical solution, $\hat{f}_{N}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
 	
 	initialize $F_{N}(0), X_{n} \in \mathbb{C}^{N \times N}$.\;
 	initialize the function $B: \mathbb{C}^{N \times N} \to \mathbb{C}^{N \times N}$
 	given by $B(M) = - [M , X_{N}]$.\;
-	\For{ $i , j = 1 , \dots , n$ }{
+	\For{ $i , j = 1 , \dots , N$ }{
 		$[F_{N}(0)]\indices{^i_{j}} =  \int_{M} \bar{e}_{i}(x) f(x) e_{j}(x)$ \;
 		$[X_{N}]\indices{^i_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$ \;
 	}
 	$t_{0} = 0$\;
 	\For{ $k = 1 ,\dots, m $}{
-		$F_{n}(t_{k}) = \OdeSolve( B , F_{N}(t_{k-1}) , t_{k})$\;
+		$F_{N}(t_{k}) = \OdeSolve( B , F_{N}(t_{k-1}) , t_{k})$\;
 	}
-	\KwOut{ The operator $\hat{f}_{N}(t_{k}) = \sum_{i,j=1}^{N}[ F_{N}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
+	\KwOut{ The (compact) operator $H_{f,N}(t_{k}) = \sum_{i,j=1}^{N}[ F_{N}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
 	\caption{A spectral discretization to solve \eqref{eq:quantum observable ode} for functions} \label{alg:function}
 \end{algorithm}
 
 We observe that algorithm \ref{alg:function} involves the integration of an isopectral flow \cite{Calvo1997},
-and so the solutions are of the form $U_{N}(t) \cdot f_{N}(0) U_{N}(t)$ for all time $t$ for some unitary transformation $U_{N}(t)$.
-In fact, it is the same unitary transformation as the one in Proposition \ref{prop:unitary}.
+and so the solutions are of the form $H_{f,N}(t) = U_{N}(t) \cdot H_{f,N}(0) \cdot U_{N}(t)^{\dagger}$ for all time $t$ for some unitary transformation $U_{N}(t)$.
+In fact, $U_{N}(t)$ is the same unitary transformation as the one in Proposition \ref{prop:unitary}.
 
 %On the torus, a more practical approach which holds much of the numerical benefits would be to approximate $\hat{f}_{n}$ psuedo-spectrally,
 %by evaluating $f$ on fixed grid points.
@@ -996,11 +996,12 @@ Finally, we prove that Algorithm \ref{alg:function} converges to a solution of \
 \section{Qualitative Accuracy} \label{sec:qualitative}
 In this section we will prove that our numerical schemes are qualitatively accurate.
 We will begin by illustrating the preservation of appropriate norms.
-
+Throughout this section let $\psi_{N}(t)$, $\rho_{N}(t)$, and $H_{f,N}(t)$ denote the sequence of
+outputs of Algorithms \ref{alg:half density}, \ref{alg:density}, and \ref{alg:function}
+with respect to initial conditions $\psi(0) \in H^{s}(M;g), \rho(0) \in W^{s,1}$ and $f(0) \in C^{s}(M)$ for $N = 1,2,\dots$.
+	
 \begin{theorem} \label{thm:norms}
-	Let $\psi_{N}(t)$, $\rho_{N}(t)$, and $H_{f,N}(t)$ denote the outputs of Algorithms \ref{alg:half density}, \ref{alg:density}, and \ref{alg:function}
-	with respect to initial conditions $\psi(0) \in H^{s}(M;g), \rho(0) \in W^{s,1}$ and $f(0) \in C^{s}(M)$.
-	Then $\| \psi_{N} (t)\|_{L^{2}}, \|\rho_{N}(t)\|_{L^{1}},$ and $\|\hat{f}_{N}(t) \|_{op}$ are constant with respect to $t$ and
+	The norms $\| \psi_{N} (t)\|_{L^{2}}, \|\rho_{N}(t)\|_{L^{1}},$ and $\|\hat{f}_{N}(t) \|_{op}$ are constant with respect to $t$ and
 	\begin{align}
 		\lim_{N \to \infty} \| \psi_{n} \|_{L^{2}} = \| \psi \|_{L^{2}}, \quad \quad
 		\lim_{N \to \infty} \| \rho_{n} \|_{nuc} = \| \rho \|_{L^{1}}, \quad \textrm{and} \quad
@@ -1009,7 +1010,7 @@ We will begin by illustrating the preservation of appropriate norms.
 	\ram{the relationship $\psi$,$\rho$ and $f$ have to the discretization has to be stated explicitly, moreover, $nuc$ and $L^1$ norms aren't defined. It would probably also be worth defining $op$ and $nuc$ in a preliminary notation section.}
 \end{theorem}
 \begin{proof}
-	To prove $\| \hat{f}_{n} \|_{op}$ is conserved note that the evolution is isospectral \ram{citation}.
+	To prove $\| H_{f,N} \|_{op}$ is conserved note that the evolution is isospectral \cite{Calvo1997}.
 %	In particular, the solution is given by $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$
 %	where $U_{n}(t)$ is the the solution to $\dot{U}_{n} = X_{n} \cdot U_{n}$ with $U_{n}(0)$ as the identity.
 %	As $U_{n}(t)$ is unitary, we can observe that 
@@ -1018,54 +1019,58 @@ We will begin by illustrating the preservation of appropriate norms.
 %			&= \sup_{\psi} \left( \langle U_{n}(t)^{\dagger} \cdot \psi \mid \hat{f}_{n}(0) \mid U_{n}(t)^{\dagger} \psi \rangle \right) = \sup_{\psi} \langle \psi \mid \hat{f}_{n}(0) \mid \psi \rangle \\
 %			&= \| \hat{f}_{n}(0) \|_{op}.
 %	\end{align}
-	We have already shown that $\hat{f}_{n}(t)$ converges to $\hat{f}(t)$ in the operator norm.
-	Convergence of the norms follows from the fact that $\| \hat{f} \|_{op} = \| f \|_{\sup}$ \ram{so its worth noting that the natural notion of norm for continuous functions is the sup norm somewhere in a preliminary notation section}.
-	
-	This approach is able to prove that $\| \rho_{n} \|_{nuc}$ and $\| \psi_{n} \|_{L^{2}}$ as well.
+	We have already shown that $H_{f,N}(t)$ converges to $H_{f}(t)$ in the operator norm.
+	Convergence of the norms follows from the fact that $\| H_{f}(t) \|_{op} = \| f \|_{\sup}$.
+	An identical approach is able to prove the desired properties for $\rho_{N}(t)$ and $\psi_{N}(t)$ as well.
 \end{proof}
 
 Theorem \ref{thm:norms} is valuable because each of the norms is naturally associated to the entity which it bounds, and these quantities are conserved for the PDEs \ram{citation} that this paper approximates.
-For example, $\| \hat{f} \|_{op} = \| f \|_{\sup}$ for a function $f$, and this is constant in time when $f$ is a solution to \eqref{eq:function pde}.
-A discretization constructed according to Algorithm \ref{alg:function} according to Theorem \ref{thm:norms} is constant for any $n$, no matter how small.
-Similarly, since advection preserves the total mass of a density, $\rho$, \ram{citation} $\|\rho \|_{L^{1}}$ is conserved.
-Theorem \ref{thm:norms} proves that mass is conserved by discretizations generated by Algorithm \ref{alg:density}.
+For example, $\| H_{f} \|_{op} = \| f \|_{\sup}$ for a function $f$, and this is constant in time when $f$ is a solution to \eqref{eq:function pde}.
+A discretization constructed according to Algorithm \ref{alg:function} according to Theorem \ref{thm:norms} is constant for any $N$, no matter how small.
+%Similarly, since advection preserves the total mass of a density, $\rho$, \ram{citation} $\|\rho \|_{L^{1}}$ is conserved.
+%Theorem \ref{thm:norms} proves that mass is conserved by discretizations generated by Algorithm \ref{alg:density}.
 
 %Norms are merely the tip of the ice-berg in terms of conservation laws for advection.
 The full Banach algebra of continuous function is conserved by advection too.
 This property is also conserved by our discretization.
 \begin{theorem} \label{thm:algebra}
-	Let $f(x;t),g(x;t)$, and $h(x;t)$ be solutions of \eqref{eq:function pde}, then $k= f \cdot g + h $ is also a solution of \eqref{eq:function pde}.
-	Let $\hat{f}_{n}, \hat{g}_{n}$ and $\hat{h}_{n}$ be numerical solutions constructed by Algorithm \ref{alg:function}, then each satisfies \eqref{eq:quantum observable ode} with ``$X$'' replaced by it $n$-rank approximation \ram{what does this mean?}.
-	$\hat{k}_{n}(t) = \hat{f}_{n}(t) \cdot \hat{g}_{n}(t) + \hat{h}_{n}(t)$ also satisfies \eqref{eq:quantum observable ode}, with ``$X$'' replaced by it $n$-rank approximation.
-	Moreover, $\hat{k}_{n}(t)$ converges to the solution $\hat{k}$ as $n \to \infty$ in the operator norm on $H^{s}(M)$ when $f,g,h \in W^{s,\infty}(M)$ for $s>1$ \ram{W hasn't been defined}.
+	Let $f(x;t),g(x;t)$, and $h(x;t)$ be solutions of \eqref{eq:function pde} and let $k= f \cdot g + h $.
+	Let $H_{f,N}, H_{g,N}$ and $H_{h,N}$ be numerical solutions constructed by Algorithm \ref{alg:function}, then $H_{k,N}(t) = H_{f,N}\cdot H_{g,N}+H_{h,N}$
+	satisfies
+	\begin{align}
+		\frac{d}{dt} H_{k,N} = [ X_{N} , H_{k,N}].
+	\end{align}
+	Moreover, $H_{k,N}(t)$ strongly converges to $H_{k}$ as $N \to \infty$ in the operator norm on $H^{s}(M)$ when $f,g,h \in W^{s,\infty}(M)$ for $s>1$.
 \end{theorem}
 \begin{proof}
-\ram{what is $U(t)$? Is it the unitary transformation from Assumption \ref{ass:basis}? I don't think its supposed to be (since its time varying here), but its the only other time I see $U$}
-	Note that 
+	By construction, the output of Algorithm \ref{alg:function} is the result of an isospectral flow, and is therefor of the form 
 	\begin{align}
-		\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} \\
-		\hat{g}_{n}(t) = U_{n}(t) \hat{g}_{n}(0) U_{n}(t)^{\dagger} \\
-		\hat{h}_{n}(t) = U_{n}(t) \hat{h}_{n}(0) U_{n}(t)^{\dagger}.
+		H_{f,N}(t) = U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger} \\
+		H_{g,N}(t) = U_{N}(t) H_{g,N}(0) U_{N}(t)^{\dagger} \\
+		H_{h,N}(t) = U_{N}(t) H_{h,N}(0) U_{N}(t)^{\dagger}.
 	\end{align}
-	Similarly, if $k_{n}(0) = f_{n}(0) g_{n}(0) + h_{n}(0)$ then
+	We then observe
 	\begin{align}
-		\hat{k}_{n}(t) &= U(t) \hat{k}_{n}(0) U(t)^{\dagger} = U(t)\left( \hat{g}_{n}(0) \hat{f}_{n}(0) + \hat{h}_{n}(0) \right) U(t)^{\dagger} \\
-			&= U(t) \hat{g}_{n}(0) U(t)^{\dagger} U(t) \hat{f}_{n}(0) U(t)^{\dagger} + U(t) \hat{h}_{n}(0) U(t)^{\dagger} \\
-			&= \hat{g}_{n}(t) \hat{f}_{n}(t) + \hat{h}_{n}(t)
+		H_{k,N}(t) &= U_{N}(t) H_{k,N}(0) U_{N}(t)^{\dagger} = U(t)\left( H_{f,N}(0) H_{g,N}(0) + H_{h,N}(0) \right) U(t)^{\dagger} \\
+			&= U(t)H_{f,N}(0) U(t)^{\dagger} U(t) H_{g,N}(0)U(t)^{\dagger} + U(t) H_{h,N}(0) U(t)^{\dagger} \\
+			&=H_{f,N}(t)H_{g,N}(t) + H_{h,N}(t).
 	\end{align}
+	Differentiation in time implies the desired result.
 	Convergence follows as a result of Theorem \ref{thm:function convergence}.
 \end{proof}
 
-Finally, the duality between functions and densities is preserved by advection.  If $f$ satisfies \eqref{eq:function pde} and $\rho $ satisfies \eqref{eq:density pde} then $\int f \rho$ is conserved in time \ram{still think a citation or a brief proof of this idea would help the reader}.
+Finally, the duality between functions and densities is preserved by advection.  If $f$ satisfies \eqref{eq:function pde} and $\rho $ satisfies \eqref{eq:density pde} then $\int f \rho$ is conserved in time.
 Discretizations constructed by Algorithms \ref{alg:density} and \ref{alg:function} satisfy this same equality:
 \begin{theorem}
-	Let $\hat{f}_{n}$ and $\hat{\rho}_{n}$ be numerical solutions derived from Algorithms \ref{alg:function} and \ref{alg:density}, respectively.
-	Then for each $n \in \mathbb{N}$, $\Tr( \hat{f}_{n} \rho_{n} )$ is constant in time and converges to the constant $\int f \rho$ as $n \to \infty$ for $f \in W^{s,\infty}$ and $\rho \in W^{s,1}$ for $s>1$ \ram{never defined W}.
+	For each $N \in \mathbb{N}$, $\Tr( H_{f,N} A_{\rho,N} (t))$ is constant in time where $A_{\rho,N} (t)= \psi_{N}(t) \otimes \psi_{N}(t)^{\dagger}$.
+	Moreover, $\Tr( H_{f,N} A_{\rho,N} )$ converges to the constant $\int f\rho $ as $N \to \infty$.
 \end{theorem}
 \begin{proof}
-\ram{what is $U(t)$? Is it the unitary transformation from Assumption \ref{ass:basis}? I don't think its supposed to be (since its time varying here), but its the only other time I see $U$}
-
-	As $\hat{f}_{n}(t) = U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger}$ and $\hat{\rho}_{n}(t) = U_{n}(t) \hat{\rho}_{n}(0) U_{n}(t)^{\dagger}$, $\Tr( \hat{f}_{n}(t)^{\dagger} \rho_{n}(t) ) = \Tr( U_{n}(t) \hat{f}_{n}(0) U_{n}(t)^{\dagger} U_{n}(t) \rho_{n}(0) U_{n}(t)^{\dagger}) = \Tr( \hat{f}_{n} \rho_{n}(0) )$.
+	As $H_{f,N}(t) = U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger}$ and $\psi_{N}(t) = U_{N} \cdot \psi_{N}(0)$ we observe that
+	\begin{align}
+		\Tr( H_{f,N}(t) (\psi_{N} (t) \otimes \psi_{N}^{\dagger} (t) ) ) &= \Tr(  U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger} U)_{N}(t) (\psi_{N}(0) \otimes \psi_{N}(0)^{\dagger}) U_{N}(t)^{\dagger}) \\
+		&= \Tr( H_{f,N}(0) ( \psi_{N}(0) \otimes \psi_{N}(0)^{\dagger} ) )
+	\end{align}
 	Convergence follows from Theorems \ref{thm:function convergence} and \ref{thm:density convergence}.
 \end{proof}
 
@@ -1146,49 +1151,51 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to perform b
 %\end{figure}
 
 
-To plot the output of Algorithm \ref{alg:function}, we must represent the operator $\hat{f}_{n}$ spectrally.
-The exact solution, $\hat{f}$, is represented via the Spectral Theorem \ram{citation} by considering its level sets.
-In the discrete case, we use the same representation for the purpose of plotting.
-An eigenvector-eigenvalue pair $(\lambda , \psi_{\lambda})$ is an approximation of the $\lambda$th level-set of $f$ by the density $\psi_{\lambda}^{2}$.
-\ram{this next portion of the discussion where the Gaussian smoothing is incorporated is adhoc. I understand that the results are not well defined, but why is Gaussian smoothing the right thing to show? It seems better discussion to ignore plotting and instead just speak about the tractability of the algorithm on functions and then the discussion on the Banach algebra.}
-In order to produce a reasonable output though these eigenvectors must be smoothed (they are not even well defined elements of $L^{2}(M)$ let alone $H^{1}$ in the high-resolution limit)
-We implement Algorithm \ref{alg:function} and plot with this in mind in Figure \ref{fig:quantum function 1} with respect to the initial condition $f_{0}(x) = \sin(x)$ and final time $t=1.5$.
-We have used a Gaussian smoothing of $\sigma=0.1$ in Figure \ref{fig:quantum 1}.
-The exact solution is given by 
-\begin{align}
-	f(x;t) = e^{2t} \sin(x) \left( \cos^{2}(x) + e^{4t} \sin^{2}(x) \right)^{-1/2},
-\end{align}
-and is plotted in \ref{fig:exact function 1}.
-Finally the result of using a standard spectral scheme is depicted in figure \ref{fig:standard function 1}.
-
-\begin{figure}[h]
-	\centering
-	\begin{subfigure}{0.3\textwidth}
-		\includegraphics[width=\textwidth]{./images/function_plots/quantum_1.pdf}
-		\caption{Algorithm \ref{alg:function}}
-		\label{fig:quantum function 1}
-	\end{subfigure}
-	\begin{subfigure}{0.3\textwidth}
-		\includegraphics[width=\textwidth]{./images/function_plots/exact_1.pdf}
-		\caption{Exact solution}
-		\label{fig:exact function 1}
-	\end{subfigure}
-	\begin{subfigure}{0.3\textwidth}
-		\includegraphics[width=\textwidth]{./images/function_plots/Koopman_1.pdf}
-		\caption{Standard spectral}
-		\label{fig:standard function 1}
-	\end{subfigure}
-	\caption{Solutions to \eqref{eq:function pde}}
-	\label{fig:function}
-\end{figure}
-
-From these plots it is unclear whether Algorithm \ref{alg:function} is more accurate than a standard spectral discretization.
-This is particularly problematic given the high cost of computation for Algorithm \ref{alg:function}  ($O(n^{2})$) versus a stand spectral computation ($O(n)$).
+%To plot the output of Algorithm \ref{alg:function}, we must represent the operator $\hat{f}_{n}$ spectrally.
+%The exact solution, $\hat{f}$, is represented via the Spectral Theorem \ram{citation} by considering its level sets.
+%In the discrete case, we use the same representation for the purpose of plotting.
+%An eigenvector-eigenvalue pair $(\lambda , \psi_{\lambda})$ is an approximation of the $\lambda$th level-set of $f$ by the density $\psi_{\lambda}^{2}$.
+%\ram{this next portion of the discussion where the Gaussian smoothing is incorporated is adhoc. I understand that the results are not well defined, but why is Gaussian smoothing the right thing to show? It seems better discussion to ignore plotting and instead just speak about the tractability of the algorithm on functions and then the discussion on the Banach algebra.}
+%In order to produce a reasonable output though these eigenvectors must be smoothed (they are not even well defined elements of $L^{2}(M)$ let alone $H^{1}$ in the high-resolution limit)
+%We implement Algorithm \ref{alg:function} and plot with this in mind in Figure \ref{fig:quantum function 1} with respect to the initial condition $f_{0}(x) = \sin(x)$ and final time $t=1.5$.
+%We have used a Gaussian smoothing of $\sigma=0.1$ in Figure \ref{fig:quantum 1}.
+%The exact solution is given by 
+%\begin{align}
+%	f(x;t) = e^{2t} \sin(x) \left( \cos^{2}(x) + e^{4t} \sin^{2}(x) \right)^{-1/2},
+%\end{align}
+%and is plotted in \ref{fig:exact function 1}.
+%Finally the result of using a standard spectral scheme is depicted in figure \ref{fig:standard function 1}.
+%
+%\begin{figure}[h]
+%	\centering
+%	\begin{subfigure}{0.3\textwidth}
+%		\includegraphics[width=\textwidth]{./images/function_plots/quantum_1.pdf}
+%		\caption{Algorithm \ref{alg:function}}
+%		\label{fig:quantum function 1}
+%	\end{subfigure}
+%	\begin{subfigure}{0.3\textwidth}
+%		\includegraphics[width=\textwidth]{./images/function_plots/exact_1.pdf}
+%		\caption{Exact solution}
+%		\label{fig:exact function 1}
+%	\end{subfigure}
+%	\begin{subfigure}{0.3\textwidth}
+%		\includegraphics[width=\textwidth]{./images/function_plots/Koopman_1.pdf}
+%		\caption{Standard spectral}
+%		\label{fig:standard function 1}
+%	\end{subfigure}
+%	\caption{Solutions to \eqref{eq:function pde}}
+%	\label{fig:function}
+%\end{figure}
+%
+%From these plots it is unclear whether Algorithm \ref{alg:function} is more accurate than a standard spectral discretization.
+%This is particularly problematic given the high cost of computation for Algorithm \ref{alg:function}  ($O(n^{2})$) versus a stand spectral computation ($O(n)$).
+In general, Algorithm \ref{alg:function} is very difficult to work with, as it outputs an operator rather than a classical function.
 However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (in particular, if one is only interested in a few level sets).
-%We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article,in the interest of focusing on the strengths of this discretization.
-For example, under the initial condition $g_{0}(x) = \cos(x)$ the exact solution to \eqref{eq:quantum observable ode} is:
+We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article, in the interest of focusing on the qualitative aspects of this discretization.
+For example, under the initial conditions $g_{0}(x) = \cos(x)$ and $f_{0} \sin(x)$ the exact solutions to \eqref{eq:quantum observable ode} are:
 \begin{align*}
-	g(x,t) =   \cos(x) \left( e^{4t} \sin^{2}(x) + \cos^{2}(x) \right)^{-1/2}.
+	g(x,t) &=   \cos(x) \left( e^{4t} \sin^{2}(x) + \cos^{2}(x) \right)^{-1/2}\\
+	f(x,t) &=   e^{2t} \sin(x) \left( \cos^{2}(x) + e^{4t} \sin^{2}(x) \right)^{-1/2}
 \end{align*}
 Under the initial condition $h_{0} = f_{0} \cdot g_{0}  = \sin(x) \cos(x)$ the exact solution to \eqref{eq:quantum observable ode} is:
 \begin{align*}
