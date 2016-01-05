@@ -67,10 +67,13 @@ Equation \eqref{eq:function pde}, which is sometimes called the ``transport equa
 Equation \eqref{eq:density pde}, which is sometimes called the ``continuum equation'' or ``Louiville's equation'' describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
 Such PDEs arises in a variety of contexts, ranging from  mechanics \cite{Batchelor1999,Truesdell1991} to control theory \cite{HenrionKorda2014}, and can be seen as zero-noise limits of the forward and backward Kolmogorov equations \cite{Oksendal2003}.
 
-These equations satisfy a number of conservation laws.
+The solution to \eqref{eq:function pde} takes the form $f(x;t) = f( (\Phi_{X}^{t})^{-1}(x) ; 0) \equiv (\Phi_{X}^{t})_{*} f(\cdot;0)$
+where $\Phi_{X}^{t}:M \to M$ is the flow map of $X$ at time $t$.
+From this we see that \eqref{eq:function pde} exhibits a variety of conservation laws.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
 then so is their product, $f \cdot g$, and their sum, $f+g$.
-Similarly, the $L^{1}$-norm is conserved in time under the evolution of \eqref{eq:density pde}.
+Similarly, the solution to \eqref{eq:density pde} takes the form $\rho(x;t) = | \det( D(\Phi_{X}^{t})^{-1}(x) ) | \rho( (\Phi_{X}^{t})^{-1}(x) ;0) := (\Phi_{X}^{t})_{*} \rho(\cdot;0)$.
+We can deduce that the $L^{1}$-norm of $\rho(x;t)$ is conserved in time \cite[Theorem 16.42]{Lee2006}.
 Finally, \eqref{eq:density pde} is the adjoint evolution equation to \eqref{eq:function pde} in the sense that the integral $\langle f , \rho \rangle := \int f \rho$ is constant in time.\footnote{To see this compute
 $\frac{d}{dt} \langle f , \rho \rangle = \int ( \partial_{t} f ) \rho + f ( \partial_{t} \rho) $.  One will find that the final integral vanishes upon substitution of \eqref{eq:function pde} and \eqref{eq:density pde} and applying integration by parts.}
 This motivates our definition of qualitative accuracy:
@@ -145,10 +148,10 @@ Throughout the paper $M$ will denote a smooth compact $n$-manifold without bound
 	We will topologize $C(M)$ by the sup-norm, $\| \cdot \|_{\infty}$ (see \cite{Taylor1974,Rudin1991,MTA,Conway1990}).
 	\item Given a Riemannian metric, $g$, the resulting Sobolev spaces on $M$ will be denoted $W^{k,p}(M ; g)$ (see \cite{Hebey1999}).
 	\item The tangent bundle to $M$ will be denoted by $TM$, and the $n$th iterated Whitney sum will be denoted by $\bigoplus^{n} TM$ (see \cite{Lee2006,MTA}).
-	\item The space of densities on $M$ will be denoted by $\Dens(M)$ 
-	and the integral of a density $\rho \in \Dens(M)$ will be denoted by $\int \rho$.
+	\item A (complex) density is a map $\rho: \bigoplus^{n}TM \to \mathbb{C}$ which satisfies certain transformation properties which allow us to integrate them.
+	We denote the space of densities by $\Dens(M)$ and the integral of $\rho \in \Dens(M)$ will be denoted by $\int \rho$ \cite[Chapter 16]{Lee2006}.
 	We associate the norm $\| \rho \|_{1} =  \int | \rho |$ to densities.  By completion this builds a (canonical) Banach space, which we call $L^{1}(M)$.
-	In fact $L^{1}(M)$ is just the (pre)-dual space to $C(M)$.  Given a function $f \in C(M)$ we denote the multiplication of the density $\rho \in L^{1}(M)$ by $f \rho$
+	In fact $L^{1}(M)$ is just the dual space to $C(M)$.  Given a function $f \in C(M)$ we denote the multiplication of the density $\rho \in L^{1}(M)$ by $f \rho$
 	and we denote the dual-pairing by $\langle f , \rho \rangle := \int f \rho$.
 	We let $W^{s,1}$ denote the closed subspace of $L^{1}(M)$ whose elements exhibit $s>0$ weak derivatives \cite{Hormander2003}.
 	\item Given a separable Hilbert space $\mathcal{H}$ we will denote the space of bounded operators by $B( \mathcal{H})$
@@ -274,7 +277,7 @@ This is in contrast to the transformation law for functions, which sends $f$ to 
 In local coordinates, $x^{1},\dots,x^{n}$, on an open set $U$, it is common to write a (complex) density $\rho: \bigoplus^{n}TM \to \mathbb{C}$ as function ``$\rho(x)$'' for $x \in U \subset M$.
 This convention is permissible as long as one realizes that what is really meant is that $\rho(x) = f_{\rho}(x) dx^{1} \wedge \cdots dx^{n}$ for some complex valued function $f_{\rho}:U \to \mathbb{C}$.
 Therefore, when one writes  ``$\rho(x)$ transforms like $\rho( \Phi^{-1}(x)) \left| \det( D \Phi^{-1}|_{\Phi(x)} ) \right|$'', what they are really describing is how $f_{\rho}$ is transformed.
-The same notational convention can be used to represent half-densities locally.
+The same notational convention can be used to represent half-densities locally as ``functions'' with a different transformation law.
 In this case the transformation law for half-densities is locally given by
 \begin{align}
 	\tilde{\psi}(x) = \left| D\Phi^{-1} (x) \right|^{1/2} \psi \left( \Phi^{-1}(x) \right). \label{eq:local transformation law}
@@ -324,8 +327,6 @@ Despite the Lie derivative being unbounded, a unique solution is defined for all
 	Which can be observed upon choosing a smooth partition of unity and applying integration by parts.
 \end{proof}
 
-\noindent In fact, $U(t)$ is merely the operator which deforms $\psi$ by the flow of $X$ according to formula \eqref{eq:transformation law}.
-
 \subsection{The relationship with classical $L^{2}$ spaces}
 \label{sec:classical_Lebesgue}
 To understand the relationship to classical Lebesgue spaces, recall that for any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative reference density $\mu$ \cite[Chapter 16]{Lee2006}.
@@ -334,13 +335,13 @@ Upon choosing such a $\mu \in \Dens(M)$, the $2$-norm of a continuous complex fu
 	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
 \end{align}
 and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
-The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are equivalent topological vector-spaces under an isomorphism:
+The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are equivalent as topological vector-spaces:
 \begin{proposition} \label{prop:non canonical}
 	Choose a non-vanishing positive density $\mu : \bigoplus^{n}TM \to \mathbb{R}^{+}$.
 	Let $\sqrt{\mu}$ denote the square root of $\mu$.\footnote{Explicitly, if $\sqrt{\cdot}: \mathbb{R}^{+} \to \mathbb{R}^{+}$ is the standard square-root function.
 	Then $\sqrt{\mu} := \sqrt{\cdot} \circ \mu : \bigoplus^{n} TM \to \mathbb{R}^{+} \subset \mathbb{C}$ is the half-density which we are considering.}
 	For any $\psi \in L^2(M)$ there exists a unique $f \in L^2(M ; \mu)$ such that $\psi = f \cdot  \sqrt{\mu}$.
-	This yields a continuous isomorphism between $L^2(M)$ and $L^2(M ; \mu)$.
+	This yields an isometry between $L^2(M)$ and $L^2(M ; \mu)$.
 \end{proposition}
 \begin{proof}
 	It suffices to prove that $\sqrt{\Dens(M)}$ is isomorphic to the space of square integrable (w.r.t. $\mu$) continuous functions, because
@@ -413,17 +414,14 @@ If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert spa
 with a discrete spectrum \cite{Taylor1974}.
 For any $s \geq 0$ we may define the \emph{Sobolev norm}:
 \begin{align}
-	\| f \|_{s,2} =  \left( \langle f , (1-\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
+	\| \psi \|_{s,2} =  \left( \langle f , (1-\Delta)^s \cdot  f \rangle_{g} \right)^{1/2}
 \end{align}
-and the subspace
-\begin{align}
-	V^{s}(M;g) = \{ \psi \in \sqrt{\Dens(M)} \mid \psi = f \, \sqrt{\mu}_{g} , \| f \|_{s,2} < \infty \}.
-\end{align}
-Then $H^s(M ;g)$ is the completion of $V^{s}(M;g)$ with respect to the $\| \cdot \|_{s,2}$ norm.  Such a definition is isomorphic, in the category of topological vector-spaces, to the one provided in \cite{Hebey1999}.
+where $f$ and $\psi$ are related by $\psi = f \sqrt{\mu_{g}}$.
+Then $H^s(M ;g)$ is the completion of $\sqrt{\Dens(M)}$ with respect to the $\| \cdot \|_{s,2}$ norm.  Such a definition is isomorphic, in the category of topological vector-spaces, to the one provided in \cite{Hebey1999}.
 In particular, note that $H^0(M;g) = L^2(M)$.  It is notable that $H^{s}(M;g)$ as a topological vector-space is actually not metric dependent \cite[Proposition 2.2]{Hebey1999}.
-However, the norm $\| \psi \|_{s,2} = \| f \|_{s,2}$ is metric dependent.
+However, the norm $\| \cdot \|_{s,2}$ is metric dependent.
 
-The following proposition will be of use later when we need to prove a notion of convergence via sequences of finite rank operators.
+%The following proposition will be of use later when we need to prove a notion of convergence via sequences of finite rank operators.
 \begin{proposition}[Sobelev Embedding Theorem \cite{Taylor1974}] \label{prop:compact_embedding}
 	Let $(M,g)$ be a compact Riemmanian manifold.  If $s > t \geq 0$ then $H^s(M;g)$ is compactly embedded within $H^t(M,g)$.
 \end{proposition}
@@ -441,7 +439,7 @@ The following proposition will be of use later when we need to prove a notion of
 	The embedding of $H^s(M;g)$ into $H^t(M,g)$
 	is then given in terms of the respective basis elements by $e_i^{(s)} \mapsto (1+\lambda_i)^{-(s-t)}e_i^{(t)}$.
 	As $s > t$ and $\lambda_i \to +\infty$, we see that 
-	this embedding is a compact operator \cite[see Proposition 4.6]{Conway1990}.
+	this embedding is a compact operator \cite[Proposition 4.6]{Conway1990}.
 \end{proof}
 
 %In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if there exists $f \in H^s(M,g)$ such that $\psi = f \sqrt{\mu_g}$.
@@ -464,7 +462,7 @@ Similarly, (and in the opposite direction) for any trace class operator $A:L^{2}
 \end{align}
 for any $f \in C(M)$.
 The map ``$A \mapsto \rho_{A}$'' is merely the adjoint of the injection ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is surjective.
-By construction, these maps preserve the duality between functions and distributions.
+%By construction, these maps preserve the duality between functions and distributions.
 
 %Finally, for any vector field $X$ there is a unique (unbounded) anti-symmetric operator $\pounds_{X}$ on $L^{2}(M)$
 %given in coordinates by
@@ -665,7 +663,7 @@ Denote a Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$.
 For example, for a Riemannian metric, $g$, if $\{ f_{0}, f_{1},\dots \}$ denote eigen-functions of the Laplace operator, then $\{ E_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemannian density.  We call $\{ E_{k} \}$ the Fourier basis.
 To ensure convergence, we assume:
 \begin{ass} \label{ass:basis}
-	Our basis $\{ e_{k} \}$ is such that there exists a metric $g$ for which the unitary transformation which sends the basis $\{ e_{k} \}$ to the Fourier basis is bounded on $H^{s}(M;g)$ for some $s > 1$.
+	Our basis $\{ e_{k} \}$ is such that there exists a metric $g$ for which the unitary transformation which sends the basis $\{ e_{k} \}$ to the Fourier basis is bounded with respect to the $\| \cdot \|_{s,2}$-norm for some $s > 1$.
 \end{ass}
 
 %\noindent Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Liouville basis (e.g. Legendre functions) \ram{citation}.
@@ -764,9 +762,15 @@ This algorithm is presented for theoretical interest at the moment, as it does n
 	\caption{A spectral discretization to solve \eqref{eq:quantum observable ode} for functions} \label{alg:function}
 \end{algorithm}
 
-We observe that algorithm \ref{alg:function} involves the integration of an isopectral flow \cite{Calvo1997},
-and so the solutions are of the form $H_{f,N}(t) = U_{N}(t) \cdot H_{f,N}(0) \cdot U_{N}(t)^{\dagger}$ for all time $t$ for some unitary transformation $U_{N}(t)$.
-In fact, $U_{N}(t)$ is the same unitary transformation as the one in Proposition \ref{prop:unitary}.
+\begin{proposition} \label{prop:isospectral}
+$H_{f,N}(t) = U_{N}(t) \cdot H_{f,N}(0) \cdot U_{N}(t)^{\dagger}$ for all time $t$ for the same unitary transformation $U_{N}(t)$
+of Proposition \ref{prop:unitary}.
+Moreover, the exact solution $H_{f}(t)$ is of the form $U(t) H_{f}(0) U(t)^{\dagger}$ as well.
+\end{proposition}
+\begin{proof}
+	This follows from the fact that algorithm outputs the solution to an isospectral flow ``$\dot{F}_{N} + [F_{N} , X_{N}]$''
+	where $X_{N}$ is anti-Hermetian and that the $H_{f}$ satisfies the isospectral flow \eqref{eq:quantum observable ode}.
+\end{proof}
 
 %On the torus, a more practical approach which holds much of the numerical benefits would be to approximate $\hat{f}_{n}$ psuedo-spectrally,
 %by evaluating $f$ on fixed grid points.
@@ -917,7 +921,7 @@ Having derived an error bound for Algorithm \ref{alg:half density}, we can deriv
 		\| \rho(t) - \rho_{n}(t) \|_{L^{1}}  &= \int_{M} | \psi^{2} - (\psi - \phi_{N})^{2} | = \int_{M} | 2 \psi \phi_{N} - \phi_{N}^{2} | \\
 			&\leq 2 \| \psi \|_{L^{2}} \| \phi_{N}\|_{L^{2}} + \| \phi_{N} \|_{L^{2}}^{2} = 2 \| \rho \|_{L^{1}}^{1/2} \cdot \| \phi_{N} \|_{L^{2}} + \| \phi_{N} \|_{L^{2}}^{2}
 	\end{align}
-	Above we have applied Holder's Inequality to $L^{2}(M)$, which still holds upon using the isometry in Proposition \ref{prop:non canonical}.
+	Above we have applied Holder's inequality to $L^{2}(M)$, which still holds upon using the isometry in Proposition \ref{prop:non canonical}.
 	Theorem \ref{thm:half density convergence} provides a bound for $\| \phi_{N} \|$.
 	Substitution of this bound into the above inequality yields the theorem.
 \end{proof}
@@ -927,7 +931,7 @@ Finally, we prove that Algorithm \ref{alg:function} converges to a solution of \
 \begin{proposition} \label{prop:function approximation}
 	Let $f \in C^{k}(M)$ and let $\hat{f}_{N} = \pi_{N} \circ \hat{f} \circ \pi_{N}$ be the output of Algorithm \ref{alg:function}.  Then
 	\begin{align}
-		\| ( \hat{f} - \hat{f}_{N} ) \|_{H^{s},op} \leq D \frac{n}{s} N^{-2s/n} \| \hat{f} \|_{op}
+		\| \hat{f} - \hat{f}_{N} \|_{H^{s},op} \leq D \frac{n}{s} N^{-2s/n} \| \hat{f} \|_{op}
 	\end{align}
 	where $s > k \geq 1$, and $D$ is constant.
 \end{proposition}
@@ -938,7 +942,7 @@ Finally, we prove that Algorithm \ref{alg:function} converges to a solution of \
 	\end{align}
 	for $s>0$, then:
 	\begin{align}
-		\| (\hat{f} - \hat{f}_{N})|_{H^{s}} \|_{op} &= \sup_{\| \psi \|_{H^{s}}=1} \langle \psi \mid \hat{f} - \hat{f}_{N} \mid \psi \rangle \\
+		\| \hat{f} - \hat{f}_{N} \|_{H^{s},op} &= \sup_{\| \psi \|_{H^{s}}=1} \langle \psi \mid \hat{f} - \hat{f}_{N} \mid \psi \rangle \\
 			&= \sup_{\| \psi \|_{H^{s}}=1} \left( \langle \psi \mid \hat{f}  \mid \psi \rangle - \langle \psi - \pi_{N}^{\perp}(\psi) \mid \hat{f} \mid \psi - \pi_{N}^{\perp}(\psi) \rangle \right) \\
 			&= \sup_{\| \psi \|_{H^{s}}=1} \left( 2 \Re \langle \pi_{N}^{\perp}(\psi) \mid \hat{f} \mid \psi \rangle - \langle \pi_{N}^{\perp}(\psi) \mid \hat{f} \mid \pi_{N}^{\perp}(\psi) \rangle \right) \\
 			&\leq \sup_{\| \psi \|_{H^{s}}=1}  ( \| \pi_{N}^{\perp}(\psi) \|_{L^{2}}- \| \pi_{N}^{\perp}(\psi) \|_{L^{2}}^{2} ) \| \hat{f} \|_{op} 
@@ -959,20 +963,21 @@ Finally, we prove that Algorithm \ref{alg:function} converges to a solution of \
 	We find
 	\begin{align}
 		\| \hat{f}(t) - \hat{f}_{N}(t) \|_{H^{s},op} &= \sup_{\| \psi \|_{H^{s}} =1} \langle \psi \mid \hat{f}(t) - \hat{f}_{N}(t) \mid \psi \rangle \\
-			&= \sup_{ \| \psi \|_{H^{s}} =1} \langle \psi \mid U(t) \cdot \hat{f}(0) U(t)^{\dagger} - U_{N}(t) \cdot \hat{f}_{N}(0) U_{N}(t)^{\dagger} \mid \psi \rangle \\
+	\intertext{In light of Proposition \ref{prop:isospectral} we find}
+			&= \sup_{ \| \psi \|_{H^{s}} =1} \langle \psi \mid U(t) \cdot \hat{f}(0) \cdot U(t)^{\dagger} - U_{N}(t) \cdot \hat{f}_{N}(0) \cdot U_{N}(t)^{\dagger} \mid \psi \rangle \\
 			&= \sup_{ \| \psi \|_{H^{s}} =1 } \langle U(t)^{\dagger} \psi \mid f(0) \mid U(t)^{\dagger} \psi \rangle 
-				- \langle U_{N}(t)^{\dagger} \psi \mid \hat{f}_{N} \mid U_{N}(t)^{\dagger} \psi \rangle\\
+				- \langle U_{N}(t)^{\dagger} \psi \mid \hat{f}_{N}(0) \mid U_{N}(t)^{\dagger} \psi \rangle
 	\end{align}
 	and finally
 	\begin{align}
-			&= \sup_{ \| \psi \|_{H^{s}} = 1} \langle U(t)^{\dagger} \psi \mid f(0) \mid U(t)^{\dagger} \psi \rangle 
-			- \langle U(t)^{\dagger} \psi + \phi(t) \mid \hat{f}_{N}(0) \mid  U(t)^{\dagger} \psi + \phi(t) \rangle \label{eq:final line}
+			&= \sup_{ \| \psi \|_{H^{s}} = 1} \langle U(t)^{\dagger} \psi \mid f(0) - f_{N}(0) \mid U(t)^{\dagger} \psi \rangle 
+			- \langle  \phi(t) \mid \hat{f}_{N}(0) \mid  \phi(t) \rangle \label{eq:final line}
 	\end{align}
 	where $\phi(t) = U_{N}(t)^{\dagger} \psi - U(t)^{\dagger} \psi$.
 	
 	The first term is bounded by Proposition \ref{prop:function approximation}.
 	To bound the second term we must bound $\phi$.
-	As $U_{N}(t)^{\dagger} \psi$ is the backwards time numerical solution to \eqref{eq:half density pde} and $U_{N}(t)^{\dagger}\psi$ is the exact backward time solution to \eqref{eq:half density pde},
+	As $U_{N}(t)^{\dagger} \psi$ is the backwards time numerical solution to \eqref{eq:half density pde} and $U(t)^{\dagger}\psi$ is the exact backward time solution to \eqref{eq:half density pde},
 	Theorem \ref{thm:half density convergence} prescribes the existence of constants $K$ and $C$ such that:
 	\begin{align}
 		\| \phi \|_{H^{\underline{s}}} = \| U_{N}(t)^{\dagger} \psi - U(t)^{\dagger} \psi \|_{H^{\underline{s}}}  \leq K \| \psi \|_{H^{s}} \left(  N^{-2(\underline{s}-1)} + \frac{n}{s - \underline{s}} N^{-2(s-\underline{s})/n} \right) e^{Ct} 
@@ -1001,11 +1006,11 @@ outputs of Algorithms \ref{alg:half density}, \ref{alg:density}, and \ref{alg:fu
 with respect to initial conditions $\psi(0) \in H^{s}(M;g), \rho(0) \in W^{s,1}$ and $f(0) \in C^{s}(M)$ for $N = 1,2,\dots$.
 	
 \begin{theorem} \label{thm:norms}
-	The norms $\| \psi_{N} (t)\|_{L^{2}}, \|\rho_{N}(t)\|_{L^{1}},$ and $\|\hat{f}_{N}(t) \|_{op}$ are constant with respect to $t$ and
+	The norms $\| \psi_{N} (t)\|_{L^{2}}, \|\rho_{N}(t)\|_{L^{1}},$ and $\| H_{f,N}(t) \|_{op}$ are constant with respect to $t$ for every $N \in \mathbb{N}$ and
 	\begin{align}
-		\lim_{N \to \infty} \| \psi_{n} \|_{L^{2}} = \| \psi \|_{L^{2}}, \quad \quad
-		\lim_{N \to \infty} \| \rho_{n} \|_{nuc} = \| \rho \|_{L^{1}}, \quad \textrm{and} \quad
-		\lim_{N \to \infty} \| \hat{f}_{n} \|_{op} = \| f \|_{\sup}.
+		\lim_{N \to \infty} \| \psi_{N} \|_{L^{2}} = \| \psi \|_{L^{2}}, \quad \quad
+		\lim_{N \to \infty} \| \rho_{N} \|_{nuc} = \| \rho \|_{L^{1}}, \quad \textrm{and} \quad
+		\lim_{N \to \infty} \| H_{f,N} \|_{op} = \| f \|_{\sup}.
 	\end{align}
 	\ram{the relationship $\psi$,$\rho$ and $f$ have to the discretization has to be stated explicitly, moreover, $nuc$ and $L^1$ norms aren't defined. It would probably also be worth defining $op$ and $nuc$ in a preliminary notation section.}
 \end{theorem}
@@ -1040,7 +1045,7 @@ This property is also conserved by our discretization.
 	\begin{align}
 		\frac{d}{dt} H_{k,N} = [ X_{N} , H_{k,N}].
 	\end{align}
-	Moreover, $H_{k,N}(t)$ strongly converges to $H_{k}$ as $N \to \infty$ in the operator norm on $H^{s}(M)$ when $f,g,h \in W^{s,\infty}(M)$ for $s>1$.
+	Moreover, $H_{k,N}(t)$ strongly converges to $H_{k}$ as $N \to \infty$ in the operator norm on $H^{s}(M)$ when $f,g,h \in C^{s}(M)$ for $s>1$.
 \end{theorem}
 \begin{proof}
 	By construction, the output of Algorithm \ref{alg:function} is the result of an isospectral flow, and is therefor of the form 
@@ -1060,7 +1065,7 @@ This property is also conserved by our discretization.
 \end{proof}
 
 Finally, the duality between functions and densities is preserved by advection.  If $f$ satisfies \eqref{eq:function pde} and $\rho $ satisfies \eqref{eq:density pde} then $\int f \rho$ is conserved in time.
-Discretizations constructed by Algorithms \ref{alg:density} and \ref{alg:function} satisfy this same equality:
+Algorithms \ref{alg:density} and \ref{alg:function} satisfy this same equality:
 \begin{theorem}
 	For each $N \in \mathbb{N}$, $\Tr( H_{f,N} A_{\rho,N} (t))$ is constant in time where $A_{\rho,N} (t)= \psi_{N}(t) \otimes \psi_{N}(t)^{\dagger}$.
 	Moreover, $\Tr( H_{f,N} A_{\rho,N} )$ converges to the constant $\int f\rho $ as $N \to \infty$.
@@ -1091,7 +1096,7 @@ If the initial density is a uniform distribution, $\rho_{0} = dx$, then the the 
 	\rho(x;t) =  \left( e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) \right)^{-1}  dx \label{eq:exact solution}
 \end{align}
 Figure \ref{fig:S1} depicts the evolution of $\rho(x;t)$ at $t=1.5$ with an initial condition.
-Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution},  figure \ref{fig:standard spectral} depicts the numerical solution computed from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes, and Figure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
+Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution},  Figure \ref{fig:standard spectral} depicts the numerical solution computed from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes, and Figure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
 
 \begin{figure}
 	\hspace*{-.5cm}
@@ -1116,7 +1121,7 @@ Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solu
 	\label{fig:S1}
 \end{figure}
 
-It is tempting to believe that Algorithm \ref{alg:density} has greater qualitative accuracy than a standard spectral discretization.
+Here we witness how Algorithm \ref{alg:density} has greater qualitative accuracy than a standard spectral discretization, in the ``soft'' sense of qualitative accuracy.
 For example, standard spectral discretization exhibits negative mass, which is not achievable in the exact system.
 Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  
 In contrast, Theorem \ref{thm:norms} proves that the $L^{1}$-norm is conserved by Algorithm \ref{alg:density}.
@@ -1328,8 +1333,8 @@ Consider the system
 on the three-torus for constants $A,B,C,D \in \mathbb{R}$.  
 When $D=0$ this system is the well studied volume conserving system known as an Arnold-Beltrami-Childress flow \ram{citation}.
 When $A > B > C > 0$, $D=0$, and $C << 1$, then the solutions to this ODE are chaotic, with a uniform steady state distribution \cite{MajdaBertozzi2002}.
-When $D=0$ the operator $\pounds_{X}$ \ram{undefined} is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ that appears in \eqref{eq:density pde}, and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is generically the case for any volume conserving system.}
-Therefore we consider the case where $D > 0$ and these discretizations are different.
+When $D=0$ the operator $\pounds_{X}$ of \eqref{eq:half density pde} is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ that appears in \eqref{eq:density pde}, and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is always the case for a volume conserving system.}
+Therefore we consider the case where $D > 0$ to see how our discretization are differs from the standard one.
 When $D> 0$ volume is no longer conserved and there is a non-uniform steady-state distribution.
 
 %Given any probability distribution on $\mathbb{R}^{3}$ we can get a probability distribution on $\mathbb{T}^{3}$ by wrapping it around.
@@ -1346,11 +1351,11 @@ When $D> 0$ volume is no longer conserved and there is a non-uniform steady-stat
 %with $\sigma_{x} = 0.2, \sigma_{y} = 0.3, \sigma_{z} = 0.3$.
 For the following numerical experiment let $A=1.0,B=0.5,C=0.2,$ and $D=0.5$.
 As an initial condition consider a wrapped Gaussian distribution with anisotropic variance $\sigma= (0.2, 0.3, 0.3)$ centered at $(0,0,0)$.
-\eqref{eq:density pde} is approximately solved using Algorithm \ref{alg:density}, Monte-Carlo, and a standard spectral method.
-The results of the $z$-marginal of these distributions are illustrated in Figure \ref{fig:ABCD}.
+Equation \eqref{eq:density pde} is approximately solved using Algorithm \ref{alg:density}, Monte-Carlo, and a standard spectral method.
+The results of the $z$-marginal of these densities are illustrated in Figure \ref{fig:ABCD}.
 The top row depicts the results from using Algorithm \ref{alg:density} using $33$ modes along each dimension.
 The middle row depicts the results from using a Monte-Carlo method with $15^{3} = 3375$ particles as a benchmark computation.
-Finally, the bottom row depicts the results from using a direct Fourier based discretization of \eqref{eq:density pde} using 33 modes along each dimension.
+Finally, the bottom row depicts the results from using a standard Fourier based discretization of \eqref{eq:density pde} using 33 modes along each dimension.
 Notice that Algorithm \ref{alg:density} performs well when compared to the standard discretization approach.
 
 \begin{figure}
