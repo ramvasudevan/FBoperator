@@ -399,8 +399,13 @@ For any $s \geq 0$ we may define the \emph{Sobolev norm}:
 \begin{align}
 	\| f \|_{s,2} =  \left( \langle f , (1-\Delta)^s \cdot f \rangle_{g} \right)^{1/2}
 \end{align}
-and $H^s(M ,g)$ is then the function space obtained by completion with respect to this norm.  Such a definition is equivalent to the one provided in \cite{Hebey1999}.
-In particular, note that $H^0(M;g) = L^2(M;\mu_g)$.
+and the subspace
+\begin{align}
+	V^{s}(M;g) = \{ \psi \in \sqrt{\Dens(M)} \mid \psi = f \, \sqrt{\mu}_{g} , \| f \|_{s,2} < \infty \}.
+\end{align}
+Then $H^s(M ;g)$ is the completion of $V^{s}(M;g)$ with respect to the $\| \cdot \|_{s,2}$ norm.  Such a definition is isomorphic, in the category of topological vector-spaces, to the one provided in \cite{Hebey1999}.
+In particular, note that $H^0(M;g) = L^2(M)$.  It is notable that $H^{s}(M;g)$ as a topological vector-space is actually not metric dependent \cite[Proposition 2.2]{Hebey1999}.
+However, the norm $\| \psi \|_{s,2} = \| f \|_{s,2}$ is metric dependent.
 
 The following proposition will be of use later when we need to prove a notion of convergence via sequences of finite rank operators.
 \begin{proposition}[Sobelev Embedding Theorem \cite{Taylor1974}] \label{prop:compact_embedding}
@@ -423,15 +428,14 @@ The following proposition will be of use later when we need to prove a notion of
 	this embedding is a compact operator \cite[see Proposition 4.6]{Conway1990}.
 \end{proof}
 
-In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if there exists $f \in H^s(M,g)$ such that $\psi = f \sqrt{\mu_g}$.
-Note that saying $\psi$ is of class $H^{s}$ is a topological statement and is not metric dependent \cite[Proposition 2.2]{Hebey1999}.
-However, the norm $\| \psi \|_{s,2} = \| f \|_{s,2}$ is metric dependent.
+%In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if there exists $f \in H^s(M,g)$ such that $\psi = f \sqrt{\mu_g}$.
+
 
 \section{Quantization} \label{sec:quantization}
 In physics, ``quantization'' refers to the process of substituting certain physically relevant functions with operators on a Hilbert space, while attempting to preserve the symmetries and conservation laws of the classical theory
 \cite{BatesWeinstein1997,Dirac2013,GuilleminSternberg1970}.
 In this section, we will quantize \eqref{eq:function pde} and \eqref{eq:density pde} by replacing functions and densities with bounded and trace-class operators on $L^{2}(M)$.
-This will be useful later, in section \ref{sec:discretization}, when we discretize.
+This will be useful in section \ref{sec:discretization} when we discretize.
 
 To begin, let us quantize the space of continuous real-valued functions $C(M)$.
 For each $f \in C(M)$, there is a unique bounded Hermitian operator, $H_{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
@@ -642,10 +646,10 @@ The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum den
 This section presents the numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde}.
 The basic ingredient for all the algorithms in this section are a Hilbert basis and an ODE solver.
 Denote a Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$.
-For example, for a Riemannian metric, $g$ if $\{ f_{0}, f_{1},\dots \}$ denote eigen-functions of the Laplace operator, then $\{ E_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemannian density.  We call $\{ E_{k} \}$ the Fourier basis.
+For example, for a Riemannian metric, $g$, if $\{ f_{0}, f_{1},\dots \}$ denote eigen-functions of the Laplace operator, then $\{ E_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemannian density.  We call $\{ E_{k} \}$ the Fourier basis.
 To ensure convergence, we assume:
 \begin{ass} \label{ass:basis}
-	There exists a metric $g$ such that the unitary transformation, $U:L^{2}(M) \to L^{2}(M)$, which sends the basis $\{ e_{k} \}$ to the Fourier basis $\{E_{k} \}$ is bounded on $H^{s}(M;g)$ for some $s > 1$.
+	Our basis $\{ e_{k} \}$ is such that there exists a metric $g$ for which the unitary transformation which sends the basis $\{ e_{k} \}$ to the Fourier basis is bounded on $H^{s}(M;g)$ for some $s > 1$.
 \end{ass}
 
 %\noindent Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Liouville basis (e.g. Legendre functions) \ram{citation}.
