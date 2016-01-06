@@ -150,7 +150,7 @@ Throughout the paper $M$ will denote a smooth compact $n$-manifold without bound
 	\item The tangent bundle to $M$ will be denoted by $TM$, and the $n$th iterated Whitney sum will be denoted by $\bigoplus^{n} TM$ (see \cite{Lee2006,MTA}).
 	\item A (complex) density is a map $\rho: \bigoplus^{n}TM \to \mathbb{C}$ which satisfies certain transformation properties which allow us to integrate them.
 	We denote the space of densities by $\Dens(M)$ and the integral of $\rho \in \Dens(M)$ will be denoted by $\int \rho$ \cite[Chapter 16]{Lee2006}.
-	We associate the norm $\| \rho \|_{1} =  \int | \rho |$ to densities.  By completion this builds a (canonical) Banach space, which we call $L^{1}(M)$.
+	We associate the norm $\| \rho \|_{1} =  \int | \rho |$ to densities.  By completion this builds a Banach space, which we call $L^{1}(M)$.
 	In fact $L^{1}(M)$ is just the dual space to $C(M)$.  Given a function $f \in C(M)$ we denote the multiplication of the density $\rho \in L^{1}(M)$ by $f \rho$
 	and we denote the dual-pairing by $\langle f , \rho \rangle := \int f \rho$.
 	We let $W^{s,1}$ denote the closed subspace of $L^{1}(M)$ whose elements exhibit $s>0$ weak derivatives \cite{Hormander2003}.
@@ -262,25 +262,30 @@ For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of conti
 	The space of half densities is denoted by $\sqrt{\Dens(M)}$.
 \end{definition}
 
-This definition is an equivalent reformulation of the half densities defined in the context of geometric quantization \cite{GuilleminSternberg1970,BatesWeinstein1997}.
+The following proposition immediately follows from this definition.
+\begin{proposition}[see appendix A \cite{BatesWeinstein1997}] \label{prop:half densities}
+	If $\psi_{1}, \psi_{2} \in \sqrt{\Dens(M)}$ then the scalar product $\psi_{1} \cdot \psi_{2} : \bigoplus^{n} TM \to \mathbb{C}$ is a complex valued density. 
+\end{proposition}
+
+This definition is an equivalent reformulation of the half densities defined in the context of geometric quantization (see \cite[Chapter 4]{GuilleminSternberg1970} or \cite[Appendix A]{BatesWeinstein1997}).
 In physical terms, half densities are a geometric manifestation of the wave functions used in quantum mechanics.
 It is unfortunate that physicists call these ``wave-functions'' given that they are \emph{not} functions.
-To see this, it is useful to see how elements of $\sqrt{\Dens(M)}$ transform.
+To test this assertion we can observe how elements of $\sqrt{\Dens(M)}$ transform.
 Under a $C^{1}$-automorphism, $\Phi: M \to M$,
-a half density $\psi \in \sqrt{ \Dens(M) }$ will transform to a new half density $\tilde{\psi}$ according to the formula
+a half density $\psi \in \sqrt{ \Dens(M) }$ will transform to a new half density $\Phi_{*}\psi$ according to the formula
 \begin{align}
-	\tilde{\psi}_{x}(v_{1},\dots,v_{n}) := \rho_{ \Phi^{-1}(x) } ( D\Phi^{-1}(x) \cdot v_{1} , \dots , D\Phi^{-1}(x) \cdot v_{n} ) \label{eq:transformation law}
+	(\Phi_{*}\psi)_{x}(v_{1},\dots,v_{n}) := \psi_{ \Phi^{-1}(x) } ( D\Phi^{-1}(x) \cdot v_{1} , \dots , D\Phi^{-1}(x) \cdot v_{n} ) \label{eq:transformation law}
 \end{align}
 for any $x \in M$ and any $v_{1}, \dots , v_{n} \in T_{x}M$.
-This is in contrast to the transformation law for functions, which sends $f$ to $f \circ \Phi$. 
+This is in contrast to the transformation law for functions, which sends $f \in C^{1}(M)$ to the function $f \circ \Phi^{-1}$. 
 
-In local coordinates, $x^{1},\dots,x^{n}$, on an open set $U$, it is common to write a (complex) density $\rho: \bigoplus^{n}TM \to \mathbb{C}$ as function ``$\rho(x)$'' for $x \in U \subset M$.
-This convention is permissible as long as one realizes that what is really meant is that $\rho(x) = f_{\rho}(x) dx^{1} \wedge \cdots dx^{n}$ for some complex valued function $f_{\rho}:U \to \mathbb{C}$.
-Therefore, when one writes  ``$\rho(x)$ transforms like $\rho( \Phi^{-1}(x)) \left| \det( D \Phi^{-1}|_{\Phi(x)} ) \right|$'', what they are really describing is how $f_{\rho}$ is transformed.
+In local coordinates, $x^{1},\dots,x^{n}$, on an open set $U \subset M$, it is common to write a (complex) density $\rho: \bigoplus^{n}TM \to \mathbb{C}$ as function ``$\rho(x)$'' for $x \in U \subset M$.
+This convention is permissible as long as one realizes that what is really meant is that $\rho(x) = f_{\rho}(x) | dx^{1} \wedge \cdots \wedge dx^{n} |$ for some complex valued function $f_{\rho}:U \to \mathbb{C}$.
+Therefore, when one writes  ``$\rho(x)$ transforms like $\rho( \Phi^{-1}(x)) \left| \det( D \Phi^{-1}(x) ) \right|$'', what they are really describing is how $f_{\rho}$ is transformed.
 The same notational convention can be used to represent half-densities locally as ``functions'' with a different transformation law.
 In this case the transformation law for half-densities is locally given by
 \begin{align}
-	\tilde{\psi}(x) = \left| D\Phi^{-1} (x) \right|^{1/2} \psi \left( \Phi^{-1}(x) \right). \label{eq:local transformation law}
+	\tilde{\psi}(x) = \left| \det \left( D\Phi^{-1} (x) \right) \right|^{1/2} \psi \left( \Phi^{-1}(x) \right). \label{eq:local transformation law}
 \end{align}
 
 As $|\psi|^{2} \in \Dens(M)$ for any $\psi \in \sqrt{\Dens(M)}$, $|\psi|^{2}$ can be integrated and we observe that half densities are naturally equipped with the norm: $$\| \psi \|_2 :=  \left( \int_M |\psi|^2 \right)^{1/2}$$ which we call the \emph{$2$-norm}.
@@ -293,12 +298,12 @@ As $|\psi|^{2} \in \Dens(M)$ for any $\psi \in \sqrt{\Dens(M)}$, $|\psi|^{2}$ ca
 	through polar decomposition, and so $L^{2}(M)$ is a Hilbert space.
 \end{definition}
 
-Lastly, given the transformation law for half-densities, \eqref{eq:transformation law} and \eqref{eq:local transformation law}, one can describe how half-densities are transported by the flow of a vector field. 
-For a vector-field $X$, the Lie derivative of a half-density is given in local coordinates by:
+Lastly, given the transformation law for half-densities, \eqref{eq:transformation law} and \eqref{eq:local transformation law}, one can describe how half-densities are transported by the flow, $\Phi_{X}^{t}$, of the vector field, $X$. 
+The Lie derivative of a half-density with respect to $X$ is defined as $\pounds_{X}[\psi] = - \left. \frac{d}{dt} \right|_{t=0} (\Phi_{X}^{t})_{*} \psi$ and is given in local coordinates by:
 \begin{align}
 	\pounds_{X}[\psi] = \frac{1}{2} X^{i} \pder{\psi}{x^{i}} + \frac{1}{2} \pder{}{x^{i}} \left( \psi X^{i} \right). \label{eq:representation}
 \end{align}
-This is a densely defined anti-Hermitian operator on $L^{2}(M)$.
+%This is a densely defined anti-Hermitian operator on $L^{2}(M)$.
 The advection equation can then be written as:
 \begin{align}
 	\partial_{t} \psi + \pounds_{X}[\psi] = 0. \label{eq:half density pde}
@@ -307,24 +312,26 @@ Despite the Lie derivative being unbounded, a unique solution is defined for all
 \begin{proposition}[Stone's Theorem \cite{Conway1990,Rudin1991}] \label{prop:stone}
 	The unique solution to \eqref{eq:half density pde} is of the form $\psi(t) = U(t) \cdot \psi(0)$ where $U(t)$ is
 	is the one-parameter semigroup generated by the operator $\pounds_{X}$.
-	Explicitly $\psi(t)$ is given locally by
-	\begin{align}
-		\psi(x;t) = \left| (D\Phi_{X}^{t})^{-1} (x) \right|^{1/2} \psi \left( (\Phi_{X}^{t})^{-1}(x) \right).
-	\end{align}
-	where $\Phi_{X}^{t}$ is the time flow map of $X$ at time $t$.
+	Explicitly, $U(t)$ is the operator ``$(\Phi_{X}^{t})_{*}$'' in the sense that the solution to \eqref{eq:half density pde}
+	is $\psi(t) = (\Phi_{X}^{t})_{*} \psi(0)$ where $\Phi_{X}^{t}$ is the time flow map of $X$ at time $t$.
 \end{proposition}
 \begin{proof}
-	Stone's theorem implies that there is a one-to-one correspondence between densely defined anti-Hermetian operators on $L^{2}(M)$
+	By inspection we can observe that
+	\begin{align*}
+		 (\Phi_{X}^{t})_{*} ( \bar{\psi}_{1} \psi_{2}) ) = \overline{ (\Phi_{X}^{t})_{*} \psi_{1} } (\Phi_{X}^{t})_{*} \psi_{2}.
+	\end{align*}
+	By proposition \ref{prop:half densities}, $\bar{\psi}_{1} \psi_{2}$ is a density, and so we can integrate it.
+	The integral of a density is invariant under $C^{1}$ transformations \cite[Proposition 16.42]{Lee2006} and we find
+	\begin{align*}
+		0 = \left. \frac{d}{dt} \right|_{t=0} \int_{M} (\Phi_{X}^{t})_{*} (\bar{\psi}_{1} \psi_{2}) = \left. \frac{d}{dt} \right|_{t=0} \int_{M} \left( \pounds_{X}[\bar{\psi}_{1} ] \psi_{2})  + \bar{\psi}_{1} \pounds_{X}[\psi_{2}] \right) \\
+		= \langle \pounds_{X}[\psi_{1}]  \mid \psi_{2} \rangle + \langle \psi_{1} \mid \pounds_{X}[\psi_{2}] \rangle.
+	\end{align*}
+	Therefore, the operator, $\pounds_{X}$ is anti-Hermitian.
+	We can see that $\pounds_{X}$ is densely defined, as it is well defined on $\sqrt{\Dens(M)}$, which is dense in $L^{2}(M)$ by construction.
+	Stone's theorem implies that there is a one-to-one correspondence between densely defined anti-Hermitian operators on $L^{2}(M)$
 	and one-parameter groups $U(t)$ consisting of unitary operators on $L^{2}(M)$.
-	We need only show that $\pounds_{X}[\psi]$ is anti-Hermitian and densely defined.
-	The domain of $\pounds_{X}$ contains $H^{1}(M;g)$ since all elements of $H^{1}(M;g)$ are differentiable.
-	Thus $\pounds_{X}$ is densely defined.
-	That $\pounds_{X}$ is anti-Hemetian means verifying 
-	\begin{align}
-		\int \overline{\pounds_{X}[\psi]} \phi + \bar{\psi} \pounds_{X}[\phi] = 0
-	\end{align}
-	for any $\psi,\phi \in H^{1}(M;g)$.
-	Which can be observed upon choosing a smooth partition of unity and applying integration by parts.
+	We can observe that $\psi(t) = (\Phi_{X}^{t})_{*} \psi(0)$ solve \eqref{eq:half density pde} directly, by taking its time-derivative.
+	Thus $U(t) =  (\Phi_{X}^{t})_{*} $ is the unique one-parameter subgroup we are looking for.
 \end{proof}
 
 \subsection{The relationship with classical $L^{2}$ spaces}
