@@ -598,6 +598,7 @@ Similarly, (and in the opposite direction) for any trace class operator $A:L^{2}
 	 \int f \, \rho_{A} = \Tr ( H_{f}^{\dagger} \cdot A )
 \end{align}
 for any $f \in C(M)$.
+More generally, for any $A$ in the dual-space $B( L^{2}(M) )^{*}$, there is a $\rho_{A} \in C(M)'$ such that $\langle f , \rho_{A} \rangle = \langle H_{f} , A \rangle$.
 The map ``$A \mapsto \rho_{A}$'' is merely the adjoint of the injection ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is surjective.
 %By construction, these maps preserve the duality between functions and distributions.
 
@@ -639,13 +640,13 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 	\begin{align}
 		\frac{d H_{f} }{dt} + [ H_{f} , \pounds_{X} ] = 0. \label{eq:quantum observable ode}
 	\end{align}
-	If $A$ satisfies
+	If $A$ is trace-class and satisfies
 	\begin{align}
 		\frac{dA}{dt} + [ A , \pounds_{X} ] = 0, \label{eq:quantum density ode}
 	\end{align}
 	then $\rho_{A}$ satisfies \eqref{eq:density pde}.
 	Finally, if $\psi$ satisfies \eqref{eq:half density pde}
-	then $\rho = \psi^{2}$ satisfies \eqref{eq:density pde}.
+	then $\rho = \psi^{2}$ satisfies \eqref{eq:density pde} and $\psi \otimes \psi^{\dagger}$ satisfies \eqref{eq:quantum density ode}.
 \end{theorem}
 
 \begin{proof}
