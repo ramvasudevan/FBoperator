@@ -54,6 +54,7 @@
 \section{Introduction}
 \label{sec:intro}
 
+\todo[inline]{Spell it like ``Liouville''}
 Let $M$ be a compact $n$-manifold with local coordinates $x^{1},\dots,x^{n}$
 and let $X$ be a smooth vector-field on $M$, whose local components are given by $(X^{1}(x), \dots, X^{n}(x) )$. 
 This paper is concerned with the following pair of partial differential equations (PDEs):
@@ -68,7 +69,7 @@ Equation \eqref{eq:density pde}, which is sometimes called the ``continuum equat
 Such PDEs arises in a variety of contexts, ranging from  mechanics \cite{Batchelor1999,Truesdell1991} to control theory \cite{HenrionKorda2014}, and can be seen as zero-noise limits of the forward and backward Kolmogorov equations \cite{Oksendal2003}.
 
 The solution to \eqref{eq:function pde} takes the form $f(x;t) = f( (\Phi_{X}^{t})^{-1}(x) ; 0) \equiv (\Phi_{X}^{t})_{*} f(\cdot;0)$
-where $\Phi_{X}^{t}:M \to M$ is the flow map of $X$ at time $t$.
+where $\Phi_{X}^{t}:M \to M$ is the flow map of $X$ at time $t$ \cite[Chapter 18]{Lee2006}.
 From this we see that \eqref{eq:function pde} exhibits a variety of conservation laws.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
 then so is their product, $f \cdot g$, and their sum, $f+g$.
@@ -144,7 +145,7 @@ by the following sequence of accomplishments.
 \subsection{Notation}
 Throughout the paper $M$ will denote a smooth compact $n$-manifold without boundary.
 \begin{itemize}
-	\item The space of continuous functions will be denoted $C(M)$.
+	\item The space of continuous complex valued functions will be denoted $C(M)$.
 	We will topologize $C(M)$ by the sup-norm, $\| \cdot \|_{\infty}$ (see \cite{Taylor1974,Rudin1991,MTA,Conway1990}).
 	\item Given a Riemannian metric, $g$, the resulting Sobolev spaces on $M$ will be denoted $W^{k,p}(M ; g)$ (see \cite{Hebey1999}).
 	\item The tangent bundle to $M$ will be denoted by $TM$, and the $n$th iterated Whitney sum will be denoted by $\bigoplus^{n} TM$ (see \cite{Lee2006,MTA}).
@@ -242,6 +243,135 @@ Throughout the paper $M$ will denote a smooth compact $n$-manifold without bound
 %but the goal of this paper will be to go the extra length of constructing a scheme which is numerically
 %\emph{and qualitatively} accurate.
 
+
+\section{Insights from Operator Theory}
+\label{sec:operator theory}
+As mentioned, the solution to \eqref{eq:function pde} with initial condition $f_{0} \in C(M)$ is given by $f(x,t) = f_{0}( (\Phi_{X}^{t})^{-1}(x)  )$.
+Algebraically, the solution is obtained by a time-dependent linear transformation of $f_{0}$ given by $f_{0} \circ (\Phi_{X}^{t})^{-1}$.
+This transformation, known as a ``Koopman operator'', preserves $C(M)$ as a Banach algebra in that it preserves the sup-norm as well as addition, multiplication, and complex conjugation.
+One goal in this paper is to approximate $C(M)$ with a finite dimensional algebra, $A$, and then to approximate the Koopman operator with an algebra preserving transformation of $A$.
+But is this a worthy goal?
+Sure, \eqref{eq:function pde} preserves the algebraic structure of $C(M)$, but is that special?
+Perhaps algebra-preservation is an insignificant property of \eqref{eq:function pde} in that it can be subsumed by a much larger conservation law, if only we knew what that larger law was?
+Such a scenario would be analogous to declaring ``Holy cow!  We can encode all english words using the numbers $0$ through $25$!''.
+This insight is true, but not nearly as significant or fundamental as the the declaration ``We can encode all english words using the numbers $0$ and $1$.''
+Conversely, perhaps aiming for algebra-preservation is over-kill.  Perhaps algebra-preservation is a property of a more general class of linear evolution PDE's which are more difficult to solve?
+This scenario would be analogous to the declaration ``Holy cow! We can assert the existence of a closed form solution to `$3x+1=0$' using Galois theory?''.
+True, but the use of Galois theory is too general.
+
+It is a result known to algebraic geometers, at least implicitly, that this insight characterizes \eqref{eq:function pde} completely without any extra baggage.
+In other words, \emph{the only linear evolution PDE which preserves the algebra of $C(M)$ is \eqref{eq:function pde}.}
+
+%\ram{I like this section but I feel as if we should talk about moving it earlier and trying to make the argument even more explicit so that simpletons like me can really appreciate it. Lets talk about this in person.} 
+
+%In this section, we describe the importance of the conservation laws in \eqref{eq:function pde} and \eqref{eq:density pde} from the perspective of operator theory.
+%Admittedly, this section is not crucial and uninterested readers are free to skip it without consequence.
+%Nonetheless, we consider the following informal discussion valuable from the perspective of research, and integration within the larger mathematics community.
+In this section we will briefly illustrate why this is true, guided by insights from the theory of $C*$-algebras.
+In the interest of space, we provide references for theorems and claims made in this section rather than proving them here.
+All of these theorems can be found in standard functional analysis textbooks such as \cite{Conway1990} or \cite{Rudin1991}.
+
+To begin, recall the following definitions:
+\begin{definition}
+	A \emph{Banach-algebra} is a Banach space, $A$, which is equipped with a multiplication-like operation, `` $(a,b) \in A \times A \mapsto ab \in A$,''  that is bounded, `` $\| ab \| \leq \|a \| \|b \|$,'' and associative `` $(ab)c = a(bc)$ for any $a,b,c \in A$.''
+	
+	A \emph{$C^{*}$-algebra} is a Banach algebra, $A$, over the field $\mathbb{C}$ with an involution, `` $a \in A \mapsto a^{*} \in A$,'' that satisfies:
+	\begin{align}
+		(ab)^{*} = b^{*} a^{*} \quad,\quad
+		(\lambda a)^{*} = \bar{\lambda} a^{*} \quad,\quad
+		\| a \| = \| a^{*}\|,
+	\end{align}
+	for all $a,b \in A$ and $\lambda \in \mathbb{C}$.
+	$A$ is \emph{unital} if $A$ has a multiplicative identity.
+	$A$ is \emph{commutative} if $ab = ba$ for all $a,b \in A$.
+	
+	Finally, a map $T:A \to A$ is called a $*$-automorphism if $T$ is a bounded linear automorphism that preserves products, i.e. $T(ab) = T(a) T(b)$.
+	We denote the space of $*$-automorphisms of $A$ by $\operatorname{Aut}(A)$.
+\end{definition}
+
+The notion of a $C^{*}$-algebra may appear abstract so we provide the two important examples.
+
+\begin{example} \label{ex:function algebra}
+	Let $X$ be a topological space, then the space of complex valued continuous functions with compact support, $C_{0}(X;\mathbb{C})$, is a $C^{*}$-algebra under the sup-norm and addition/multiplication operations of functions. \ram{what is the involution operation? If its just the traditional dual, then $*$ is not an involution unless it is the space of bounded continuous functions with compact support.}
+	In fact $C_{0}(X;\mathbb{C})$ is a commutative $C^{*}$-algebra.  If $X$ is compact, then the constant function $f(x) = 1$ serves as a multiplicative identity, and this algebra becomes unital.
+\end{example}
+
+\begin{example}
+	For a Hilbert space, $\mathcal{H}$, the space of bounded operators, $B(\mathcal{H})$, is a (non-commutative) $C^{*}$-algebra
+	under operator multiplication and addition, with the involution $L \mapsto L^{\dagger}$, and the operator-norm.
+\end{example}
+
+While the notion of a general $C^{*}$-algebra is, \textit{a priori}, more abstract than the examples above, this feeling of abstraction is an illusion.
+One of the cornerstones of operator theory is that \emph{all} $C^{*}$-algebras are contained within these examples:
+
+\begin{theorem}[The Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN1}
+	Any $C^{*}$-algebra is isomorphic to a sub-algebra of $B(\mathcal{H})$ for some Hilbert space, $\mathcal{H}$.
+\end{theorem}
+
+For commutative $C^{*}$-algebras a stronger result holds if one considers the space of character as in \cite{Bondia2001}:
+
+\begin{definition}
+	A \emph{character} of a $C^{*}$-algebra, $A$, is an element of the dual space $x \in A^{*}$ such that $x(ab) = x(a) x(b)$ for all $a,b \in A$ \ram{doesn't $x$ have to be non-zero usually?}.  
+	We denote the space of characters by $X_{A}$.
+	For each $a \in A$ there is a function $\hat{a}: X_{A} \to \mathbb{C}$.
+	The map $a \in A \mapsto \hat{a} \in C(X_{A})$ is called the \emph{Gelfand Transform}.
+\end{definition}
+
+\begin{proposition}[Lemma 1.1 \cite{Bondia2001}]
+	Consider $A^{*}$ with the weak topology, then the space $X_{A} \subset A^{*}$ is a compact Hausdorff space with respect to the relative topology.
+\end{proposition}
+\begin{proof}
+	We provide a sketch of the proof.
+	One can verify that any character $x \in X_{A}$ is of unit norm.
+	Compactness follows from the Banach-Alaoglu theorem.
+\end{proof}
+
+For example, if $A$ is a space of continuous complex functions on a manifold $M$, then $X_{A}$ is the space of Dirac-delta distributions, which is homeomorphic to $M$ itself.
+The following is a Corollary to \ref{thm:GN1}:
+
+\begin{theorem}[The second Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN2}
+	Any commutative $C^{*}$-algebra is isomorphic to $C(X_{A} ; \mathbb{C})$.
+\end{theorem}
+
+The result of Theorem \ref{thm:GN2} is that all commutative $C^{*}$-algebras are represented by Example \ref{ex:function algebra}.
+Historically, Theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into concrete things, such as linear operators or continuous functions.
+In this paper, we have gone the opposite direction.
+The map $f \in C(M) \to H_{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand Transform}. 
+\ram{I am confused by this point, we are treating $A$ for example as the continuous complex functions on $M$ then $X_{A}$ is the space of dirac delta distributions, in which case the Gelfand Transform is going between continuous complex functions to dirac delta functions. The $\hat{f}$ operation seems to be doing exactly the same thing...}
+In particular, Theorem \ref{thm:quantize} is simply the correspondence between advection PDEs on $M$ and isospectral flows on $B(L^{2}(M))$ under the Gelfand Transform.
+The non-triviality of using the inverse Gelfand Transform to turn ``concrete'' objects into ``abstract'' objects is one reason, perhaps, that Algorithms \ref{alg:density} and \ref{alg:function} have not been considered earlier.
+However, ``abstract'' does not necessarily imply difficult, with respect to numerics.
+In fact, as this paper illustrates, it is easier to represent conservation laws for advection in this form.
+In essence, this is related to a corollary to Theorem \ref{thm:GN2}:
+
+\begin{corollary}[Corollary 1.7 of \cite{Bondia2001}]
+	If $A$ is a commutative $C^{*}$-algebra, and $T:A\to A$ is $*$-automorphism such that $T(a)T(b) = T(ab)$, then there is a unique homeomorphism $\Phi_{T} \in \Diff_{0}(X_{A})$ such that $\Phi_{T}(x) (a) = T^{-1}(a)$.
+	That is, $\Diff_{0}(X_{A}) \equiv \operatorname{Aut}(A)$ as a topological group.
+\end{corollary}
+
+Said more plainly, any bounded and invertible transformation of $C(M)$ that preserves sums and products is necessarily a homeomorphism.
+\ram{It would probably be useful to the reader if you connected this more explicitly to advection here (i.e. state that advection is naturally just a bounded, invertible transformation of $C(M)$...)}
+Thus, conservation of sums of products is more than just a fundamental property of advection.
+\emph{Conservation of sums and products is the defining property of advection}.
+\ram{I like this connection, but I feel like you need another sentence here. 
+Basically you are arguing that the numerical scheme is natural, but I feel like I am missing something here, maybe chatting in person would help}
+
+\begin{corollary}
+	An evolution equation on $C^{0}(M)$ given by $\partial_{t} f + F[f] = 0$ preserves scalar addition and multiplication and extrema of functions if and only if $F[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
+	The dual operator $F^{*}$ is then necessarily of the form $\rho \mapsto \pder{}{x^{i}}( \rho X^{i})$.
+\end{corollary}
+
+Consequently, numerical schemes that respect these conservation laws are exhibiting defining property of \eqref{eq:function pde} and \eqref{eq:density pde}.
+The methods presented in this article provide a case in point.%, as do particle methods.
+%In particular, particle methods take $M$ as the fundamental object to use for discretization.
+%As discussed in the introduction, particle methods conserve (a discrete notion of) sums and products, and therefore we can consider them qualitatively accurate.
+%The spectral methods considered in this article considers the commutative $C^{*}$-algebra, $C(M)$ as fundamental.
+%By Theorem \ref{thm:GN2}, the space $C(M)$ has the same data as $M$ itself.
+%Moreover, by Theorem \ref{thm:GN1} we can view $C(M)$ as a space of operators without any loss in data.
+%As a result, the spectral methods in this paper can be seen as a reasonable discretization one would apply to from the perspective of $C^{*}$-algebras,
+%while particle methods can be seen as a reasonable discretization one would apply, after using the Gelfand transform.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Half densities and other function spaces}
 \label{sec:half densities}
@@ -257,7 +387,7 @@ We will also define the Sobelev spaces $H^{s}(M ; g)$ which arise from equipping
 
 For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$.
 \begin{definition}\label{def:half density}
-	A half-density is a continous complex function $\psi : \bigoplus^n TM \to \mathbb{C}$
+	A half-density is a $C^{1}$ complex-valued function $\psi : \bigoplus^n TM \to \mathbb{C}$
 	such that $| \psi |^{2} \in \Dens(M)$.
 	The space of half densities is denoted by $\sqrt{\Dens(M)}$.
 \end{definition}
@@ -682,6 +812,8 @@ Most notably, the method of \cite{Calvo1997} is specialized to isospectral flows
 In this article we assume this ode solver can efficiently \ram{what does efficiently mean here} solve finite dimensional ODEs to any prescribed accuracy.
 More explicitly, let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final})$ when $x(t)$ is the solution to the ode $\dot{x} = F(x)$ with initial condition $x_{init}$.
 
+\todo[inline]{Use word semi-discretization describe.}
+
 Before constructing an algorithm to spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner, we first solve \eqref{eq:half density pde} using a standard spectral discretization~\cite{Boyd2001,NumericalRecipes} in Algorithm \ref{alg:half density} on page \pageref{alg:half density}.
 
 \begin{algorithm}
@@ -772,11 +904,11 @@ This algorithm is presented for theoretical interest at the moment, as it does n
 \begin{proposition} \label{prop:isospectral}
 $H_{f,N}(t) = U_{N}(t) \cdot H_{f,N}(0) \cdot U_{N}(t)^{\dagger}$ for all time $t$ for the same unitary transformation $U_{N}(t)$
 of Proposition \ref{prop:unitary}.
-Moreover, the exact solution $H_{f}(t)$ is of the form $U(t) H_{f}(0) U(t)^{\dagger}$ as well.
+Moreover, the exact solution $H_{f}(t)$ is of the form $U(t) \cdot H_{f}(0)  \cdot U(t)^{\dagger}$ as well.
 \end{proposition}
 \begin{proof}
 	This follows from the fact that algorithm outputs the solution to an isospectral flow ``$\dot{F}_{N} + [F_{N} , X_{N}]$''
-	where $X_{N}$ is anti-Hermetian and that the $H_{f}$ satisfies the isospectral flow \eqref{eq:quantum observable ode}.
+	where $X_{N}$ is anti-Hermitian and that the $H_{f}$ satisfies the isospectral flow \eqref{eq:quantum observable ode}.
 \end{proof}
 
 %On the torus, a more practical approach which holds much of the numerical benefits would be to approximate $\hat{f}_{n}$ psuedo-spectrally,
@@ -1206,10 +1338,10 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to perform b
 In general, Algorithm \ref{alg:function} is very difficult to work with, as it outputs an operator rather than a classical function.
 However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (in particular, if one is only interested in a few level sets).
 We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article, in the interest of focusing on the qualitative aspects of this discretization.
-For example, under the initial conditions $g_{0}(x) = \cos(x)$ and $f_{0} \sin(x)$ the exact solutions to \eqref{eq:quantum observable ode} are:
+For example, under the initial conditions $g_{0}(x) = \cos(x)$ and $f_{0} = \sin(x)$ the exact solutions to \eqref{eq:quantum observable ode} are:
 \begin{align*}
-	g(x,t) &=   \cos(x) \left( e^{4t} \sin^{2}(x) + \cos^{2}(x) \right)^{-1/2}\\
-	f(x,t) &=   e^{2t} \sin(x) \left( \cos^{2}(x) + e^{4t} \sin^{2}(x) \right)^{-1/2}
+	g(x,t) &= \cos(x) \left( e^{4t} \sin^{2}(x) + \cos^{2}(x) \right)^{-1/2}\\
+	f(x,t) &= \sin(x) \left( \sin^{2}(x) + e^{-4t} \cos^{2}(x) \right)^{-1/2}
 \end{align*}
 Under the initial condition $h_{0} = f_{0} \cdot g_{0}  = \sin(x) \cos(x)$ the exact solution to \eqref{eq:quantum observable ode} is:
 \begin{align*}
@@ -1371,114 +1503,6 @@ Notice that Algorithm \ref{alg:density} performs well when compared to the stand
 	\caption{An illustration of the performance of Algorithm \ref{alg:density} (top row), Monte Carlo (middle row) and a standard spectral approach (bottom row) on the example described in Section \ref{sec:ABC_flow} \ram{what does black and white represent? Also it would be useful to label the x axes of the bottom row and the y axes of the left column}}
 	\label{fig:ABCD}
 \end{figure}
-
-
-\section{Insights from Operator Theory}
-\ram{I like this section but I feel as if we should talk about moving it earlier and trying to make the argument even more explicit so that simpletons like me can really appreciate it. Lets talk about this in person.} 
-
-In this section, we describe the importance of the conservation laws in \eqref{eq:function pde} and \eqref{eq:density pde} from the perspective of operator theory.
-%Admittedly, this section is not crucial and uninterested readers are free to skip it without consequence.
-%Nonetheless, we consider the following informal discussion valuable from the perspective of research, and integration within the larger mathematics community.
-In the interest of space, we provide references for theorems and claims made in this section rather than proving them here.
-All of these theorems can be found in standard functional analysis textbooks such as \cite{Conway1990} or \cite{Rudin1991}.
-
-To begin, recall the following definitions:
-\begin{definition}
-	A \emph{Banach-algebra} is a Banach space, $A$, which is equipped with a multiplication-like operation, `` $(a,b) \in A \times A \mapsto ab \in A$,''  that is bounded, `` $\| ab \| \leq \|a \| \|b \|$,'' and associative `` $(ab)c = a(bc)$ for any $a,b,c \in A$.''
-	
-	A \emph{$C^{*}$-algebra} is a Banach algebra, $A$, over the field $\mathbb{C}$ with an involution, `` $a \in A \mapsto a^{*} \in A$,'' that satisfies:
-	\begin{align}
-		(ab)^{*} = b^{*} a^{*} \quad,\quad
-		(\lambda a)^{*} = \bar{\lambda} a^{*} \quad,\quad
-		\| a \| = \| a^{*}\|,
-	\end{align}
-	for all $a,b \in A$ and $\lambda \in \mathbb{C}$.
-	$A$ is \emph{unital} if $A$ has a multiplicative identity.
-	$A$ is \emph{commutative} if $ab = ba$ for all $a,b \in A$.
-	
-	Finally, a map $T:A \to A$ is called a $*$-automorphism if $T$ is a bounded linear automorphism that preserves products, i.e. $T(ab) = T(a) T(b)$.
-	We denote the space of $*$-automorphisms of $A$ by $\operatorname{Aut}(A)$.
-\end{definition}
-
-The notion of a $C^{*}$-algebra may appear abstract so we provide the two important examples.
-
-\begin{example} \label{ex:function algebra}
-	Let $X$ be a topological space, then the space of complex valued continuous functions with compact support, $C_{0}(X;\mathbb{C})$, is a $C^{*}$-algebra under the sup-norm and addition/multiplication operations of functions. \ram{what is the involution operation? If its just the traditional dual, then $*$ is not an involution unless it is the space of bounded continuous functions with compact support.}
-	In fact $C_{0}(X;\mathbb{C})$ is a commutative $C^{*}$-algebra.  If $X$ is compact, then the constant function $f(x) = 1$ serves as a multiplicative identity, and this algebra becomes unital.
-\end{example}
-
-\begin{example}
-	Let $\mathcal{H}$ be a complex Hilbert space. Then the space of bounded operators on $\mathcal{H}$, denoted $B(\mathcal{H})$, is a (non-commutative) $C^{*}$-algebra. \ram{what are the multiplication and involution operations?}
-\end{example}
-
-While the notion of a general $C^{*}$-algebra is, \textit{a priori}, more abstract than the examples above, this feeling of abstraction is an illusion.
-One of the cornerstones of operator theory is that \emph{all} $C^{*}$-algebras are contained within these examples:
-
-\begin{theorem}[The Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN1}
-	Any $C^{*}$-algebra is isomorphic to a sub-algebra of $B(\mathcal{H})$ for some Hilbert space, $\mathcal{H}$.
-\end{theorem}
-
-For commutative $C^{*}$-algebras a stronger result holds if one considers the space of character as in \cite{Bondia2001}:
-
-\begin{definition}
-	A \emph{character} of a $C^{*}$-algebra, $A$, is an element of the dual space $x \in A^{*}$ such that $x(ab) = x(a) x(b)$ for all $a,b \in A$ \ram{doesn't $x$ have to be non-zero usually?}.  
-	We denote the space of characters by $X_{A}$.
-	The map $A \to X_{A}$ is known as the \emph{Gelfand Transform} \ram{do you mind being a bit more explicit here since this is a bit confusing (e.g. Given $a \in A$ one can define the function $\hat{a}: X_{A} \to \mathbb{C}$ by $\hat{a}(\phi) = \phi(a)$. The map from $a \to \hat{a}$ is called the Gelfand Transform.)} 
-\end{definition}
-
-\begin{proposition}[Lemma 1.1 \cite{Bondia2001}]
-	Consider $A^{*}$ with the weak topology, then the space $X_{A} \subset A^{*}$ is a compact Hausdorff space with respect to the relative topology.
-\end{proposition}
-\begin{proof}
-	We provide a sketch of the proof.
-	One can verify that any character $x \in X_{A}$ is of unit norm.
-	Compactness follows from the Banach-Alaoglu theorem.
-\end{proof}
-
-For example, if $A$ is a space of continuous complex functions on a manifold $M$, then $X_{A}$ is the space of Dirac-delta distributions, which is homeomorphic to $M$ itself.
-The following is a Corollary to \ref{thm:GN1}:
-
-\begin{theorem}[The second Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN2}
-	Any commutative $C^{*}$-algebra is isomorphic to $C(X_{A} ; \mathbb{C})$.
-\end{theorem}
-
-The result of Theorem \ref{thm:GN2} is that all commutative $C^{*}$-algebras are represented by Example \ref{ex:function algebra}.
-Historically, Theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into concrete things, such as linear operators or continuous functions.
-In this paper, we have gone the opposite direction.
-The map $f \in C(M) \to \hat{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand Transform}. 
-\ram{I am confused by this point, we are treating $A$ for example as the continuous complex functions on $M$ then $X_{A}$ is the space of dirac delta distributions, in which case the Gelfand Transform is going between continuous complex functions to dirac delta functions. The $\hat{f}$ operation seems to be doing exactly the same thing...}
-In particular, Theorem \ref{thm:quantize} is simply the correspondence between advection PDEs on $M$ and isospectral flows on $B(L^{2}(M))$ under the Gelfand Transform.
-The non-triviality of using the inverse Gelfand Transform to turn ``concrete'' objects into ``abstract'' objects is perhaps one of the reasons that Algorithms \ref{alg:density} and \ref{alg:function} have not been considered earlier.
-However, ``abstract'' does not necessarily imply difficulty with respect to devising a numerical scheme.
-In fact, as this paper illustrates, it is easier to represent conservation laws for advection in this form.
-In essence, this is related to a corollary to Theorem \ref{thm:GN2}:
-
-\begin{corollary}[Corollary 1.7 of \cite{Bondia2001}]
-	If $A$ is a commutative $C^{*}$-algebra, and $T:A\to A$ is $*$-automorphism such that $T(a)T(b) = T(ab)$, then there is a unique homeomorphism $\Phi_{T} \in \Diff_{0}(X_{A})$ such that $\Phi_{T}(x) (a) = T^{-1}(a)$.
-	That is, $\Diff_{0}(X_{A}) \equiv \operatorname{Aut}(A)$ as a topological group.
-\end{corollary}
-
-Said more plainly, any bounded and invertible transformation of $C(M)$ that preserves sums and products is necessarily a homeomorphism.
-\ram{It would probably be useful to the reader if you connected this more explicitly to advection here (i.e. state that advection is naturally just a bounded, invertible transformation of $C(M)$...)}
-Thus, conservation of sums of products is more than just a fundamental property of advection.
-\emph{Conservation of sums and products is the defining property of advection}.
-\ram{I like this connection, but I feel like you need another sentence here. 
-Basically you are arguing that the numerical scheme is natural, but I feel like I am missing something here, maybe chatting in person would help}
-
-\begin{corollary}
-	An evolution equation on $C^{0}(M)$ given by $\partial_{t} f + F[f] = 0$ preserves scalar addition and multiplication and extrema of functions if and only if $F[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
-	The dual operator $F^{*}$ is then necessarily of the form $\rho \mapsto \pder{}{x^{i}}( \rho X^{i})$.
-\end{corollary}
-
-Consequently, numerical schemes that respect these conservation laws are exhibiting defining property of \eqref{eq:function pde} and \eqref{eq:density pde}.
-The methods presented in this article provide a case in point.%, as do particle methods.
-%In particular, particle methods take $M$ as the fundamental object to use for discretization.
-%As discussed in the introduction, particle methods conserve (a discrete notion of) sums and products, and therefore we can consider them qualitatively accurate.
-%The spectral methods considered in this article considers the commutative $C^{*}$-algebra, $C(M)$ as fundamental.
-%By Theorem \ref{thm:GN2}, the space $C(M)$ has the same data as $M$ itself.
-%Moreover, by Theorem \ref{thm:GN1} we can view $C(M)$ as a space of operators without any loss in data.
-%As a result, the spectral methods in this paper can be seen as a reasonable discretization one would apply to from the perspective of $C^{*}$-algebras,
-%while particle methods can be seen as a reasonable discretization one would apply, after using the Gelfand transform.
 
 %\section{Future work}
 %There are a number of areas to consider for future research.  We propose the following:
