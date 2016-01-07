@@ -245,6 +245,10 @@ Throughout the paper $M$ will denote a smooth compact $n$-manifold without bound
 
 \section{Insights from Operator Theory}
 \label{sec:operator theory}
+Before proceeding to describe any algorithms, let us take a moment to reflect on the usefulness of pursuing qualitative accuracy
+and the philosophy of our approach.
+The main assertion of this section is that algebra-preserving discretization serve as a pursuit because \eqref{eq:function pde} is the unique linear PDE which has this property and is completely characterized by it.
+
 As mentioned, the solution to \eqref{eq:function pde} with initial condition $f_{0} \in C(M)$ is given by $f(x,t) = f_{0}( (\Phi_{X}^{t})^{-1}(x)  )$.
 Algebraically, the solution is obtained by a time-dependent linear transformation of $f_{0}$ given by $f_{0} \circ (\Phi_{X}^{t})^{-1}$.
 This transformation, known as a ``Koopman operator'', preserves $C(M)$ as a Banach algebra in that it preserves the sup-norm as well as addition, multiplication, and complex conjugation.
@@ -253,22 +257,16 @@ But is this a worthy goal?
 Sure, \eqref{eq:function pde} preserves the algebraic structure of $C(M)$, but is that special?
 Perhaps algebra-preservation is an insignificant property of \eqref{eq:function pde} in that it can be subsumed by a much larger conservation law, if only we knew what that larger law was?
 Such a scenario would be analogous to declaring ``Holy cow!  We can encode all english words using the numbers $0$ through $25$!''.
-This insight is true, but not nearly as significant or fundamental as the the declaration ``We can encode all english words using the numbers $0$ and $1$.''
+This insight is true, but fails to realize the more fundamental truth ``We can encode using the numbers $0$ and $1$.''
 Conversely, perhaps aiming for algebra-preservation is over-kill.  Perhaps algebra-preservation is a property of a more general class of linear evolution PDE's which are more difficult to solve?
 This scenario would be analogous to the declaration ``Holy cow! We can assert the existence of a closed form solution to `$3x+1=0$' using Galois theory?''.
 True, but the use of Galois theory is too general.
 
-It is a result known to algebraic geometers, at least implicitly, that this insight characterizes \eqref{eq:function pde} completely without any extra baggage.
+In fact, both of these concerns are needless.  Characterizing \eqref{eq:function pde} as an algebra-preserving PDE is niether overkill, nor is it insignificant.
+It is a result known to algebraic geometers, at least implicitly, that algebra-preservation characterizes \eqref{eq:function pde} completely without any extra baggage.
 In other words, \emph{the only linear evolution PDE which preserves the algebra of $C(M)$ is \eqref{eq:function pde}.}
-
-%\ram{I like this section but I feel as if we should talk about moving it earlier and trying to make the argument even more explicit so that simpletons like me can really appreciate it. Lets talk about this in person.} 
-
-%In this section, we describe the importance of the conservation laws in \eqref{eq:function pde} and \eqref{eq:density pde} from the perspective of operator theory.
-%Admittedly, this section is not crucial and uninterested readers are free to skip it without consequence.
-%Nonetheless, we consider the following informal discussion valuable from the perspective of research, and integration within the larger mathematics community.
-In this section we will briefly illustrate why this is true, guided by insights from the theory of $C*$-algebras.
-In the interest of space, we provide references for theorems and claims made in this section rather than proving them here.
-All of these theorems can be found in standard functional analysis textbooks such as \cite{Conway1990} or \cite{Rudin1991}.
+Here we briefly illustrate why this is true by leveraging the theory of $C^{*}$-algebras.
+In the interest of space, we provide references for theorems and claims made in this section rather than proving them here (for example see \cite{Conway1990,Rudin1991}).
 
 To begin, recall the following definitions:
 \begin{definition}
