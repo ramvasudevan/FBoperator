@@ -245,9 +245,10 @@ Throughout the paper $M$ will denote a smooth compact $n$-manifold without bound
 
 \section{Insights from Operator Theory}
 \label{sec:operator theory}
-Before proceeding to describe any algorithms, let us take a moment to reflect on the usefulness of pursuing qualitative accuracy
-and the philosophy of our approach.
-The main assertion of this section is that algebra-preserving discretization serve as a pursuit because \eqref{eq:function pde} is the unique linear PDE which has this property and is completely characterized by it.
+Before proceeding to describe any algorithms, let us take a moment to reflect on the value of pursuing qualitative accuracy.
+We will show that PDEs of the form \eqref{eq:function pde} for continuous vector-fields, $X$, form the unique class of evolution PDEs which preserves the algebra of $C(M)$.
+In other-words, that \eqref{eq:function pde} preserves $C(M)$ is its defining characteristic.
+It would seem self-evident that the definition of \eqref{eq:function pde} be worthy of some respect during discretization.
 
 As mentioned, the solution to \eqref{eq:function pde} with initial condition $f_{0} \in C(M)$ is given by $f(x,t) = f_{0}( (\Phi_{X}^{t})^{-1}(x)  )$.
 Algebraically, the solution is obtained by a time-dependent linear transformation of $f_{0}$ given by $f_{0} \circ (\Phi_{X}^{t})^{-1}$.
