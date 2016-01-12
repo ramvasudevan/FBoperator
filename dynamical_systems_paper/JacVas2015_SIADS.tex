@@ -245,28 +245,21 @@ Throughout the paper $M$ will denote a smooth compact $n$-manifold without bound
 
 \section{Insights from Operator Theory}
 \label{sec:operator theory}
-Before proceeding to describe any algorithms, let us take a moment to reflect on the value of pursuing qualitative accuracy.
-We will show that PDEs of the form \eqref{eq:function pde} for continuous vector-fields, $X$, form the unique class of evolution PDEs which preserves the algebra of $C(M)$.
-In other-words, that \eqref{eq:function pde} preserves $C(M)$ is its defining characteristic.
-It would seem self-evident that the definition of \eqref{eq:function pde} be worthy of some respect during discretization.
-
-As mentioned, the solution to \eqref{eq:function pde} with initial condition $f_{0} \in C(M)$ is given by $f(x,t) = f_{0}( (\Phi_{X}^{t})^{-1}(x)  )$.
-Algebraically, the solution is obtained by a time-dependent linear transformation of $f_{0}$ given by $f_{0} \circ (\Phi_{X}^{t})^{-1}$.
-This transformation, known as a ``Koopman operator'', preserves $C(M)$ as a Banach algebra in that it preserves the sup-norm as well as addition, multiplication, and complex conjugation.
-One goal in this paper is to approximate $C(M)$ with a finite dimensional algebra, $A$, and then to approximate the Koopman operator with an algebra preserving transformation of $A$.
-But is this a worthy goal?
-Sure, \eqref{eq:function pde} preserves the algebraic structure of $C(M)$, but is that special?
-Perhaps algebra-preservation is an insignificant property of \eqref{eq:function pde} in that it can be subsumed by a much larger conservation law, if only we knew what that larger law was?
-Such a scenario would be analogous to declaring ``Holy cow!  We can encode all english words using the numbers $0$ through $25$!''.
-This insight is true, but fails to realize the more fundamental truth ``We can encode using the numbers $0$ and $1$.''
-Conversely, perhaps aiming for algebra-preservation is over-kill.  Perhaps algebra-preservation is a property of a more general class of linear evolution PDE's which are more difficult to solve?
-This scenario would be analogous to the declaration ``Holy cow! We can assert the existence of a closed form solution to `$3x+1=0$' using Galois theory?''.
-True, but the use of Galois theory is too general.
-
-In fact, both of these concerns are needless.  Characterizing \eqref{eq:function pde} as an algebra-preserving PDE is niether overkill, nor is it insignificant.
+Before proceeding to describe any algorithms, let us take a moment to reflect on the value of pursuing qualitative accuracy and conservation laws.
+If one knows that some entity is conserved under evolution, then we can reduce our search for solution by scanning a smaller space of possibilities.
+For some, this might be justification enough to proceed as we are.
+However, more can be said in this case.
+These entities we wish to preserve have a special relationship to \eqref{eq:function pde} and \eqref{eq:density pde}.
 It is a result known to algebraic geometers, at least implicitly, that algebra-preservation characterizes \eqref{eq:function pde} completely without any extra baggage.
 In other words, \emph{the only linear evolution PDE which preserves the algebra of $C(M)$ is \eqref{eq:function pde}.}
-Here we briefly illustrate why this is true by leveraging the theory of $C^{*}$-algebras.
+As a corollary, the only linear evolution PDE on densities which preserves duality with functions is of the form \eqref{eq:density pde}.
+Because of this fact, many nice properties held by \eqref{eq:function pde} and \eqref{eq:density pde} (such as bounds) will also be held by a
+qualitatively accurate integration scheme.
+By virtue of having such limits placed on the possible outputs, qualitatively accurate schemes leverage the best aspects of the PDEs \eqref{eq:function pde} and \eqref{eq:density pde}
+to produce numerical approximations which similar behavior to \eqref{eq:function pde} and \eqref{eq:density pde}.
+
+\hoj{Maybe we should put the remainder of this section in an appendix}
+In this section we will spend time to briefly illustrate how \eqref{eq:function pde} is the unique PDE which preserves $C(M)$ as an algebra by leveraging operator theory.
 In the interest of space, we provide references for theorems and claims made in this section rather than proving them here (for example see \cite{Conway1990,Rudin1991}).
 
 To begin, recall the following definitions:
@@ -380,12 +373,15 @@ The methods presented in this article provide a case in point.%, as do particle 
 %The choice of $\mu$ is non-canonical and threatens to discard the conservation laws we aim to keep.
 
 At the core of any spectral scheme is the use of a Hilbert space upon which everything can be approximated via least squares projections.
-In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$.
+The methods we will present are no exception.
+In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$ for later use in a spectral discretization\footnote{
+We urge the reader familiar with the space $L^{2}_{\mu}(M)$, with respect to some measure $\mu$, not to skip this section!
+The $L^{2}$-space we will use is slightly different, and permeates the entire article.}.
 We will also define the Sobelev spaces $H^{s}(M ; g)$ which arise from equipping $M$ with a Riemannian metric, $g$.
 
-For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of continuous densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$.
+For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of smooth densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$.
 \begin{definition}\label{def:half density}
-	A half-density is a $C^{1}$ complex-valued function $\psi : \bigoplus^n TM \to \mathbb{C}$
+	A half-density is a smooth complex-valued function $\psi : \bigoplus^n TM \to \mathbb{C}$
 	such that $| \psi |^{2} \in \Dens(M)$.
 	The space of half densities is denoted by $\sqrt{\Dens(M)}$.
 \end{definition}
@@ -804,14 +800,13 @@ To ensure convergence, we assume:
 
 %\noindent Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Liouville basis (e.g. Legendre functions) \ram{citation}.
 
-In this section we will provide a semi-discretization in that we will not discretize the operator $\partial_{t}$.
-We will solve the resulting ODEs using standard methods.
-For example, any ODE solver such as Euler's method, Runge-Kutta, or even well tested software such as \cite{VODE} satisfy the requirements for the algorithm described in this section.
-Most notably, the method of \cite{Calvo1997} is specialized to isospectral flows such as  \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} and preserves the invariants of isospectral flows over large time-step sizes.
-In this article we assume this ode solver can efficiently \ram{what does efficiently mean here} solve finite dimensional ODEs to any prescribed accuracy.
-More explicitly, let $\OdeSolve ( F , x_{init} , t_{final} )$ denote $x(t_{final})$ when $x(t)$ is the solution to the ode $\dot{x} = F(x)$ with initial condition $x_{init}$.
-
-\todo[inline]{Use word semi-discretization describe.}
+In this section we will provide a semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}.
+Just as a note to the reader, a ``semi-discretization''  of the PDE $\partial_{t} \phi + F(\phi) = 0$ for some partial differential operator, $F$, is just a discretization of $F$ which 
+converts the PDE into an ODE \cite{Gottlieb1977numerical}.
+In particular, we will assume access to solutions of finite dimensional ODEs, denoted ``$\OdeSolve$''.
+In practice any ODE solver such as Euler's method, Runge-Kutta, or even well tested software such as \cite{VODE} could be used to compute such solutions.
+Most notably, the method of \cite{Calvo1997} is specialized to isospectral flows such as  \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} by using discrete-time isospectral flows.
+More explicitly, let $\OdeSolve ( F , x_{init} , t_{final} )$ denote the numerically computed solution $x(t_{final})$ to the ODE ``$\dot{x} = F(x)$'' at time $t_{final}$, with initial condition $x_{init}$.
 
 Before constructing an algorithm to spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner, we first solve \eqref{eq:half density pde} using a standard spectral discretization~\cite{Boyd2001,NumericalRecipes} in Algorithm \ref{alg:half density} on page \pageref{alg:half density}.
 
