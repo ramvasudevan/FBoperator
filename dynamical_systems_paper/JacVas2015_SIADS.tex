@@ -126,41 +126,36 @@ Similarly, an alternative notion of half-densities has been used in the context 
 
 \subsection{Main contributions}
 
-In this paper we will be to develop numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}
-by the following sequence of accomplishments.
-
-\begin{enumerate}
-	\item We will derive an auxiliary PDE, \eqref{eq:half density pde}, on the space of half-densities in section \ref{sec:half densities}.
-	\item We will relate solutions of \eqref{eq:half density pde} to solutions of \eqref{eq:function pde} and \eqref{eq:density pde}  in Theorem \ref{thm:quantize}.
-	\item We will pose an auxiliary spectral scheme for \eqref{eq:half density pde} in section \ref{sec:discretization}.
-	\item Our auxiliary scheme will induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
-	\item We will derive a spectral convergence rate for our auxiliary scheme in section \ref{sec:analysis}.
-	\item The spectral convergence rate for our auxiliary scheme will induce spectral convergence rates for the numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
-	\item We will prove our schemes are qualitatively accurate (\`a la Definition \ref{def:quality}) in section \ref{sec:qualitative}.
-	\item We will demonstrate these findings in numerical experiments in section \ref{sec:numerics}.
-	and observe our algorithm for \eqref{eq:density pde} to be superior to standard spectral discretization.
-\end{enumerate}
+In this paper we develop numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
+First, we derive an auxiliary PDE, \eqref{eq:half density pde}, on the space of half-densities in section \ref{sec:half densities}.
+We relate solutions of \eqref{eq:half density pde} to solutions of \eqref{eq:function pde} and \eqref{eq:density pde} in Theorem \ref{thm:quantize}.
+Second, we pose an auxiliary spectral scheme for \eqref{eq:half density pde} in section \ref{sec:discretization}.
+Our auxiliary scheme will induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
+Third, we derive a spectral convergence rate for our auxiliary scheme in section \ref{sec:analysis}.
+The spectral convergence rate for our auxiliary scheme will induce spectral convergence rates for numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
+Finally, we prove our schemes are qualitatively accurate (\`a la Definition \ref{def:quality}) in section \ref{sec:qualitative}.
+We end the paper by demonstrating these findings in numerical experiments in section \ref{sec:numerics}.
+We observe our algorithm for \eqref{eq:density pde} to be superior to a standard spectral Galerkin discretization.
 
 \subsection{Notation}
-Throughout the paper $M$ will denote a smooth compact $n$-manifold without boundary.
-\begin{itemize}
-	\item The space of continuous complex valued functions will be denoted $C(M)$.
-	We will topologize $C(M)$ by the sup-norm, $\| \cdot \|_{\infty}$ (see \cite{Taylor1974,Rudin1991,MTA,Conway1990}).
-	\item Given a Riemannian metric, $g$, the resulting Sobolev spaces on $M$ will be denoted $W^{k,p}(M ; g)$ (see \cite{Hebey1999}).
-	\item The tangent bundle to $M$ will be denoted by $TM$, and the $n$th iterated Whitney sum will be denoted by $\bigoplus^{n} TM$ (see \cite{Lee2006,MTA}).
-	\item A (complex) density is a map $\rho: \bigoplus^{n}TM \to \mathbb{C}$ which satisfies certain transformation properties which allow us to integrate them.
-	We denote the space of densities by $\Dens(M)$ and the integral of $\rho \in \Dens(M)$ will be denoted by $\int \rho$ \cite[Chapter 16]{Lee2006}.
-	We associate the norm $\| \rho \|_{1} =  \int | \rho |$ to densities.  By completion this builds a Banach space, which we call $L^{1}(M)$.
-	In fact $L^{1}(M)$ is just the dual space to $C(M)$.  Given a function $f \in C(M)$ we denote the multiplication of the density $\rho \in L^{1}(M)$ by $f \rho$
-	and we denote the dual-pairing by $\langle f , \rho \rangle := \int f \rho$.
-	We let $W^{s,1}$ denote the closed subspace of $L^{1}(M)$ whose elements exhibit $s>0$ weak derivatives \cite{Hormander2003}.
-	\item Given a separable Hilbert space $\mathcal{H}$ we will denote the space of bounded operators by $B( \mathcal{H})$
-	and the space of unitary operators by $U( \mathcal{H})$.
-	The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ will be denoted by $L^{\dagger}$.
-	The trace of a trace class operator, $L$, will be denoted by $\Tr(L)$.
-	The commutator bracket for operators $A,B$ on $\mathcal{H}$ will be denoted by $[A,B] := A \cdot B - B \cdot A$ (see Chapter 9 of \cite{Conway1990}).
-\end{itemize}
+Throughout the paper $M$ will denote a smooth compact $n$-manifold without boundary. The space of continuous complex valued functions will be denoted $C(M)$
+and we will topologize $C(M)$ by the sup-norm, $\| \cdot \|_{\infty}$ (see \cite{Taylor1974,Rudin1991,MTA,Conway1990}).
+Given a Riemannian metric, $g$, the resulting Sobolev spaces on $M$ will be denoted $W^{k,p}(M ; g)$ (see \cite{Hebey1999}).
+The tangent bundle to $M$ will be denoted by $TM$, and the $n$th iterated Whitney sum will be denoted by $\bigoplus^{n} TM$ (see \cite{Lee2006,MTA}).
+A (complex) density 
+will be viewed as a continuous map $\rho: \bigoplus^{n}TM \to \mathbb{C}$ which satisfies certain geometric properties which allow for integration.
+We denote the space of densities by $\Dens(M)$ and the integral of $\rho \in \Dens(M)$ will be denoted by $\int \rho$ \cite[Chapter 16]{Lee2006}.
+We associate the norm $\| \rho \|_{1} =  \int | \rho |$ to densities.
+By completion this builds a Banach space, which we call $L^{1}(M)$ (slightly different from the traditional construction).
+The space, $L^(M)$ is homeomorphic to the space of distributions upon a (non-canonical) choice of Lebesgue measure.
+Given a function $f \in C(M)$ we denote the multiplication of $\rho \in L^{1}(M)$ by $f \rho$ and we denote the dual-pairing by $\langle f , \rho \rangle := \int f \rho$.
+	We let $W^{s,1}$ denote the closed subspace of $L^{1}(M)$ whose elements exhibit $s>0$ weak derivative \cite{Hormander2003}.
 
+Given a separable Hilbert space $\mathcal{H}$ we will denote the space of bounded operators by $B( \mathcal{H})$
+and the space of unitary operators by $U( \mathcal{H})$.
+The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ will be denoted by $L^{\dagger}$.
+The trace of a trace class operator, $L$, will be denoted by $\Tr(L)$.
+The commutator bracket for operators $A,B$ on $\mathcal{H}$ will be denoted by $[A,B] := A \cdot B - B \cdot A$ (see Chapter 9 of \cite{Conway1990}).s
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Qualitative properties of advection PDEs}
@@ -253,17 +248,14 @@ These entities we wish to preserve have a special relationship to \eqref{eq:func
 It is a result known to algebraic geometers, at least implicitly, that algebra-preservation characterizes \eqref{eq:function pde} completely without any extra baggage.
 In other words, \emph{the only linear evolution PDE which preserves the algebra of $C(M)$ is \eqref{eq:function pde}.}
 As a corollary, the only linear evolution PDE on densities which preserves duality with functions is of the form \eqref{eq:density pde}.
-Because of this fact, many nice properties held by \eqref{eq:function pde} and \eqref{eq:density pde} (such as bounds) will also be held by a
-qualitatively accurate integration scheme.
-By virtue of having such limits placed on the possible outputs, qualitatively accurate schemes leverage the best aspects of the PDEs \eqref{eq:function pde} and \eqref{eq:density pde}
-to produce numerical approximations which similar behavior to \eqref{eq:function pde} and \eqref{eq:density pde}.
+Because of this fact, many nice properties held by \eqref{eq:function pde} and \eqref{eq:density pde} (such as bounds) will also be held by a qualitatively accurate integration scheme.
+Therefore, qualitatively accurate schemes leverage the best aspects of the PDEs \eqref{eq:function pde} and \eqref{eq:density pde} to produce numerical approximations with similar behavior to \eqref{eq:function pde} and \eqref{eq:density pde}.
 
-\hoj{Maybe we should put the remainder of this section in an appendix}
-In this section we will spend time to briefly illustrate how \eqref{eq:function pde} is the unique PDE which preserves $C(M)$ as an algebra by leveraging operator theory.
-In the interest of space, we provide references for theorems and claims made in this section rather than proving them here (for example see \cite{Conway1990,Rudin1991}).
+In the remainder of this section we will illustrate how \eqref{eq:function pde} is the unique PDE which preserves $C(M)$ as an algebra.
+In the interest of space, we will be providing references in place of proofs.
 
 To begin, recall the following definitions:
-\begin{definition}
+\begin{definition}[\cite{Conway1990}] \label{def:algebra}
 	A \emph{Banach-algebra} is a Banach space, $A$, which is equipped with a multiplication-like operation, `` $(a,b) \in A \times A \mapsto ab \in A$,''  that is bounded, `` $\| ab \| \leq \|a \| \|b \|$,'' and associative `` $(ab)c = a(bc)$ for any $a,b,c \in A$.''
 	
 	A \emph{$C^{*}$-algebra} is a Banach algebra, $A$, over the field $\mathbb{C}$ with an involution, `` $a \in A \mapsto a^{*} \in A$,'' that satisfies:
@@ -283,13 +275,12 @@ To begin, recall the following definitions:
 The notion of a $C^{*}$-algebra may appear abstract so we provide the two important examples.
 
 \begin{example} \label{ex:function algebra}
-	Let $X$ be a topological space, then the space of complex valued continuous functions with compact support, $C_{0}(X;\mathbb{C})$, is a $C^{*}$-algebra under the sup-norm and addition/multiplication operations of functions. \ram{what is the involution operation? If its just the traditional dual, then $*$ is not an involution unless it is the space of bounded continuous functions with compact support.}
+	Let $X$ be a topological space, then the space of complex valued continuous functions with compact support, $C_{0}(X;\mathbb{C})$, is a $C^{*}$-algebra under the sup-norm and addition/multiplication operations of functions.
 	In fact $C_{0}(X;\mathbb{C})$ is a commutative $C^{*}$-algebra.  If $X$ is compact, then the constant function $f(x) = 1$ serves as a multiplicative identity, and this algebra becomes unital.
 \end{example}
 
-\begin{example}
-	For a Hilbert space, $\mathcal{H}$, the space of bounded operators, $B(\mathcal{H})$, is a (non-commutative) $C^{*}$-algebra
-	under operator multiplication and addition, with the involution $L \mapsto L^{\dagger}$, and the operator-norm.
+\begin{example} \label{ex:nc algebra} 
+	For a Hilbert space, $\mathcal{H}$, the space of bounded operators, $B(\mathcal{H})$, is a (non-commutative) $C^{*}$-algebra	under operator multiplication and addition, with the involution $L \mapsto L^{\dagger}$, and the operator-norm.
 \end{example}
 
 While the notion of a general $C^{*}$-algebra is, \textit{a priori}, more abstract than the examples above, this feeling of abstraction is an illusion.
@@ -302,7 +293,7 @@ One of the cornerstones of operator theory is that \emph{all} $C^{*}$-algebras a
 For commutative $C^{*}$-algebras a stronger result holds if one considers the space of character as in \cite{Bondia2001}:
 
 \begin{definition}
-	A \emph{character} of a $C^{*}$-algebra, $A$, is an element of the dual space $x \in A^{*}$ such that $x(ab) = x(a) x(b)$ for all $a,b \in A$ \ram{doesn't $x$ have to be non-zero usually?}.  
+	A \emph{character} of a $C^{*}$-algebra, $A$, is an element of the dual space $x \in A^{*}$ such that $x(ab) = x(a) x(b)$ for all $a,b \in A$.  
 	We denote the space of characters by $X_{A}$.
 	For each $a \in A$ there is a function $\hat{a}: X_{A} \to \mathbb{C}$.
 	The map $a \in A \mapsto \hat{a} \in C(X_{A})$ is called the \emph{Gelfand Transform}.
@@ -311,49 +302,50 @@ For commutative $C^{*}$-algebras a stronger result holds if one considers the sp
 \begin{proposition}[Lemma 1.1 \cite{Bondia2001}]
 	Consider $A^{*}$ with the weak topology, then the space $X_{A} \subset A^{*}$ is a compact Hausdorff space with respect to the relative topology.
 \end{proposition}
-\begin{proof}
-	We provide a sketch of the proof.
-	One can verify that any character $x \in X_{A}$ is of unit norm.
-	Compactness follows from the Banach-Alaoglu theorem.
-\end{proof}
+%\begin{proof}
+%	We provide a sketch of the proof.
+%	One can verify that any character $x \in X_{A}$ is of unit norm.
+%	Compactness follows from the Banach-Alaoglu theorem.
+%\end{proof}
 
 For example, if $A$ is a space of continuous complex functions on a manifold $M$, then $X_{A}$ is the space of Dirac-delta distributions, which is homeomorphic to $M$ itself.
 The following is a Corollary to \ref{thm:GN1}:
 
-\begin{theorem}[The second Gelfand-Naimark Theorem \cite{GelfandNaimark1943}] \label{thm:GN2}
-	Any commutative $C^{*}$-algebra is isomorphic to $C(X_{A} ; \mathbb{C})$.
+\begin{theorem}[\cite{GelfandNaimark1943}] \label{thm:GN2}
+	Any commutative $C^{*}$-algebra, $A$, is isomorphic to $C(X_{A} ; \mathbb{C})$.
 \end{theorem}
 
 The result of Theorem \ref{thm:GN2} is that all commutative $C^{*}$-algebras are represented by Example \ref{ex:function algebra}.
-Historically, Theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras into concrete things, such as linear operators or continuous functions.
-In this paper, we have gone the opposite direction.
-The map $f \in C(M) \to H_{f} \in B( L^{2}(M) )$ is \emph{the inverse of the Gelfand Transform}. 
-\ram{I am confused by this point, we are treating $A$ for example as the continuous complex functions on $M$ then $X_{A}$ is the space of dirac delta distributions, in which case the Gelfand Transform is going between continuous complex functions to dirac delta functions. The $\hat{f}$ operation seems to be doing exactly the same thing...}
-In particular, Theorem \ref{thm:quantize} is simply the correspondence between advection PDEs on $M$ and isospectral flows on $B(L^{2}(M))$ under the Gelfand Transform.
-The non-triviality of using the inverse Gelfand Transform to turn ``concrete'' objects into ``abstract'' objects is one reason, perhaps, that Algorithms \ref{alg:density} and \ref{alg:function} have not been considered earlier.
+Historically, Theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras
+(as described by the Definition \ref{def:algebra}) into Examples \ref{eq:function algebra} and \ref{eq:nc algebra}.
+In this paper, we will go the opposite direction.
+We will start with an equation on the (concrete) space $C(M;\mathbb{C})$ for a compact manifold $M$
+and we will transform it into an equation on $B( \mathcal{H})$ for a suitably chosen Hilbert space, $\mathcal{H}$.
+That we will turn ``concrete'' objects into ``abstract'' objects is one possible reason, that
+the algorithms in this paper were not considered earlier.
 However, ``abstract'' does not necessarily imply difficult, with respect to numerics.
-In fact, as this paper illustrates, it is easier to represent conservation laws for advection in this form.
+In fact, as this paper will show, it is easier to represent advection equations in this operator-theoretic form.
 In essence, this is related to a corollary to Theorem \ref{thm:GN2}:
 
-\begin{corollary}[Corollary 1.7 of \cite{Bondia2001}]
+\begin{corollary}[follows from Corollary 1.7 of \cite{Bondia2001}]
 	If $A$ is a commutative $C^{*}$-algebra, and $T:A\to A$ is $*$-automorphism such that $T(a)T(b) = T(ab)$, then there is a unique homeomorphism $\Phi_{T} \in \Diff_{0}(X_{A})$ such that $\Phi_{T}(x) (a) = T^{-1}(a)$.
 	That is, $\Diff_{0}(X_{A}) \equiv \operatorname{Aut}(A)$ as a topological group.
-\end{corollary}
-
-Said more plainly, any bounded and invertible transformation of $C(M)$ that preserves sums and products is necessarily a homeomorphism.
-\ram{It would probably be useful to the reader if you connected this more explicitly to advection here (i.e. state that advection is naturally just a bounded, invertible transformation of $C(M)$...)}
-Thus, conservation of sums of products is more than just a fundamental property of advection.
-\emph{Conservation of sums and products is the defining property of advection}.
-\ram{I like this connection, but I feel like you need another sentence here. 
-Basically you are arguing that the numerical scheme is natural, but I feel like I am missing something here, maybe chatting in person would help}
-
-\begin{corollary}
-	An evolution equation on $C^{0}(M)$ given by $\partial_{t} f + F[f] = 0$ preserves scalar addition and multiplication and extrema of functions if and only if $F[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
+	Moreover, a linear evolution equation on $C^{0}(M)$ given by $\partial_{t} f + A[f] = 0$ preserves 
+	the algebra of $C(M;\mathbb{C})$ if and only if $F[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
 	The dual operator $F^{*}$ is then necessarily of the form $\rho \mapsto \pder{}{x^{i}}( \rho X^{i})$.
 \end{corollary}
 
-Consequently, numerical schemes that respect these conservation laws are exhibiting defining property of \eqref{eq:function pde} and \eqref{eq:density pde}.
-The methods presented in this article provide a case in point.%, as do particle methods.
+Said more plainly, \eqref{eq:function pde} and \eqref{eq:density pde} are just
+the generators of all algebra-preserving automorphisms of $C(M)$.
+Thus, conservation of sums of products is more than just a fundamental property of \eqref{eq:function pde} and \eqref{eq:density pde}.
+Conservation of sums and products is the defining property of  \eqref{eq:function pde} and \eqref{eq:density pde}.
+It would seem natural for this to be reflected in a discretization.
+
+To end this section, let us reiterate our goal.  We desire a scheme with a spectral rate of convergence and qualitative accuracy.  Improving the numerical accuracy of a spectral scheme is quite difficult, because spectral convergence rates are about the best anyone should expect to achieve.  By aiming for qualitative accuracy without sacrificing spectral convergence, we will find that we reduce the coefficient of convergence.
+So this pursuit makes sense from the standpoint of ``old-school'' numerical accuracy as well.
+
+%Consequently, numerical schemes that respect these conservation laws are exhibiting defining property of \eqref{eq:function pde} and \eqref{eq:density pde}.
+%The methods presented in this article provide a case in point.%, as do particle methods.
 %In particular, particle methods take $M$ as the fundamental object to use for discretization.
 %As discussed in the introduction, particle methods conserve (a discrete notion of) sums and products, and therefore we can consider them qualitatively accurate.
 %The spectral methods considered in this article considers the commutative $C^{*}$-algebra, $C(M)$ as fundamental.
