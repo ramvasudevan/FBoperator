@@ -284,7 +284,7 @@ The notion of a $C^{*}$-algebra may appear abstract so we provide two important 
 While the notion of a general $C^{*}$-algebra is, \textit{a priori}, more abstract than the examples above, this feeling of abstraction is an illusion.
 One of the cornerstones of operator theory is that \emph{all} $C^{*}$-algebras are contained within these examples:
 
-\begin{theorem}[The Gelfand-Naimark Theorem~\cite{GelfandNaimark1943}] \label{thm:GN1}
+\begin{theorem}[Theorem 1~\cite{GelfandNaimark1943}] \label{thm:GN1}
 	Any $C^{*}$-algebra is isomorphic to a sub-algebra of $B(\mathcal{H})$ for some Hilbert space, $\mathcal{H}$.
 \end{theorem}
 
@@ -308,15 +308,16 @@ For commutative $C^{*}$-algebras a stronger result holds if one considers the sp
 For example, if $A$ is a space of continuous complex functions on a manifold $M$, then $X_{A}$ is the space of Dirac-delta distributions, which is homeomorphic to $M$ itself.
 The following is a Corollary to \ref{thm:GN1}:
 
-\begin{theorem}[\cite{GelfandNaimark1943} \ram{Probably want to cite the theorem in the citation}] \label{thm:GN2}
-	Any commutative $C^{*}$-algebra, $A$, is isomorphic to $C(X_{A} )$.
+\begin{theorem}[Lemma 1~\cite{GelfandNaimark1943}] \label{thm:GN2}
+	Any commutative $C^{*}$-algebra, $A$, is canonically homeomorphic to $C(X_{A} )$.
 \end{theorem}
 
 The result of Theorem \ref{thm:GN2} is that all commutative $C^{*}$-algebras are effectively represented by Example \ref{ex:function algebra}.
 Historically, Theorems \ref{thm:GN1} and \ref{thm:GN2} have been valued because they turn abstract $C^{*}$-algebras
 (as described by the Definition \ref{def:algebra}) into Examples \ref{ex:function algebra} and \ref{ex:nc algebra}.
 In this paper, we go the opposite direction.
-We start with an equation on the (concrete) space $C(M)$ for a compact manifold $M$ \ram{may want to cite the equation that is relevant in the text} and we transform it into an equation on a commutative sub-algebra of $B(\mathcal{H})$ for a suitably chosen Hilbert space, $\mathcal{H}$ \ram{may want to cite the equation that is relevant in the text}.
+We start with an evolution equation, \eqref{eq:function pde}, on the space $C(M)$ for a compact manifold $M$ and we transform it into an equation on a commutative sub-algebra of $B(\mathcal{H})$
+for a suitably chosen Hilbert space, $\mathcal{H}$ by finding an embedding from $C(M)$ into $B(\mathcal{H})$.
 That we seemingly transform ``concrete'' objects into ``abstract'' objects is one possible reason that the algorithms in this paper were not constructed earlier.
 However, ``abstract'' does not necessarily imply difficult, with respect to numerics.
 In fact, as this paper shows, it is easier to represent advection equations in this operator-theoretic form.
@@ -385,8 +386,10 @@ a half density $\psi \in \sqrt{ \Dens(M) }$ will transform to a new half density
 \begin{align}
 	(\Phi_{*}\psi)_{x}(v_{1},\dots,v_{n}) := \psi_{ \Phi^{-1}(x) } ( D\Phi^{-1}(x) \cdot v_{1} , \dots , D\Phi^{-1}(x) \cdot v_{n} ) \label{eq:transformation law}
 \end{align}
-for any $x \in M$ and any $v_{1}, \dots , v_{n} \in T_{x}M$ \ram{can you describe in a single sentence how you generated this equation?}.
-This is in contrast to the transformation law for functions, which sends $f \in C^{1}(M)$ to the function $f \circ \Phi^{-1}$. 
+for any $x \in M$ and any $v_{1}, \dots , v_{n} \in T_{x}M$.
+This transformation law is inferred by substituting the transformation law for a density into the definition of a half-density.
+In other words, this is the unique transformation law such that squaring both sides yields the transformation law for a density.
+Notably, this is in contrast to the transformation law for functions, which sends $f \in C^{1}(M)$ to the function $f \circ \Phi^{-1}$.
 
 In local coordinates, $x^{1},\dots,x^{n}$, on an open set $U \subset M$, it is common to write a (complex) density $\rho: \bigoplus^{n}TM \to \mathbb{C}$ as function ``$\rho(x)$'' for $x \in U \subset M$.
 This convention is permissible as long as one realizes that what is really meant is that $\rho(x) = f_{\rho}(x) | dx^{1} \wedge \cdots \wedge dx^{n} |$ for some complex valued function $f_{\rho}:U \to \mathbb{C}$.
@@ -523,7 +526,7 @@ given by:
 \end{align}
 %Then $L^{2}(M;\mu_{g})$ is the completion of the inner-product space $( C^{\infty}(M) , \langle \cdot , \cdot \rangle_{g})$ under 
 %the inner-product norm.
-The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is negative-semidefinite (i.e. $\int f \, \Delta f \, \mu_{g} \leq 0$ for all $f \in C^{2}(M)$) \ram{Is it worth just defining this equation in this paper?}.
+The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is negative-semidefinite (i.e. $\int f \, \Delta f \, \mu_{g} \leq 0$ for all $f \in C^{2}(M)$) \ram{Is it worth just defining this equation in this paper?} \hoj{Nah.  JNum readers ought to know this.}.
 If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert space and the Helmholtz operator, $1 - \Delta$, is a positive definite operator with a discrete spectrum~\cite{Taylor1974}.
 For any $s \geq 0$ we may define the \emph{Sobolev norm}:
 \begin{align}
@@ -531,7 +534,8 @@ For any $s \geq 0$ we may define the \emph{Sobolev norm}:
 \end{align}
 where $f$ and $\psi$ are related by $\psi = f \sqrt{\mu_{g}}$.
 Then  we define $H^s(M ;g)$ as the completion of $\sqrt{\Dens(M)}$ with respect to the $\| \cdot \|_{s,2}$ norm.  
-Such a definition is isomorphic, in the category of topological vector-spaces, to the one provided in ~\cite{Hebey1999} \ram{don't you need to prove this fact?}.
+Such a definition is isomorphic, in the category of topological vector-spaces, to the one provided in~\cite{Hebey1999}.
+In order to prove this claim, observe that it holds for bounded sets in $\mathbb{R}^{n}$, and then apply a partition of unity argument to obtain the desired equivalence on manifolds.
 In particular, note that $H^0(M;g) = L^2(M)$.  It is notable that $H^{s}(M;g)$ as a topological vector-space is actually not metric dependent ~\cite[Proposition 2.2]{Hebey1999}.
 However, the norm $\| \cdot \|_{s,2}$ is metric dependent.
 
@@ -569,12 +573,12 @@ For each $f \in C(M)$, there is a unique bounded Hermitian operator, $H_{f} : L^
 That is to say $(H_{f} \cdot \psi) (x) = f(x) \psi(x)$ for any $\psi \in L^{2}(M)$.
 By inspection one can observe that the map ``$f \mapsto H_{f}$'' is injective and preserves the algebra of $C(M)$ because $H_{f\cdot g + h} = H_{f} \cdot H_{g} + H_{h}$ and $\| H_{f} \|_{op} = \| f \|_{\infty}$.
 
-Similarly, (and in the opposite direction) for any trace class operator $A:L^{2}(M) \to L^{2}(M)$ there is a unique distribution $\rho_{A} \in C(M)'$ such that: 
+Similarly, (and in the opposite direction) for any trace class operator $A$ there is a unique distribution $\rho_{A} \in C(M)'$ such that: 
 \begin{align}
 	 \int f \, \rho_{A} = \Tr ( H_{f}^{\dagger} \cdot A )
 \end{align}
 for any $f \in C(M)$.
-More generally, for any $A$ in the dual-space $B( L^{2}(M) )^{*}$ \ram{does the * need to be in the previous equation}, there is a $\rho_{A} \in C(M)'$ such that $\langle f , \rho_{A} \rangle = \langle H_{f} , A \rangle$.
+More generally, for any $A$ in the dual-space $B( L^{2}(M) )^{*}$, there is a $\rho_{A} \in C(M)'$ such that $\langle f , \rho_{A} \rangle = \langle H_{f} , A \rangle$.
 The map ``$A \mapsto \rho_{A}$'' is merely the adjoint of the injection ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is surjective.
 %By construction, these maps preserve the duality between functions and distributions.
 
@@ -787,11 +791,11 @@ converts the PDE into an ODE~\cite{Gottlieb1977numerical}.
 In particular, we assume access to solvers of finite dimensional ODEs, denoted ``$\OdeSolve$.''
 In practice any ODE solver such as Euler's method, Runge-Kutta, or even well tested software such as ~\cite{VODE} could be used to compute such solutions.
 Most notably, the method of~\cite{Calvo1997} is specialized to isospectral flows such as  \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} by using discrete-time isospectral flows.
-More explicitly, let $\OdeSolve ( F , x_{init} , t_{final} )$ denote the numerically computed solution $x(t_{final})$ to the ODE ``$\dot{x} = F(x)$'' at time $t_{final}$, with initial condition $x_{init}$ \ram{OdeSolve may need arguments corresponding to the time interval of integration}.
+More explicitly, let $\OdeSolve ( F , x_{0} , t )$ denote the numerically computed solution $x(t)$ to the ODE ``$\dot{x} = F(x)$'' at time $t \in \mathbb{R}$, with initial condition $x_{0} \in M$.
 Before constructing an algorithm to spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner, we first solve \eqref{eq:half density pde} using a standard spectral discretization in Algorithm \ref{alg:half density}~\cite{Boyd2001,NumericalRecipes}.
 
 \begin{algorithm}
-	\KwIn{An initial condition $\psi(0) \in L^{2}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $N$.}
+	\KwIn{$\psi(0) \in L^{2}(M)$, $t \in \mathbb{R}$, $N \in \mathbb{N}$.}
 	%\KwResult{A numerical solution, $\psi_{n}(t_{k})$, to \eqref{eq:half density pde} at times $t_{k}$ for $k = 1,\dots,m$.}
 	initialize $z(0) \in \mathbb{C}^{N}$.\;
 	initialize $X_{N} \in \mathbb{C}^{N \times N}$\;
@@ -802,18 +806,16 @@ Before constructing an algorithm to spectrally discretize \eqref{eq:function pde
 		} 
 	}
 	initialize the function $F: \mathbb{C}^{N} \to \mathbb{C}^{N}$ given by $F(z) = X_{N} \cdot z$.\;
-	$t_{0} = 0$\;
-	\For{ k = 1,\dots,m}{
-		$z(t_{k}) = \operatorname{OdeSolve}(  F , z(t_{k-1}) , t_{k})$ \ram{OdeSolve may need arguments corresponding to the time interval of integration}\;
-	}
-	\KwOut{ $\psi_{N}(t_{k}) = \sum_{i=1}^{n} [z(t_{k})]_{i} e_{i}$ for $k=1,\dots,m$.}
+	$z(t) = \operatorname{OdeSolve}(  F , z(0) , t)$\;
+	\KwOut{ $\psi_{N}(t) = \sum_{i=1}^{n} [z(t)]_{i} e_{i}$.}
 	\caption{A spectral discretization to solve \eqref{eq:half density pde} for half densities.} \label{alg:half density}
 \end{algorithm}
 
 To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{N}(t_{k}) \in V_{N}$ by projecting \eqref{eq:half density pde} to $V_N$.
 This projection is done by constructing the operator $X_{N} = \pi_{N} \circ \pounds_{X} |_{V_{N}}: V_{N} \to V_{N}$.
 In Section \ref{sec:analysis} we prove that $\psi_{N}(t_{k})$ converges to the solution of \eqref{eq:half density pde} as $N \to \infty$.
-\ram{Can you summarize the importance of the following result in a single sentence?}
+We will see that $\psi_{N}(t)$ evolves by unitary transformations, just as the exact solution to \eqref{eq:half density pde} does.
+This correspondence will be key in providing the qualitative accuracy of algorithms that follow, so we formally state it here.
 \begin{proposition} \label{prop:unitary}
 	The output of Algorithm \ref{alg:half density} is given by $U_{N}(t_{k}) \cdot \psi_{N}(0)$ when $\psi(0) \in L^2(M)$ is the input to Algorithm \ref{alg:half density} where $\psi_{N}(0) = \pi_{N}( \psi(0) )$ and $U_{N}(t)$ is the unitary operator as in Proposition \ref{prop:stone} generated by $X_{N}$.
 \end{proposition}
@@ -823,16 +825,20 @@ In Section \ref{sec:analysis} we prove that $\psi_{N}(t_{k})$ converges to the s
 \end{proof}
 
 Before continuing, we briefly state a sparsity result that aides in selecting a basis.
-The proof of this results follows from simple arithmetic, and so we omit it.
-
+We say an operator $A : L^{2}(M) \to L^{2}(M)$ is \emph{sparse banded diagonal} with respect to a Hilbert basis $\{ e_{0} , e_{1},\dots\}$ if there exists an integer $W \in \mathbb{N}$
+such that $A(e_{i})$ is a finite sum elements of the form $e_{i + \delta_{j}}$ for fewer than $W$ offsets $\delta_{j}$ for $i = 0,1,2, \dots$.
 \begin{theorem} \label{thm:sparsity}
 	Let $x^{1},\dots,x^{n}$ be a dense coordinate chart for $M$ on some dense open set\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus~\cite{Sakai1996,MO_dense_charts}. },
 	then $e_{k}= f_{k} \, \sqrt{\mu}$ for functions $f_{k} \in L^2(M; \mu)$ where $\mu = | dx^{1} \wedge \cdots \wedge dx^{n}|$ (see Proposition \ref{prop:non canonical}).
-	If differentiation and multiplication of the functions $f_{k}$ is sparse (in terms of series expansions) \ram{you may want to make more clear what this means and how it relates to the bound...} and if the vector-field $X$ is such that $X^{i} = \sum_{k} c_{k}^{i} f_{k}$ with fewer than $K>0$ of $c^{i}_{k}$'s being non-zero for each $i=1,\dots,n$, then the matrix $X_{N}$ in Algorithm \ref{alg:half density} is banded diagonal and the sparsity of $X_{N}$ is $\mathcal{O}( K / N )$.
+	If $\rho( \pder{}{x^{j}})$ and $H_{f_{k}}$ are sparse banded diagonal, 
+	and if the vector-field $X$ is given in local coordinates by $X^{i} = \sum_{k} c_{k}^{i} f_{k}$ with fewer than $W>0$ of $c^{i}_{k}$'s being non-zero for each $i=1,\dots,n$, then the matrix $X_{N}$ in Algorithm \ref{alg:half density} is sparse banded diagonal and the sparsity of $X_{N}$ is $\mathcal{O}( W / N )$.
 \end{theorem}
+\begin{proof}
+The result follows directly from counting.
+\end{proof}
 
-Theorem \ref{thm:sparsity} suggests selecting a basis where $K$ is small, or at least finite.
-For example, if $M$ were a torus, and the vector-field was made up of a finite number of sinusoids, then a Fourier basis would yield a $K$ equal to the maximum number of terms along all dimensions.
+Theorem \ref{thm:sparsity} suggests selecting a basis where $W$ is small, or at least finite.
+For example, if $M$ were a torus, and the vector-field was made up of a finite number of sinusoids, then a Fourier basis would yield a $W$ equal to the maximum number of terms along all dimensions.
 
 By Theorem \ref{thm:quantize}, the square of the result of Algorithm \ref{alg:half density} is a numerical solution to \eqref{eq:density pde}.
 We can use this to produce a numerical scheme to \eqref{eq:density pde} by finding the square root of a density.
@@ -841,43 +847,40 @@ then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ sin
 This yields Algorithm \ref{alg:density} to spectrally discretize \eqref{eq:density pde} in a qualitatively accurate manner for densities which admit a square root.
 
 \begin{algorithm}[H] 
-	\KwData{An initial condition $\rho(0) \in L^{1}(M)$, an ordered sequence of times $0 < t_{1} < t_{2} < \dots < t_{m}$, and a positive integer $N$.}
+	\KwData{$\rho(0) \in L^{1}(M), t \in \mathbb{R},N \in \mathbb{N}$.}
 	%\KwResult{A numerical solution, $\rho_{n}(t_{k})$, to \eqref{eq:density pde} for $k = 1,\dots,m$.}
 	Initialize $\psi(0) =  \sqrt{\rho^{+}(0)} - i \sqrt{\rho^{-}(0)}$\;
-	Set $\psi_{N}(t_{1}),\dots,\psi_{n}(t_{m}) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t_{1} , \dots,t_{m}, N )$\;
-	\KwOut{ $\rho_{N}(t_{k} , x) = \psi_{N}(t_{k} , x)^{2}$ for $k=1,\dots,m$.}
+	Set $\psi_{N}(t) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t, N )$\;
+	\KwOut{ $\rho_{N}(t , x) = \psi_{N}(t , x)^{2}$.}
 	\caption{A spectral discretization to solve \eqref{eq:density pde} for densities} \label{alg:density}
 \end{algorithm}
 
 Alternatively, we could have considered the trace-class operator $A_{N}(t_{k}) = \psi_{N}(t_{k}) \otimes \psi_{N}(t_{k})^{\dagger}$ as an output. 
 This would be an numerical solution to \eqref{eq:quantum density ode}, and would be related to our original output in that $\rho_{N}(t_{k}) = \rho_{A_{N}(t_{k})}$.
 Finally, we present an algorithm to solve \eqref{eq:quantum observable ode} (in lieu of solving \eqref{eq:function pde}).
-This algorithm is presented for theoretical interest at the moment, as it does not scale well with the problem size in terms of memory usage \ram{the second part of this sentence may not be worth including as it detracts from the punchline, there maybe a safer way to explain this}.
+This algorithm is presented for theoretical interest at the moment.
 
 \begin{algorithm}[H]
-	\KwData{An initial condition $f(0) \in C(M)$, an ordered sequence of times $t_{1},\dots,t_{m} \in \mathbb{R}^{+}$, and an integer $N \in \mathbb{N}$.}
-	%\KwResult{A numerical solution, $\hat{f}_{N}(t_{k})$, to \eqref{eq:quantum observable ode} for $k = 1,\dots,m$.}
-	
+	\KwData{$f(0) \in C(M), t \in \mathbb{R}, N \in \mathbb{N}$.}	
 	initialize $F_{N}(0), X_{n} \in \mathbb{C}^{N \times N}$.\;
-	initialize the function $B: \mathbb{C}^{N \times N} \to \mathbb{C}^{N \times N}$
-	given by $B(M) = - [M , X_{N}]$.\;
+	initialize the linear map $B: \mathbb{C}^{N \times N} \to \mathbb{C}^{N \times N}$
+	given by $B(H) = - [H , X_{N}]$.\;
 	\For{ $i , j = 1 , \dots , N$ }{
 		$[F_{N}(0)]\indices{^i_{j}} =  \int_{M} \bar{e}_{i}(x) f(x) e_{j}(x)$ \;
 		$[X_{N}]\indices{^i_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$ \;
 	}
-	$t_{0} = 0$\;
-	\For{ $k = 1 ,\dots, m $}{
-		$F_{N}(t_{k}) = \OdeSolve( B , F_{N}(t_{k-1}) , t_{k})$ \ram{OdeSolve may need arguments corresponding to the time interval of integration}\;
-	}
-	\KwOut{ The (compact) operator $H_{f,N}(t_{k}) = \sum_{i,j=1}^{N}[ F_{N}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$ for $k=1,\dots,m$. }
+	$F_{N}(t) = \OdeSolve( B , F_{N}(0) , t)$\;	
+	\KwOut{ The (compact) operator $H_{f,N}(t_{k}) = \sum_{i,j=1}^{N}[ F_{N}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$. }
 	\caption{A spectral discretization to solve \eqref{eq:quantum observable ode} for functions} \label{alg:function}
 \end{algorithm}
 
-\ram{a single sentence describing the relevance of the following result would be useful.}
+We find that the ouput of Algorithm \ref{alg:function} bears algebraic similarities similarities to the exact solution to the infinite dimensional ODE, \eqref{eq:quantum observable ode} (which is isomorphic to \eqref{eq:function pde} by Theorem \ref{thm:quantize}).
+This is stated in a proposition analogous to Proposition \ref{prop:unitary}.
+
 \begin{proposition} \label{prop:isospectral}
-\ram{it is worth stating the hypothesis to this Proposition analogously to Proposition \ref{prop:unitary}. Its also strange that things here are in terms of $t$ but earlier things are in terms of $t_k$. This is particularly relevant given comments that I'll make about the next section.}
-$H_{f,N}(t) = U_{N}(t) \cdot H_{f,N}(0) \cdot U_{N}(t)^{\dagger}$ for all time $t$ for the same unitary transformation $U_{N}(t)$ of Proposition \ref{prop:unitary}.
-Moreover, the exact solution $H_{f}(t)$ is of the form $U(t) \cdot H_{f}(0)  \cdot U(t)^{\dagger}$ as well.
+$H_{f,N}(t) = U_{N}(t) \cdot H_{f,N}(0) \cdot U_{N}(t)^{\dagger}$ for any $t \in \mathbb{R}$.
+Moreover, $U_{N}(t)$ is identical to the unitary transformation of Proposition \ref{prop:unitary}.
+Lastly, the exact solution of \eqref{eq:quantum observable ode} is of the form $H_{f}(t) = U(t) \cdot H_{f}(0)  \cdot U(t)^{\dagger}$ as well.
 \end{proposition}
 \begin{proof}
 	This follows from the fact that algorithm outputs the solution to an isospectral flow ``$\dot{F}_{N} + [F_{N} , X_{N}]$''
