@@ -1218,9 +1218,6 @@ This section describes two numerical experiments.  First, a benchmark computatio
 
 \subsection{Benchmark computation}
 \label{sec:benchmark}
-
-\ram{For the benchmark examples it may be useful to always use the same color for the spectral method (green) and our method (red) on all of the plots (the flow, the convergence, and the norm preservation results). Maybe the ground truth can be plotted in blue and the discrepancy can be plotted in blue too.}
-
 Consider the vector field $\dot{x} = -\sin(2 x)$ for $x \in S^{1}$.
 The flow of this system is given by:
 \begin{align}
@@ -1233,7 +1230,7 @@ If the initial density is a uniform distribution, $\rho_{0} = dx$, then the the 
 Figure \ref{fig:S1} depicts the evolution of $\rho(x;t)$ at $t=1.5$ with an initial condition.
 Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution},  Figure \ref{fig:standard spectral} depicts the numerical solution computed from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes, and Figure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
 
-\begin{figure}
+\begin{figure}[h!]
 	\hspace*{-.5cm}
 	\begin{subfigure}{0.36\textwidth}
 		\includegraphics[width=0.9\textwidth]{./images/exact_1D.pdf}
@@ -1265,7 +1262,7 @@ Finally, a convergence plot is depicted in Figure \ref{fig:convergence}.
 Note the spectral convergence of Algorithm \ref{alg:density}.
 In terms of numerical accuracy, Algorithm \ref{alg:density} appears to have a lower coefficient of convergence.
 
-\begin{figure}
+\begin{figure}[h!]
 	\hspace*{-1.2cm}
 	\centering
 	\includegraphics[width=\textwidth]{./images/L1_plot.pdf}
@@ -1273,7 +1270,7 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to have a lo
 	\label{fig:L1}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h!]
 	\hspace*{-1.2cm}
 	\centering
 	\includegraphics[width=0.9\textwidth]{./images/convergence_plot.pdf}
@@ -1333,7 +1330,7 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to have a lo
 %This is particularly problematic given the high cost of computation for Algorithm \ref{alg:function}  ($O(n^{2})$) versus a stand spectral computation ($O(n)$).
 In general, Algorithm \ref{alg:function} is very difficult to work with, as it outputs an operator rather than a classical function.
 However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (in particular, if one is only interested in a few level sets).
-We will not investigate the potential of \ref{alg:function} to inspire other algorithms in this article, in the interest of focusing on the qualitative aspects of this discretization.
+We will not investigate this potentiality here in the interest of focusing on the qualitative aspects of this discretization.
 For example, under the initial conditions $g_{0}(x) = \cos(x)$ and $f_{0} = \sin(x)$ the exact solutions to \eqref{eq:quantum observable ode} are:
 \begin{align*}
 	g(x,t) &= \cos(x) \left( e^{4t} \sin^{2}(x) + \cos^{2}(x) \right)^{-1/2}\\
@@ -1354,7 +1351,7 @@ As proven by Theorem \ref{thm:norms}, the operator-norm is conserved by Algorith
 In contrast, the sup-norm drifts over time under a standard discretization.  
 This is depicted in Figure \ref{fig:norms}
 
-\begin{figure}[h]
+\begin{figure}[h!]
 	\hspace*{-1.2cm}
 	\includegraphics[width=1.15\textwidth]{./images/function_plots/discrepancy}
 	\caption{The discrepancy due to non-preservation of scalar products under a standard spectral Galerkin discretization. 
@@ -1362,10 +1359,11 @@ This is depicted in Figure \ref{fig:norms}
 	\label{fig:discrepancy}
 \end{figure}  
 
-\begin{figure}[h]
+\begin{figure}[h!]
 	\hspace*{-1.2cm}
-	\includegraphics[width=1.15\textwidth]{./images/L_inf_plot.pdf}
-	\caption{A plot of the sup-norm vs time of a standard spectral discretization (blue) and the result of Algorithm \ref{alg:function} (green) on the example described in Section \ref{sec:benchmark}.}
+	\centering
+	\includegraphics[width=0.8\textwidth]{./images/L_inf_plot.pdf}
+	\caption{A plot of the sup-norm vs time of a standard spectral discretization (blue) and the result of Algorithm \ref{alg:function} (red) on the example described in Section \ref{sec:benchmark}.}
 	\label{fig:norms}
 \end{figure}
 %However, we can obtain one estimate by applying $\hat{f}_{n}$ to the half-density $\sqrt{dx}$, and then divide the result by $\sqrt{dx}$.
@@ -1493,7 +1491,7 @@ The middle row depicts the results from using a Monte-Carlo method with $15^{3} 
 Finally, the bottom row depicts the results from using a standard Fourier based discretization of \eqref{eq:density pde} using 33 modes along each dimension.
 Notice that Algorithm \ref{alg:density} performs well when compared to the standard discretization approach.
 
-\begin{figure}
+\begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth]{./images/ABCD_flow.png}
 	\caption{An illustration of the performance of Algorithm \ref{alg:density} (top row), Monte Carlo (middle row) and a standard spectral Galerkin (bottom row) on the example described in Section \ref{sec:ABC_flow}.
