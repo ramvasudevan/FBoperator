@@ -173,7 +173,7 @@ print 'integrating'
 print 'p=%d' %p
 t0 = 0.0
 t1 = 1.0
-N_timesteps = 90
+N_timesteps = 5
 t = np.linspace(0.0 , t1 , N_timesteps)
 
 #SOLVE USING MONTE-CARLO
@@ -208,64 +208,70 @@ for i in range(1,N_timesteps):
 
 
 #NOW TO MAKE A VIDEO
-f,ax = plt.subplots(1,3)
+make_video = False
+if make_video:
+    f,ax = plt.subplots(1,3)
+    for i in range(N_timesteps):
+        #PLOT GN SPEC
+        psi = psi_list[i]
+        rho = rho_list[i]
+        ax[0].imshow( np.abs(psi**2) ,
+                cmap = 'Greys',
+                origin='lower',
+                interpolation='nearest',
+                extent=[0,1,0,1])
+        ax[0].grid(True)
+        ax[0].set_title('GN spectral')    
+        #PLOT MONTE CARLO
+        x,y = state_to_XY( states[i] )
+        ax[1].scatter( x%1,y%1 ,alpha=0.02, s=3.0, c = 'k')
+        ax[1].axis([0,1,0,1])
+        ax[1].set_aspect('equal')
+        ax[1].grid(True)
+        ax[1].set_title('Monte Carlo')
+
+        #PLOT STANDARD SPEC
+        ax[2].imshow( rho.real ,
+                cmap = 'Greys',
+                origin='lower',
+                interpolation='nearest',
+                extent=[0,1,0,1])
+        ax[2].grid(True)
+        ax[2].set_title('Standard spectral')
+        #REMOVE TICKLABELS
+        for k in range(3):
+            ax[k].xaxis.set_ticklabels([]) 
+            ax[k].yaxis.set_ticklabels([]) 
+        plt.tight_layout()
+        f.suptitle('t=%.2f'%t[i])
+        plt.savefig('figures/figure_%d.png'%(i))
+        ax[0].clear()
+        ax[1].clear()
+        ax[2].clear()
+        print '%d of %d frames complete' %(i+1,N_timesteps)
+        quit()
+
+#NOW ON TO PLOTTING
+if N_timesteps > 5:
+    print "N timesteps is too large, quitting"
+    quit()
+
+f,ax = plt.subplots( 3, N_timesteps)
+#f.set_size_inches(16,4)
+#f.text( 0.02, 0.5, 't=%.2f'%t[i], fontsize=16)
 for i in range(N_timesteps):
     #PLOT GN SPEC
     psi = psi_list[i]
     rho = rho_list[i]
-    ax[0].imshow( np.abs(psi**2) ,
-            cmap = 'Greys',
-            origin='lower',
-            interpolation='nearest',
-            extent=[0,1,0,1])
-    ax[0].grid(True)
-    ax[0].set_title('GN spectral')    
-    #PLOT MONTE CARLO
-    x,y = state_to_XY( states[i] )
-    ax[1].scatter( x%1,y%1 ,alpha=0.02, s=3.0, c = 'k')
-    ax[1].axis([0,1,0,1])
-    ax[1].set_aspect('equal')
-    ax[1].grid(True)
-    ax[1].set_title('Monte Carlo')
-
-    #PLOT STANDARD SPEC
-    ax[2].imshow( rho.real ,
-            cmap = 'Greys',
-            origin='lower',
-            interpolation='nearest',
-            extent=[0,1,0,1])
-    ax[2].grid(True)
-    ax[2].set_title('Standard spectral')
-    #REMOVE TICKLABELS
-    for k in range(3):
-        ax[k].xaxis.set_ticklabels([]) 
-        ax[k].yaxis.set_ticklabels([]) 
-    plt.tight_layout()
-    f.suptitle('t=%.2f'%t[i])
-    plt.savefig('figures/figure_%d.png'%(i))
-    ax[0].clear()
-    ax[1].clear()
-    ax[2].clear()
-    print '%d of %d frames complete' %(i+1,N_timesteps)
-quit()
-
-#NOW ON TO PLOTTING
-f,ax = plt.subplots( 3, 1+N_timesteps/2 )
-#f.set_size_inches(16,4)
-#f.text( 0.02, 0.5, 't=%.2f'%t[i], fontsize=16)
-for i in range(N_timesteps/2+1):
-    #PLOT GN SPEC
-    psi = psi_list[2*i]
-    rho = rho_list[2*i]
     ax[0,i].imshow( np.abs(psi**2) ,
             cmap = 'Greys',
             origin='lower',
             interpolation='nearest',
             extent=[0,1,0,1])
     ax[0,i].grid(True)
-    ax[0,i].set_title('t=%.2f'%t[2*i])    
+    ax[0,i].set_title('t=%.2f'%t[i])    
     #PLOT MONTE CARLO
-    x,y = state_to_XY( states[2*i] )
+    x,y = state_to_XY( states[i] )
     ax[1,i].scatter( x%1,y%1 ,alpha=0.01, s=2.0, c = 'k')
     ax[1,i].axis([0,1,0,1])
     ax[1,i].set_aspect('equal')
