@@ -104,7 +104,7 @@ for k in range(n_frames):
     #plt.clf()
 
 #plotting final condition
-plot_final_distributions = False
+plot_final_distributions = True
 if plot_final_distributions:
     psi_spatial = ift(psi_arr[-1])
     rho_spatial[0] = 0
@@ -114,21 +114,21 @@ if plot_final_distributions:
     rho_exact[0] = 0
     rho_exact[-1] = 0
 
-    plt.fill( x , rho_exact )
+    plt.fill( x , rho_exact , facecolor='0.5',edgecolor='k')
     #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
     plt.axis([-3.14,3.14,-1,20])
     plt.grid()
     plt.tight_layout()
     plt.show()
 
-    plt.fill( x , rho_spatial )
+    plt.fill( x , rho_spatial ,facecolor='0.5',edgecolor='b')
     #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
     plt.axis([-3.14,3.14,-1,20])
     plt.grid()
     plt.tight_layout()
     plt.show()
 
-    plt.fill( x , abs(psi_spatial)**2 )
+    plt.fill( x , abs(psi_spatial)**2 ,facecolor='0.5',edgecolor='r')
     #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
     plt.axis([-3.14,3.14,-1,20])
     plt.grid()
@@ -147,7 +147,7 @@ if plot_final_distributions:
 
 
 #NOW WE MAKE A CONVERGENCE PLOT
-make_convergence_plot = True
+make_convergence_plot = False
 
 if make_convergence_plot:
     t_final = 1.0
@@ -241,17 +241,17 @@ def get_convolution_matrix( FS ):
 cnv1 = get_convolution_matrix( FS_1)
 cnv2 = get_convolution_matrix( FS_2)
 cnv3 = get_convolution_matrix( FS_3)
-D = 2*N+1
-sigma = 0.1
-data = np.zeros([1,D])
-data[0,:] = np.exp( - sigma**2 * (np.arange(-N,N+1))**2)
-offsets = np.zeros(1)
-Smooth = sparse.dia_matrix( (data,offsets), shape=(D,D),dtype=complex)
-data[0,:] = np.exp(  sigma**2 * (np.arange(-N,N+1))**2)
-Sharpen = sparse.dia_matrix( (data,offsets), shape=(D,D),dtype=complex)
+#D = 2*N+1
+#sigma = 0.1
+#data = np.zeros([1,D])
+#data[0,:] = np.exp( - sigma**2 * (np.arange(-N,N+1))**2)
+#offsets = np.zeros(1)
+#Smooth = sparse.dia_matrix( (data,offsets), shape=(D,D),dtype=complex)
+#data[0,:] = np.exp(  sigma**2 * (np.arange(-N,N+1))**2)
+#Sharpen = sparse.dia_matrix( (data,offsets), shape=(D,D),dtype=complex)
 
-cnv0 = Smooth.dot( cnv1.dot( Sharpen) )
-cnv1 = cnv0.copy()
+#cnv0 = Smooth.dot( cnv1.dot( Sharpen) )
+#cnv1 = cnv0.copy()
 
 from scipy.sparse import linalg
 
@@ -261,11 +261,11 @@ def bracket( A , B ):
 t=0
 dt = 0.01
 t_final = 1.5
-plot_norms = False
+plot_norms = True
 if plot_norms:
     operator_norm = []
-    u,s,v = linalg.svds( cnv1 , k=1)
-    operator_norm.append( s[0] )
+    #u,s,v = linalg.eigsh( cnv1 , k=1)
+    operator_norm.append( np.linalg.norm( cnv1.todense(),ord=2) )
 while t < t_final:
     k1 = bracket( H_op , cnv1)
     k2 = bracket( H_op , cnv1 + dt*k1 / 2)
@@ -283,8 +283,8 @@ while t < t_final:
     #k4 = bracket( H_op , cnv3 + dt*k3 )
     #cnv3 += dt*(k1+2*k2+2*k3+k4) / 6.
     if plot_norms:
-        u,s,v = linalg.svds( cnv1 , k=1)
-        operator_norm.append( s[0] )
+        #u,s,v = linalg.svds( cnv1 , k=1)
+        operator_norm.append( np.linalg.norm( cnv1.todense(),ord=2 ) )
     t += dt
 
 #EVOLVE FS_1 and FS_2 and FS_3
@@ -318,13 +318,14 @@ while t < t_final:
 
 #PLOT norms
 if plot_norms:
-    plt.plot( t_array, sup_norm )
-    plt.plot( t_array, operator_norm )
+    plt.plot( t_array, sup_norm ,'b')
+    plt.plot( t_array, operator_norm,'r' )
     plt.xlabel('time')
     plt.ylabel('sup/operator norm')
     plt.grid(True)
+    plt.tight_layout()
     plt.show()
-
+    quit()
 
 #PLOT cnv1,cnv2 and cnv1*cnv2
 from scipy.linalg import eig
