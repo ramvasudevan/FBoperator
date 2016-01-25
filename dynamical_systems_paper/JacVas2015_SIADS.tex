@@ -76,7 +76,7 @@ then so is their product, $f \cdot g$, and their sum, $f+g$.
 Similarly, the solution to \eqref{eq:density pde} takes the form $\rho(x;t) = | \det( D(\Phi_{X}^{t})^{-1}(x) ) | \rho( (\Phi_{X}^{t})^{-1}(x) ;0) := (\Phi_{X}^{t})_{*} \rho(\cdot;0)$.
 One can deduce that the $L^{1}$-norm of $\rho(x;t)$ is conserved in time~\cite[Theorem 16.42]{Lee2006}.
 Finally, \eqref{eq:density pde} is the adjoint evolution equation to \eqref{eq:function pde} in the sense that the integral $\langle f , \rho \rangle := \int f \rho$ is constant in time\footnote{To see this compute
-$\frac{d}{dt} \langle f , \rho \rangle = \int ( \partial_{t} f ) \rho + f ( \partial_{t} \rho) $.  One will find that the final integral vanishes upon substitution of \eqref{eq:function pde} and \eqref{eq:density pde} and applying integration by parts.}.
+$\frac{d}{dt} \langle f , \rho \rangle = \int ( \partial_{t} f ) \rho + f ( \partial_{t} \rho) $.  One finds that the final integral vanishes upon substitution of \eqref{eq:function pde} and \eqref{eq:density pde} and applying integration by parts.}.
 This motivates the following definition of qualitative accuracy:
 
 \begin{definition} \label{def:quality}
@@ -117,7 +117,7 @@ In continuous time, Petrov-Galerkin discretization of the infinitesimal generato
 %Dually, the Frobenius-Perron operator (and it's discretization, the Transfer operator), represents the natural action of diffeomorphisms upon distributions and preserves the $L^{1}$-norm (the norm dual to the sup-norm).
 
 In this article, we consider a unitary representation of the diffeomorphisms of $M$ known to representation theorists~\cite{Ismagilov1975,VershilGelfandGraev1975} and quantum probability theorists~\cite{Meyer1998,Parthasarathy2012}.
-To be more specific, we will consider the action of diffeomorphisms on the Hilbert space of half-densities~\cite{BatesWeinstein1997,GuilleminSternberg1970}.
+To be more specific, we consider the action of diffeomorphisms on the Hilbert space of half-densities~\cite{BatesWeinstein1997,GuilleminSternberg1970}.
 Half densities can be abstractly summarized as an object whose ``square'' is a density
 or, alternatively, can be understood as a mathematician's nomenclature for a physicist's ``wave functions.''
 One of the benefits of working with half-densities, over probability densities, is that the space of half-densities is a Hilbert space, while the space of probability densities is a convex cone~\cite{GuilleminSternberg1970}.
@@ -132,9 +132,9 @@ In this paper we develop numerical schemes for \eqref{eq:function pde} and \eqre
 First, we derive an auxiliary PDE, \eqref{eq:half density pde}, on the space of half-densities in Section \ref{sec:half densities}.
 We relate solutions of \eqref{eq:half density pde} to solutions of \eqref{eq:function pde} and \eqref{eq:density pde} in Theorem \ref{thm:quantize}.
 Second, we pose an auxiliary spectral scheme for \eqref{eq:half density pde} in Section \ref{sec:discretization}.
-Our auxiliary scheme will induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
+Our auxiliary scheme induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
 Third, we derive a spectral convergence rate for our auxiliary scheme in Section \ref{sec:analysis}.
-The spectral convergence rate for our auxiliary scheme will induce spectral convergence rates for numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
+The spectral convergence rate for our auxiliary scheme induce spectral convergence rates for numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
 Finally, we prove our schemes are qualitatively accurate, as in Definition \ref{def:quality}, in Section \ref{sec:qualitative}.
 We end the paper by demonstrating these findings in numerical experiments in Section \ref{sec:numerics}.
 We observe our algorithm for \eqref{eq:density pde} to be superior to a standard spectral Galerkin discretization, both in terms of numerical accuracy and qualitative accuracy.
@@ -381,8 +381,7 @@ This definition is an equivalent reformulation of the half densities defined in 
 In physical terms, half densities are a geometric manifestation of the wave functions used in quantum mechanics.
 It is unfortunate that physicists call these ``wave-functions'' given that they are \emph{not} functions.
 To test this assertion, observe how elements of $\sqrt{\Dens(M)}$ transform.
-Under a $C^{1}$-automorphism, $\Phi: M \to M$,
-a half density $\psi \in \sqrt{ \Dens(M) }$ will transform to a new half density $\Phi_{*}\psi$ according to the formula
+Under a $C^{1}$-automorphism, $\Phi: M \to M$, a half density $\psi \in \sqrt{ \Dens(M) }$ transform to a new half density $\Phi_{*}\psi$ according to the formula
 \begin{align}
 	(\Phi_{*}\psi)_{x}(v_{1},\dots,v_{n}) := \psi_{ \Phi^{-1}(x) } ( D\Phi^{-1}(x) \cdot v_{1} , \dots , D\Phi^{-1}(x) \cdot v_{n} ) \label{eq:transformation law}
 \end{align}
@@ -814,8 +813,8 @@ Before constructing an algorithm to spectrally discretize \eqref{eq:function pde
 To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{N}(t_{k}) \in V_{N}$ by projecting \eqref{eq:half density pde} to $V_N$.
 This projection is done by constructing the operator $X_{N} = \pi_{N} \circ \pounds_{X} |_{V_{N}}: V_{N} \to V_{N}$.
 In Section \ref{sec:analysis} we prove that $\psi_{N}(t_{k})$ converges to the solution of \eqref{eq:half density pde} as $N \to \infty$.
-We will see that $\psi_{N}(t)$ evolves by unitary transformations, just as the exact solution to \eqref{eq:half density pde} does.
-This correspondence will be key in providing the qualitative accuracy of algorithms that follow, so we formally state it here.
+We see that $\psi_{N}(t)$ evolves by unitary transformations, just as the exact solution to \eqref{eq:half density pde} does.
+This correspondence is key in providing the qualitative accuracy of algorithms that follow, so we formally state it here.
 \begin{proposition} \label{prop:unitary}
 	The output of Algorithm \ref{alg:half density} is given by $U_{N}(t_{k}) \cdot \psi_{N}(0)$ when $\psi(0) \in L^2(M)$ is the input to Algorithm \ref{alg:half density} where $\psi_{N}(0) = \pi_{N}( \psi(0) )$ and $U_{N}(t)$ is the unitary operator as in Proposition \ref{prop:stone} generated by $X_{N}$.
 \end{proposition}
@@ -1330,7 +1329,7 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to have a lo
 %This is particularly problematic given the high cost of computation for Algorithm \ref{alg:function}  ($O(n^{2})$) versus a stand spectral computation ($O(n)$).
 In general, Algorithm \ref{alg:function} is very difficult to work with, as it outputs an operator rather than a classical function.
 However, Algorithm \ref{alg:function} is of theoretical value, in that it may inspire new ways of discretization (in particular, if one is only interested in a few level sets).
-We will not investigate this potentiality here in the interest of focusing on the qualitative aspects of this discretization.
+We do not investigate this potentiality here in the interest of focusing on the qualitative aspects of this discretization.
 For example, under the initial conditions $g_{0}(x) = \cos(x)$ and $f_{0} = \sin(x)$ the exact solutions to \eqref{eq:quantum observable ode} are:
 \begin{align*}
 	g(x,t) &= \cos(x) \left( e^{4t} \sin^{2}(x) + \cos^{2}(x) \right)^{-1/2}\\
@@ -1466,7 +1465,7 @@ Consider the system
 on the three-torus for constants $A,B,C,D \in \mathbb{R}$.  
 When $D=0$ this system is the well studied volume conserving system known as an Arnold-Beltrami-Childress flow~\cite{ArnoldKhesin1992}.
 When $A > B > C > 0$, $D=0$, and $C << 1$, then the solutions to this ODE are chaotic, with a uniform steady state distribution ~\cite{MajdaBertozzi2002}.
-When $D=0$ the operator $\pounds_{X}$ of \eqref{eq:half density pde} is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ that appears in \eqref{eq:density pde}, and Algorithm \ref{alg:half density} will not differ from a standard spectral discretization.\footnote{This is always the case for a volume conserving system.}
+When $D=0$ the operator $\pounds_{X}$ of \eqref{eq:half density pde} is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ that appears in \eqref{eq:density pde}, and Algorithm \ref{alg:half density} do not differ from a standard spectral discretization.\footnote{This is always the case for a volume conserving system.}
 Therefore we consider the case where $D > 0$ to see how our discretization are differs from the standard one.
 When $D> 0$ volume is no longer conserved and there is a non-uniform steady-state distribution.
 
