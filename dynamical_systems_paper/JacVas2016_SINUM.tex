@@ -262,11 +262,11 @@ To begin, recall the following definitions:
 	A \emph{Banach-algebra} is a Banach space, $A$, which is equipped with a multiplication-like operation, ``$(a,b) \in A \times A \mapsto ab \in A$,''  that is bounded, ``$\| ab \| \leq \|a \| \|b \|$,'' and associative ``$(ab)c = a(bc)$ for any $a,b,c \in A$.''
 	
 	A \emph{$C^{*}$-algebra} is a Banach algebra, $A$, over the field $\mathbb{C}$ with an involution, ``$a \in A \mapsto a^{*} \in A$,'' that satisfies:
-	\begin{align}
+	\begin{align*}
 		(ab)^{*} = b^{*} a^{*} \quad,\quad
 		(\lambda a)^{*} = \bar{\lambda} a^{*} \quad,\quad
 		\| a \| = \| a^{*}\|,
-	\end{align}
+	\end{align*}
 	for all $a,b \in A$ and $\lambda \in \mathbb{C}$.
 	$A$ is \emph{unital} if $A$ has a multiplicative identity.
 	$A$ is \emph{commutative} if $ab = ba$ for all $a,b \in A$.
@@ -408,9 +408,9 @@ As $|\psi|^{2} \in \Dens(M)$ for any $\psi \in \sqrt{\Dens(M)}$, $|\psi|^{2}$ ca
 \begin{definition}
 	$L^{2}(M)$ is defined as the completion of $\sqrt{ \Dens(M)}$ with respect to the $2$-norm.
 	The space $L^{2}(M)$ is equipped with a complex inner-product given by
-	\begin{align}
+	\begin{align*}
 		\langle \psi \mid \phi \rangle = \int_{M} \bar \psi \phi
-	\end{align}
+	\end{align*}
 	through polar decomposition, and so $L^{2}(M)$ is a Hilbert space.
 \end{definition}
 
@@ -452,9 +452,9 @@ Despite the Lie derivative being unbounded, a unique solution is defined for all
 \label{sec:classical_Lebesgue}
 To understand the relationship to classical Lebesgue spaces, recall that for any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative reference density $\mu$~\cite[Chapter 16]{Lee2006}.
 Upon choosing such a $\mu \in \Dens(M)$, the $2$-norm of a continuous complex function $f:M \to \mathbb{C}$ with respect to $\mu$ is
-\begin{align}
+\begin{align*}
 	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
-\end{align}
+\end{align*}
 and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
 The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are equivalent as topological vector-spaces:
 \begin{proposition} \label{prop:non canonical}
@@ -527,17 +527,17 @@ Since the algorithms proposed in this paper are proven to converge in a Sobolev 
 To begin, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
 The metric, $g$, induces a positive density $\mu_g$, known as the \emph{metric density} and an inner-product on $C^\infty(M)$
 given by:
-\begin{align}
+\begin{align*}
 	\langle f_1 , f_1 \rangle_{g} = \int \overline{f_1} \cdot f_2 \mu_g.
-\end{align}
+\end{align*}
 %Then $L^{2}(M;\mu_{g})$ is the completion of the inner-product space $( C^{\infty}(M) , \langle \cdot , \cdot \rangle_{g})$ under 
 %the inner-product norm.
 The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is negative-semidefinite (i.e. $\int f \, \Delta f \, \mu_{g} \leq 0$ for all $f \in C^{2}(M)$).
 If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert space and the Helmholtz operator, $1 - \Delta$, is a positive definite operator with a discrete spectrum~\cite{Taylor1974}.
 For any $s \geq 0$ we may define the \emph{Sobolev norm}:
-\begin{align}
+\begin{align*}
 	\| \psi \|_{s,2} =  \left( \langle f , (1-\Delta)^s \cdot  f \rangle_{g} \right)^{1/2}
-\end{align}
+\end{align*}
 where $f$ and $\psi$ are related by $\psi = f \sqrt{\mu_{g}}$.
 Then  we define $H^s(M ;g)$ as the completion of $\sqrt{\Dens(M)}$ with respect to the $\| \cdot \|_{s,2}$ norm.  
 Such a definition is isomorphic, in the category of topological vector-spaces, to the one provided in~\cite{Hebey1999}.
@@ -554,9 +554,9 @@ However, the norm $\| \cdot \|_{s,2}$ is metric dependent.
 	Let $e_0, e_1,\dots$ be the Hilbert basis for $L^2(M;\mu_g)$ which diagonalizes $\Delta$
 	in the sense that $\Delta e_i = \lambda_i e_i$ for a sequence $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \cdots$.
 	The operator $(1+\Delta)^s$ is given by
-	\begin{align}
+	\begin{align*}
 		(1+\Delta)^s \cdot f =  \sum_{i} e_i (1+\lambda_i)^s \langle e_i , f \rangle_g,
-	\end{align}
+	\end{align*}
 	and so $\{ (1+ \lambda_i)^{-s} e_i \}_{i=1}^{\infty}$ is a Hilbert basis for $H^s(M;g)$.
 	
 	Let us call $e_i^{(s)} = (1+ \lambda_i)^{-s} e_i$.
@@ -580,9 +580,9 @@ That is to say $(H_{f} \cdot \psi) (x) = f(x) \psi(x)$ for any $\psi \in L^{2}(M
 By inspection one can observe that the map ``$f \mapsto H_{f}$'' is injective and preserves the algebra of $C(M)$ because $H_{f\cdot g + h} = H_{f} \cdot H_{g} + H_{h}$ and $\| H_{f} \|_{op} = \| f \|_{\infty}$.
 
 Similarly, (and in the opposite direction) for any trace class operator $A$ there is a unique distribution $\rho_{A} \in C(M)'$ such that: 
-\begin{align}
+\begin{align*}
 	 \int f \, \rho_{A} = \Tr ( H_{f}^{\dagger} \cdot A )
-\end{align}
+\end{align*}
 for any $f \in C(M)$.
 More generally, for any $A$ in the dual-space $B( L^{2}(M) )^{*}$, there is a $\rho_{A} \in C(M)'$ such that $\langle f , \rho_{A} \rangle = \langle H_{f} , A \rangle$.
 The map ``$A \mapsto \rho_{A}$'' is merely the adjoint of the injection ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is surjective.
@@ -637,33 +637,33 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 \begin{proof}
 	Let $f$ satisfy \eqref{eq:function pde}.
 	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ H_{f} , \pounds_{X}] \cdot \psi$ is given in coordinates by:
-	\begin{align}
+	\begin{align*}
 		\left( [ H_{f}, \pounds_{X} ] \cdot \psi \right)(x) &= f(x) \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right) (x) \\
 			&\quad- \frac{1}{2} X^{j} \left. \pder{}{x^{j}} \right|_{x}( f \psi)  + \frac{1}{2} \left. \pder{}{x^{j}} \right|_{x}(f \psi \, X^{j} )
-	\end{align}
+	\end{align*}
 	where we have used \eqref{eq:representation}.  
 	Application of the product rule to each of these terms yields a number of cancellations and we find:
-	\begin{align}
+	\begin{align*}
 		[ H_{f} , \pounds_{X} ] \cdot \psi = - X^{j} \pder{f}{x^{j}} \psi = (\partial_{t} f )\psi = \frac{d H_{f} }{dt} \cdot \psi.
-	\end{align}
+	\end{align*}
 	As $\psi$ is arbitrary, we have shown that $H_{f}$ satisfies \eqref{eq:quantum observable ode}.
 	Each line of reasoning is reversible, and so we have proven the converse as well.
 	
 	In order to handle densities note that $\langle f , \rho \rangle$ is constant in time when $f$ and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde}, respectively.
 	By the definition of $\rho_{A}$, $\Tr( H_{f}^{\dagger} \cdot A) = \langle f , \rho_{A} \rangle$.
 	Therefore:
-	\begin{align}
+	\begin{align*}
 		0 = \frac{d}{dt} \left( \Tr( H_{f}^{\dagger} \cdot A ) \right) = \Tr \left( \frac{d H_{f}^{\dagger}}{dt} \cdot A + H_{f}^{\dagger} \cdot \frac{d A}{dt} \right).
-	\end{align}
+	\end{align*}
 	As was just shown, $\frac{dH_{f}}{dt} =  - [H_{f} , \pounds_{X} ]$ so:
-	\begin{align}
+	\begin{align*}
 		0 = \Tr \left( - [H_{f} , \pounds_{X} ]^{\dagger} \cdot A + H_{f}^{\dagger} \cdot \frac{d A}{dt} \right) 
 		= \Tr( - \pounds_{X}^{\dagger} H_{f}^{\dagger} \cdot A + H_{f}^{\dagger} \pounds_{X}^{\dagger} \cdot A + H_{f}^{\dagger}  \cdot \frac{dA}{dt} ).
-	\end{align}
+	\end{align*}
 	Upon noting that $\pounds_{X}^{\dagger} = - \pounds_{X}$ and that $\Tr( a b c) = \Tr( bc a)$:
-	\begin{align}
+	\begin{align*}
 		0 = \Tr \left( H_{f}^{\dagger}( [\hat{\rho} , \pounds_{X} ] + \frac{d \hat{\rho}}{dt} ) \right).
-	\end{align}
+	\end{align*}
 	As $H_f$ was chosen arbitrarily, the desired result follows.
 	Again, this line of reasoning is reversible.
 %	
@@ -674,13 +674,13 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 %	where we have used the fact that $\pi$ is bracket preserving.
 %	
 	Lastly, if $\psi$ satisfies \eqref{eq:half density pde} and $\rho = \psi^{2}$ then we see
-	\begin{align}
+	\begin{align*}
 		\partial_{t} \rho &= \partial_{t} ( \psi^{2}) = 2 (\partial_{t} \psi ) \, \psi \\
 		&= 2 \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \psi 
 		= \left( - X^{i} \partial_{i} \psi - \psi \partial_{i} X^{i}  \right) \psi \\
 		&= - 2 \psi (\partial_{i} \psi) X^{i} - (\partial_{i}X^{i}) \psi^{2}
 		= - \partial_{i}(\rho) X^{i} - (\partial_{i}X^{i}) \rho = - \partial_{i} ( \rho X^{i}).
-	\end{align}
+	\end{align*}
 \end{proof}
 
 
@@ -936,9 +936,9 @@ In all that follows, let $\pi_{N}: L^{2}(M) \to V_{N}$ denote the orthogonal pro
 \begin{proposition} \label{prop:approximation}
 	If $\psi \in H^{\bar{s}}(M)$ and $\bar{s} > s \geq 0$,
 	then
-	\begin{align}
+	\begin{align*}
 		\| \psi - \pi_{N}(\psi) \|_{s,2} <  \frac{d \, C_{\bar{s},s} }{ \bar{s}-s} \| \psi \|_{\bar{s} , 2} \, N^{-2(\bar{s}-s)/n}
-	\end{align}
+	\end{align*}
 	for some constant $C_{\bar{s},s}$ and $d = \dim(M)$.
 \end{proposition}
 \begin{proof}
@@ -953,13 +953,13 @@ In all that follows, let $\pi_{N}: L^{2}(M) \to V_{N}$ denote the orthogonal pro
 	A corollary of Weyl's asymptotic formula is that $\lambda_{k}$ is $\mathcal{O}( k^{2/n})$ for large $k$ ~\cite[page 155]{Chavel1984}.
 	After substitution of this asymptotic result into \eqref{eq:propapprox_eq1} for large $k$, we see that $|\hat{\psi}_{k}|^{2}$ is asymptotically dominated by  $C k^{-1- 2\bar{s}/n}$ for some constant $C$.
 	For sufficiently large $N$ we find
-	\begin{align}
+	\begin{align*}
 		\| \psi - \pi_{N}(\psi) \|_{s,2} = \sum_{k>N} (1+\lambda_{k})^{s} |\hat{\psi}_{k}|^{2} \leq C \sum_{k>N} (1+\lambda_{k})^{s} k^{-1- 2\bar{s}/n}
-	\end{align}
+	\end{align*}
 	and by another application of the Weyl formula
-	\begin{align}
+	\begin{align*}
 		\| \psi - \pi_{N}(\psi) \|_{s,2} \leq \tilde{C} \sum_{k>N} \frac{1}{k^{1+2(\bar{s}-s)/n}} \leq C_{s,\bar{s}}  \frac{d }{ \bar{s}-s} N^{-2(\bar{s}-s)/n}.
-	\end{align}
+	\end{align*}
 	Where the last inequality is derived by bounding the infinite sum with an integral.
 \end{proof}
 
@@ -976,14 +976,14 @@ With this error bound for the approximation error we can derive an error bound f
 	Finally, let $\psi_{N}(t)$ be the output of Algorithm \ref{alg:half density}
 	with respect to the inputs $\psi(0), t , N$ for some $N \in \mathbb{N}$.
 	Then the error $\varepsilon_{N}(t) := \| \psi(t) - \psi_{N}(t) \|_{s,2}$ satisfies:
-	\begin{align}
+	\begin{align*}
 		\varepsilon_{N}(t) \leq \| \psi(0) \|_{\bar{s},2} \, K_{T} \left( N^{-2(s-1)} t+  \frac{n}{\bar{s}-s} N^{-2(\bar{s}-s)/n} \right) e^{C_{T} t}
-	\end{align}
+	\end{align*}
 	where $K_{T}$ and $C_{T}$ are positive and constant with respect to $N$,$s$, and $\bar{s}$.
 	In particular for $s = (\bar{s}+1)/2$:
-	\begin{align}
+	\begin{align*}
 			\varepsilon_{N}(t) \leq \| \psi(0) \|_{\bar{s},2} \, K_{T} \left( N^{1-\bar{s}} t+  \frac{n}{\bar{s}-1} N^{(1-\bar{s})/n} \right) e^{C_{T} t}.
-	\end{align}
+	\end{align*}
 \end{theorem}
 
 \noindent To prove Theorem \ref{thm:half density convergence}, we need a perturbed version of Gronwall's inequality:
@@ -992,9 +992,9 @@ If $\frac{du}{dt} \leq Ku + \epsilon$ for some $K>0$ then $u(t) \leq (\epsilon t
 \end{lemma}
 \begin{proof}
 	Let $w (t)= u (t) e^{-Kt}$.  Then for $t \geq 0$ we find
-	\begin{align}
+	\begin{align*}
 		\frac{dw}{dt} = \frac{du}{dt} e^{-Kt} - K w \leq (Ku+\epsilon) e^{-Kt} - Kw = \epsilon e^{-Kt} \leq \epsilon
-	\end{align}
+	\end{align*}
 	Thus $w(t) \leq \epsilon t + w(0) = \epsilon t + u(0)$.
 \end{proof}
 
@@ -1003,26 +1003,26 @@ Now we can prove Theorem \ref{thm:half density convergence}:
 \begin{proof}[Proof of Theorem \ref{thm:half density convergence}]
 	Note that $\frac{d\varepsilon_{N}}{dt} = \frac{1}{2\varepsilon_{N}} \langle  \psi - \tilde{\psi} \mid (1+\Delta)^{s} \frac{d}{dt} ( \psi -\tilde{\psi} )\rangle$
 	By the Cauchy-Schwarz inequality
-	\begin{align}
+	\begin{align*}
 		\frac{d\varepsilon_{N}}{dt} &\leq  \frac{1}{2} \| \pounds_{X}[\psi] - \pi_{N}(\pounds_{X}[\psi_{N}]) \|_{s,2} \\
 		&= \| \pounds_{X}[\psi] - \pi_{N}( \pounds_{X}[\psi- (\psi-\psi_{N})]) \|_{s,2}.
 	\intertext{By the triangle inequality and the definition of the operator norm:}
 		\frac{d\varepsilon_{N}}{dt}&\leq \| (1-\pi_{N}) \|_{H^{s-1},op} \, \|X \|_{H^{s},op} \, \| \psi \|_{s,2} + \| \pi_{N} \|_{op} \, \|X \|_{H^{s},op} \, \varepsilon_{N}
-	\end{align}
+	\end{align*}
 	By Proposition \ref{prop:stone} we observe that $\psi(t)$ is related to $\psi_{0}$ through the flow of $X$ which is a $C^{k}$-diffeomorphism if $X$ is $C^{k}$.
 	From the local expression Proposition \ref{prop:stone} in we can observe that $\| \psi(t) \|_{s,2}$ is bounded by a scalar multiple of $\| \psi_{0} \|_{s,2}$.
 	Thus we may write the above bound in the form
-	\begin{align}
+	\begin{align*}
 		\frac{d\varepsilon_{N}}{dt} \leq K' \, \| 1- \pi_{N} \|_{H^{s-1},op} \, \| \psi_{0}\|_{s,2}+ C_{T} \varepsilon_{N}
-	\end{align}
+	\end{align*}
 	for constants $C_{T}$ and $K'$.
 	As $s > 1$, for sufficiently large $N$ we can compute that $\| 1-\pi_{N} \|_{H^{s-1},op} \leq (1+\lambda_{N+1})^{-(s-1)}$ where $\lambda_{N}$ denotes the $N$th eigenvalue of the Laplace operator.
 	This is accomplished by observing the operator $1-\pi_{N}$ in a Fourier basis and applying to appropriate norms.
 	By Weyl's asymptotic formula ~\cite[Theorem B.2]{Chavel1984}, $\lambda_{N}$ asymptotically behaves like $N^{2/n}$.
 	Therefore by Lemma \ref{lem:Gronwall} with $\epsilon = C_{T} n^{-2(s-1) / d} \, \| \psi_{0}\|_{s,2}$:
-	\begin{align}
+	\begin{align*}
 		\varepsilon_{N}(t) \leq ( K' N^{-2(s-1) / n} \| \psi_{0} \|_{s,2} t+  \varepsilon_{N}(0) ) e^{C_{T} t}.
-	\end{align}
+	\end{align*}
 	That $\varepsilon_{N}(0)$ behaves as $K'' \| \psi_{0} \|_{\bar{s},2} n^{-2(\bar{s}-s)/d}$ is a re-statement of Proposition \ref{prop:approximation}.
 	We then set $K_{T} = \max(K', K'')$.
 \end{proof}
@@ -1035,9 +1035,9 @@ Having derived an error bound for Algorithm \ref{alg:half density}, we can deriv
 	Let $\rho(t)$ be the solution of \eqref{eq:density pde} at time $t$.
 	Finally, let $\rho_{N}(t)$ be the output of Algorithm \ref{alg:density} with respect to the input $(\rho(0), t , N)$ for some $N \in \mathbb{N}$.
 	Then:
-	\begin{align}
+	\begin{align*}
 		\| \rho(t) - \rho_{N}(t) \|_{1} \leq \| \rho(0) \|_{\bar{s},1} \, K \left( N^{-2(s-1)} t+  \frac{d}{\bar{s}-s} N^{-2(\bar{s}-s)/n} \right) e^{C_{T} t}
-	\end{align}
+	\end{align*}
 	where $K$ is constant with respect to $N$, and $C_{T}$ is the same constant as in Theorem \ref{thm:half density convergence}.
 \end{theorem}
 
@@ -1045,14 +1045,14 @@ Having derived an error bound for Algorithm \ref{alg:half density}, we can deriv
 	Without loss of generality, assume that $\rho$ is non-negative (otherwise split it into its non-negative and non-positive components).
 	Let $\psi \in L^{2}(M)$ be such that $\rho =  \psi ^{2}$, as described in Algorithm \ref{alg:density}.
 	It follows that $\psi \in H^{s}(M)$ and we compute
-	\begin{align}
+	\begin{align*}
 		\| \rho(t) - \rho_{N}(t) \|_{1} = \int_{M} | \rho(t) - \rho_{N}(t)| = \int_{M} | \psi^{2} - \psi_{N}^{2} |
-	\end{align}
+	\end{align*}
 	If we let $\phi_{N} = \psi - \psi_{N}$ then we can re-write the above as
-	\begin{align}
+	\begin{align*}
 		\| \rho(t) - \rho_{n}(t) \|_{1}  &= \int_{M} | \psi^{2} - (\psi - \phi_{N})^{2} | = \int_{M} | 2 \psi \phi_{N} - \phi_{N}^{2} | \\
 			&\leq 2 \| \psi \|_{2} \| \phi_{N}\|_{2} + \| \phi_{N} \|_{2}^{2} = 2 \| \rho \|_{1}^{1/2} \cdot \| \phi_{N} \|_{2} + \| \phi_{N} \|_{2}^{2}
-	\end{align}
+	\end{align*}
 	Above we have applied Holder's inequality to $L^{2}(M)$, which still holds upon using the isometry in Proposition \ref{prop:non canonical}.
 	Theorem \ref{thm:half density convergence} provides a bound for $\| \phi_{N} \|$.
 	Substitution of this bound into the above inequality yields the theorem.
@@ -1062,9 +1062,9 @@ Finally, we prove that Algorithm \ref{alg:function} converges to a solution of \
 
 \begin{proposition} \label{prop:function approximation}
 	Let $f \in C^{k}(M)$ and let $H_{f,N} = \pi_{N} \circ H_{f} \circ \pi_{N}$.  Then
-	\begin{align}
+	\begin{align*}
 		\| H_{f} - H_{f,N} \|_{H^{s},op} \leq D \frac{n}{s} N^{-2s/n} \| \hat{f} \|_{op}
-	\end{align}
+	\end{align*}
 	where $s > k \geq 1$, and $D$ is constant.
 \end{proposition}
 \begin{proof}
@@ -1087,10 +1087,10 @@ Finally, we prove that Algorithm \ref{alg:function} converges to a solution of \
 	Let $f(t)$ denote the solution to \eqref{eq:function pde} at time $t$ with initial condition $f(0) \in C^{k}(M)$.
 	Let $H_{f,N}(t)$ denote the output of Algorithm \ref{alg:function} with respect to the inputs $(f(0) , t  , N)$ for some $N \in \mathbb{N}$.
 	Then:
-	\begin{align}
+	\begin{align*}
 		\| H_{f(t)} - H_{f,N}(t) \|_{H^{s},op} &\leq D \frac{n}{s} N^{-2s/n} \| H_{f(t)} \|_{op} \\
-			&\quad +  K_{T} \| H_{f,N}(t) \|_{op} \left( N^{1-s} + \frac{2n}{s -1} N^{(1-s)/n} \right) e^{C_{T}t} \nonumber
-	\end{align}
+			&\quad +  K_{T} \| H_{f,N}(t) \|_{op} \left( N^{1-s} + \frac{2n}{s -1} N^{(1-s)/n} \right) e^{C_{T}t}
+	\end{align*}
 	for the same constant $D$ as in Proposition \ref{prop:function approximation} and the same constants $C_{T},K_{T}$ as in Theorem \ref{thm:half density convergence}.
 \end{theorem}
 
@@ -1184,24 +1184,24 @@ This property is encoded in our discretization as well.
 	Let $f(x;t),g(x;t)$, and $h(x;t)$ be solutions of \eqref{eq:function pde} and let $k= f \cdot g + h $.
 	Let $H_{f,N}, H_{g,N}$ and $H_{h,N}$ be numerical solutions constructed by Algorithm \ref{alg:function}, then $H_{k,N}(t) = H_{f,N}\cdot H_{g,N}+H_{h,N}$
 	satisfies
-	\begin{align}
+	\begin{align*}
 		\frac{d}{dt} H_{k,N} = [ X_{N} , H_{k,N}].
-	\end{align}
+	\end{align*}
 	Moreover, $H_{k,N}(t)$ strongly converges to $H_{k}$ as $N \to \infty$ in the operator norm on $H^{s}(M)$ when $f,g,h \in C^{s}(M)$ for $s>1$.
 \end{theorem}
 \begin{proof}
 	By construction, the output of Algorithm \ref{alg:function} is the result of an isospectral flow, and is therefore of the form 
-	\begin{align}
+	\begin{align*}
 		&H_{f,N}(t) = U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger} \\
 		&H_{g,N}(t) = U_{N}(t) H_{g,N}(0) U_{N}(t)^{\dagger} \\
 		&H_{h,N}(t) = U_{N}(t) H_{h,N}(0) U_{N}(t)^{\dagger}.
-	\end{align}
+	\end{align*}
 	We then observe
-	\begin{align}
+	\begin{align*}
 		H_{k,N}(t) &= U_{N}(t) H_{k,N}(0) U_{N}(t)^{\dagger} = U(t)\left( H_{f,N}(0) H_{g,N}(0) + H_{h,N}(0) \right) U(t)^{\dagger} \\
 			&= U(t)H_{f,N}(0) U(t)^{\dagger} U(t) H_{g,N}(0)U(t)^{\dagger} + U(t) H_{h,N}(0) U(t)^{\dagger} \\
 			&=H_{f,N}(t)H_{g,N}(t) + H_{h,N}(t).
-	\end{align}
+	\end{align*}
 	Differentiation in time implies the desired result.
 	Convergence follows from Theorem \ref{thm:function convergence}.
 \end{proof}
@@ -1231,9 +1231,9 @@ This section describes two numerical experiments.  First, a benchmark computatio
 \label{sec:benchmark}
 Consider the vector field $\dot{x} = -\sin(2 x)$ for $x \in S^{1}$.
 The flow of this system is given by:
-\begin{align}
+\begin{align*}
 	\Phi_{X}^{t}(x) = \operatorname{atan} \left( e^{2t} \tan( x) \right).
-\end{align}
+\end{align*}
 If the initial density is a uniform distribution, $\rho_{0} = dx$, then the the exact solution of \eqref{eq:density pde} is:
 \begin{align}
 	\rho(x;t) =  \left( e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) \right)^{-1}  |dx| \label{eq:exact solution}
@@ -1332,11 +1332,11 @@ This is depicted in Figure \ref{fig:norms}
 \label{sec:ABC_flow}
 
 Consider the system
-\begin{align}
+\begin{align*}
 	\dot{x} = A \sin( 2\pi z) + C \cos(2\pi y)  + D \cos(2\pi x)\\
 	\dot{y} = B \sin( 2\pi z) + A \cos(2\pi y)  + D \cos(2\pi y)\\
 	\dot{z} = A \sin( 2\pi z) + B \cos(2\pi y)  + D \cos(2\pi z)
-\end{align}
+\end{align*}
 on the three-torus for constants $A,B,C,D \in \mathbb{R}$.  
 When $D=0$ this system is the well studied volume conserving system known as an Arnold-Beltrami-Childress flow~\cite{ArnoldKhesin1992}.
 When $A > B > C > 0$, $D=0$, and $C << 1$, then the solutions to this ODE are chaotic, with a uniform steady state distribution ~\cite{MajdaBertozzi2002}.
