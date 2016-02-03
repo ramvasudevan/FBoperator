@@ -75,9 +75,9 @@ For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
 then so is their product, $f \cdot g$, and their sum, $f+g$.
 Similarly, the solution to \eqref{eq:density pde} takes the form $\rho(x;t) = | \det( D(\Phi_{X}^{t})^{-1}(x) ) | \rho( (\Phi_{X}^{t})^{-1}(x) ;0) := (\Phi_{X}^{t})_{*} \rho(\cdot;0)$.
 One can deduce that the $L^{1}$-norm of $\rho(x;t)$ is conserved in time~\cite[Theorem 16.42]{Lee2006}.
-Finally, \eqref{eq:density pde} is the adjoint evolution equation to \eqref{eq:function pde} in the sense that the integral $\langle f , \rho \rangle := \int f \rho$ is constant in time\footnote{To see this compute
-$\frac{d}{dt} \langle f , \rho \rangle = \int ( \partial_{t} f ) \rho + f ( \partial_{t} \rho) $.  One finds that the final integral vanishes upon substitution of \eqref{eq:function pde} and \eqref{eq:density pde} and applying integration by parts.}.
-This motivates the following definition of qualitative accuracy:
+Finally, \eqref{eq:density pde} is the adjoint evolution equation to \eqref{eq:function pde} in the sense that the integral $\langle f , \rho \rangle := \int f \rho$ is constant in time. To see this compute
+$\frac{d}{dt} \langle f , \rho \rangle = \int ( \partial_{t} f ) \rho + f ( \partial_{t} \rho) $.  One finds that the final integral vanishes upon substitution of \eqref{eq:function pde} and \eqref{eq:density pde} and applying integration by parts.
+This conservation law motivates the following definition of qualitative accuracy:
 
 \begin{definition} \label{def:quality}
 	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if it conserves discrete analogs of scalar multiplication/addition, the $L^{1}$-norm and the total mass for densities and the sup-norm for functions.
@@ -109,7 +109,7 @@ The goal of this paper is
 
 \subsection{Previous work}
 Within mechanics, spectral methods for the continuum and transport equation are a common-place where they are viewed as special cases of first order hyperbolic PDEs~\cite{Boyd2001,Gottlieb2001}.
-Various Galerkin discretizations of the Koopman operator\footnote{The Koopman operator is a linear operator ``$K$'' which yields the solution $f = K \cdot f_{0}$ to \eqref{eq:function pde}. We refer the reader to~\cite{BudisicMohrMezic2012} for a survey of recent applications.} have been successfully used for generic dynamic systems~\cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems~\cite{Rowley2009} where such discretizations serve as a generalization of dynamic mode decomposition~\cite{Schmid2010}.
+Various Galerkin discretizations of the Koopman operator have been successfully used for generic dynamic systems~\cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems~\cite{Rowley2009} where such discretizations serve as a generalization of dynamic mode decomposition~\cite{Schmid2010}.
 Dually, Ulam-type discretizations of the Frobenius-Perron operator~\cite{LasotaMackey1994,Ulam1947} have been used to find invariant manifolds of systems with uniform Gaussian noise~\cite{FroylandJungeKoltai2013,FroylandPadberg2009}.
 In continuous time, Petrov-Galerkin discretization of the infinitesimal generator of the Frobenius Perron operator converge in the presence of noise ~\cite{BittracherKoltaiJunge2015} and preserve positivity in a Haar basis~\cite{koltai2011thesis}.
 %The goal of this article is different than many of the papers cited thus far, in that we are interested in resolving our PDEs in finite time, rather than determining the infinite time behavior.
@@ -335,8 +335,7 @@ In essence, this is related to a corollary to Theorem \ref{thm:GN2}:
 Said more plainly, \eqref{eq:function pde} and \eqref{eq:density pde} are the generators of all algebra-preserving automorphisms of $C(M)$.
 Thus, conservation of sums of products is more than just a fundamental property of \eqref{eq:function pde} and \eqref{eq:density pde}.
 \emph{Conservation of sums and products is the defining property of  \eqref{eq:function pde} and \eqref{eq:density pde}.}
-As a result, it is natural for this to be reflected in a discretization\footnote{Note: By aiming for qualitative accuracy without sacrificing spectral convergence, we reduce the coefficient of convergence.
-Therefore this pursuit makes sense from the standpoint of numerical accuracy as well.}.
+As a result, it is natural for this to be reflected in a discretization.
 
 %Consequently, numerical schemes that respect these conservation laws are exhibiting defining property of \eqref{eq:function pde} and \eqref{eq:density pde}.
 %The methods presented in this article provide a case in point.%, as do particle methods.
@@ -360,9 +359,9 @@ Therefore this pursuit makes sense from the standpoint of numerical accuracy as 
 
 At the core of any Galerkin scheme, including spectral Galerkin, is the use of a Hilbert space upon which everything can be approximated via least squares projections.
 The methods we present are no exception.
-In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$ for later use in a spectral discretization\footnote{
-We urge the reader familiar with the space $L^{2}_{\mu}(M)$, with respect to some measure $\mu$, not read this section nonetheless.
-The $L^{2}$-space we use is slightly different, and this fact permeates the entire article.}.
+In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$ for later use in a spectral discretization.
+For the reader familiar with the space $L^{2}_{\mu}(M)$, with respect to some measure $\mu$, we should not that our space is topologically isomorphic
+but is distinct from the standpoint of transformation theory.  This fact permeates the entire article, and so we suggest readers who are familiar with $L^{2}_{\mu}(M)$ read this section none the less.
 We also define the Sobolev spaces $H^{s}(M ; g)$ which arise from equipping $M$ with a Riemannian metric, $g$.
 
 For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of smooth densities, which we view as anti-symmetric multilinear functions on $\bigoplus^n TM$.
@@ -454,8 +453,10 @@ and $L^2(M ; \mu)$ is the completion of the space of continuous functions with r
 The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are equivalent as topological vector-spaces:
 \begin{proposition} \label{prop:non canonical}
 	Choose a non-vanishing positive density $\mu : \bigoplus^{n}TM \to \mathbb{R}^{+}$.
-	Let $\sqrt{\mu}$ denote the square root of $\mu$\footnote{Explicitly, if $\sqrt{\cdot}: \mathbb{R}^{+} \to \mathbb{R}^{+}$ is the standard square-root function.
-	Then $\sqrt{\mu} := \sqrt{\cdot} \circ \mu : \bigoplus^{n} TM \to \mathbb{R}^{+} \subset \mathbb{C}$ is the half-density which we are considering.}.
+	Let $\sqrt{\mu}$ denote the square root of $\mu$.
+	Said more explicitly, if $\sqrt{\cdot}: \mathbb{R}^{+} \to \mathbb{R}^{+}$ is the standard square-root function.
+	Then $\sqrt{\mu} := \sqrt{\cdot} \circ \mu : \bigoplus^{n} TM \to \mathbb{R}^{+} \subset \mathbb{C}$ is the half-density which we are considering.
+	
 	For any $\psi \in L^2(M)$ there exists a unique $f \in L^2(M ; \mu)$ such that $\psi = f \cdot  \sqrt{\mu}$.
 	This yields an isometry between $L^2(M)$ and $L^2(M ; \mu)$.
 \end{proposition}
@@ -827,8 +828,9 @@ Before continuing, we briefly state a sparsity result that aides in selecting a 
 We say an operator $A : L^{2}(M) \to L^{2}(M)$ is \emph{sparse banded diagonal} with respect to a Hilbert basis $\{ e_{0} , e_{1},\dots\}$ if there exists an integer $W \in \mathbb{N}$
 such that $A(e_{i})$ is a finite sum elements of the form $e_{i + \delta_{j}}$ for fewer than $W$ offsets $\delta_{j}$ for $i = 0,1,2, \dots$.
 \begin{theorem} \label{thm:sparsity}
-	Let $x^{1},\dots,x^{n}$ be a dense coordinate chart for $M$ on some dense open set\footnote{Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus~\cite{Sakai1996,MO_dense_charts}. },
-	then $e_{k}= f_{k} \, \sqrt{\mu}$ for functions $f_{k} \in L^2(M; \mu)$ where $\mu = | dx^{1} \wedge \cdots \wedge dx^{n}|$ (see Proposition \ref{prop:non canonical}).
+	Let $x^{1},\dots,x^{n}$ be a dense coordinate chart for $M$ on some dense open set.
+	Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus~\cite{Sakai1996,MO_dense_charts}.
+	Given such a chart, set $e_{k}= f_{k} \, \sqrt{\mu}$ for some Hilbert basis $\{f_{k}\} \subset L^2(M; \mu)$ where $\mu = | dx^{1} \wedge \cdots \wedge dx^{n}|$ (see Proposition \ref{prop:non canonical}).
 	If $\rho( \pder{}{x^{j}})$ and $H_{f_{k}}$ are sparse banded diagonal, 
 	and if the vector-field $X$ is given in local coordinates by $X^{i} = \sum_{k} c_{k}^{i} f_{k}$ with fewer than $W>0$ of $c^{i}_{k}$'s being non-zero for each $i=1,\dots,n$, then the matrix $X_{N}$ in Algorithm \ref{alg:half density} is sparse banded diagonal and the sparsity of $X_{N}$ is $\mathcal{O}( W / N )$.
 \end{theorem}
@@ -1264,8 +1266,8 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to have a lo
 \begin{figure}[h!]
 	\hspace*{-1.2cm}
 	\centering
-	\includegraphics[width=\textwidth]{./images/L1_plot.pdf}
-	\caption{A plot of the $L^{1}$-norm vs time of a standard spectral discretization (blue) and the result of Algorithm \ref{alg:density} (red) on the example described in Section \ref{sec:benchmark}.}
+	\includegraphics[width=0.8\textwidth]{./images/L1_plot.pdf}
+	\caption{A plot of the $L^{1}$-norm vs time of a standard spectral discretization (solid) and the result of Algorithm \ref{alg:density} (dotted) on the example described in Section \ref{sec:benchmark}.}
 	\label{fig:L1}
 \end{figure}
 
@@ -1273,7 +1275,7 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to have a lo
 	\hspace*{-1.2cm}
 	\centering
 	\includegraphics[width=0.9\textwidth]{./images/convergence_plot.pdf}
-	\caption{Convergence plot for Algorithm \ref{alg:density} (red) and a standard spectral method (blue) in the $L^{1}$-norm.}
+	\caption{Convergence plot for Algorithm \ref{alg:density} (dotted) and a standard spectral method (solid) in the $L^{1}$-norm.}
 	\label{fig:convergence}
 \end{figure}
 
@@ -1465,7 +1467,7 @@ Consider the system
 on the three-torus for constants $A,B,C,D \in \mathbb{R}$.  
 When $D=0$ this system is the well studied volume conserving system known as an Arnold-Beltrami-Childress flow~\cite{ArnoldKhesin1992}.
 When $A > B > C > 0$, $D=0$, and $C << 1$, then the solutions to this ODE are chaotic, with a uniform steady state distribution ~\cite{MajdaBertozzi2002}.
-When $D=0$ the operator $\pounds_{X}$ of \eqref{eq:half density pde} is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ that appears in \eqref{eq:density pde}, and Algorithm \ref{alg:half density} do not differ from a standard spectral discretization.\footnote{This is always the case for a volume conserving system.}
+When $D=0$ the operator $\pounds_{X}$ of \eqref{eq:half density pde} is identical to the operator $\partial_{\alpha}( \rho X^{\alpha})$ that appears in \eqref{eq:density pde}, and Algorithm \ref{alg:half density} do not differ from a standard spectral discretization.
 Therefore we consider the case where $D > 0$ to see how our discretization are differs from the standard one.
 When $D> 0$ volume is no longer conserved and there is a non-uniform steady-state distribution.
 
