@@ -8,7 +8,8 @@
 \usepackage{graphicx}
 \usepackage{caption,subcaption}
 \usepackage{tensor}
-%\usepackage[boxed,ruled]{algorithm2e}
+%\usepackage[boxed]{algorithm2e}
+\usepackage{algorithmic}
 \usepackage{todonotes}
 
 %  NEW COMMANDS
@@ -56,7 +57,7 @@
 \label{sec:intro}
 
 Let $M$ be a compact $n$-manifold with local coordinates $x^{1}$ through $x^{n}$
-and let $X$ be a smooth vector-field on $M$, whose local components are given by $(X^{1}(x), \dots, X^{n}(x) )$. 
+and let $X$ be a smooth vector-field on $M$, whose local components are given by $X^{1}(x)$ through $X^{n}(x)$. 
 This paper is concerned with the following pair of partial differential equations (PDEs):
 \begin{align}
 	\partial_{t} f + X^{i} \partial_{i} f = 0 \label{eq:function pde} \\
@@ -795,20 +796,21 @@ More explicitly, let $\OdeSolve ( F , x_{0} , t )$ denote the numerically comput
 Before constructing an algorithm to spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner, we first solve \eqref{eq:half density pde} using a standard spectral discretization in Algorithm \ref{alg:half density}~\cite{Boyd2001,NumericalRecipes}.
 
 \begin{algorithm}
-	\KwIn{$\psi(0) \in L^{2}(M)$, $t \in \mathbb{R}$, $N \in \mathbb{N}$.}
-	%\KwResult{A numerical solution, $\psi_{n}(t_{k})$, to \eqref{eq:half density pde} at times $t_{k}$ for $k = 1,\dots,m$.}
-	initialize $z(0) \in \mathbb{C}^{N}$.\;
-	initialize $X_{N} \in \mathbb{C}^{N \times N}$\;
-	\For{ $i = 1 , \dots , N$}{
-		$[z(0)]_{i} = \int_{M} \bar{e}_{i}(x) \psi(0,x)$\;
-		\For{$j=1,\dots,N$}{
-			$[X_{N}]\indices{^{i}_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$
-		} 
-	}
-	initialize the function $F: \mathbb{C}^{N} \to \mathbb{C}^{N}$ given by $F(z) = X_{N} \cdot z$.\;
-	$z(t) = \operatorname{OdeSolve}(  F , z(0) , t)$\;
-	\KwOut{ $\psi_{N}(t) = \sum_{i=1}^{n} [z(t)]_{i} e_{i}$.}
-	\caption{A spectral discretization to solve \eqref{eq:half density pde} for half densities.} \label{alg:half density}
+\begin{algorithmic}
+	\REQUIRE $\psi(0) \in L^{2}(M)$, $t \in \mathbb{R}$, $N \in \mathbb{N}$.
+	\STATE initialize $z(0) \in \mathbb{C}^{N}$.
+	\STATE initialize $X_{N} \in \mathbb{C}^{N \times N}$
+	\FOR{ $i = 1 , \dots , N$}
+		\STATE $[z(0)]_{i} = \int_{M} \bar{e}_{i}(x) \psi(0,x)$
+		\FOR{$j=1,\dots,N$}
+			\STATE $[X_{N}]\indices{^{i}_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$
+		\ENDFOR
+	\ENDFOR
+	\STATE initialize the function $F: \mathbb{C}^{N} \to \mathbb{C}^{N}$ given by $F(z) = X_{N} \cdot z$.
+	\STATE $z(t) = \operatorname{OdeSolve}(  F , z(0) , t)$
+	\RETURN  $\psi_{N}(t) = \sum_{i=1}^{n} [z(t)]_{i} e_{i}$.
+\end{algorithmic}
+\caption{A spectral discretization to solve \eqref{eq:half density pde} for half densities.} \label{alg:half density}
 \end{algorithm}
 
 To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{N}(t_{k}) \in V_{N}$ by projecting \eqref{eq:half density pde} to $V_N$.
@@ -847,12 +849,13 @@ Given a $\rho \in \Dens(M)$, let $\rho^{+}$ denote the positive part and $\rho^{
 then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ since $\rho = \psi^{2}$.
 This yields Algorithm \ref{alg:density} to spectrally discretize \eqref{eq:density pde} in a qualitatively accurate manner for densities which admit a square root.
 
-\begin{algorithm}[H] 
-	\KwData{$\rho(0) \in L^{1}(M), t \in \mathbb{R},N \in \mathbb{N}$.}
-	%\KwResult{A numerical solution, $\rho_{n}(t_{k})$, to \eqref{eq:density pde} for $k = 1,\dots,m$.}
-	Initialize $\psi(0) =  \sqrt{\rho^{+}(0)} - i \sqrt{\rho^{-}(0)}$\;
-	Set $\psi_{N}(t) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t, N )$\;
-	\KwOut{ $\rho_{N}(t , x) = \psi_{N}(t , x)^{2}$.}
+\begin{algorithm}
+\begin{algorithmic}
+	\REQUIRE $\rho(0) \in L^{1}(M), t \in \mathbb{R},N \in \mathbb{N}$.
+	\STATE	Initialize $\psi(0) =  \sqrt{\rho^{+}(0)} - i \sqrt{\rho^{-}(0)}$
+	\STATE	Set $\psi_{N}(t) =  \operatorname{ Algorithm\_ \ref{alg:half density} }( \psi(0) , t, N )$
+	\RETURN $\rho_{N}(t , x) = \psi_{N}(t , x)^{2}$.
+\end{algorithmic}
 	\caption{A spectral discretization to solve \eqref{eq:density pde} for densities} \label{alg:density}
 \end{algorithm}
 
@@ -862,16 +865,17 @@ Finally, we present an algorithm to solve \eqref{eq:quantum observable ode} (in 
 This algorithm is presented for theoretical interest at the moment.
 
 \begin{algorithm}[H]
-	\KwData{$f(0) \in C(M), t \in \mathbb{R}, N \in \mathbb{N}$.}	
-	initialize $F_{N}(0), X_{n} \in \mathbb{C}^{N \times N}$.\;
-	initialize the linear map $B: \mathbb{C}^{N \times N} \to \mathbb{C}^{N \times N}$
-	given by $B(H) = - [H , X_{N}]$.\;
-	\For{ $i , j = 1 , \dots , N$ }{
-		$[F_{N}(0)]\indices{^i_{j}} =  \int_{M} \bar{e}_{i}(x) f(x) e_{j}(x)$ \;
-		$[X_{N}]\indices{^i_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$ \;
-	}
-	$F_{N}(t) = \OdeSolve( B , F_{N}(0) , t)$\;	
-	\KwOut{ The (compact) operator $H_{f,N}(t_{k}) = \sum_{i,j=1}^{N}[ F_{N}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$. }
+\begin{algorithmic}
+	\REQUIRE $f(0) \in C(M), t \in \mathbb{R}, N \in \mathbb{N}$.
+	\STATE initialize $F_{N}(0), X_{n} \in \mathbb{C}^{N \times N}$.
+	\STATE initialize the linear map $B: \mathbb{C}^{N \times N} \to \mathbb{C}^{N \times N}$ given by $B(H) = - [H , X_{N}]$.
+	\FOR{ $i , j = 1 , \dots , N$}
+		\STATE $[F_{N}(0)]\indices{^i_{j}} =  \int_{M} \bar{e}_{i}(x) f(x) e_{j}(x)$ 
+		\STATE $[X_{N}]\indices{^i_{j}} = \frac{1}{2} \int_{M} \bar{e}_{i}(x) ( X^{\alpha} \partial_{\alpha} e_{j} + \partial_{\alpha}( X^{\alpha} e_{j}) )(x)$ 
+	\ENDFOR
+	\STATE $F_{N}(t) = \OdeSolve( B , F_{N}(0) , t)$
+	\RETURN The (compact) operator $H_{f,N}(t_{k}) = \sum_{i,j=1}^{N}[ F_{N}(t_{k}) ] \indices{^{i}_{j}} e^{i} \otimes e_{j}^{\dagger}$.
+\end{algorithmic}
 	\caption{A spectral discretization to solve \eqref{eq:quantum observable ode} for functions} \label{alg:function}
 \end{algorithm}
 
@@ -1142,9 +1146,9 @@ Throughout this section let $\psi_{N}(t)$, $\rho_{N}(t)$, and $H_{f,N}(t)$ denot
 	Then $\| \psi_{N} (t)\|_{2}, \|\rho_{N}(t)\|_{1},$ and $\| H_{f,N}(t) \|_{op}$ are constant with respect to $t$ for arbitrary $N \in \mathbb{N}$.
 	Moreover,
 	\begin{align*}
-		\lim_{N \to \infty} \| \psi_{N} (t) \|_{2} = \| \psi(\cdot; t) \|_{2}, \\
-		\lim_{N \to \infty} \| \rho_{N}(t) \|_{nuc} = \| \rho(\cdot; t) \|_{1}, \\
-		\lim_{N \to \infty} \| H_{f,N}(t) \|_{op} = \| f( \cdot ;t) \|_{\sup}.
+		&\lim_{N \to \infty} \| \psi_{N} (t) \|_{2} = \| \psi(\cdot; t) \|_{2}, \\
+		&\lim_{N \to \infty} \| \rho_{N}(t) \|_{nuc} = \| \rho(\cdot; t) \|_{1}, \\
+		&\lim_{N \to \infty} \| H_{f,N}(t) \|_{op} = \| f( \cdot ;t) \|_{\sup}.
 	\end{align*}
 \end{theorem}
 \begin{proof}
@@ -1183,9 +1187,9 @@ This property is encoded in our discretization as well.
 \begin{proof}
 	By construction, the output of Algorithm \ref{alg:function} is the result of an isospectral flow, and is therefore of the form 
 	\begin{align}
-		H_{f,N}(t) = U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger} \\
-		H_{g,N}(t) = U_{N}(t) H_{g,N}(0) U_{N}(t)^{\dagger} \\
-		H_{h,N}(t) = U_{N}(t) H_{h,N}(0) U_{N}(t)^{\dagger}.
+		&H_{f,N}(t) = U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger} \\
+		&H_{g,N}(t) = U_{N}(t) H_{g,N}(0) U_{N}(t)^{\dagger} \\
+		&H_{h,N}(t) = U_{N}(t) H_{h,N}(0) U_{N}(t)^{\dagger}.
 	\end{align}
 	We then observe
 	\begin{align}
