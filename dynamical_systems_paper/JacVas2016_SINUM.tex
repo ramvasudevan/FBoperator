@@ -242,22 +242,17 @@ The commutator bracket for operators $A,B$ on $\mathcal{H}$ is denoted by $[A,B]
 %\emph{and qualitatively} accurate.
 
 
-\section{Insights from Operator Theory}
+\section{Operator Theory}
 \label{sec:operator theory}
-Before we describe our algorithms, we take a moment to reflect on the virtue of pursuing qualitative accuracy.
-If one knows that some entity is conserved under evolution, then one can reduce the search for solution by scanning a smaller space of possibilities.
-For some, this might be justification enough to proceed as we are.
+Before we describe our algorithms, we will take a moment to reflect on the virtue of pursuing qualitative accuracy.
+Naively, conservation laws for \eqref{eq:function pde} and \eqref{eq:density pde} are valuable because they reduce the space of feasible solutions.
 However, more can be said in this case.
-The properties that are preserved have a special relationship to \eqref{eq:function pde} and \eqref{eq:density pde}.
-It is a result known to algebraic geometers, at least implicitly, that algebra-preservation characterizes \eqref{eq:function pde} completely without any extra ``baggage."
-In other words, \emph{the only linear evolution PDE that preserves the algebra of $C(M)$ is \eqref{eq:function pde}.}
-As a corollary, the only linear evolution PDE on densities which preserves duality with functions is of the form \eqref{eq:density pde}.
-Because of this fact, many nice properties held by \eqref{eq:function pde} and \eqref{eq:density pde} (such as bounds) are also be held by a qualitatively accurate integration scheme.
+In this section we illustrate how algebra preservation uniquely determines \eqref{eq:function pde} and \eqref{eq:density pde}.
+In particular, the only linear evolution PDEs that preserves the algebra of $C(M)$ are of the form \eqref{eq:function pde}.}
+As a corollary, the only linear evolution PDEs on densities which preserves duality with functions are of the form \eqref{eq:density pde}.
 Therefore, qualitatively accurate schemes leverage the defining aspects of the \eqref{eq:function pde} and \eqref{eq:density pde} to produce numerical approximations with the same qualitative characteristics.
 
-In the remainder of this section, we illustrate how \eqref{eq:function pde} is the unique PDE which preserves $C(M)$ as an algebra.
-In the interest of space, we provide references in place of proofs.
-To begin, recall the following definitions:
+To illustrate how \eqref{eq:function pde} is the unique PDE which preserves $C(M)$ as an algebra let us recall the following definitions:
 \begin{definition}[\cite{Conway1990}] \label{def:algebra}
 	A \emph{Banach-algebra} is a Banach space, $A$, which is equipped with a multiplication-like operation, ``$(a,b) \in A \times A \mapsto ab \in A$,''  that is bounded, ``$\| ab \| \leq \|a \| \|b \|$,'' and associative ``$(ab)c = a(bc)$ for any $a,b,c \in A$.''
 	
@@ -271,7 +266,7 @@ To begin, recall the following definitions:
 	$A$ is \emph{unital} if $A$ has a multiplicative identity.
 	$A$ is \emph{commutative} if $ab = ba$ for all $a,b \in A$.
 	
-	Finally, a map $T:A \to A$ is called a $*$-automorphism if $T$ is a bounded linear automorphism that preserves products, i.e. $T(ab) = T(a) T(b)$.
+	Finally, a map $T:A \to A$ is called a $*$-automorphism if $T$ is a bounded linear automorphism that preserves products and conjugation, i.e. $T(ab) = T(a) T(b)$ and $T(a^{*}) = T(a)^{*}$.
 	We denote the space of $*$-automorphisms of $A$ by $\operatorname{Aut}(A)$.
 \end{definition}
 
@@ -354,7 +349,7 @@ As a result, it is natural for this to be reflected in a discretization.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Half densities and other spaces}
+\section{Relevant Function Spaces}
 \label{sec:half densities}
 %The goal of this paper is to construct a spectral advection scheme which exhibits a large number of invariants.
 %Typically this Hilbert space is $L^{2}(M ; \mu)$ where the $L^{2}$-inner product is taken with respect to some non-canonical density or volume form $\mu$ on $M$.
