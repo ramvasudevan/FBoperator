@@ -33,8 +33,12 @@
 \DeclareMathOperator{\Tr}{Tr}
 
 %  TITLE, AUTHOR, DATE
-\title{Qualitatively accurate spectral schemes for advection and transport}
-\author{Henry O. Jacobs \& Ram Vasudevan}
+\title{Qualitatively accurate spectral schemes for advection and transport\thanks{This research was supported by the University of Michigan, Ann Arbor.}}
+\author{
+    Henry O. Jacobs\thanks{Department of Mechanical Engineering, University of Michigan, Ann Arbor, MI 48104, USA (\email{hojacobs@umich.edu})}
+    \and
+    Ram Vasudevan\thanks{Department of Mechanical Engineering, University of Michigan, Ann Arbor, MI 48104, USA (\email{ramv@umich.edu}) }
+}
 \date{\today}
 
 
@@ -1210,10 +1214,11 @@ Algorithms \ref{alg:density} and \ref{alg:function} satisfy this same equality:
 \end{theorem}
 \begin{proof}
 	As $H_{f,N}(t) = U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger}$ and $\psi_{N}(t) = U_{N} \cdot \psi_{N}(0)$ we observe that
-	\begin{align}
-		\Tr( H_{f,N}(t) (\psi_{N} (t) \otimes \psi_{N}^{\dagger} (t) ) ) &= \Tr(  U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger} U)_{N}(t) (\psi_{N}(0) \otimes \psi_{N}(0)^{\dagger}) U_{N}(t)^{\dagger}) \\
-		&= \Tr( H_{f,N}(0) ( \psi_{N}(0) \otimes \psi_{N}(0)^{\dagger} ) )
-	\end{align}
+	\begin{align*}
+		&\Tr( H_{f,N}(t) (\psi_{N} (t) \otimes \psi_{N}^{\dagger} (t) ) ) \\
+		&\quad = \Tr(  U_{N}(t) H_{f,N}(0) U_{N}(t)^{\dagger} U)_{N}(t) (\psi_{N}(0) \otimes \psi_{N}(0)^{\dagger}) U_{N}(t)^{\dagger}) \\
+		&\quad = \Tr( H_{f,N}(0) ( \psi_{N}(0) \otimes \psi_{N}(0)^{\dagger} ) )
+	\end{align*}
 	Convergence follows from Theorems \ref{thm:function convergence} and \ref{thm:density convergence}.
 \end{proof}
 
@@ -1394,24 +1399,16 @@ This research was made possible by funding from the University of Michigan.
 \bibitem{BittracherKoltaiJunge2015}
 {\sc A.~Bittracher, P.~Koltai, and O.~Junge}, {\em Pseudogenerators of spatial
   transfer operators}, SIAM Journal on Applied Dynamical Systems, 14 (2015),
-  pp.~1478--1517,
-  \href{http://dx.doi.org/10.1137/14099872X}{doi:\nolinkurl{10.1137/14099872X}},
-  \url{http://dx.doi.org/10.1137/14099872X},
-  \href{http://arxiv.org/abs/http://dx.doi.org/10.1137/14099872X}{arXiv:http://dx.doi.org/10.1137/14099872X}.
+  pp.~1478--1517.
 
 \bibitem{VODE}
 {\sc P.~N. Brown, G.~D. Byrne, and A.~C. Hindmarsh}, {\em V{ODE}: a
-  variable-coefficient {ODE} solver}, SIAM J. Sci. Statist. Comput., 10 (1989),
-  pp.~1038--1051,
-  \href{http://dx.doi.org/10.1137/0910062}{doi:\nolinkurl{10.1137/0910062}},
-  \url{http://dx.doi.org/10.1137/0910062}.
+  variable-coefficient {ODE} solver}, SIAM Journal on Scientific and Statistical Computing, 10 (1989),
+  pp.~1038--1051.
 
 \bibitem{BudisicMohrMezic2012}
-{\sc M.~Budi{\v s}i{\'c}, R.~Mohr, and I.~Mezi{\'c}}, {\em Applied koopmanism},
-  Chaos: An Interdisciplinary Journal of Nonlinear Science, 22 (2012), 047510,
-  pp.~--,
-  \href{http://dx.doi.org/http://dx.doi.org/10.1063/1.4772195}{doi:\nolinkurl{http://dx.doi.org/10.1063/1.4772195}},
-  \url{http://scitation.aip.org/content/aip/journal/chaos/22/4/10.1063/1.4772195}.
+{\sc M.~Budi{\v s}i{\'c}, R.~Mohr, and I.~Mezi{\'c}}, {\em Applied Koopmanism},
+  Chaos: An Interdisciplinary Journal of Nonlinear Science, 22 (2012).
 
 \bibitem{Calvo1997}
 {\sc M.~Calvo, A.~Iserles, and A.~Zanna}, {\em Numerical solution of
@@ -1421,8 +1418,6 @@ This research was made possible by funding from the University of Michigan.
 \bibitem{Chavel1984}
 {\sc I.~Chavel}, {\em Eigenvalues in {R}iemannian geometry}, vol.~115 of Pure
   and Applied Mathematics, Academic Press, Inc., Orlando, FL, 1984.
-\newblock Including a chapter by Burton Randol, With an appendix by Jozef
-  Dodziuk.
 
 \bibitem{Conway1990}
 {\sc J.~B. Conway}, {\em A course in functional analysis}, vol.~96 of Graduate
@@ -1430,21 +1425,17 @@ This research was made possible by funding from the University of Michigan.
 
 \bibitem{Crane2013}
 {\sc K.~Crane, U.~Pinkall, and P.~Schr\"{o}der}, {\em Robust fairing via
-  conformal curvature flow}, ACM Trans. Graph., 32 (2013).
+  conformal curvature flow}, ACM Transactions on Graphics, 32 (2013).
 
 \bibitem{Evans2010}
 {\sc L.~C. Evans}, {\em Partial differential equations}, vol.~19 of Graduate
   Studies in Mathematics, American Mathematical Society, Providence, RI,
-  second~ed., 2010,
-  \href{http://dx.doi.org/10.1090/gsm/019}{doi:\nolinkurl{10.1090/gsm/019}},
-  \url{http://dx.doi.org/10.1090/gsm/019}.
+  second~ed., 2010.
 
 \bibitem{FroylandJungeKoltai2013}
 {\sc G.~Froyland, O.~Junge, and P.~Koltai}, {\em Estimating long-term behavior
   of flows without trajectory integration: the infinitesimal generator
-  approach}, SIAM J. Numer. Anal., 51 (2013), pp.~223--247,
-  \href{http://dx.doi.org/10.1137/110819986}{doi:\nolinkurl{10.1137/110819986}},
-  \url{http://dx.doi.org/10.1137/110819986}.
+  approach}, SIAM J. Numer. Anal., 51 (2013), pp.~223--247.
 
 \bibitem{FroylandPadberg2009}
 {\sc G.~Froyland and K.~Padberg}, {\em Almost-invariant sets and invariant
@@ -1459,22 +1450,18 @@ This research was made possible by funding from the University of Michigan.
 \bibitem{Gottlieb2001}
 {\sc D.~Gottlieb and J.~Hesthaven}, {\em Spectral methods for hyperbolic
   problems}, Journal of Computational and Applied Mathematics, 128 (2001),
-  pp.~83 -- 131,
-  \href{http://dx.doi.org/http://dx.doi.org/10.1016/S0377-0427(00)00510-0}{doi:\nolinkurl{http://dx.doi.org/10.1016/S0377-0427(00)00510-0}},
-  \url{http://www.sciencedirect.com/science/article/pii/S0377042700005100}.
-\newblock Numerical Analysis 2000. Vol. VII: Partial Differential Equations.
+  pp.~83 -- 131.
+%\newblock Numerical Analysis 2000. Vol. VII: Partial Differential Equations.
 
 \bibitem{Gottlieb1977numerical}
 {\sc D.~Gottlieb and S.~A. Orszag}, {\em Numerical analysis of spectral
-  methods: theory and applications}, vol.~26, Siam, 1977.
+  methods: theory and applications}, vol.~26, SIAM, 1977.
 
 \bibitem{Bondia2001}
 {\sc J.~M. Gracia-Bond{\'{\i}}a, J.~C. V{\'a}rilly, and H.~Figueroa}, {\em
   Elements of noncommutative geometry}, Birkh\"auser Advanced Texts: Basler
   Lehrb\"ucher. [Birkh\"auser Advanced Texts: Basel Textbooks], Birkh\"auser
-  Boston, Inc., Boston, MA, 2001,
-  \href{http://dx.doi.org/10.1007/978-1-4612-0005-5}{doi:\nolinkurl{10.1007/978-1-4612-0005-5}},
-  \url{http://dx.doi.org/10.1007/978-1-4612-0005-5}.
+  Boston, Inc., Boston, MA, 2001.
 
 \bibitem{GuilleminSternberg1970}
 {\sc V.~Guillemin and S.~Sternberg}, {\em Geometric Asymptotics}, vol.~14 of
@@ -1500,8 +1487,8 @@ This research was made possible by funding from the University of Michigan.
 
 \bibitem{Ismagilov1975}
 {\sc R.~S. Ismagilov}, {\em The unitary representations of the group of
-  diffeomorphisms of the space {$R^{n},$} {$n\geq 2$}}, Mat. Sb. (N.S.),
-  98(104) (1975), pp.~55--71, 157--158.
+  diffeomorphisms of the space {$R^{n},$} {$n\geq 2$}}, Functional Analysis and its applications,
+  9(2) (1975), pp.~154--155.
 
 \bibitem{koltai2011thesis}
 {\sc P.~Koltai}, {\em Efficient approximation methods for the global long-term
@@ -1518,9 +1505,7 @@ This research was made possible by funding from the University of Michigan.
 
 \bibitem{Leveque1992}
 {\sc R.~J. LeVeque}, {\em Numerical methods for conservation laws}, Lectures in
-  Mathematics ETH Z\"urich, Birkh\"auser Verlag, Basel, second~ed., 1992,
-  \href{http://dx.doi.org/10.1007/978-3-0348-8629-1}{doi:\nolinkurl{10.1007/978-3-0348-8629-1}},
-  \url{http://dx.doi.org/10.1007/978-3-0348-8629-1}.
+  Mathematics ETH Z\"urich, Birkh\"auser Verlag, Basel, second~ed., 1992.
 
 \bibitem{MajdaBertozzi2002}
 {\sc A.~J. Majda and A.~L. Bertozzi}, {\em Vorticity and incompressible flow},
@@ -1533,9 +1518,7 @@ This research was made possible by funding from the University of Michigan.
 
 \bibitem{Mezic2005}
 {\sc I.~Mezi{\'c}}, {\em Spectral properties of dynamical systems, model
-  reduction and decompositions}, Nonlinear Dynam., 41 (2005), pp.~309--325,
-  \href{http://dx.doi.org/10.1007/s11071-005-2824-x}{doi:\nolinkurl{10.1007/s11071-005-2824-x}},
-  \url{http://dx.doi.org/10.1007/s11071-005-2824-x}.
+  reduction and decompositions}, Nonlinear Dynamics, 41 (2005), pp.~309--325.
 
 \bibitem{Pasciak1980}
 {\sc J.~E. Pasciak}, {\em Spectral and pseudospectral methods for advection
@@ -1549,7 +1532,6 @@ This research was made possible by funding from the University of Michigan.
 \bibitem{Sakai1996}
 {\sc T.~Sakai}, {\em Riemannian geometry}, vol.~149 of Translations of
   Mathematical Monographs, American Mathematical Society, Providence, RI, 1996.
-\newblock Translated from the 1992 Japanese original by the author.
 
 \bibitem{Schmid2010}
 {\sc P.~J. Schmid}, {\em Dynamic mode decomposition of numerical and
