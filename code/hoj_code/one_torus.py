@@ -104,7 +104,7 @@ for k in range(n_frames):
     #plt.clf()
 
 #plotting final condition
-plot_final_distributions = True
+plot_final_distributions = False
 if plot_final_distributions:
     psi_spatial = ift(psi_arr[-1])
     rho_spatial[0] = 0
@@ -114,21 +114,21 @@ if plot_final_distributions:
     rho_exact[0] = 0
     rho_exact[-1] = 0
 
-    plt.fill( x , rho_exact , facecolor='0.5',edgecolor='k')
+    plt.fill( x , rho_exact , color='0.5')
     #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
     plt.axis([-3.14,3.14,-1,20])
     plt.grid()
     plt.tight_layout()
     plt.show()
 
-    plt.fill( x , rho_spatial ,facecolor='0.5',edgecolor='b')
+    plt.fill( x , rho_spatial , color='0.5' )
     #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
     plt.axis([-3.14,3.14,-1,20])
     plt.grid()
     plt.tight_layout()
     plt.show()
 
-    plt.fill( x , abs(psi_spatial)**2 ,facecolor='0.5',edgecolor='r')
+    plt.fill( x , abs(psi_spatial)**2 , color='0.5')
     #plt.xlabel('x'), plt.ylabel('mass density',fontsize=15)
     plt.axis([-3.14,3.14,-1,20])
     plt.grid()
@@ -136,8 +136,8 @@ if plot_final_distributions:
     plt.show()
 
     #plotting L1 norm
-    plt.plot( t , Louiville_L1, 'b-')
-    plt.plot( t , quantum_L1, 'r-')
+    plt.plot( t , Louiville_L1, 'k-')
+    plt.plot( t , quantum_L1, 'k-.')
     plt.xlabel('time',fontsize=15)
     plt.ylabel('$L^1$ norm')
     plt.grid()
@@ -199,8 +199,8 @@ if make_convergence_plot:
         0.000223111162371991,
         0.00014807650626467])
     res_wavelets = np.array([56,88,152,280,536,1048,2072])
-    plt.loglog( res, error_H,'r' )
-    plt.loglog( res, error_FP, 'b' )
+    plt.loglog( res, error_H,'k-.' )
+    plt.loglog( res, error_FP, 'k-' )
     #plt.loglog( res_wavelets, error_wavelets, 'k' )
     plt.grid(True)
     #plt.title('L^1 error')
@@ -318,14 +318,13 @@ while t < t_final:
 
 #PLOT norms
 if plot_norms:
-    plt.plot( t_array, sup_norm ,'b')
-    plt.plot( t_array, operator_norm,'r' )
+    plt.plot( t_array, sup_norm ,'k-')
+    plt.plot( t_array, operator_norm,'k-.' )
     plt.xlabel('time')
     plt.ylabel('sup/operator norm')
     plt.grid(True)
     plt.tight_layout()
     plt.show()
-    quit()
 
 #PLOT cnv1,cnv2 and cnv1*cnv2
 from scipy.linalg import eig
@@ -370,12 +369,13 @@ plt.grid(True)
 plt.show()
 
 
-#Koopman_am = ift(FS_2).real * ift(FS_1).real
-#Koopman_ma = ift(FS_3).real
-#discrepency = np.abs( Koopman_am - Koopman_ma)
-#plt.plot( x , discrepency , 'b')
-#plt.grid(True)
-#plt.show()
+Koopman_am = ift(FS_2).real * ift(FS_1).real
+Koopman_ma = ift(FS_3).real
+discrepency = np.abs( Koopman_am - Koopman_ma)
+plt.plot( x , discrepency , 'k-')
+plt.axis([-np.pi,np.pi,0.,0.08])
+plt.grid(True)
+plt.show()
 
 #PLOT FS_1,FS_2, and FS_1*FS_1 and FS_3
 plt.plot( x , ift(FS_1).real , 'b')
