@@ -88,7 +88,30 @@ This conservation law motivates the following definition of qualitative accuracy
 	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if it conserves discrete analogs of scalar multiplication/addition, the $L^{1}$-norm and the total mass for densities and the sup-norm for functions.
 \end{definition}
 
-Both \eqref{eq:function pde} and \eqref{eq:density pde} can be numerically solved by a variety of schemes.
+Let us reflect on the virtue of pursuing qualitative accuracy as defined above.
+Naively, conservation laws for \eqref{eq:function pde} and \eqref{eq:density pde} are useful in numerics because they reduce the space of feasible solutions.
+However, more can be said in this case.
+%In particular, the only linear evolution PDEs that preserves the algebra of $C(M)$ are of the form \eqref{eq:function pde}.
+%As a corollary, the only linear evolution PDEs on densities which preserves duality with functions are of the form \eqref{eq:density pde}.
+%Therefore, qualitatively accurate schemes leverage the defining aspects of the \eqref{eq:function pde} and \eqref{eq:density pde} to produce numerical approximations with the same qualitative characteristics.
+
+\begin{proposition}[follows from Corollary 1.7 of ~\cite{Bondia2001}]
+	Let $M$ be a manifold.
+	If $T: C(M) \to C(M)$ is a bounded automorphism preserving products/sums/complex conjugation
+	then there is a unique homeomorphism $\Phi_{T}:M \to M$ such that $T[a](x) = a( \Phi_{T}(x) )$.
+	That is, $\Diff(M) \equiv \operatorname{Aut}( C^{0}(M) )$ as a topological groups.
+	Moreover, a linear evolution equation on $C^{0}(M)$ given by $\partial_{t} f + D[f] = 0$ for some differential operator, $D$,
+	preserves  the algebra of $C(M)$ if and only if $D[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
+	The dual operator is then necessarily of the form $D^{*}[\rho] = \pder{}{x^{i}}( \rho X^{i})$.
+\end{proposition}
+
+This can be formally seen as a corollary to the Gelfand Naimark theorems~\cite{GelfandNaimark1943}.
+Said more plainly, \eqref{eq:function pde} and \eqref{eq:density pde} are the generators of all algebra-preserving automorphisms of $C(M)$.
+Thus, conservation of sums of products is more than just a fundamental property of \eqref{eq:function pde} and \eqref{eq:density pde}.
+\emph{Conservation of sums and products is the defining property of  \eqref{eq:function pde} and \eqref{eq:density pde}.}
+As a result, it is natural for this to be reflected in a discretization.
+
+A good example of a qualitatively accurate numerical scheme is a particle based method.
 For a continuous initial condition, $f_0$, for example, the method of characteristics ~\cite{Evans2010} describes a solution to \eqref{eq:function pde} as a time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
 This suggests using a particle method to solve for $f$ at a discrete set of points~\cite{Leveque1992}.
 In fact, a particle method would inherit many discrete analogs of the conservation laws of \eqref{eq:function pde}, and would as a result be \emph{qualitatively accurate}.
@@ -160,31 +183,6 @@ Given a separable Hilbert space $\mathcal{H}$ we denote the Banach-algebra of bo
 The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ is denoted by $L^{\dagger}$.
 The trace of a trace class operator, $L$, is denoted by $\Tr(L)$.
 The commutator bracket for operators $A,B$ on $\mathcal{H}$ is denoted by $[A,B] := A \cdot B - B \cdot A$ (see~\cite{Conway1990}).
-
-\section{Motivation}
-\label{sec:motivation}
-Before we describe our algorithms, we will take a moment to reflect on the virtue of pursuing qualitative accuracy.
-Naively, conservation laws for \eqref{eq:function pde} and \eqref{eq:density pde} are valuable because they reduce the space of feasible solutions.
-However, more can be said in this case.
-%In particular, the only linear evolution PDEs that preserves the algebra of $C(M)$ are of the form \eqref{eq:function pde}.
-%As a corollary, the only linear evolution PDEs on densities which preserves duality with functions are of the form \eqref{eq:density pde}.
-%Therefore, qualitatively accurate schemes leverage the defining aspects of the \eqref{eq:function pde} and \eqref{eq:density pde} to produce numerical approximations with the same qualitative characteristics.
-
-\begin{proposition}[follows from Corollary 1.7 of ~\cite{Bondia2001}]
-	Let $M$ be a manifold.
-	If $T: C(M) \to C(M)$ is a bounded automorphism preserving products/sums/complex conjugation
-	then there is a unique homeomorphism $\Phi_{T}:M \to M$ such that $T[a](x) = a( \Phi_{T}(x) )$.
-	That is, $\Diff(M) \equiv \operatorname{Aut}( C^{0}(M) )$ as a topological groups.
-	Moreover, a linear evolution equation on $C^{0}(M)$ given by $\partial_{t} f + D[f] = 0$ for some differential operator, $D$,
-	preserves  the algebra of $C(M)$ if and only if $D[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
-	The dual operator is then necessarily of the form $D^{*}[\rho] = \pder{}{x^{i}}( \rho X^{i})$.
-\end{proposition}
-
-This can be formally seen as a corollary to the Gelfand Naimark theorems~\cite{GelfandNaimark1943}.
-Said more plainly, \eqref{eq:function pde} and \eqref{eq:density pde} are the generators of all algebra-preserving automorphisms of $C(M)$.
-Thus, conservation of sums of products is more than just a fundamental property of \eqref{eq:function pde} and \eqref{eq:density pde}.
-\emph{Conservation of sums and products is the defining property of  \eqref{eq:function pde} and \eqref{eq:density pde}.}
-As a result, it is natural for this to be reflected in a discretization.
 
 
 
