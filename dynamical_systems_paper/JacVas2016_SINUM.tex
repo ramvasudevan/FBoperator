@@ -770,9 +770,9 @@ In all that follows, let $\pi_{N}: L^{2}(M) \to V_{N}$ denote the orthogonal pro
 	If $\psi \in H^{\bar{s}}(M)$ and $\bar{s} > s \geq 0$,
 	then
 	\begin{align*}
-		\| \psi - \pi_{N}(\psi) \|_{s,2} <  \frac{d \, C_{\bar{s},s} }{ \bar{s}-s} \| \psi \|_{\bar{s} , 2} \, N^{-2(\bar{s}-s)/n}
+		\| \psi - \pi_{N}(\psi) \|_{s,2} <  \frac{n \, C_{\bar{s},s} }{ \bar{s}-s} \| \psi \|_{\bar{s} , 2} \, N^{-2(\bar{s}-s)/n}
 	\end{align*}
-	for some constant $C_{\bar{s},s}$ and $d = \dim(M)$.
+	for some constant $C_{\bar{s},s}$ and $n = \dim(M)$.
 \end{proposition}
 \begin{proof}
 	We can assume that $e_{1},e_{2},\dots$ is a Fourier basis.
@@ -838,7 +838,7 @@ Now we can prove Theorem \ref{thm:half density convergence}:
 	By the Cauchy-Schwarz inequality
 	\begin{align*}
 		\frac{d\varepsilon_{N}}{dt} &\leq  \frac{1}{2} \| \pounds_{X}[\psi] - \pi_{N}(\pounds_{X}[\psi_{N}]) \|_{s,2} \\
-		&= \| \pounds_{X}[\psi] - \pi_{N}( \pounds_{X}[\psi- (\psi-\psi_{N})]) \|_{s,2}.
+		&= \frac{1}{2} \| \pounds_{X}[\psi] - \pi_{N}( \pounds_{X}[\psi- (\psi-\psi_{N})]) \|_{s,2}.
 	\intertext{By the triangle inequality and the definition of the operator norm:}
 		\frac{d\varepsilon_{N}}{dt}&\leq \| (1-\pi_{N}) \|_{H^{s-1},op} \, \|X \|_{H^{s},op} \, \| \psi \|_{s,2} + \| \pi_{N} \|_{op} \, \|X \|_{H^{s},op} \, \varepsilon_{N}
 	\end{align*}
@@ -883,7 +883,7 @@ Having derived an error bound for Algorithm \ref{alg:half density}, we can deriv
 	\end{align*}
 	If we let $\phi_{N} = \psi - \psi_{N}$ then we can re-write the above as
 	\begin{align*}
-		\| \rho(t) - \rho_{n}(t) \|_{1}  &= \int_{M} | \psi^{2} - (\psi - \phi_{N})^{2} | = \int_{M} | 2 \psi \phi_{N} - \phi_{N}^{2} | \\
+		\| \rho(t) - \rho_{N}(t) \|_{1}  &= \int_{M} | \psi^{2} - (\psi - \phi_{N})^{2} | = \int_{M} | 2 \psi \phi_{N} - \phi_{N}^{2} | \\
 			&\leq 2 \| \psi \|_{2} \| \phi_{N}\|_{2} + \| \phi_{N} \|_{2}^{2} = 2 \| \rho \|_{1}^{1/2} \cdot \| \phi_{N} \|_{2} + \| \phi_{N} \|_{2}^{2}
 	\end{align*}
 	Above we have applied Holder's inequality to $L^{2}(M)$, which still holds upon using the isometry in Proposition \ref{prop:non canonical}.
