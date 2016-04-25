@@ -1,0 +1,87 @@
+\documentclass[12pt]{amsart}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{a4paper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+
+%  POSSIBLY USEFULE PACKAGES
+%\usepackage{graphicx}
+%\usepackage{tensor}
+%\usepackage{todonotes}
+
+%  NEW COMMANDS
+\newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
+\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial
+      #2 \partial #3} } }
+
+%  NEW THEOREM ENVIRONMENTS
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+
+
+%  MATH OPERATORS
+\DeclareMathOperator{\Diff}{Diff}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\supp}{supp}
+
+%  TITLE, AUTHOR, DATE
+\title{ROA as an LP}
+\author{Henry O. Jacobs}
+\date{\today}
+
+
+\begin{document}
+
+\maketitle
+
+We consider the sequence of LP's
+
+\begin{align*}
+	p_{n,k}^* = \sup \int \rho_0 
+\end{align*}
+subject to the constraints
+\begin{align*}
+	&\rho \in V_n \\
+	&\pounds[\rho]= 0 \\
+	&\supp( \rho_T) \subset X_T \\
+	&0 \leq \nabla^j \rho \leq \lambda \text{ for } j=0,\dots,k
+\end{align*}
+where $V_n$ is some $n$-dimensional subspace of $L^2$, probably consisting of hat functions
+ and $\pounds[\rho] = \partial_t \rho + \sum_{j=1}^{n} \partial_j ( f^j \rho) $.  We need to use $L^2$ rather than $L^1$ because we need the domain to be a reflexive Banach space, in order to use the perturbation theorem of Reneger.
+ If we replace $V_n$ with $H^k$ then we get an inner-approximation of the ROA\footnote{convergence to the full ROA?  Probably.  Lets put that aside for the moment.}.
+ 
+Let $\nabla(V_n)$ denote the space induced by applying $\nabla$ to elements of $V_n$ (this might consist of indicator functions).
+Let $\pi_n: L^1 \to \nabla(V_n)$ be some sort of projection such that $\| \pi_n(\rho) - \rho \|_{L^1}$ is bounded by $\mathcal{O}(F(n))$ for $\rho \in H^{k-1}$.
+Then we can consider the perturbed problem
+\begin{align*}
+	\tilde{p}_{n,k}^* = \sup \int \rho_0 
+\end{align*}
+subject to the contraints
+\begin{align*}
+	&\rho \in V_n \\
+	&\pi_n(\pounds[\rho])= 0 \\
+	&\supp( \rho_T) \subset X_T \\
+	&0 \leq \nabla^j \rho \leq \lambda \text{ for } j=0,\dots,k
+\end{align*}
+
+We've perturbed an operator in the contraint by an amount $\mathcal{O}(F(n))$ in the operator norm.
+This perturbs the solution, $\rho$, by an amount $\mathcal{O}(F(n))$ in the operator norm on $C^1( [0,T], H^k(M) )$,
+assuming these LPs are feasible.
+We should choose $V_n$ and $\pi_n$ such that $F(n)$ is something like $\frac{1}{n^p}$ for some $p > 0$.
+
+\appendix
+\section{Sobelev theorems}
+Let $\Omega \subset \mathbb{R}^n$ be bounded and l Lipschitz.
+\begin{thm}
+	The space $W^{k,p}(M)$ is compactly embedded in $W^{\ell,q}(M)$ when $k-\ell > 0$ and $k - \ell  > \frac{n}{p} - \frac{n}{q}$.
+\end{thm}
+
+
+\bibliographystyle{amsalpha}
+\bibliography{hoj.bib}
+\end{document}
