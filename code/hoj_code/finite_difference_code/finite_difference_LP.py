@@ -86,7 +86,7 @@ k = 1
 from numpy.linalg import matrix_power
 grad_k = matrix_power( partial_x , k )
 
-L = partial_t + 0.0*partial_x
+L = partial_t + 0.5*partial_x
 
 #Create restriction operators
 #X_T = [-.5 , 0.5]
@@ -99,9 +99,6 @@ at_time_T[Nt-1] = 1.0
 restrict_XT = np.kron(at_time_T, Ix[ XT_indices,:])
 restrict_XTc = np.kron(at_time_T,  Ix[XTc_indices,:] )
 
-on_left = np.zeros(Nx)
-on_left[0] = 1.0
-boundary_condition = np.kron( np.eye(Nt) , on_left )
 
 #linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, bounds=None, method='simplex', callback=None, options=None)
 def unit_test_restriction():
@@ -117,74 +114,61 @@ def unit_test_restriction():
 #cost function is the integral at time 0
 delta_0 = np.zeros(Nt)
 delta_0[0] = 1.0
+delta_T = np.zeros(Nt)
+delta_T[Nt-1] = 1.0
+int_X = np.ones(Nx)*dx
+Ix = np.eye(Nx)
 
-#  All operators act on (w(x) ,v(t,x))
-
-#c(w,v) = int_X w(x) dx
-c = np.zeros( Nx + Nx*Nt )
-c[0:Nx] = np.ones(Nx)*dx 
+#c(f) = int_X f(0,x) dx
+c = np.kron( delta_0 , int_X )
 
 A_list = []
 b_list = []
 
 #Louiville constraint
-A_list.append( np.hstack( [np.zeros((L.shape[0],Nx)), L ]) )
+A_list.append( L  )
 b_list.append( np.zeros(L.shape[0]) )
 
-# w(x) >= v(0,x) + 1, or v(0,x) - w(x) <= -1
-evaluate_at_0 = np.kron( delta_0 , np.eye(Nx) )
-A_list.append( np.hstack( [-np.eye(Nx) , evaluate_at_0] ) )
-b_list.append( -np.ones(Nx) )
+#f(T,x) >= 1 on X_T at time T
+A_list.append( - np.kron( delta_T , Ix[XT_indices,:] ) )
+b_list.append( - np.ones( len(XT_indices) ) )
 
-#v(T,x) >=0 for x in X_T, or -v(T,x) <= 0 for x in X_T
-A_list.append( np.hstack( [np.zeros( (restrict_XT.shape[0],Nx) ) , -restrict_XT] ) )
-b_list.append( np.zeros( restrict_XT.shape[0] ) )
+#f(T,x) >= 0 on X_T complement at time T
+A_list.append( - np.kron( delta_T , Ix[XTc_indices,:] ) )
+b_list.append( - np.zeros( len(XTc_indices) ) )
 
-print restrict_XT.shape
+#grad_k f <= 1
+A_list.append( grad_k )
+b_list.append( 100*np.ones(Nx*Nt) )
+A_list.append( -grad_k )
+b_list.append( 100*np.ones(Nx*Nt) )
 
-#w(x) >=0 for all x in X or -w(x) <= 0
-A_list.append( np.hstack([ -np.eye(Nx) , np.zeros( (Nx,Nx*Nt) )] ) )
-b_list.append( np.zeros( Nx ) )
 
 A_ub = np.vstack( A_list )
 b_ub = np.hstack( b_list )
 
-#regularity in time constraint
-#A_list.append( partial_t )
-#b_list.append( np.ones( partial_t.shape[0]) )
-#A_list.append( -partial_t )
-#b_list.append( np.ones( partial_t.shape[0]) )
-#
-##regularity in space constraint
-#A_list.append( grad_k )
-#b_list.append( 100*np.ones( grad_k.shape[0]))
-#A_list.append( -grad_k )
-#b_list.append( 100*np.ones( grad_k.shape[0]))
-
+A_list=[]
+b_list=[]
 #boundary condition
-#A_list = []
-#b_list = []
-#A_list.append( np.hstack( [np.zeros( (boundary_condition.shape[0] , Nx)), boundary_condition]))
-#b_list.append( np.zeros( boundary_condition.shape[0]) )
-#A_eq = np.vstack( A_list )
-#b_eq = np.hstack( b_list )
+on_left = np.zeros(Nx)
+on_left[0] = 1.0
+boundary_condition = np.kron( np.eye(Nt) , on_left )
+A_list.append( boundary_condition)
+b_list.append( np.zeros(Nt) )
+
+A_eq = np.vstack( A_list )
+b_eq = np.hstack( b_list )
 
 
-#result = linprog(c,A_ub=A_ub,b_ub=b_ub, A_eq=A_eq,b_eq=b_eq)
-result = linprog(c,A_ub=A_ub,b_ub=b_ub) 
+result = linprog(c,A_ub=A_ub,b_ub=b_ub, A_eq=A_eq,b_eq=b_eq)
+#result = linprog(c,A_ub=A_ub,b_ub=b_ub) 
 
-w = result.x[0:Nx]
-v = result.x[Nx:Nx+Nx*Nt]
-
-plt.plot( result.x)
-plt.show()
+v = result.x
 v.resize((Nt,Nx))
 if(result.success):
     plt.imshow(v,\
             cmap='Greys',\
             interpolation='nearest')
-    plt.show()
-    plt.plot(x,w)
     plt.show()
 print result.message
 print result.status
