@@ -17,12 +17,25 @@ dt = t[1]-t[0]
 
 def derivative_op(x_min,x_max,N):
     #produces a one-dimesional derivative operator
+    #sends N-vectors to (N-1)-vectors
     dx = (x_max - x_min)/float(N-1)
-    out = (np.eye(N)-np.eye(N,k=-1))/dx
-    out[0,1] = 1./dx
-    out[0,0] = -1./dx
-    out[N-1,N-1] = 1./dx
-    out[N-1,N-2] = -1./dx
+    out = (np.eye(N-1,N,k=1)-np.eye(N-1,N))/dx
+    return out
+
+def midpoint_op(N):
+    #produces a one-dimensional mid-point interpolant.
+    #sends N-vectors to (N-1)-vectors
+    return 0.5*(np.eye(N-1,N,k=1) + np.eye(N-1,N))
+
+def higher_order_derivative_op(k, x_min, x_max, N):
+    assert(k>0)
+    out = np.eye(N)
+    for j in range(k):
+        out = derivative_op(x_min,x_max,N).dot(out)
+        dx = (x_min - x_max) / float(N-1)
+        x_min += dx/2
+        x_max -= dx/2
+        N = N-1
     return out
 
 def unit_test_derivative_op(min_x,max_x,N):
@@ -30,7 +43,8 @@ def unit_test_derivative_op(min_x,max_x,N):
     y = np.sin(x)
     ddx = derivative_op(min_x,max_x,N)
     dy_dx = np.dot(ddx,y)
-    plt.plot( x , dy_dx-np.cos(x) , 'r-')
+    x_mid = midpoint_op(N).dot( x )
+    plt.plot( x_mid , dy_dx-np.cos(x_mid) , 'r-')
     plt.title('error')
     plt.show()
     return 0
@@ -40,18 +54,20 @@ def unit_test_derivative_op(min_x,max_x,N):
 
 from scipy.linalg import kron
 
-partial_x = kron( np.eye(Nt), derivative_op( *span_x ) )
-partial_t = kron( derivative_op( *span_t ), np.eye(Nx) )
+partial_x = kron( midpoint_op(Nt), derivative_op( *span_x ) )
+partial_t = kron( derivative_op( *span_t ), midpoint_op(Nx) )
 
 def unit_test_partial_t():
     x = np.linspace( *span_x )
+    x_mid = midpoint_op(Nx).dot(x)
     t = np.linspace( *span_t )
+    t_mid = midpoint_op(Nt).dot(t)
     #consider the function x*(t**2)
     f = np.kron( t**2 , x )
     df_dt_computed = np.dot( partial_t , f )
-    df_dt_computed.resize( Nt,Nx)
-    df_dt = np.kron( 2*t , x )
-    df_dt.resize(Nt,Nx)
+    df_dt_computed.resize( Nt-1,Nx-1)
+    df_dt = np.kron( 2*t_mid , x_mid )
+    df_dt.resize(Nt-1,Nx-1)
     plt.subplot(2,1,1)
     plt.imshow( df_dt )
     plt.ylabel('x')
@@ -64,13 +80,15 @@ def unit_test_partial_t():
 
 def unit_test_partial_x():
     x = np.linspace( *span_x )
+    x_mid = midpoint_op(Nx).dot(x)
     t = np.linspace( *span_t )
+    t_mid = midpoint_op(Nt).dot(t)
     #consider the function exp(t)*sin(x)
     f = np.kron( np.exp(t) , np.sin(2*np.pi*x) )
     df_dx_computed = np.dot( partial_x , f )
-    df_dx_computed.resize( Nt,Nx)
-    df_dx = np.kron( np.exp(t) , 2*np.pi*np.cos(2*np.pi*x) )
-    df_dx.resize(Nt,Nx)
+    df_dx_computed.resize( Nt-1,Nx-1)
+    df_dx = np.kron( np.exp(t_mid) , 2*np.pi*np.cos(2*np.pi*x_mid) )
+    df_dx.resize(Nt-1,Nx-1)
     plt.subplot(2,1,1)
     plt.imshow( df_dx )
     plt.ylabel('x')
@@ -81,10 +99,9 @@ def unit_test_partial_x():
     plt.show()
     return 0
 
+unit_test_partial_x()
+unit_test_partial_t()
 
-k = 1
-from numpy.linalg import matrix_power
-grad_k = matrix_power( partial_x , k )
 
 L = partial_t + 0.5*partial_x
 
@@ -138,10 +155,10 @@ A_list.append( - np.kron( delta_T , Ix[XTc_indices,:] ) )
 b_list.append( - np.zeros( len(XTc_indices) ) )
 
 #grad_k f <= 1
-A_list.append( grad_k )
-b_list.append( 100*np.ones(Nx*Nt) )
-A_list.append( -grad_k )
-b_list.append( 100*np.ones(Nx*Nt) )
+#A_list.append( grad_k )
+#b_list.append( 100*np.ones(Nx*Nt) )
+#A_list.append( -grad_k )
+#b_list.append( 100*np.ones(Nx*Nt) )
 
 
 A_ub = np.vstack( A_list )
