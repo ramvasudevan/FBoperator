@@ -2,8 +2,8 @@ import numpy as np
 from scipy.optimize import linprog
 from matplotlib import pyplot as plt
 
-Nx = 40
-Nt = 40
+Nx = 10
+Nt = 10
 MIN_X = -1.0
 MAX_X = 1.0
 MIN_T = 0.0
@@ -99,10 +99,6 @@ def unit_test_partial_x():
     plt.show()
     return 0
 
-unit_test_partial_x()
-unit_test_partial_t()
-
-
 L = partial_t + 0.5*partial_x
 
 #Create restriction operators
@@ -116,8 +112,6 @@ at_time_T[Nt-1] = 1.0
 restrict_XT = np.kron(at_time_T, Ix[ XT_indices,:])
 restrict_XTc = np.kron(at_time_T,  Ix[XTc_indices,:] )
 
-
-#linprog(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, bounds=None, method='simplex', callback=None, options=None)
 def unit_test_restriction():
     rho = np.random.randn( Nt, Nx)
     rho_T = rho[Nt-1,:]
@@ -134,19 +128,20 @@ delta_0[0] = 1.0
 delta_T = np.zeros(Nt)
 delta_T[Nt-1] = 1.0
 int_X = np.ones(Nx)*dx
+int_X[0] = dx/2
+int_X[-1] = dx/2
 Ix = np.eye(Nx)
-
 #c(f) = int_X f(0,x) dx
 c = np.kron( delta_0 , int_X )
 
 A_list = []
 b_list = []
 
-#Louiville constraint
+#Louiville constraint, L[v] <= 0
 A_list.append( L  )
 b_list.append( np.zeros(L.shape[0]) )
 
-#f(T,x) >= 1 on X_T at time T
+#f(T,x) >= 1 for x in X_T
 A_list.append( - np.kron( delta_T , Ix[XT_indices,:] ) )
 b_list.append( - np.ones( len(XT_indices) ) )
 
@@ -160,32 +155,31 @@ b_list.append( - np.zeros( len(XTc_indices) ) )
 #A_list.append( -grad_k )
 #b_list.append( 100*np.ones(Nx*Nt) )
 
-
 A_ub = np.vstack( A_list )
 b_ub = np.hstack( b_list )
 
 A_list=[]
 b_list=[]
 #boundary condition
-on_left = np.zeros(Nx)
-on_left[0] = 1.0
-boundary_condition = np.kron( np.eye(Nt) , on_left )
-A_list.append( boundary_condition)
-b_list.append( np.zeros(Nt) )
+#on_left = np.zeros(Nx)
+#on_left[0] = 1.0
+#boundary_condition = np.kron( np.eye(Nt-1,Nt,k=-1) , on_left )
+#A_list.append( boundary_condition)
+#b_list.append( np.zeros(Nt-1) )
+#A_eq = np.vstack( A_list )
+#b_eq = np.hstack( b_list )
 
-A_eq = np.vstack( A_list )
-b_eq = np.hstack( b_list )
 
+#result = linprog(c,A_ub=A_ub,b_ub=b_ub, A_eq=A_eq,b_eq=b_eq )
+result = linprog(c,A_ub=A_ub,b_ub=b_ub) 
 
-result = linprog(c,A_ub=A_ub,b_ub=b_ub, A_eq=A_eq,b_eq=b_eq,options={'maxiter':16000} )
-#result = linprog(c,A_ub=A_ub,b_ub=b_ub) 
+print result.message
+print "status = {:d}.".format(result.status)
 
-v = result.x
-v.resize((Nt,Nx))
 if(result.success):
+    v = result.x
+    v.resize((Nt,Nx))
     plt.imshow(v,\
             cmap='Greys',\
             interpolation='nearest')
     plt.show()
-print result.message
-print result.status
