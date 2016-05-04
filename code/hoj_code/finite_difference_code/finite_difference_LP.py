@@ -2,8 +2,8 @@ import numpy as np
 from scipy.optimize import linprog
 from matplotlib import pyplot as plt
 
-Nx = 20
-Nt = 20
+Nx = 40
+Nt = 40
 MIN_X = -1.0
 MAX_X = 1.0
 MIN_T = 0.0
@@ -160,7 +160,7 @@ A_eq = np.vstack( A_list )
 b_eq = np.hstack( b_list )
 
 
-result = linprog(c,A_ub=A_ub,b_ub=b_ub, A_eq=A_eq,b_eq=b_eq)
+result = linprog(c,A_ub=A_ub,b_ub=b_ub, A_eq=A_eq,b_eq=b_eq,options={'maxiter':16000} )
 #result = linprog(c,A_ub=A_ub,b_ub=b_ub) 
 
 v = result.x
