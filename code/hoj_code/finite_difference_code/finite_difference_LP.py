@@ -2,8 +2,8 @@ import numpy as np
 from scipy.optimize import linprog
 from matplotlib import pyplot as plt
 
-Nx = 10
-Nt = 10
+Nx = 12
+Nt = 20
 MIN_X = -1.0
 MAX_X = 1.0
 MIN_T = 0.0
@@ -161,17 +161,18 @@ b_ub = np.hstack( b_list )
 A_list=[]
 b_list=[]
 #boundary condition
-#on_left = np.zeros(Nx)
-#on_left[0] = 1.0
-#boundary_condition = np.kron( np.eye(Nt-1,Nt,k=-1) , on_left )
-#A_list.append( boundary_condition)
-#b_list.append( np.zeros(Nt-1) )
-#A_eq = np.vstack( A_list )
-#b_eq = np.hstack( b_list )
+on_left = np.zeros(Nx)
+on_left[0] = 1.0
+boundary_condition = np.kron( np.eye(Nt-1,Nt,k=1) , on_left )
+A_list.append( boundary_condition)
+b_list.append( np.zeros(Nt-1) )
+A_eq = np.vstack( A_list )
+b_eq = np.hstack( b_list )
 
+print A_eq.shape
 
-#result = linprog(c,A_ub=A_ub,b_ub=b_ub, A_eq=A_eq,b_eq=b_eq )
-result = linprog(c,A_ub=A_ub,b_ub=b_ub) 
+result = linprog(c,A_ub=A_ub,b_ub=b_ub, A_eq=A_eq,b_eq=b_eq )
+#result = linprog(c,A_ub=A_ub,b_ub=b_ub) 
 
 print result.message
 print "status = {:d}.".format(result.status)
