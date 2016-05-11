@@ -18,6 +18,7 @@
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
 \newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial{align}
       #2 \partial #3} } }
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
 
 %  NEW THEOREM ENVIRONMENTS
 \newtheorem{example}[theorem]{Example}
@@ -60,18 +61,17 @@
 \section{Introduction}
 \label{sec:intro}
 
-Let $M$ be a compact $n$-manifold with local coordinates $x^{1}$ through $x^{n}$
-and let $X$ be a smooth vector-field on $M$, whose local components are given by $X^{1}(x)$ through $X^{n}(x)$. 
+Let $M$ be a flat compact $n$-manifold with a piecewise smooth boundary (e.g. $M = \mathbb{T}^{n_1} \times [0,1]^{n_2}$, where $[0,1]$ is the unit interval).
+Let $X$ be a $C^2$ vector-field on $M$, tangential to the boundary. 
 This paper is concerned with the following pair of partial differential equations (PDEs):
 \begin{align}
-	\partial_{t} f + X^{i} \partial_{i} f = 0 \label{eq:function pde} \\
-	\partial_{t} \rho + \partial_{i} (\rho X^{i}) = 0 \label{eq:density pde}
+	\partial_{t} f + \sum_{i=1}^n X^{i} \partial_{i} f = 0 \label{eq:function pde} \\
+	\partial_{t} \rho + \sum_{i=1}^n \partial_{i} (\rho X^{i}) = 0 \label{eq:density pde}
 \end{align}
-for a time dependent function $f$ and a time dependent density $\rho$ on $M$.
-In the above PDEs we are following the Einstein summation convention, and summing over the index ``$i$.''
+for time dependent functions $f(t,\cdot) \in C^0(M)$ and a time dependent density $\rho(t,\cdot) \in L^1(M)$.
 Equation \eqref{eq:function pde}, which is sometimes called the ``transport equation,'' describes how a scalar quantity is transported by the flow of $X$~\cite{Truesdell1991}.
 Equation \eqref{eq:density pde}, which is sometimes called the ``continuum equation'' or ``Liouville's equation'' describes how a density (e.g. a probability distribution) is transported by the flow of $X$.
-Such PDEs arises in a variety of contexts, ranging from  mechanics~\cite{Truesdell1991} to control theory~\cite{HenrionKorda2014}.
+Such PDEs arise in a variety of contexts, ranging from  mechanics~\cite{Truesdell1991} to control theory~\cite{HenrionKorda2014}.
 
 The solution to \eqref{eq:function pde} takes the form $f(x;t) = f( (\Phi_{X}^{t})^{-1}(x) ; 0) \equiv (\Phi_{X}^{t})_{*} f(\cdot;0)$
 where $\Phi_{X}^{t}:M \to M$ is the flow map of $X$ at time $t$ ~\cite[Chapter 18]{Lee2006}.
@@ -157,7 +157,6 @@ Similarly, an alternative notion of half-densities is invoked in~\cite{Crane2013
 \subsection{Main contributions}
 
 In this paper we develop numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
-First, we derive an auxiliary PDE, \eqref{eq:half density pde}, on the space of half-densities in Section \ref{sec:half densities}.
 We relate solutions of \eqref{eq:half density pde} to solutions of \eqref{eq:function pde} and \eqref{eq:density pde} in Theorem \ref{thm:quantize}.
 Second, we pose an auxiliary spectral scheme for \eqref{eq:half density pde} in Section \ref{sec:discretization}.
 Our auxiliary scheme induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
@@ -169,235 +168,11 @@ We observe our algorithm for \eqref{eq:density pde} to be superior to a standard
 
 \subsection{Notation}
 Throughout the paper $M$ denotes a smooth compact $n$-manifold without boundary. 
-The space of continuous complex valued functions is denoted $C(M)$ and has a topology induced by the sup-norm, $\| \cdot \|_{\infty}$ (see~\cite{Taylor1974,Conway1990}).
-Given a Riemannian metric, $g$, the resulting Sobolev spaces on $M$ are denoted $W^{k,p}(M ; g)$ (see~\cite{Hebey1999}).
-The tangent bundle to $M$ is denoted by $TM$, and the $n$th iterated Whitney sum is denoted by $\bigoplus^{n} TM$ (see~\cite{Lee2006}).
-A (complex) density is viewed as a continuous map $\rho: \bigoplus^{n}TM \to \mathbb{C}$ which satisfies certain geometric properties which permit a notion of integration.
-We denote the space of densities by $\Dens(M)$ and the integral of $\rho \in \Dens(M)$ is denoted by $\int \rho$~\cite[Chapter 16]{Lee2006}.
-By completion of $\Dens(M)$ with respect to the norm $\| \rho \|_{1} := \int | \rho|$ we obtain a Banach space, $L^{1}(M)$.
-We should note that $L^1(M)$ is homeomorphic to the space of distributions up to choosing a partition of unity of $M$.
-Given a function $f \in C(M)$, we denote the multiplication of $\rho \in L^{1}(M)$ by $f \rho$, and we denote the dual-pairing by $\langle f , \rho \rangle := \int f \rho$.
-We let $W^{s,1}$ denote the closed subspace of $L^{1}(M)$ whose elements exhibit $s>0$ weak derivative.
-
+The space of continuous functions is denoted $C(M)$ and has a topology induced by the sup-norm, $\| \cdot \|_{\infty}$ (see~\cite{Taylor1974,Conway1990}).
 Given a separable Hilbert space $\mathcal{H}$ we denote the Banach-algebra of bounded operators by $B( \mathcal{H})$ and topological group of unitary operators by $U( \mathcal{H})$.
 The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ is denoted by $L^{\dagger}$.
 The trace of a trace class operator, $L$, is denoted by $\Tr(L)$.
 The commutator bracket for operators $A,B$ on $\mathcal{H}$ is denoted by $[A,B] := A \cdot B - B \cdot A$ (see~\cite{Conway1990}).
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Relevant Function Spaces}
-\label{sec:half densities}
-%The goal of this paper is to construct a spectral advection scheme which exhibits a large number of invariants.
-%Typically this Hilbert space is $L^{2}(M ; \mu)$ where the $L^{2}$-inner product is taken with respect to some non-canonical density or volume form $\mu$ on $M$.
-%We do not have this luxury.
-%The properties of advection that we desire to have are strictly properties of $M$ alone, i.e. they are canonical.
-%The choice of $\mu$ is non-canonical and threatens to discard the conservation laws we aim to keep.
-
-At the core of any Galerkin scheme, including spectral Galerkin schemes, is the use of a Hilbert space upon which everything can be approximated via least squares projections.
-The methods we present are no exception.
-In this section, we define a canonical $L^{2}$-space associated to a compact manifold $M$, denoted by $L^{2}(M)$ for later use in a spectral discretization.
-For the reader familiar with the space $L^{2}_{\mu}(M)$, with respect to some measure $\mu$, we should not that $L^{2}(M)$ is isomorphic to $L^{2}_{\mu}(M)$ as a topological vector-space.
-However, these spaces are distinct from the standpoint of transformation theory.
-This fact permeates the entire article, and so we suggest readers who are familiar with $L^{2}_{\mu}(M)$ read this section none the less.
-We also define the Sobolev spaces $H^{s}(M ; g)$ which arise from equipping $M$ with a Riemannian metric, $g$.
-
-For a smooth compact $n$-manifold, $M$, let $\Dens(M)$ denote the space of smooth densities, which we view as a subspace of the anti-symmetric multilinear functions on $\bigoplus^n TM$.
-\begin{definition}\label{def:half density}
-	A half-density is a smooth complex-valued function $\psi : \bigoplus^n TM \to \mathbb{C}$
-	such that $| \psi |^{2} \in \Dens(M)$.
-	The space of half densities is denoted by $\sqrt{\Dens(M)}$.
-\end{definition}
-
-The following proposition immediately follows from this definition.
-\begin{proposition}[see Appendix A ~\cite{BatesWeinstein1997}] \label{prop:half densities}
-	If $\psi_{1}, \psi_{2} \in \sqrt{\Dens(M)}$ then the scalar product $\psi_{1} \cdot \psi_{2} : \bigoplus^{n} TM \to \mathbb{C}$ is a complex valued density. 
-\end{proposition}
-
-This definition is an equivalent reformulation of the half densities defined in the context of geometric quantization (see~\cite[Chapter 4]{GuilleminSternberg1970} or ~\cite[Appendix A]{BatesWeinstein1997}).
-In physical terms, half densities are a geometric manifestation of the wave functions used in quantum mechanics.
-It is unfortunate that physicists call these ``wave-functions'' given that they are \emph{not} functions.
-To test this assertion, observe how elements of $\sqrt{\Dens(M)}$ transform.
-Under a $C^{1}$-automorphism, $\Phi: M \to M$, a half density $\psi \in \sqrt{ \Dens(M) }$ transform to a new half density $\Phi_{*}\psi$ according to the formula
-\begin{align}
-	(\Phi_{*}\psi)_{x}(v_{1},\dots,v_{n}) := \psi_{ \Phi^{-1}(x) } ( D\Phi^{-1}(x) \cdot v_{1} , \dots , D\Phi^{-1}(x) \cdot v_{n} ) \label{eq:transformation law}
-\end{align}
-for any $x \in M$ and any $v_{1}, \dots , v_{n} \in T_{x}M$.
-This transformation law is inferred by substituting the transformation law for a density into the definition of a half-density.
-In other words, this is the unique transformation law such that squaring both sides yields the transformation law for a density.
-Notably, this is in contrast to the transformation law for functions, which sends $f \in C^{1}(M)$ to the function $f \circ \Phi^{-1}$.
-
-In local coordinates, $x^{1},\dots,x^{n}$, on an open set $U \subset M$, it is common to write a (complex) density $\rho: \bigoplus^{n}TM \to \mathbb{C}$ as function ``$\rho(x)$'' for $x \in U \subset M$.
-This convention is permissible as long as one realizes that what is really meant is that $\rho(x) = f_{\rho}(x) | dx^{1} \wedge \cdots \wedge dx^{n} |$ for some complex valued function $f_{\rho}:U \to \mathbb{C}$.
-Therefore, when one writes  ``$\rho(x)$ transforms like $\rho( \Phi^{-1}(x)) \left| \det( D \Phi^{-1}(x) ) \right|$'', what they are really describing is how $f_{\rho}$ is transformed.
-The same notational convention can be used to represent half-densities locally as ``functions'' with a different transformation law.
-In this case the transformation law for half-densities is locally given by:
-\begin{align}
-	\tilde{\psi}(x) = \left| \det \left( D\Phi^{-1} (x) \right) \right|^{1/2} \psi \left( \Phi^{-1}(x) \right). \label{eq:local transformation law}
-\end{align}
-
-As $|\psi|^{2} \in \Dens(M)$ for any $\psi \in \sqrt{\Dens(M)}$, $|\psi|^{2}$ can be integrated and we observe that half densities are naturally equipped with the norm: $$\| \psi \|_2 :=  \left( \int_M |\psi|^2 \right)^{1/2}$$ which we call the \emph{$2$-norm}.
-\begin{definition}
-	$L^{2}(M)$ is defined as the completion of $\sqrt{ \Dens(M)}$ with respect to the $2$-norm.
-	The space $L^{2}(M)$ is equipped with a complex inner-product given by
-	\begin{align*}
-		\langle \psi \mid \phi \rangle = \int_{M} \bar \psi \phi
-	\end{align*}
-	through polar decomposition, and so $L^{2}(M)$ is a Hilbert space.
-\end{definition}
-
-Lastly, given the transformation law for half-densities, \eqref{eq:transformation law} and \eqref{eq:local transformation law}, one can describe how half-densities are transported by the flow, $\Phi_{X}^{t}$, of the vector field, $X$. 
-The Lie derivative of a half-density with respect to $X$ is defined as $\pounds_{X}[\psi] = - \left. \frac{d}{dt} \right|_{t=0} (\Phi_{X}^{t})_{*} \psi$ and is given in local coordinates by:
-\begin{align}
-	\pounds_{X}[\psi] = \frac{1}{2} X^{i} \pder{\psi}{x^{i}} + \frac{1}{2} \pder{}{x^{i}} \left( \psi X^{i} \right). \label{eq:representation}
-\end{align}
-%This is a densely defined anti-Hermitian operator on $L^{2}(M)$.
-The advection equation can then be written as:
-\begin{align}
-	\partial_{t} \psi + \pounds_{X}[\psi] = 0. \label{eq:half density pde}
-\end{align}
-Despite the Lie derivative being unbounded, a unique solution is defined for all time:
-\begin{proposition}[Stone's Theorem ~\cite{Conway1990}] \label{prop:stone}
-	The unique solution to \eqref{eq:half density pde} is of the form $\psi(t) = U(t) \cdot \psi(0)$ where $U(t)$ is the one-parameter semigroup generated by the operator $\pounds_{X}$.
-	Explicitly, $U(t)$ is the operator ``$(\Phi_{X}^{t})_{*}$'' in the sense that the solution to \eqref{eq:half density pde} is $\psi(t) = (\Phi_{X}^{t})_{*} \psi(0)$ where $\Phi_{X}^{t}$ is the time flow map of $X$ at time $t$.
-\end{proposition}
-\begin{proof}
-	By inspection we can observe that
-	\begin{align*}
-		 (\Phi_{X}^{t})_{*} ( \bar{\psi}_{1} \psi_{2}) ) = \overline{ (\Phi_{X}^{t})_{*} \psi_{1} } (\Phi_{X}^{t})_{*} \psi_{2}.
-	\end{align*}
-	By Proposition \ref{prop:half densities}, $\bar{\psi}_{1} \psi_{2}$ is a density, and so we can integrate it.
-	The integral of a density is invariant under $C^{1}$ transformations ~\cite[Proposition 16.42]{Lee2006} and we find
-	\begin{align*}
-		0 = \left. \frac{d}{dt} \right|_{t=0} \int_{M} (\Phi_{X}^{t})_{*} (\bar{\psi}_{1} \psi_{2}) = \left. \frac{d}{dt} \right|_{t=0} \int_{M} \left( \pounds_{X}[\bar{\psi}_{1} ] \psi_{2})  + \bar{\psi}_{1} \pounds_{X}[\psi_{2}] \right) \\
-		= \langle \pounds_{X}[\psi_{1}]  \mid \psi_{2} \rangle + \langle \psi_{1} \mid \pounds_{X}[\psi_{2}] \rangle.
-	\end{align*}
-	Therefore, the operator, $\pounds_{X}$ is anti-Hermitian.
-	We can see that $\pounds_{X}$ is densely defined, as it is well defined on $\sqrt{\Dens(M)}$, which is dense in $L^{2}(M)$ by construction.
-	Stone's theorem implies that there is a one-to-one correspondence between densely defined anti-Hermitian operators on $L^{2}(M)$
-	and one-parameter groups $U(t)$ consisting of unitary operators on $L^{2}(M)$.
-	Observe that $\psi(t) = (\Phi_{X}^{t})_{*} \psi(0)$ solve \eqref{eq:half density pde} directly, by taking its time-derivative.
-	Thus $U(t) =  (\Phi_{X}^{t})_{*} $ is the unique one-parameter subgroup we are looking for.
-\end{proof}
-
-\subsection{The relationship with classical $L^{2}$ spaces}
-\label{sec:classical_Lebesgue}
-To understand the relationship to classical Lebesgue spaces, recall that for any manifold $M$ (possibly non-orientable) one can assert the existence of a smooth non-negative reference density $\mu$~\cite[Chapter 16]{Lee2006}.
-Upon choosing such a $\mu \in \Dens(M)$, the $2$-norm of a continuous complex function $f:M \to \mathbb{C}$ with respect to $\mu$ is
-\begin{align*}
-	\| f \|_{\mu,2} =  \left( \int_M |f|^2 \mu \right)^{1/2}.
-\end{align*}
-and $L^2(M ; \mu)$ is the completion of the space of continuous functions with respect to this norm.
-The relationship between $L^{2}(M)$ and $L^{2}(M;\mu)$ is that they are equivalent as topological vector-spaces:
-\begin{proposition} \label{prop:non canonical}
-	Choose a non-vanishing positive density $\mu : \bigoplus^{n}TM \to \mathbb{R}^{+}$.
-	Let $\sqrt{\mu}$ denote the square root of $\mu$.
-	Said more explicitly, if $\sqrt{\cdot}: \mathbb{R}^{+} \to \mathbb{R}^{+}$ is the standard square-root function.
-	Then $\sqrt{\mu} := \sqrt{\cdot} \circ \mu : \bigoplus^{n} TM \to \mathbb{R}^{+} \subset \mathbb{C}$ is the half-density which we are considering.
-	
-	For any $\psi \in L^2(M)$ there exists a unique $f \in L^2(M ; \mu)$ such that $\psi = f \cdot  \sqrt{\mu}$.
-	This yields an isometry between $L^2(M)$ and $L^2(M ; \mu)$.
-\end{proposition}
-\begin{proof}
-	It suffices to prove that $\sqrt{\Dens(M)}$ is isomorphic to the space of square integrable (w.r.t. $\mu$) continuous functions, because
-	the later space is dense in $L^{2}(M;\mu)$.
-	Let $\psi \in \sqrt{\Dens(M)}$.  Then $\psi^2$ is a continuous density and there exists a unique function $g \in C^{0}(M)$ such that $\psi^{2} = g \cdot \mu$.
-	By taking the square root of both sides we can obtain a unique function $f \in C^{0}$ such that $\psi = f\, \sqrt{\mu}$.
-	The function $f$ is unique with respect to $\psi$ and
-	the map $\psi \in \sqrt{\Dens(M)} \mapsto f \in C^0(M ; \mathbb{C} )$ sends $\| \cdot \|_{2}$ to $\| \cdot \|_{\mu,2}$ by construction.
-	Thus the map is continuous.
-	The inverse of the map is given by $f \in C^{0}(M;\mathbb{C}) \mapsto f \, \sqrt{\mu} \in \sqrt{\Dens(M)}$.
-\end{proof}
-
-If the spaces are nearly identical the reader may wonder why $L^2(M)$ matters.
-In fact, the pair are not identical in all aspects.
-As described earlier, under change of coordinates or advection, the elements of each space transform differently.
-More importantly, $L^{2}(M)$ is \emph{not} canonically contained within the space of square integrable functions, and functions and densities are \emph{not} contained in $L^{2}(M)$.
-Such an embedding may only be obtained by choosing a non-canonical ``reference density'', as in Proposition \ref{prop:non canonical}.
-This has numerous consequences in terms of what we can and can not do.
-For example, an operator with domain on $L^{2}(M)$ can not generally be applied to objects in $L^{1}(M)$ in the same way.
-These limitations can be helpful, since they permit vector fields to act differently on objects in $L^{1}(M)$ than on objects in $L^{2}(M)$.
-These prohibitions serve as safety mechanisms, analogous to the use of overloaded functions in object oriented programs, which due to their argument type distinctions, effectively banish certain bugs from arising.
-
-%At this point the reader might ask ``If both space are the same, then why don't we use the one that is more familiar?  i.e. the space $L^{2}(M;\mu)$''.
-%The answer is that these space are really not the same in all aspects.
-%One difference that we've already discussed is that they transform differently.
-%Elements of $L^{2}(M)$ transform according to \eqref{eq:transformation law} while elements of $L^{2}(M;\mu)$ transform like functions.
-%Additionally, a more useful difference for us is that $L^{2}(M)$ is \emph{not} contained within $L^{1}(M)$ and $L^{\infty}(M)$ is not contained in $L^{2}(M)$
-%because each of these spaces consists of objects with different transformation properties.
-%This separation between $L^{2}(M)$ and $L^{1}(M)$ \emph{forces} us to think of these objects as distinct.
-%For example an operator on $L^{2}(M)$ can not generally be applied to $L^{1}(M)$ in the same way.
-%We will find such limitations to be helpful, because they will allows us to have vector-fields act on $L^{1}(M)$ differently then they act on $L^{2}(M)$
-%without contradiction.
-%Such safety mechanisms are analogous to the use of private/public functions in object oriented programming, which effectively banish certain bugs from arising.
-
-\subsection{Sobolev spaces}
-\label{sec:Sobolev spaces}
-
-%\ram{Do we need the first portion of this section, where a canonical sobolev space is defined since its not used anywhere else?}
-%For each $X \in \mathfrak{X}(M)$ \ram{this object is undefined} the operator $\pounds_{X}$ on $L^{2}(M)$ of \eqref{eq:representation} is unbounded \ram{why?}.
-%The domain of $\pounds_{X}$ is:
-%\begin{align}
-%	\operatorname{dom}( \pounds_{X} ) := \{ \psi \in L^{2}(M) \mid  \| \pounds_{X}[\psi] \|_{2} < \infty \}.
-%\end{align}
-%\ram{is the norm in the previous equation supposed to be $\|_{L^2}$ (which is undefined) or just $\|_2$?} One can show that $\operatorname{dom}( \pounds_{X} )$ is a closed subspace of $L^{2}(M)$ and define
-%a \emph{canonical} Sobolev space:
-%\begin{align}
-%	H^{1}(M) := \bigcap_{X \in \mathfrak{X}(M)} \operatorname{dom}( \pounds_{X} ).
-%\end{align}
-%By composing multiple Lie derivative operators, one can construct $H^{k}(M)$ . \ram{you may want to mention why this connects nicely to the conventional notion of sobolev norm}.
-%As $\pounds_{X}$ is anti-Hermitian we can invoke the spectral theorem of functional analysis
-%and consider the operator
-%\begin{align}
-%	(\pounds_{X})^{s} [ \psi] = \sum_{\lambda \in \sigma( \pounds_{X}) } \lambda^{s} \langle e_{\lambda} \mid \psi \rangle e_{\lambda}
-%\end{align}
-%where $\{ e_{\lambda} \mid \lambda \in \sigma( \pounds_{X}) \}$ denotes the set of eigenvectors of $\pounds_{X}$. 
-%This fractional power of $\pounds_{X}$ allows us to consider Sobolev spaces of fractional orders as well.
-
-While the ``canonicalism" of $L^{2}(M)$ is useful for this discussion, the \emph{canonical} Sobolev spaces are not.
-Since the algorithms proposed in this paper are proven to converge in a Sobolev space, we must still choose a norm and we rely upon traditional metric dependent definitions.  
-To begin, equip $M$ with a Riemannian metric $g:TM \oplus TM \to \mathbb{R}$.
-The metric, $g$, induces a positive density $\mu_g$, known as the \emph{metric density} and an inner-product on $C^\infty(M)$
-given by:
-\begin{align*}
-	\langle f_1 , f_1 \rangle_{g} = \int \overline{f_1} \cdot f_2 \mu_g.
-\end{align*}
-%Then $L^{2}(M;\mu_{g})$ is the completion of the inner-product space $( C^{\infty}(M) , \langle \cdot , \cdot \rangle_{g})$ under 
-%the inner-product norm.
-The metric also induces an elliptic operator, known as the Laplace-Beltrami operator $\Delta: C^{\infty}(M) \to C^{\infty}(M)$, which is negative-semidefinite (i.e. $\int f \, \Delta f \, \mu_{g} \leq 0$ for all $f \in C^{2}(M)$).
-If $M$ is compact, then $L^2(M ; \mu_g) \cong L^2(M)$ is a separable Hilbert space and the Helmholtz operator, $1 - \Delta$, is a positive definite operator with a discrete spectrum~\cite{Taylor1974}.
-For any $s \geq 0$ we may define the \emph{Sobolev norm}:
-\begin{align*}
-	\| \psi \|_{s,2} =  \left( \langle f , (1-\Delta)^s \cdot  f \rangle_{g} \right)^{1/2}
-\end{align*}
-where $f$ and $\psi$ are related by $\psi = f \sqrt{\mu_{g}}$.
-Then  we define $H^s(M ;g)$ as the completion of $\sqrt{\Dens(M)}$ with respect to the $\| \cdot \|_{s,2}$ norm.  
-Such a definition is isomorphic, in the category of topological vector-spaces, to the one provided in~\cite{Hebey1999}.
-In order to prove this claim, observe that it holds for bounded sets in $\mathbb{R}^{n}$, and then apply a partition of unity argument to obtain the desired equivalence on manifolds.
-In particular, note that $H^0(M;g) = L^2(M)$.  It is notable that $H^{s}(M;g)$ as a topological vector-space is actually not metric dependent ~\cite[Proposition 2.2]{Hebey1999}.
-However, the norm $\| \cdot \|_{s,2}$ is metric dependent.
-
-%The following proposition will be of use later when we need to prove a notion of convergence via sequences of finite rank operators.
-\begin{proposition}[Sobelev Embedding Theorem ~\cite{Taylor1974}] \label{prop:compact_embedding}
-	Let $(M,g)$ be a compact Riemmanian manifold.  If $s > t \geq 0$ then $H^s(M;g)$ is compactly embedded within $H^t(M,g)$.
-\end{proposition}
-\begin{proof}
-	%As $M$ is compact we know that the spectrum of $\Delta$ is discrete and $L^{2}(M)$ is separable.
-	Let $e_0, e_1,\dots$ be the Hilbert basis for $L^2(M;\mu_g)$ which diagonalizes $\Delta$
-	in the sense that $\Delta e_i = \lambda_i e_i$ for a sequence $0 = \lambda_0 \leq \lambda_1 \leq \lambda_2 \leq \cdots$.
-	The operator $(1+\Delta)^s$ is given by
-	\begin{align*}
-		(1+\Delta)^s \cdot f =  \sum_{i} e_i (1+\lambda_i)^s \langle e_i , f \rangle_g,
-	\end{align*}
-	and so $\{ (1+ \lambda_i)^{-s} e_i \}_{i=1}^{\infty}$ is a Hilbert basis for $H^s(M;g)$.
-	
-	Let us call $e_i^{(s)} = (1+ \lambda_i)^{-s} e_i$.
-	The embedding of $H^s(M;g)$ into $H^t(M,g)$
-	is then given in terms of the respective basis elements by $e_i^{(s)} \mapsto (1+\lambda_i)^{-(s-t)}e_i^{(t)}$.
-	As $s > t$ and $\lambda_i \to +\infty$, we see that 
-	this embedding is a compact operator ~\cite[Proposition 4.6]{Conway1990}.
-\end{proof}
 
 %In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if there exists $f \in H^s(M,g)$ such that $\psi = f \sqrt{\mu_g}$.
 
@@ -412,13 +187,27 @@ For each $f \in C(M)$, there is a unique bounded Hermitian operator, $H_{f} : L^
 That is to say $(H_{f} \cdot \psi) (x) = f(x) \psi(x)$ for any $\psi \in L^{2}(M)$.
 By inspection one can observe that the map ``$f \mapsto H_{f}$'' is injective and preserves the algebra of $C(M)$ because $H_{f\cdot g + h} = H_{f} \cdot H_{g} + H_{h}$ and $\| H_{f} \|_{op} = \| f \|_{\infty}$.
 
-Similarly, (and in the opposite direction) for any trace class operator $A$ there is a unique distribution $\rho_{A} \in C(M)'$ such that: 
+Similarly, (and in the opposite direction) for any trace class operator $A$ there is a unique $\rho_{A} \in L^1(M)$ such that: 
 \begin{align*}
-	 \int f \, \rho_{A} = \Tr ( H_{f}^{\dagger} \cdot A )
+	 \int_M f \, \rho_{A} d\bf{x} = \Tr ( H_{f}^{\dagger} \cdot A )
 \end{align*}
 for any $f \in C(M)$.
 More generally, for any $A$ in the dual-space $B( L^{2}(M) )^{*}$, there is a $\rho_{A} \in C(M)'$ such that $\langle f , \rho_{A} \rangle = \langle H_{f} , A \rangle$.
-The map ``$A \mapsto \rho_{A}$'' is merely the adjoint of the injection ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is surjective.
+The map, ``$A \mapsto \rho_{A}$'', is merely the adjoint of ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is surjective.
+
+Finally, for any vector-field $X$ which is tangential to the boundary of $M$ let us define the differential operator
+\begin{align}
+	\pounds_X [\psi] = \frac{1}{2} \left( \sum_{i=1}^{n} X^i \partial_i \psi + \partial_i (\psi X^i) \right) \label{eq:representation}
+\end{align}
+for any $\psi \in H^1(M) \subset L^2(M)$.
+In fact, $\pounds_X$, is an anti-symmetric with respect to the  $L^2$-inner product.
+By Stone's theorem, $\pounds_X$ is the infinitesimal generator of a one-parameter semi-group on the topological Lie group $\operatorname{O}(L^2(M))$.
+We can relate this transformation to the flow of the vector field $\Phi_X^t:M \to M$ in a precise sense.
+In particular
+\begin{align*}
+	( e^{\pounds_X} \cdot \psi )(x) =  \det( D [(\Phi_X^t)^{-1}](x) )\psi( ( \Phi_X^t)^{-1} (x) ).
+\end{align*}
+
 %By construction, these maps preserve the duality between functions and distributions.
 
 %Finally, for any vector field $X$ there is a unique (unbounded) anti-symmetric operator $\pounds_{X}$ on $L^{2}(M)$
@@ -464,14 +253,18 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 		\frac{dA}{dt} + [ A , \pounds_{X} ] = 0, \label{eq:quantum density ode}
 	\end{align}
 	then $\rho_{A}$ satisfies \eqref{eq:density pde}.
-	Finally, if $\psi$ satisfies \eqref{eq:half density pde}, then $\rho_{A} = \psi^{2}$ satisfies \eqref{eq:density pde} and $\psi \otimes \psi^{\dagger}$ satisfies \eqref{eq:quantum density ode}.
+	Finally, if $\psi$ satisfies
+	\begin{align}
+		\partial_t \psi + \pounds_X[\psi] = 0 \label{eq:half density pde}
+	\end{align}
+	then $\rho_{A} = \psi^{2}$ satisfies \eqref{eq:density pde} and $\psi \otimes \psi^{\dagger}$ satisfies \eqref{eq:quantum density ode}.
 \end{theorem}
 
 \begin{proof}
 	Let $f$ satisfy \eqref{eq:function pde}.
-	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ H_{f} , \pounds_{X}] \cdot \psi$ is given in coordinates by:
+	For an arbitrary $\psi \in L^{2}(M)$ we observe that $[ H_{f} , \pounds_{X}] \cdot \psi$ is given by:
 	\begin{align*}
-		\left( [ H_{f}, \pounds_{X} ] \cdot \psi \right)(x) &= f(x) \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right) (x) \\
+		\left( [ H_{f}, \pounds_{X} ] \cdot \psi \right)(x) &= f(x) \sum_{j=1}^{n} \left( \frac{1}{2} X^{j} \pder{\psi}{x^{j}} + \frac{1}{2} \pder{}{x^{j}} ( \psi \, X^{j} ) \right) (x) \\
 			&\quad- \frac{1}{2} X^{j} \left. \pder{}{x^{j}} \right|_{x}( f \psi)  + \frac{1}{2} \left. \pder{}{x^{j}} \right|_{x}(f \psi \, X^{j} )
 	\end{align*}
 	where we have used \eqref{eq:representation}.  
@@ -481,24 +274,18 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 	\end{align*}
 	As $\psi$ is arbitrary, we have shown that $H_{f}$ satisfies \eqref{eq:quantum observable ode}.
 	Each line of reasoning is reversible, and so we have proven the converse as well.
+	This proves the first claim.
 	
-	In order to handle densities note that $\langle f , \rho \rangle$ is constant in time when $f$ and $\rho$ satisfy \eqref{eq:function pde} and \eqref{eq:density pde}, respectively.
-	By the definition of $\rho_{A}$, $\Tr( H_{f}^{\dagger} \cdot A) = \langle f , \rho_{A} \rangle$.
-	Therefore:
+	For the second claim let $f$ be an arbitrary time-dependent continuous function.
+	Then we find
 	\begin{align*}
-		0 = \frac{d}{dt} \left( \Tr( H_{f}^{\dagger} \cdot A ) \right) = \Tr \left( \frac{d H_{f}^{\dagger}}{dt} \cdot A + H_{f}^{\dagger} \cdot \frac{d A}{dt} \right).
+		\int ( \partial_t \rho_A ) \, f dx = \Tr( H_f^\dagger \partial_t A ) = \Tr( H_f^\dagger \cdot [A , \pounds_X] ) \\
+		= \Tr( [\pounds_X,H_f]^\dagger A) \\
+		\intertext{By the previous claim the above expression is equivalent to}
+		= \int_M \left( \sum_{i=1}^{n} X^i \partial_i f \right) \rho_A dx \\
+		= - \int_M f \, \left(\sum_{i=1}^{n} \partial_i (\rho_A X^i ) \right) dx
 	\end{align*}
-	As was just shown, $\frac{dH_{f}}{dt} =  - [H_{f} , \pounds_{X} ]$ so:
-	\begin{align*}
-		0 = \Tr \left( - [H_{f} , \pounds_{X} ]^{\dagger} \cdot A + H_{f}^{\dagger} \cdot \frac{d A}{dt} \right) 
-		= \Tr( - \pounds_{X}^{\dagger} H_{f}^{\dagger} \cdot A + H_{f}^{\dagger} \pounds_{X}^{\dagger} \cdot A + H_{f}^{\dagger}  \cdot \frac{dA}{dt} ).
-	\end{align*}
-	Upon noting that $\pounds_{X}^{\dagger} = - \pounds_{X}$ and that $\Tr( a b c) = \Tr( bc a)$:
-	\begin{align*}
-		0 = \Tr \left( H_{f}^{\dagger}( [\hat{\rho} , \pounds_{X} ] + \frac{d \hat{\rho}}{dt} ) \right).
-	\end{align*}
-	As $H_f$ was chosen arbitrarily, the desired result follows.
-	Again, this line of reasoning is reversible.
+	where the boundary terms vanish because $X$ is tangential to $M$.
 %	
 %	Thirdly, if $Y$ satisfies \eqref{eq:vector field pde}, then we observe 
 %	\begin{align}
@@ -509,7 +296,7 @@ We can now convert the evolution PDEs \eqref{eq:function pde} and \eqref{eq:dens
 	Lastly, if $\psi$ satisfies \eqref{eq:half density pde} and $\rho = \psi^{2}$ then we see
 	\begin{align*}
 		\partial_{t} \rho &= \partial_{t} ( \psi^{2}) = 2 (\partial_{t} \psi ) \, \psi \\
-		&= 2 \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \psi 
+		&= - 2 \left( - \frac{1}{2} \partial_{i} (\psi X^{i}) - \frac{1}{2} X^{i} \partial_{i} \psi \right) \psi 
 		= \left( - X^{i} \partial_{i} \psi - \psi \partial_{i} X^{i}  \right) \psi \\
 		&= - 2 \psi (\partial_{i} \psi) X^{i} - (\partial_{i}X^{i}) \psi^{2}
 		= - \partial_{i}(\rho) X^{i} - (\partial_{i}X^{i}) \rho = - \partial_{i} ( \rho X^{i}).
@@ -616,7 +403,8 @@ The benefit of using \eqref{eq:quantum observable ode} and \eqref{eq:quantum den
 This section presents the numerical algorithms for solving \eqref{eq:function pde} and \eqref{eq:density pde}.
 The basic ingredient for all the algorithms in this section are a Hilbert basis and an ODE solver.
 Denote a Hilbert basis by $\{ e_{0}, e_{1},\dots \}$ for $L^{2}(M)$.
-For example, for a Riemannian metric, $g$, if $\{ f_{0}, f_{1},\dots \}$ denote eigen-functions of the Laplace operator, then $\{ E_{k} = f_{k} \sqrt{\mu_{g}} \mid k \in \mathbb{N} \}$ forms a smooth Hilbert basis for $L^{2}(M)$ where $\mu_{g}$ denotes the Riemannian density.  We call $\{ E_{k} \}$ the Fourier basis.
+For example, we may use the eigen-functions of the Laplace operator.
+This is known as the Fourier basis.
 To ensure convergence, we assume:
 \begin{ass} \label{ass:basis}
 	Our basis $\{ e_{k} \}$ is such that there exists a metric $g$ for which the unitary transformation which sends the basis $\{ e_{k} \}$ to the Fourier basis is bounded with respect to the $\| \cdot \|_{s,2}$-norm for some $s > 1$.
@@ -657,7 +445,7 @@ In Section \ref{sec:analysis} we prove that $\psi_{N}(t_{k})$ converges to the s
 We see that $\psi_{N}(t)$ evolves by unitary transformations, just as the exact solution to \eqref{eq:half density pde} does.
 This correspondence is key in providing the qualitative accuracy of algorithms that follow, so we formally state it here.
 \begin{proposition} \label{prop:unitary}
-	The output of Algorithm \ref{alg:half density} is given by $U_{N}(t_{k}) \cdot \psi_{N}(0)$ when $\psi(0) \in L^2(M)$ is the input to Algorithm \ref{alg:half density} where $\psi_{N}(0) = \pi_{N}( \psi(0) )$ and $U_{N}(t)$ is the unitary operator as in Proposition \ref{prop:stone} generated by $X_{N}$.
+	The output of Algorithm \ref{alg:half density} is given by $U_{N}(t_{k}) \cdot \psi_{N}(0)$ when $\psi(0) \in L^2(M)$ is the input to Algorithm \ref{alg:half density} where $\psi_{N}(0) = \pi_{N}( \psi(0) )$ and $U_{N}(t)$ is the unitary operator generated by $X_{N}$.
 \end{proposition}
 \begin{proof}
 	The operator $X_{N}$ in Algorithm \ref{alg:half density} is anti-Hermitian on $V_{N}$.
@@ -668,10 +456,7 @@ Before continuing, we briefly state a sparsity result that aides in selecting a 
 We say an operator $A : L^{2}(M) \to L^{2}(M)$ is \emph{sparse banded diagonal} with respect to a Hilbert basis $\{ e_{0} , e_{1},\dots\}$ if there exists an integer $W \in \mathbb{N}$
 such that $A(e_{i})$ is a finite sum elements of the form $e_{i + \delta_{j}}$ for fewer than $W$ offsets $\delta_{j}$ for $i = 0,1,2, \dots$.
 \begin{theorem} \label{thm:sparsity}
-	Let $x^{1},\dots,x^{n}$ be a dense coordinate chart for $M$ on some dense open set.
-	Such a chart always exists on a compact manifold by choosing a Riemannian metric and extending a Riemannian exponential chart to the cut-locus~\cite{Sakai1996}.
-	Given such a chart, set $e_{k}= f_{k} \, \sqrt{\mu}$ for some Hilbert basis $\{f_{k}\} \subset L^2(M; \mu)$ where $\mu = | dx^{1} \wedge \cdots \wedge dx^{n}|$ (see Proposition \ref{prop:non canonical}).
-	If $\rho( \pder{}{x^{j}})$ and $H_{f_{k}}$ are sparse banded diagonal, 
+	If $\pounds_{\pder{}{x^{j}}}$ and $H_{f_{k}}$ are sparse banded diagonal, 
 	and if the vector-field $X$ is given in local coordinates by $X^{i} = \sum_{k} c_{k}^{i} f_{k}$ with fewer than $W>0$ of $c^{i}_{k}$'s being non-zero for each $i=1,\dots,n$, then the matrix $X_{N}$ in Algorithm \ref{alg:half density} is sparse banded diagonal and the sparsity of $X_{N}$ is $\mathcal{O}( W / N )$.
 \end{theorem}
 \begin{proof}
@@ -683,7 +468,7 @@ For example, if $M$ were a torus, and the vector-field was made up of a finite n
 
 By Theorem \ref{thm:quantize}, the square of the result of Algorithm \ref{alg:half density} is a numerical solution to \eqref{eq:density pde}.
 We can use this to produce a numerical scheme to \eqref{eq:density pde} by finding the square root of a density.
-Given a $\rho \in \Dens(M)$, let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$, 
+Given a $\rho \in L^1(M)$ which admits a square root, let $\rho^{+}$ denote the positive part and $\rho^{-}$ denote the negative part so that $\rho = \rho^{+} - \rho^{-}$, 
 then $\psi = \sqrt{\rho^{+}} - i \sqrt{\rho^{-}}$ is a square root of $\rho$ since $\rho = \psi^{2}$.
 This yields Algorithm \ref{alg:density} to spectrally discretize \eqref{eq:density pde} in a qualitatively accurate manner for densities which admit a square root.
 
@@ -842,8 +627,12 @@ Now we can prove Theorem \ref{thm:half density convergence}:
 	\intertext{By the triangle inequality and the definition of the operator norm:}
 		\frac{d\varepsilon_{N}}{dt}&\leq \| (1-\pi_{N}) \|_{H^{s-1},op} \, \|X \|_{H^{s},op} \, \| \psi \|_{s,2} + \| \pi_{N} \|_{op} \, \|X \|_{H^{s},op} \, \varepsilon_{N}
 	\end{align*}
-	By Proposition \ref{prop:stone} we observe that $\psi(t)$ is related to $\psi_{0}$ through the flow of $X$ which is a $C^{k}$-diffeomorphism if $X$ is $C^{k}$.
-	From the local expression Proposition \ref{prop:stone} in we can observe that $\| \psi(t) \|_{s,2}$ is bounded by a scalar multiple of $\| \psi_{0} \|_{s,2}$.
+	From direct observation, we can verify that $\psi(t)$ is related to $\psi_{0}$ through the flow of $X$, $\Phi_X^t$
+	via the equation
+	\begin{align*}
+		\psi(t,x) = \det( D[( \Phi_X^t)^{-1} ](x) ) \psi_0( (\Phi_X^t)^{-1}(x) )
+	\end{align*}
+	As $\Phi_X^t$ is smooth we can observe that $\| \psi(t) \|_{s,2}$ is bounded by a scalar multiple of $\| \psi_{0} \|_{s,2}$.
 	Thus we may write the above bound in the form
 	\begin{align*}
 		\frac{d\varepsilon_{N}}{dt} \leq K' \, \| 1- \pi_{N} \|_{H^{s-1},op} \, \| \psi_{0}\|_{s,2}+ C_{T} \varepsilon_{N}
@@ -863,7 +652,7 @@ Now we can prove Theorem \ref{thm:half density convergence}:
 Having derived an error bound for Algorithm \ref{alg:half density}, we can derive an error bound for Algorithm \ref{alg:density}.
 
 \begin{theorem} \label{thm:density convergence}
-	Let $\rho(0)$ be a distribution in $W^{\bar{s},1}(M)$ for $\bar{s} > s >1$.
+	Let $\rho(0) \in W^{\bar{s},1}(M)$ for $\bar{s} > s >1$.
 	Let $T > 0$ and $t \in [0,T]$ be fixed.
 	Let $\rho(t)$ be the solution of \eqref{eq:density pde} at time $t$.
 	Finally, let $\rho_{N}(t)$ be the output of Algorithm \ref{alg:density} with respect to the input $(\rho(0), t , N)$ for some $N \in \mathbb{N}$.
@@ -879,14 +668,14 @@ Having derived an error bound for Algorithm \ref{alg:half density}, we can deriv
 	Let $\psi \in L^{2}(M)$ be such that $\rho =  \psi ^{2}$, as described in Algorithm \ref{alg:density}.
 	It follows that $\psi \in H^{s}(M)$ and we compute
 	\begin{align*}
-		\| \rho(t) - \rho_{N}(t) \|_{1} = \int_{M} | \rho(t) - \rho_{N}(t)| = \int_{M} | \psi^{2} - \psi_{N}^{2} |
+		\| \rho(t) - \rho_{N}(t) \|_{1} = \int_{M} | \rho(t) - \rho_{N}(t)| dx = \int_{M} | \psi^{2} - \psi_{N}^{2} | dx
 	\end{align*}
 	If we let $\phi_{N} = \psi - \psi_{N}$ then we can re-write the above as
 	\begin{align*}
-		\| \rho(t) - \rho_{N}(t) \|_{1}  &= \int_{M} | \psi^{2} - (\psi - \phi_{N})^{2} | = \int_{M} | 2 \psi \phi_{N} - \phi_{N}^{2} | \\
+		\| \rho(t) - \rho_{N}(t) \|_{1}  &= \int_{M} | \psi^{2} - (\psi - \phi_{N})^{2} | dx= \int_{M} | 2 \psi \phi_{N} - \phi_{N}^{2} | dx \\
 			&\leq 2 \| \psi \|_{2} \| \phi_{N}\|_{2} + \| \phi_{N} \|_{2}^{2} = 2 \| \rho \|_{1}^{1/2} \cdot \| \phi_{N} \|_{2} + \| \phi_{N} \|_{2}^{2}
 	\end{align*}
-	Above we have applied Holder's inequality to $L^{2}(M)$, which still holds upon using the isometry in Proposition \ref{prop:non canonical}.
+	Above we have applied Holder's inequality to $L^{2}(M)$, which still holds upon using the isometry generated by $\pounds_X$.
 	Theorem \ref{thm:half density convergence} provides a bound for $\| \phi_{N} \|$.
 	Substitution of this bound into the above inequality yields the theorem.
 \end{proof}
@@ -1067,9 +856,9 @@ The flow of this system is given by:
 \begin{align*}
 	\Phi_{X}^{t}(x) = \operatorname{atan} \left( e^{2t} \tan( x) \right).
 \end{align*}
-If the initial density is a uniform distribution, $\rho_{0} = dx$, then the the exact solution of \eqref{eq:density pde} is:
+If the initial density is a uniform distribution, $\rho_{0}$, then the the exact solution of \eqref{eq:density pde} is:
 \begin{align}
-	\rho(x;t) =  \left( e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) \right)^{-1}  |dx| \label{eq:exact solution}
+	\rho(x;t) =  \left( e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) \right)^{-1}  \label{eq:exact solution}
 \end{align}
 Figure \ref{fig:S1} depicts the evolution of $\rho(x;t)$ at $t=1.5$ with an initial condition.
 Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution},  Figure \ref{fig:standard spectral} depicts the numerical solution computed from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes, and Figure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
