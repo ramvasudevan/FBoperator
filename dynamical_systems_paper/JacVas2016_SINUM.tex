@@ -145,14 +145,13 @@ In continuous time, Petrov-Galerkin discretization of the infinitesimal generato
 %Dually, the Frobenius-Perron operator (and it's discretization, the Transfer operator), represents the natural action of diffeomorphisms upon distributions and preserves the $L^{1}$-norm (the norm dual to the sup-norm).
 
 In this article, we consider a unitary representation of the diffeomorphisms of $M$ known to representation theorists~\cite{Ismagilov1975,VershilGelfandGraev1975} and quantum probability theorists~\cite{Meyer1998}.
-To be more specific, we consider the action of diffeomorphisms on the Hilbert space of half-densities~\cite{BatesWeinstein1997,GuilleminSternberg1970}.
-Half densities can be abstractly summarized as an object whose ``square'' is a density
-or, alternatively, can be understood as a mathematician's nomenclature for a physicist's ``wave functions.''
-One of the benefits of working with half-densities, over probability densities, is that the space of half-densities is a Hilbert space, while the space of probability densities is a convex cone~\cite{GuilleminSternberg1970}.
-This tactic of inventing the square-root of an abstract object in order to simplify a problem has been used throughout mathematics.
+To be more specific, we consider a unitary action of diffeomorphisms on $L^2(M)$.
+One of the benefits of working on $L^2(M)$, instead of the space of probability densities, is that $L^2(M)$ is a vector-space, while the space of probability densities is not.
+We then square the elements of $L^2(M)$ in order to obtain desired results for probability densities.
+This tactic of using the square-root of an abstract object in order to simplify a problem has been used throughout mathematics.
 The most familiar example would be the invention of the complex numbers to find the roots of polynomials.
 A more modern example within applied mathematics can be found in~\cite{Balci2011} where the (conic) space of positive semi-definite tensor fields which occur in non-Newtonian fluids is transformed into the (vector) space of symmetric tensors.
-Similarly, an alternative notion of half-densities is invoked in~\cite{Crane2013} to transform the mean-curvature flow PDE into a alternative PDE with properties that are valuable from a numerical standpoint.
+Similarly,~\cite{Crane2013} transform the mean-curvature flow PDE into a PDE on the space of half-densities to achieve superior numerical properties.
 
 \subsection{Main contributions}
 
