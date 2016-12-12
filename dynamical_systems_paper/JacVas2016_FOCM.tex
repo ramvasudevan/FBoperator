@@ -61,9 +61,8 @@
 \section{Introduction}
 \label{sec:intro}
 
-Let $M$ be a flat compact $n$-manifold with a piecewise smooth boundary (e.g. $M = \mathbb{T}^{n_1} \times [0,1]^{n_2}$, where $[0,1]$ is the unit interval).
-Let $X$ be a $C^2$ vector-field on $M$, tangential to the boundary. 
-This paper is concerned with the following pair of partial differential equations (PDEs):
+Let $M$ be a manifold and let $X$ be a $C^2$ vector-field on $M$. 
+This paper is concerned with the following pair of partial differential equations (PDEs) given in local coordinates by:
 \begin{align}
 	\partial_{t} f + \sum_{i=1}^n X^{i} \partial_{i} f = 0 \label{eq:function pde} \\
 	\partial_{t} \rho + \sum_{i=1}^n \partial_{i} (\rho X^{i}) = 0 \label{eq:density pde}
@@ -75,10 +74,10 @@ Such PDEs arise in a variety of contexts, ranging from  mechanics~\cite{Truesdel
 
 The solution to \eqref{eq:function pde} takes the form $f(x;t) = f( (\Phi_{X}^{t})^{-1}(x) ; 0) \equiv (\Phi_{X}^{t})_{*} f(\cdot;0)$
 where $\Phi_{X}^{t}:M \to M$ is the flow map of $X$ at time $t$ ~\cite[Chapter 18]{Lee2006}.
-From this observe that \eqref{eq:function pde} exhibits a variety of conservation laws.
+This solution implies that \eqref{eq:function pde} exhibits a variety of conservation laws.
 For example, if $f$ and $g$ are solutions to \eqref{eq:function pde},
-then so is their product, $f \cdot g$, and their sum, $f+g$.
-Similarly, the solution to \eqref{eq:density pde} takes the form $\rho(x;t) = | \det( D(\Phi_{X}^{t})^{-1}(x) ) | \rho( (\Phi_{X}^{t})^{-1}(x) ;0) := (\Phi_{X}^{t})_{*} \rho(\cdot;0)$.
+then $f \cdot g$ and $f+g$ are also solutions.
+Similarly, the solution to \eqref{eq:density pde} takes the form $\rho(x;t) = \det( D(\Phi_{X}^{t})^{-1}(x) ) \rho( (\Phi_{X}^{t})^{-1}(x) ;0) := (\Phi_{X}^{t})_{*} \rho(\cdot;0)$.
 One can deduce that the $L^{1}$-norm of $\rho(x;t)$ is conserved in time~\cite[Theorem 16.42]{Lee2006}.
 Finally, \eqref{eq:density pde} is the adjoint evolution equation to \eqref{eq:function pde} in the sense that the integral $\langle f , \rho \rangle := \int f \rho$ is constant in time. To see this compute
 $\frac{d}{dt} \langle f , \rho \rangle = \int ( \partial_{t} f ) \rho + f ( \partial_{t} \rho) $.  One finds that the final integral vanishes upon substitution of \eqref{eq:function pde} and \eqref{eq:density pde} and applying integration by parts.
@@ -88,9 +87,12 @@ This conservation law motivates the following definition of qualitative accuracy
 	    A numerical method for \eqref{eq:function pde} and \eqref{eq:density pde} is \emph{qualitatively accurate} if it conserves discrete analogs of scalar multiplication/addition, the $L^{1}$-norm and the total mass for densities and the sup-norm for functions.
 \end{definition}
 
-Let us reflect on the virtue of pursuing qualitative accuracy as defined above.
+\subsection{Our primary goal and motivation}
+Now that we have defined qualitative accuracy for \eqref{eq:function pde} and \eqref{eq:density pde}, let us motivate the pursuit qualitative accuracy.
 Naively, conservation laws for \eqref{eq:function pde} and \eqref{eq:density pde} are useful in numerics because they reduce the space of feasible solutions.
 However, more can be said in this case.
+This can be formally seen as a corollary to the Gelfand Naimark theorems~\cite{GelfandNaimark1943}.
+
 %In particular, the only linear evolution PDEs that preserves the algebra of $C(M)$ are of the form \eqref{eq:function pde}.
 %As a corollary, the only linear evolution PDEs on densities which preserves duality with functions are of the form \eqref{eq:density pde}.
 %Therefore, qualitatively accurate schemes leverage the defining aspects of the \eqref{eq:function pde} and \eqref{eq:density pde} to produce numerical approximations with the same qualitative characteristics.
@@ -105,10 +107,9 @@ However, more can be said in this case.
 	The dual operator is then necessarily of the form $D^{*}[\rho] = \pder{}{x^{i}}( \rho X^{i})$.
 \end{proposition}
 
-This can be formally seen as a corollary to the Gelfand Naimark theorems~\cite{GelfandNaimark1943}.
-Said more plainly, \eqref{eq:function pde} and \eqref{eq:density pde} are the generators of all algebra-preserving automorphisms of $C(M)$.
-Thus, conservation of sums of products is more than just a fundamental property of \eqref{eq:function pde} and \eqref{eq:density pde}.
-\emph{Conservation of sums and products is the defining property of  \eqref{eq:function pde} and \eqref{eq:density pde}.}
+In summary, \eqref{eq:function pde} and \eqref{eq:density pde} are the generators of all algebra-preserving automorphisms of $C(M)$.
+Thus, conservation of sums, products, and norms is more than just a random collection of properties exhibited by \eqref{eq:function pde} and \eqref{eq:density pde}.
+\emph{Conservation of sums, products, and norms is what defines \eqref{eq:function pde} and \eqref{eq:density pde}.}
 As a result, it is natural for this to be reflected in a discretization.
 
 A good example of a qualitatively accurate numerical scheme is a particle based method.
@@ -136,7 +137,7 @@ The goal of this paper is
 \emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously stable, spectrally convergent, and qualitatively accurate.}
 
 \subsection{Previous work}
-Within mechanics, spectral methods for the continuum and transport equation are a common-place where they are viewed as special cases of first order hyperbolic PDEs~\cite{Gottlieb2001}.
+Within mechanics, spectral methods for the continuum and transport equation are common-place where they are viewed as special cases of first order hyperbolic PDEs~\cite{Gottlieb2001}.
 Various Galerkin discretizations of the Koopman operator have been successfully used for generic dynamic systems~\cite{BudisicMohrMezic2012,Mezic2005}, most notably fluid systems~\cite{Rowley2009} where such discretizations serve as a generalization of dynamic mode decomposition~\cite{Schmid2010}.
 Dually, Ulam-type discretizations of the Frobenius-Perron operator~\cite{LasotaMackey1994,Ulam1947} have been used to find invariant manifolds of systems with uniform Gaussian noise~\cite{FroylandJungeKoltai2013,FroylandPadberg2009}.
 In continuous time, Petrov-Galerkin discretization of the infinitesimal generator of the Frobenius Perron operator converge in the presence of noise ~\cite{BittracherKoltaiJunge2015} and preserve positivity in a Haar basis~\cite{koltai2011thesis}.
@@ -144,14 +145,14 @@ In continuous time, Petrov-Galerkin discretization of the infinitesimal generato
 %Both of these representation of diffeomorphisms are natural, in the sense that the Koopman operator is the natural action of diffeomorphisms upon functions, and therefore must preserve the natural norm associated to functions, the sup-norm.
 %Dually, the Frobenius-Perron operator (and it's discretization, the Transfer operator), represents the natural action of diffeomorphisms upon distributions and preserves the $L^{1}$-norm (the norm dual to the sup-norm).
 
-In this article, we consider a unitary representation of the diffeomorphisms of $M$ known to representation theorists~\cite{Ismagilov1975,VershilGelfandGraev1975} and quantum probability theorists~\cite{Meyer1998}.
-To be more specific, we consider a unitary action of diffeomorphisms on $L^2(M)$.
-One of the benefits of working on $L^2(M)$, instead of the space of probability densities, is that $L^2(M)$ is a vector-space, while the space of probability densities is not.
-We then square the elements of $L^2(M)$ in order to obtain desired results for probability densities.
-This tactic of using the square-root of an abstract object in order to simplify a problem has been used throughout mathematics.
-The most familiar example would be the invention of the complex numbers to find the roots of polynomials.
-A more modern example within applied mathematics can be found in~\cite{Balci2011} where the (conic) space of positive semi-definite tensor fields which occur in non-Newtonian fluids is transformed into the (vector) space of symmetric tensors.
-Similarly,~\cite{Crane2013} transform the mean-curvature flow PDE into a PDE on the space of half-densities to achieve superior numerical properties.
+%In this article, we consider a unitary representation of the diffeomorphisms of $M$ known to representation theorists~\cite{Ismagilov1975,VershilGelfandGraev1975} and quantum probability theorists~\cite{Meyer1998}.
+%To be more specific, we consider a unitary action of diffeomorphisms on $L^2(M)$.
+%One of the benefits of working on $L^2(M)$, instead of the space of probability densities, is that $L^2(M)$ is a vector-space, while the space of probability densities is not.
+%We then square the elements of $L^2(M)$ in order to obtain desired results for probability densities.
+%This tactic of using the square-root of an abstract object in order to simplify a problem has been used throughout mathematics.
+%The most familiar example would be the invention of the complex numbers to find the roots of polynomials.
+%A more modern example within applied mathematics can be found in~\cite{Balci2011} where the (conic) space of positive semi-definite tensor fields which occur in non-Newtonian fluids is transformed into the (vector) space of symmetric tensors.
+%Similarly,~\cite{Crane2013} transform the mean-curvature flow PDE into a PDE on the space of half-densities to achieve superior numerical properties.
 
 \subsection{Main contributions}
 
@@ -160,7 +161,7 @@ We relate solutions of \eqref{eq:half density pde} to solutions of \eqref{eq:fun
 Second, we pose an auxiliary spectral scheme for \eqref{eq:half density pde} in Section \ref{sec:discretization}.
 Our auxiliary scheme induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
 Third, we derive a spectral convergence rate for our auxiliary scheme in Section \ref{sec:analysis}.
-The spectral convergence rate for our auxiliary scheme induce spectral convergence rates for numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
+The spectral convergence rate for our auxiliary scheme induces spectral convergence rates for numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
 Finally, we prove our schemes are qualitatively accurate, as in Definition \ref{def:quality}, in Section \ref{sec:qualitative}.
 We end the paper by demonstrating these findings in numerical experiments in Section \ref{sec:numerics}.
 We observe our algorithm for \eqref{eq:density pde} to be superior to a standard spectral Galerkin discretization, both in terms of numerical accuracy and qualitative accuracy.
@@ -172,9 +173,145 @@ Given a separable Hilbert space $\mathcal{H}$ we denote the Banach-algebra of bo
 The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ is denoted by $L^{\dagger}$.
 The trace of a trace class operator, $L$, is denoted by $\Tr(L)$.
 The commutator bracket for operators $A,B$ on $\mathcal{H}$ is denoted by $[A,B] := A \cdot B - B \cdot A$ (see~\cite{Conway1990}).
+Finally, we will use the term ``canonical'' to denote purely differential geometric entities, independent of a coordinate system, reference measure, metric, or what have you.
 
 %In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if there exists $f \in H^s(M,g)$ such that $\psi = f \sqrt{\mu_g}$.
 
+\section{The canonical Hilbert space of a manifold}
+\label{sec:L2}
+For the moment, assume $M$ is orientable and let $\mu$ be a volume form on $M$.
+Given $\mu$ we may define the $L^2_{\mu}$-inner product
+\begin{align*}
+	\langle f, g \rangle_{L^2_\mu} := \int_M ( f \cdot g) \cdot \mu
+\end{align*}
+for functions $f,g \in C^0(M)$.
+If we complete the resulting inner-product space we obtain the Hilbert space, $L^2_\mu(M)$.
+In the case where $M$ is non-orientable we can perform virtually the same construction by replacing $\mu$ with a positive density \cite{Lee2006}.
+
+It's notable that these constructions are not canonically associated to $M$, but only to the pair $(M, \mu)$.
+If we change $\mu$, then the inner-products and norms are transformed as well.
+However, there is a canonical Hilbert space associated to $M$, independent of an arbitrarily chosen $\mu$.
+We obtain this space by dividing by the following equivalence relation.
+We we can consider pairs of functions and volume forms, $(f,\mu)$, where $f \in L^2_\mu(M)$.
+We say that $(f_1, \mu_1) \sim (f_2,\mu_2)$ if there exists a positive function, $\phi$, such that $f_1 = \phi^{1/2} \cdot f_2$ and $\phi \cdot \mu_1 = \mu_2$.
+In fact, $\sim$, is an equivalence relation and so we may consider the space of equivalence classes.
+In particular, we define the \emph{canonical Hilbert space of $M$} to be
+\begin{align*}
+	L^2(M) := \{ L^2_\mu(M) \times \{ \mu \} \mid \mu \in \operatorname{Vol}(M) \} / \sim.
+\end{align*}
+By construction, $L^2(M)$ is a vector-space with the addition operator defined independently of any reference to a volume form (or positive density).
+As topological vector-space $L^2(M)$ is isomorphic to $L^2_\mu(M)$ for a fixed $\mu$.
+Thus, for any $\psi \in L^2(M)$ and any volume form $\mu$, there is a unique $f \in L^2_\mu(M)$ such that $\psi = (f,\mu) / \sim$.
+Therefore, we can define a bijection $i_{\mu} : L^2(M) \to L^2_\mu(M)$.
+
+For any two elements $\psi_1, \psi_2 \in L^2(M)$ we can define the canonical inner-product
+\begin{align}
+	\langle \psi_1 \mid \psi_2 \rangle := \int_M (i_{\mu}( \psi_1) \cdot i_{\mu}( \psi_2) ) \cdot \mu \label{eq:canonical inner product}
+\end{align}
+for an arbitrary $\mu \in \operatorname{Vol}(M)$.
+
+\begin{proposition}
+	The right hand side of \eqref{eq:canonical inner product} is defined independently of $\mu$.
+\end{proposition}
+\begin{proof}
+	Let $\mu'$ be another volume form.
+	Then there exists a positive function $\phi$ such that $\mu' = \phi \mu$.
+	Moreover, Let $f_1' = i_{\mu'}( \psi_1)$ (that is to say, $f_1' \in L^2_{\mu'}(M)$ is the unique element such that $\psi_1 = (  f_1', \mu' ) / \sim$).
+	Then it must be the case that $f_1' = \phi^{-1/2} \cdot f_1$ because $\sim$ is an equivalence relation and $\psi_1 = (f_1,\mu) / \sim$.
+	Similarly, $\psi_2 = ( f_2', \mu' ) / \sim$ for $f_2' = \phi^{-1/2} \cdot f_2$.
+	The right hand side of \eqref{eq:canonical inner product} can be written in terms of the primed variables as
+	\begin{align*}
+		\int_M (f_1 \cdot f_2) \cdot \mu &= \int_M ( (\phi^{-1/2} \cdot f_1) \cdot (\phi^{-1/2} \cdot f_2) ) \cdot (\phi \cdot \mu) \\
+			&= \int_M ( f_1' \cdot f_2') \cdot \mu'.
+	\end{align*}
+	However, this is nothing but $\langle \psi_1 \mid \psi_2 \rangle$ written in terms of the volume form $\mu'$.
+\end{proof}
+
+Locally, we may understand elements of $L^2(M)$ by how they transform under a change of coordinates.
+The choice of a local coordinate system induces a choice of a local volume form, given by the flat metric on $\mathbb{R}^n$,
+and so an element $\psi \in L^2(M)$ can, locally, be pictured as a square integrable function $\psi(x)$.
+Under a local change of coordinations, $\Phi$, the element $\psi$ transforms as
+\begin{align}
+	\Phi_*\psi(x) = | \det( D\Phi^{-1}(x) |^{1/2} \, \psi( \Phi^{-1}(x) ). \label{eq:coordinate transformation}
+\end{align}
+
+From the perspective of transformation theory, it is abundantly clear that elements of $L^2(M)$ are not functions,
+as the law for transforming functions would send $f(x)$ to $f( \Phi^{-1}(x))$.
+The reason for the multiplication by $| \det( D\Phi^{-1}(x) |^{1/2}$ is because $\Phi$ warps the volume of space, and the local volume form is being used in order to depict $\psi$ as a function.
+Said differently, elements of $L^2(M)$ are a distinct geometric objects, known as a \emph{half-densities}~\cite{BatesWeinstein1997,GuilleminSternberg1970}.
+The origin of this terminology comes from the following observation.  If $\rho = \psi^2$, then the change of coordinate formula for $\rho$ is
+\begin{align*}
+	\Phi_*\rho(x) = | \det( D\Phi^{-1}(x)) | \, \rho( \Phi^{-1}(x) ).
+\end{align*}
+This is nothing but the change of coordinate formula for a density \cite{Lee2006}.
+Therefore, half-densities are objects that yield densities when you square them.
+In fact, for any two half-densities $\psi_1, \psi_2 \in L^2(M)$, the product obtained from point-wise multiplication, $\psi_1 \cdot \psi_2$,  is a density.
+As a density can be integrated, we can write the inner-product on $L^2(M)$ more simply as
+\begin{align*}
+	\langle \psi_1 \mid \psi_2 \rangle = \int_M \psi_1 \cdot \psi_2.
+\end{align*}
+
+As the integration is a canonical operation on $M$ we observe the following.
+\begin{proposition} \label{prop:unitary 1}
+	Diffeomorphisms of $M$ act unitarily on $L^2(M)$.
+\end{proposition}
+\begin{proof}
+	Locally, the action of a diffeomorphism, $\Phi: M \to M$, is given by the change of coordinates formula \eqref{eq:coordinate transformation}.
+	For an arbitrary half-density $\psi$ we observe
+	\begin{align*}
+		\| \Phi_* \psi \|_{L^2}^2 &= \langle \Phi_* \psi \mid \Phi_* \psi \rangle \\
+		&= \int_M | \det( D\Phi^{-1}(x) \, \psi( \Phi^{-1}(x) )^2 dx.
+	\end{align*}
+	By the change of variables formula with the change of variable $x' = \Phi(x)$ we find
+	\begin{align*}
+		= \int_M \psi(x )^2 dx = \| \psi \|_{L^2}^2
+	\end{align*}
+	As $\psi$ was chosen arbitrarily, we have observe that $\Phi$ preserves the $L^2$-norm.
+	By polarization, $\Phi$ also preserves the inner-product $\langle \cdot \mid \cdot \rangle$,
+	and therefore $\Phi$ acts unitarily on $L^2(M)$.\footnote{Strictly speaking, the integrals in this proof should be computed with respect to a partition of unity.  However, the notational complexity incurred was hard to justify in light of the clarity that was lost when we did this.}
+\end{proof}
+
+For the purposes of this paper, it is very important that $L^2(M)$ consist of entities distinct from functions.
+Without such a distinction, we will run into ambiguities and contradictions.
+For example, in later sections we will canonically embed $C^0(M)$ into the space of Hermitian operators on $L^2(M)$.
+We will find that deformations of $M$ act on $L^2(M)$, and thus induce an actions on operators of $L^2(M)$ which descends to the standard action of a deformation on $C^0(M)$.
+However, if $C^0(M)$, also embedded in $L^2(M)$ we would have two group actions to consider on $C^0(M)$ with no discernible reason to prefer one over the other.
+Thankfully, no such ambiguity arises since $C^0(M)$ does not embed into $L^2(M)$ canonically.
+
+\section{Sobolev spaces}
+Just as there is a canonical space $L^2(M)$, there is also a canonical space $H^s(M)$.
+We define $H^s(M)$ as a subspace of $L^2(M)$ with certain regularity properties.
+In particular, the Lie derivative of $\psi \in L^2(M)$ with respect to a vector field, $X \in \mathfrak{X}(M)$, is given by
+\begin{align*}
+	\pounds_X[ \psi] := - \frac{d}{dt} ( \Phi^{t}_X )_*\psi
+\end{align*}
+Where $\Phi^t_X$ is the time-$t$ flow of $X$, and $( \Phi^{t}_X )_*\psi$ is locally represented by \eqref{eq:coordinate transformation}.
+In local coordinates where $X(x) = \sum_{i=1}^{n} X^i(x) \frac{ \partial}{ \partial x^i}$ the Lie derivative is
+\begin{align}
+	\pounds_X [\psi] = \frac{1}{2} \left( \sum_{i=1}^{n} X^i \partial_i \psi + \partial_i (\psi X^i) \right) \label{eq:representation}
+\end{align}
+As the Lie derivative operator is nothing but the action of an infinitesimal unitary transformation (this is Proposition \ref{prop:unitary 1}), we obtain the following corollary.
+\begin{corollary}
+	The Lie-derivative operator is anti-symmetric with respect to the  $L^2$-inner product on the subspace in which it is bounded.
+\end{corollary}
+As $\pounds_X$ is an (unbounded) anti-symmetric operator, we may take fractional powers\todo{Not sure this really makes sense for anti-symmetric operators.  You might need to complexify $L^2$ and multiply the operator by $i$} of it in order to define the space $H^s(M)$ as
+\begin{align*}
+	H^s(M) := \{ \psi \in L^2(M) \mid \| (\pounds_X)^{s} \cdot \psi \| < \infty, \forall X \in \mathfrak{X}(M) \}.
+\end{align*}
+
+This definition of $H^s(M)$ in terms of semi-norms is a generalization of the standard definition on $\mathbb{R}^n$ using the seminorms $\| \partial_k^s f \|_{L^2}$.
+However, for the purposes of analysis, it will be convenient to refer to a single $H^s$ norm, rather than a family of semi-norms.
+There is no canonical choice, so we are forced to non-canonically choose one.
+The clearest way to do this is to arbitrarily choose a Riemmanian metric, $g$.\footnote{We know such a metric exists as long as $M$ is paracompact.}
+The choice in metric induces a Riemannian density, $\mu_g$, and a Laplace-Beltrami operator, $\Delta_g$.
+We then define the $H^s$-norm with respect to $g$ as
+\begin{align*}
+	\| \psi \|_{H^s_g}^2 := \int_M f \cdot [ (1-\Delta_g)^s \cdot f ] \cdot \mu_g
+\end{align*}
+where $f = i_{\mu_g}(\psi)$.
+It is fairly clear from merely counting derivatives in a local coordinate chart that $\psi \in H^s(M)$ if and only if $\| \psi \|_{H^s_g} < \infty$.
+We will not concern ourselves with how to choose a metric $g$.
+When we write $\| \cdot \|_{H^s}$ we will imply that an arbitrary metric has been chosen.
 
 \section{Quantization} \label{sec:quantization}
 In physics, ``quantization'' refers to the process of substituting certain physically relevant functions with operators on a Hilbert space, while attempting to preserve the symmetries and conservation laws of the classical theory~\cite{BatesWeinstein1997,GuilleminSternberg1970}.
@@ -184,27 +321,21 @@ This is useful in Section \ref{sec:discretization} when we discretize.
 To begin, let us quantize the space of continuous real-valued functions $C(M)$.
 For each $f \in C(M)$, there is a unique bounded Hermitian operator, $H_{f} : L^{2}(M) \to L^{2}(M)$ given by scalar multiplication.
 That is to say $(H_{f} \cdot \psi) (x) = f(x) \psi(x)$ for any $\psi \in L^{2}(M)$.
-By inspection one can observe that the map ``$f \mapsto H_{f}$'' is injective and preserves the algebra of $C(M)$ because $H_{f\cdot g + h} = H_{f} \cdot H_{g} + H_{h}$ and $\| H_{f} \|_{op} = \| f \|_{\infty}$.
+By inspection one can observe that the map ``$f \mapsto H_{f}$'' is a monomorphism from the algebra $C(M)$ into $\operatorname{B}( L^2(M))$ because $H_{f\cdot g + h} = H_{f} \cdot H_{g} + H_{h}$ and $\| H_{f} \|_{op} = \| f \|_{\infty}$.
 
-Similarly, (and in the opposite direction) for any trace class operator $A$ there is a unique $\rho_{A} \in L^1(M)$ such that: 
+Dually, for any trace class operator $A$ there is a unique $\rho_{A} \in C(M)'$ such that: 
 \begin{align*}
 	 \int_M f \, \rho_{A} d\bf{x} = \Tr ( H_{f}^{\dagger} \cdot A )
 \end{align*}
 for any $f \in C(M)$.
-More generally, for any $A$ in the dual-space $B( L^{2}(M) )^{*}$, there is a $\rho_{A} \in C(M)'$ such that $\langle f , \rho_{A} \rangle = \langle H_{f} , A \rangle$.
-The map, ``$A \mapsto \rho_{A}$'', is merely the adjoint of ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is surjective.
+Said differently, the map ``$A \mapsto \rho_{A}$'' is the adjoint of the map ``$f \mapsto H_{f}$''. Therefore ``$A \mapsto \rho_{A}$'' is an epimorphism (i.e. surjective).
 
-Finally, for any vector-field $X$ which is tangential to the boundary of $M$ let us define the differential operator
-\begin{align}
-	\pounds_X [\psi] = \frac{1}{2} \left( \sum_{i=1}^{n} X^i \partial_i \psi + \partial_i (\psi X^i) \right) \label{eq:representation}
-\end{align}
-for any $\psi \in H^1(M) \subset L^2(M)$.
-In fact, $\pounds_X$, is an anti-symmetric with respect to the  $L^2$-inner product.
-By Stone's theorem, $\pounds_X$ is the infinitesimal generator of a one-parameter semi-group on the topological Lie group $\operatorname{O}(L^2(M))$.
+
+By Stone's theorem, $\pounds_X$ is the infinitesimal generator of a one-parameter semi-group on the topological Lie group $\operatorname{U}(L^2(M))$.
 We can relate this transformation to the flow of the vector field $\Phi_X^t:M \to M$ in a precise sense.
 In particular
 \begin{align*}
-	( e^{\pounds_X} \cdot \psi )(x) =  \det( D [(\Phi_X^t)^{-1}](x) )\psi( ( \Phi_X^t)^{-1} (x) ).
+	( e^{\pounds_X} \cdot \psi )(x) =  \det( D [(\Phi_X^t)^{-1}](x) )^{1/2} \psi( ( \Phi_X^t)^{-1} (x) ).
 \end{align*}
 
 %By construction, these maps preserve the duality between functions and distributions.
@@ -411,11 +542,10 @@ To ensure convergence, we assume:
 
 %\noindent Assumption \ref{ass:basis} holds for a variety of choices, such as the Fourier basis itself, as well as any Sturm-Liouville basis (e.g. Legendre functions) \ram{citation}.
 
-In this section we provide a semi-discretization of \eqref{eq:function pde} and \eqref{eq:density pde}.
-Just as a note to the reader, a ``semi-discretization''  of the PDE $\partial_{t} \phi + F(\phi) = 0$ for some partial differential operator, $F$, is just a discretization of $F$ which 
-converts the PDE into an ODE~\cite{Gottlieb1977numerical}.
-In particular, we assume access to solvers of finite dimensional ODEs, denoted ``$\OdeSolve$.''
-In practice any ODE solver such as Euler's method, Runge-Kutta, or even well tested software such as ~\cite{VODE} could be used to compute such solutions.
+In this section we provide a spectral discretization of space in order to convert the PDEs \eqref{eq:function pde} and \eqref{eq:density pde} into ODEs.
+Sometimes this is referred to as a semi-discretization~\cite{Gottlieb1977numerical}.
+In particular, we will assume access to a finite dimensional ODE solver, denoted ``$\OdeSolve$.'' whose time-step discretization error is dwarfed by the spatial discretization error of our semi-discretization. 
+In practice a high-order Runge-Kutta method or a well tested software library such as ~\cite{VODE} could be used.
 Most notably, the method of~\cite{Calvo1997} is specialized to isospectral flows such as  \eqref{eq:quantum observable ode} and \eqref{eq:quantum density ode} by using discrete-time isospectral flows.
 More explicitly, let $\OdeSolve ( F , x_{0} , t )$ denote the numerically computed solution $x(t)$ to the ODE ``$\dot{x} = F(x)$'' at time $t \in \mathbb{R}$, with initial condition $x_{0} \in M$.
 Before constructing an algorithm to spectrally discretize \eqref{eq:function pde} and \eqref{eq:density pde} in a qualitatively accurate manner, we first solve \eqref{eq:half density pde} using a spectral Galerkin discretization in Algorithm \ref{alg:half density}.
@@ -423,8 +553,8 @@ Before constructing an algorithm to spectrally discretize \eqref{eq:function pde
 \begin{algorithm}
 \begin{algorithmic}
 	\REQUIRE $\psi(0) \in L^{2}(M)$, $t \in \mathbb{R}$, $N \in \mathbb{N}$.
-	\STATE initialize $z(0) \in \mathbb{C}^{N}$.
-	\STATE initialize $X_{N} \in \mathbb{C}^{N \times N}$
+	\STATE initialize $z(0) = \vec{0} \in \mathbb{C}^{N}$.
+	\STATE initialize $X_{N} = [0] \in \mathbb{C}^{N \times N}$
 	\FOR{ $i = 1 , \dots , N$}
 		\STATE $[z(0)]_{i} = \int_{M} \bar{e}_{i}(x) \psi(0,x)$
 		\FOR{$j=1,\dots,N$}
@@ -438,7 +568,7 @@ Before constructing an algorithm to spectrally discretize \eqref{eq:function pde
 \caption{A spectral discretization to solve \eqref{eq:half density pde} for half densities.} \label{alg:half density}
 \end{algorithm}
 
-To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{N}(t_{k}) \in V_{N}$ by projecting \eqref{eq:half density pde} to $V_N$.
+To summarize, Algorithm \ref{alg:half density} produces a half-density $\psi_{N}(t_{k}) \in V_{N} = \operatorname{span}(e_1,\dots,e_N)$ by projecting \eqref{eq:half density pde} to $V_N$.
 This projection is done by constructing the operator $X_{N} = \pi_{N} \circ \pounds_{X} |_{V_{N}}: V_{N} \to V_{N}$.
 In Section \ref{sec:analysis} we prove that $\psi_{N}(t_{k})$ converges to the solution of \eqref{eq:half density pde} as $N \to \infty$.
 We see that $\psi_{N}(t)$ evolves by unitary transformations, just as the exact solution to \eqref{eq:half density pde} does.
