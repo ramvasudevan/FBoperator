@@ -8,16 +8,10 @@
 \usepackage{graphicx}
 \usepackage{caption,subcaption}
 \usepackage{tensor}
-%\usepackage[boxed]{algorithm2e}
 \usepackage{algorithmic}
-\usepackage{todonotes}
 
 %  NEW COMMANDS
-\newcommand{\ram}[1]{{\normalsize{\textbf{({\color{red}RAMBO:\ }#1)}}}}
-\newcommand{\hoj}[1]{{\normalsize{\textbf{({\color{blue}HOJ:\ }#1)}}}}
 \newcommand{\pder}[2]{\ensuremath{\frac{ \partial #1}{\partial #2}}}
-\newcommand{\ppder}[3]{\ensuremath{\frac{\partial^2 #1}{\partial{align}
-      #2 \partial #3} } }
 \newcommand{\R}{\ensuremath{\mathbb{R}}}
 
 %  NEW THEOREM ENVIRONMENTS
@@ -74,6 +68,7 @@ In other words, it's perfectly feasible to consider the ring of functions first,
 While this functions-first perspective has flourished within the world of pure mathematics and mathematical physics, it has not penetrated very far into the world of applied mathematics and numerical methods.
 It is the thesis of this paper, that certain problems in numerical mathematics stand to benefit from this eccentric perspective.
 In particularly, the class of spectral schemes for advection and transport type equations can be greatly improved by fully embracing the spirit of spectral discretization, viewing functions as foundational, and the domain as incidental.
+This should not be too shocking, as spectral schemes take functions as the computational building block, in contrast to grid/particle based methods which take points as the central objects.
 
 Let $M$ be a manifold and let $X$ be a $C^2$ vector-field on $M$. 
 This paper is concerned with the following pair of partial differential equations (PDEs) given in local coordinates by:
