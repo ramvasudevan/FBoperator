@@ -8,6 +8,11 @@ MIN_X = -1.0
 MAX_X = 1.0
 MIN_T = 0.0
 MAX_T = 1.0
+
+# When choosing these parameters note the CFL condition.
+# We want u*dt / dx <= 1, where u is the max speed of the vector-field.
+# This means we want u*(Nx-1)/(Nt-1) <=1
+
 span_x = (MIN_X,MAX_X,Nx)
 span_t = (MIN_T,MAX_T,Nt)
 x = np.linspace( *span_x )

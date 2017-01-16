@@ -61,6 +61,19 @@
 \section{Introduction}
 \label{sec:intro}
 
+A topological space is, by the traditional definition, a set of points glued together by a topology.
+Starting from these notions, one builds the space of continous functions, then the differentiable functions, and so on.
+In summary, points first, then functions.
+The commutative version of the Gelfand-Naimark theorem turns the ``points-first'' perspective on its head.
+Specifically, the commutative Gelfand-Naimark theorem states that from any commutative $C^*$-algebra, $\mathcal{A}$, one could derive a topological space, $X$, for which $\mathcal{A} \cong C^0(X)$.
+In other words, $C^0(X)$ first.
+In this ``functions-first'' perspective, $C^1(X)$ is the subspace for which the derivations are bounded, and points are algebra preserving maps in the dual space (these coincide with the Dirac-delta functionals).
+In summary, functions first, then points.
+
+While this functions-first perspective has flourished within the world of pure mathematics and mathematical physics, it has not penetrated very far into the world of applied mathematics and numerical methods.
+It is the thesis of this paper, that certain problems in numerical mathematics stand to benefit from this eccentric perspective.
+In particularly, the class of spectral schemes for advection and transport type equations can be greatly improved by fully embracing the spirit of spectral discretization, viewing functions as foundational, and the domain as incidental.
+
 Let $M$ be a manifold and let $X$ be a $C^2$ vector-field on $M$. 
 This paper is concerned with the following pair of partial differential equations (PDEs) given in local coordinates by:
 \begin{align}
@@ -91,7 +104,7 @@ This conservation law motivates the following definition of qualitative accuracy
 Now that we have defined qualitative accuracy for \eqref{eq:function pde} and \eqref{eq:density pde}, let us motivate the pursuit qualitative accuracy.
 Naively, conservation laws for \eqref{eq:function pde} and \eqref{eq:density pde} are useful in numerics because they reduce the space of feasible solutions.
 However, more can be said in this case.
-This can be formally seen as a corollary to the Gelfand Naimark theorems~\cite{GelfandNaimark1943}.
+Consider the following corollary to the Gelfand Naimark theorems~\cite{GelfandNaimark1943}.
 
 %In particular, the only linear evolution PDEs that preserves the algebra of $C(M)$ are of the form \eqref{eq:function pde}.
 %As a corollary, the only linear evolution PDEs on densities which preserves duality with functions are of the form \eqref{eq:density pde}.
@@ -115,7 +128,7 @@ As a result, it is natural for this to be reflected in a discretization.
 A good example of a qualitatively accurate numerical scheme is a particle based method.
 For a continuous initial condition, $f_0$, for example, the method of characteristics ~\cite{Evans2010} describes a solution to \eqref{eq:function pde} as a time-dependent function $f( x_{t} ;t) = f_{0}( x_{0} )$ where $x_{t}$ is the solution to $\dot{x} = X(x)$.
 This suggests using a particle method to solve for $f$ at a discrete set of points~\cite{Leveque1992}.
-In fact, a particle method would inherit many discrete analogs of the conservation laws of \eqref{eq:function pde}, and would as a result be \emph{qualitatively accurate}.
+In fact, a particle method would inherit many discrete analogs of the conservation laws of \eqref{eq:function pde}, and would therefore be \emph{qualitatively accurate}.
 For example, given the input $h_{0} = f_{0} \cdot g_{0}$, the output of a particle method is identical to the (componentwise) product of the outputs obtained from inputing $f_{0}$ and $g_{0}$ separately.
 However, particle methods converge much slower than their spectral counterparts when the function $f$ is highly differentiable~\cite{Gottlieb2001}.
 
@@ -133,7 +146,8 @@ Such a numerical method is good for $C^{k}$-data, in the sense that the converge
 In particular, spectral schemes converge faster than particle methods when the initial conditions have some degree of regularity.
 Unfortunately the spectral algorithm given above is not \emph{qualitatively accurate}, as is demonstrated by several examples in Section \ref{sec:numerics}.
 
-The goal of this paper is
+In summary, the current status quo is one wherein we must sacrifice either rapid convergence or qualitative accuracy.
+The goal of this paper is to change the status quo and achieve both simultaneously.  In particular, our goal is
 \emph{to find a numerical algorithm for \eqref{eq:function pde} and \eqref{eq:density pde} which is simultaneously stable, spectrally convergent, and qualitatively accurate.}
 
 \subsection{Previous work}
@@ -157,6 +171,7 @@ In continuous time, Petrov-Galerkin discretization of the infinitesimal generato
 \subsection{Main contributions}
 
 In this paper we develop numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
+We first pose an auxiliary PDE, \eqref{eq:half density pde}, which we can solve in lieu of \eqref{eq:function pde} and \eqref{eq:density pde}.
 We relate solutions of \eqref{eq:half density pde} to solutions of \eqref{eq:function pde} and \eqref{eq:density pde} in Theorem \ref{thm:quantize}.
 Second, we pose an auxiliary spectral scheme for \eqref{eq:half density pde} in Section \ref{sec:discretization}.
 Our auxiliary scheme induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
@@ -166,6 +181,8 @@ Finally, we prove our schemes are qualitatively accurate, as in Definition \ref{
 We end the paper by demonstrating these findings in numerical experiments in Section \ref{sec:numerics}.
 We observe our algorithm for \eqref{eq:density pde} to be superior to a standard spectral Galerkin discretization, both in terms of numerical accuracy and qualitative accuracy.
 
+\todo[inline]{This is too detailed}
+
 \subsection{Notation}
 Throughout the paper $M$ denotes a smooth compact $n$-manifold without boundary. 
 The space of continuous functions is denoted $C(M)$ and has a topology induced by the sup-norm, $\| \cdot \|_{\infty}$ (see~\cite{Taylor1974,Conway1990}).
@@ -173,7 +190,8 @@ Given a separable Hilbert space $\mathcal{H}$ we denote the Banach-algebra of bo
 The adjoint of an operator $L : \mathcal{H} \to \mathcal{H}$ is denoted by $L^{\dagger}$.
 The trace of a trace class operator, $L$, is denoted by $\Tr(L)$.
 The commutator bracket for operators $A,B$ on $\mathcal{H}$ is denoted by $[A,B] := A \cdot B - B \cdot A$ (see~\cite{Conway1990}).
-Finally, we will use the term ``canonical'' to denote purely differential geometric entities, independent of a coordinate system, reference measure, metric, or what have you.
+Finally, we will use the term ``canonical''  with respect to the category of smooth manifolds.
+For example, we could not say that a vector-field is divergence free, because divergence is only well-defined with respect to a reference volume form and there is no canonical volume form associated to a smooth manifold.
 
 %In the sequel we shall say that $\psi \in L^2(M)$ is of class $H^s$ if there exists $f \in H^s(M,g)$ such that $\psi = f \sqrt{\mu_g}$.
 

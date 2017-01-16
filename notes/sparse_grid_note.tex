@@ -7,7 +7,7 @@
 \newtheorem{thm}{Theorem}
 
 %  TITLE, AUTHOR, DATE
-\title{Open issues}
+\title{Storage costs}
 \author{Henry O. Jacobs}
 \date{\today}
 
@@ -16,9 +16,9 @@
 
 \maketitle
 
-\section{An issue with using sparse grids}
+\section{Finite difference sparse grids}
 
-All methods for sparse grids use the function space
+Sparse grids methods consider function space
 \begin{align*}
 	X^{q,2} = \left\{ u \in L^q \mid \frac{\partial^{\| \mathbf{\alpha} \|_1} u }{ \partial x_1^{\alpha_1} \cdots \partial x_d^{\alpha_d}} \in L^q \quad ,\quad  \forall \alpha \ni \|\mathbf{\alpha} \|_\infty \leq 2  \right\}
 \end{align*}
@@ -28,31 +28,72 @@ The basic theorem for convergence on sparse grids is
 \begin{thm}[Theorem 3.8 \cite{BungartzGriebel2004}]
 	For $u \in X^{q,2}$ the sparse-grid interpolation, $u_n$ satisfies the error bounds
 	\begin{align*}
-		\| u - u_n \|_{p} = \mathcal{O}(h_n^2 \cdot n^{d-1} )
+		\| u - u_n \|_{p} = \mathcal{O}( |u|_{2,p} h_n^2 \cdot n^{d-1} )
 	\end{align*}
 	for $p=2,\infty$
 	and 
 	\begin{align*}
-		\| u - u_n \|_E = \mathcal{O}(h_n)
+		\| u - u_n \|_E = \mathcal{O}(|u|_{2,2} h_n)
 	\end{align*}
-	where $h_n \sim 2^{-n}$.
+	where $h_n \sim 2^{-n}$ and $| u|_{2,p}$ is a norm associated to $X^{p,2}$.
 \end{thm}
-
 This rate is great.  It gives high-dimensional systems convergence rates comparable to one-dimensional systems.
-However, the requirement that $u \in X^{q,2}$ is expensive to enforce in a convex solver.
-There are only two cases where this constraint is a linear inequality, $q= 1$ and $q=\infty$.  Both are problematic.
+As far as I know the Louiville equation is sparse in this framework as well.
+However, we must bound $|u|_{2,p}$ explicitly and this is expensive.
+There are only two cases where this constraint is a linear inequality, $p= 1$ and $p=\infty$.  Both are problematic.
 
-In the case of $q=1$ this corresponds to $3^d$ constraints, each of which is represented by a dense row in the constraint matrix.
-If we use only 3 nodes in each coordinate direction (which seems ridiculously low) then we get $6^d$ coefficients to place in $A$.
-For $d=10$ this is 60 million coefficients. (beyond largest benchmark at \url{http://plato.asu.edu/ftp/lpcom.html})
-For $d=15$ this is 500 billion coefficients.
+In the case of $p=1$ this corresponds to $3^d$ constraints, each of which is represented by a dense row in the constraint matrix.
+In order to compute a non-trivial approximation of a second derivative you need $3$ nodes (or basis functions) in each coordinate direction, so we need $9^d$ coefficients stored in $A$ just for this constraint.
+For $d=10$ this is 3.4 billion coefficients, which is way beyond largest benchmark (see \url{http://plato.asu.edu/ftp/lpcom.html})
 
-In the case of $q=\infty$ we have $3^d$ constraints for each node, of which we should expect at least $2^d$ such nodes.
-So this again leads to $6^d$ non-zero entries in the constraint matrix.
+In the case of $p=\infty$ each constraint is represented by a sparse row in the constraint matrix.  However, there are more constraints.
+There are $3^d$ constraints for each node and there are $3^d$ such nodes, so there are $9^d$ constraints.
 
-\section{Open issue with the Haar wavelet}
-It's not clear what our convergence rate is when we use a Haar wavelet.  Our paper only addresses the case of a differentiable basis.
-I think we have convergence, but we've sacrificed the exponential convergence rate for a first order or possibly slower rate. (should we consider finite differences?)
+\section{Spectral sparse grids}
+Using an smooth basis with sparsity constraints of the form $c_k \leq (1+k^2)^s$ for $s > 1$ will enforce the regularity constraint in a smooth Fourier basis.
+This is nice because it is sparse.
+However, the consensus in the numerical analysis community seems to be that boundary conditions and smooth spectral methods do not play nice.
+This motivates us to consider a Haar basis.
+I'm not sure how to enforce smoothness in a Haar basis, but if we are optimistic and assume it can be done there is a bigger problem I can't foresee solving.
+Louiville's equation is sparse in the Haar basis but dense in the sparse-grid truncation of the Haar basis (see \cite[\S 4.4.4]{koltai2011thesis} or \cite[\S 4.2.3]{JungeKoltai2009}).
+In this framework, if one considers only $3$ Haar wavelets along each dimension (this is the minimum for and sort of regularity condition to make sense)
+then there will be $3^d$ regularity constraints (probably sparse inequality constraints), but the Louiville matrix will have $9^d$ non-zero entries in the case of polynomial vector-fields.
+
+\section{Summary}
+There are a lot of smaller issues related to convergence and error analysis.  However, the elephant in the room seems to be storage cost.
+The following table represents lower bounds.
+
+\begin{center}
+\begin{tabular}{| l | c | c | c|}
+	\hline
+		& Louiville & regularity & Boundary Cond. \\ \hline
+	Sparse grid & $??$ & $9^d$ & yes \\ \hline
+	Sparse smooth spectral & ?? & $\mathcal{O}(3^d)$ & no \\ \hline
+	Sparse Haar & $9^d$ & $\mathcal{O}(3^d)$ & yes \\ \hline
+\end{tabular}
+\end{center}
+
+If these bounds are acceptable, they need to be acceptable by a wide margin for a method to be of any use in dimension 10.
+Using only $3$ modes along each dimension only enforces regularity at a single point in space.
+Any statements we'd make would only apply to a small neighborhood of a single point unless we use more modes.
+
+\section{What if we assume a fixed initial condition and drop the regularity constraint?}
+Last week we proposed getting around this issue of imposing regularity by assuming $v(x,T)$ is given, and is smooth enough.
+That could work in the absence of controls.
+When controls are present we must also assume that $\sigma = u \vec{g} \cdot \nabla v$ is smooth enough as well.
+Again, this constraint is as expensive as it was for $v$, in fact more expensive because $\sigma$ is time-dependent.
+We could try something analogous to out solution for $v$, and only permit a low dimensional subspace of smooth $\sigma$'s.
+
+Optimistically, setting that last issue aside, there is still a final problem.
+The differential operator $\partial_i$ is dense in a sparse grid formulation (wavelet/finite difference/whatever).
+This was over-come in the case of solving PDEs using sparse finite-differences by using a sparse matrix decomposition \cite[see page 4]{schiekofer1998software}.
+In the case of Haar, they simply failed to overcome this issue \cite{koltai2011thesis}.
+It's also telling that sparse grid methods were not widely adapted today (decades later) and that modern approaches to solving smooth Fokker-Planck use a spectral ALS/SVD formulation \cite{Sun20141960,Leonenko2015296}.
+Sparse grids are not even mentioned in these recent publications.
+For us this is devastating. None of these tricks (ALS formulation of today or sparse decompositions of yesterday) are available to us due to the input assumptions of convex solvers like CVX and Mosek.
+Concretely, the Louiville equation has a lower bound of $N^{2d}$ in terms of storage complexity in any regime and $N \geq 3$.
+This limits us to dimension 10 using 3 nodes in each direction.
+Even with this I'd predict failure because all error calculations of \cite{BungartzGriebel2004} are in the large $N$ limit, and $N=3$ is not large.
 
 \bibliographystyle{amsalpha}
 \bibliography{hoj}
