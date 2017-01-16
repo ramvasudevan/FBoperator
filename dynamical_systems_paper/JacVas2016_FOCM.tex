@@ -62,13 +62,14 @@
 \label{sec:intro}
 
 A topological space is, by the traditional definition, a set of points glued together by a topology.
-Starting from these notions, one builds the space of continous functions, then the differentiable functions, and so on.
-In summary, points first, then functions.
-The commutative version of the Gelfand-Naimark theorem turns the ``points-first'' perspective on its head.
+Starting from these notions, one builds the space of continuous functions, then the differentiable functions, and so on.
+In summary, points come first, then functions come second.
+The commutative version of the Gelfand-Naimark theorem turns the ``points come first'' perspective on its head.
 Specifically, the commutative Gelfand-Naimark theorem states that from any commutative $C^*$-algebra, $\mathcal{A}$, one could derive a topological space, $X$, for which $\mathcal{A} \cong C^0(X)$.
-In other words, $C^0(X)$ first.
-In this ``functions-first'' perspective, $C^1(X)$ is the subspace for which the derivations are bounded, and points are algebra preserving maps in the dual space (these coincide with the Dirac-delta functionals).
-In summary, functions first, then points.
+In other words, it's perfectly feasible to consider the ring of functions first, and the points to be derived later.
+
+%In this ``functions come first'' perspective, $C^1(X)$ is the subspace for which the derivations are bounded, and points are algebra preserving maps in the dual space (these coincide with the Dirac-delta functionals).
+%In summary, functions first, then points.
 
 While this functions-first perspective has flourished within the world of pure mathematics and mathematical physics, it has not penetrated very far into the world of applied mathematics and numerical methods.
 It is the thesis of this paper, that certain problems in numerical mathematics stand to benefit from this eccentric perspective.
@@ -101,7 +102,7 @@ This conservation law motivates the following definition of qualitative accuracy
 \end{definition}
 
 \subsection{Our primary goal and motivation}
-Now that we have defined qualitative accuracy for \eqref{eq:function pde} and \eqref{eq:density pde}, let us motivate the pursuit qualitative accuracy.
+Now that we have defined qualitative accuracy for \eqref{eq:function pde} and \eqref{eq:density pde}, let us motivate the pursuit of qualitative accuracy.
 Naively, conservation laws for \eqref{eq:function pde} and \eqref{eq:density pde} are useful in numerics because they reduce the space of feasible solutions.
 However, more can be said in this case.
 Consider the following corollary to the Gelfand Naimark theorems~\cite{GelfandNaimark1943}.
@@ -112,15 +113,15 @@ Consider the following corollary to the Gelfand Naimark theorems~\cite{GelfandNa
 
 \begin{proposition}[follows from Corollary 1.7 of ~\cite{Bondia2001}]
 	Let $M$ be a manifold.
-	If $T: C(M) \to C(M)$ is a bounded automorphism preserving products/sums/complex conjugation
+	If $T: C^\infty(M) \to C^\infty(M)$ is a bounded automorphism preserving products/sums/complex conjugation
 	then there is a unique homeomorphism $\Phi_{T}:M \to M$ such that $T[a](x) = a( \Phi_{T}(x) )$.
-	That is, $\Diff(M) \equiv \operatorname{Aut}( C^{0}(M) )$ as a topological groups.
-	Moreover, a linear evolution equation on $C^{0}(M)$ given by $\partial_{t} f + D[f] = 0$ for some differential operator, $D$,
-	preserves  the algebra of $C(M)$ if and only if $D[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
+	That is, $\Diff(M) \equiv \operatorname{Aut}( C^{\infty}(M) )$ as a topological groups.
+	Moreover, a linear evolution equation on $C^{\infty}(M)$ given by $\partial_{t} f + D[f] = 0$ for some differential operator, $D$,
+	preserves  the algebra of $C^\infty(M)$ if and only if $D[f] = X^{i} \pder{f}{x^{i}}$ for some vector-field $X$.
 	The dual operator is then necessarily of the form $D^{*}[\rho] = \pder{}{x^{i}}( \rho X^{i})$.
 \end{proposition}
 
-In summary, \eqref{eq:function pde} and \eqref{eq:density pde} are the generators of all algebra-preserving automorphisms of $C(M)$.
+In summary, \eqref{eq:function pde} and \eqref{eq:density pde} are the generators of all algebra-preserving automorphisms of $C^\infty(M)$.
 Thus, conservation of sums, products, and norms is more than just a random collection of properties exhibited by \eqref{eq:function pde} and \eqref{eq:density pde}.
 \emph{Conservation of sums, products, and norms is what defines \eqref{eq:function pde} and \eqref{eq:density pde}.}
 As a result, it is natural for this to be reflected in a discretization.
@@ -171,17 +172,9 @@ In continuous time, Petrov-Galerkin discretization of the infinitesimal generato
 \subsection{Main contributions}
 
 In this paper we develop numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
-We first pose an auxiliary PDE, \eqref{eq:half density pde}, which we can solve in lieu of \eqref{eq:function pde} and \eqref{eq:density pde}.
-We relate solutions of \eqref{eq:half density pde} to solutions of \eqref{eq:function pde} and \eqref{eq:density pde} in Theorem \ref{thm:quantize}.
-Second, we pose an auxiliary spectral scheme for \eqref{eq:half density pde} in Section \ref{sec:discretization}.
-Our auxiliary scheme induces numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde} via Theorem \ref{thm:quantize}.
-Third, we derive a spectral convergence rate for our auxiliary scheme in Section \ref{sec:analysis}.
-The spectral convergence rate for our auxiliary scheme induces spectral convergence rates for numerical schemes for \eqref{eq:function pde} and \eqref{eq:density pde}.
-Finally, we prove our schemes are qualitatively accurate, as in Definition \ref{def:quality}, in Section \ref{sec:qualitative}.
-We end the paper by demonstrating these findings in numerical experiments in Section \ref{sec:numerics}.
-We observe our algorithm for \eqref{eq:density pde} to be superior to a standard spectral Galerkin discretization, both in terms of numerical accuracy and qualitative accuracy.
-
-\todo[inline]{This is too detailed}
+Our schemes exhibit spectral convergence rates and qualitative accuracy (Section \ref{sec:qualitative}).
+We end the paper by demonstrating these findings in numerical experiments in (Section \ref{sec:numerics}).
+In experiments we observe our algorithm for \eqref{eq:density pde} to be superior to a standard spectral Galerkin scheme, both in terms of numerical accuracy and qualitative accuracy.
 
 \subsection{Notation}
 Throughout the paper $M$ denotes a smooth compact $n$-manifold without boundary. 
@@ -312,13 +305,13 @@ As the Lie derivative operator is nothing but the action of an infinitesimal uni
 \begin{corollary}
 	The Lie-derivative operator is anti-symmetric with respect to the  $L^2$-inner product on the subspace in which it is bounded.
 \end{corollary}
-As $\pounds_X$ is an (unbounded) anti-symmetric operator, we may take fractional powers\todo{Not sure this really makes sense for anti-symmetric operators.  You might need to complexify $L^2$ and multiply the operator by $i$} of it in order to define the space $H^s(M)$ as
+As $\pounds_X$ is an (unbounded) anti-symmetric operator, we may consider raising it to fractional powers in order to define the space $H^s(M)$ as
 \begin{align*}
 	H^s(M) := \{ \psi \in L^2(M) \mid \| (\pounds_X)^{s} \cdot \psi \| < \infty, \forall X \in \mathfrak{X}(M) \}.
 \end{align*}
 
 This definition of $H^s(M)$ in terms of semi-norms is a generalization of the standard definition on $\mathbb{R}^n$ using the seminorms $\| \partial_k^s f \|_{L^2}$.
-However, for the purposes of analysis, it will be convenient to refer to a single $H^s$ norm, rather than a family of semi-norms.
+However, for the purposes of analysis, it will be convenient to refer to a single $H^s$ norm, rather than an infinite family of semi-norms.
 There is no canonical choice, so we are forced to non-canonically choose one.
 The clearest way to do this is to arbitrarily choose a Riemmanian metric, $g$.\footnote{We know such a metric exists as long as $M$ is paracompact.}
 The choice in metric induces a Riemannian density, $\mu_g$, and a Laplace-Beltrami operator, $\Delta_g$.
@@ -327,7 +320,7 @@ We then define the $H^s$-norm with respect to $g$ as
 	\| \psi \|_{H^s_g}^2 := \int_M f \cdot [ (1-\Delta_g)^s \cdot f ] \cdot \mu_g
 \end{align*}
 where $f = i_{\mu_g}(\psi)$.
-It is fairly clear from merely counting derivatives in a local coordinate chart that $\psi \in H^s(M)$ if and only if $\| \psi \|_{H^s_g} < \infty$.
+It is fairly clear from merely counting derivatives in a local coordinate chart that $\psi \in H^s(M)$ if and only if $\| \psi \|_{H^s_g} < \infty$ for an arbitrary $g$.
 We will not concern ourselves with how to choose a metric $g$.
 When we write $\| \cdot \|_{H^s}$ we will imply that an arbitrary metric has been chosen.
 
@@ -1008,9 +1001,9 @@ If the initial density is a uniform distribution, $\rho_{0}$, then the the exact
 	\rho(x;t) =  \left( e^{2t} \sin^{2}(x) + e^{-2t} \cos^{2}(x) \right)^{-1}  \label{eq:exact solution}
 \end{align}
 Figure \ref{fig:S1} depicts the evolution of $\rho(x;t)$ at $t=1.5$ with an initial condition.
-Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution},  Figure \ref{fig:standard spectral} depicts the numerical solution computed from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes, and Figure \ref{fig:gn spectral} depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
+Figure \ref{fig:exact} depicts the exact solution, given by \eqref{eq:exact solution},  Figure \ref{fig:standard spectral} depicts the numerical solution computed from a standard Fourier discretization of \eqref{eq:density pde} with 32 modes, and Figure \ref{fig:gn spectral} (page \pageref{fig:gn spectral}) depicts the numerical solution solution computed using Algorithm \ref{alg:density} with 32 modes.
 
-\begin{figure}[h!]
+\begin{figure}[p]
 	\hspace*{-.5cm}
 	\begin{subfigure}{0.36\textwidth}
 		\includegraphics[width=0.9\textwidth]{./images/exact_1D.pdf}
@@ -1037,12 +1030,12 @@ Here we witness how Algorithm \ref{alg:density} has greater qualitative accuracy
 For example, standard spectral discretization exhibits negative mass, which is not achievable in the exact system.
 Moreover, the $L^{1}$-norm is not conserved in standard spectral discretization.  
 In contrast, Theorem \ref{thm:norms} proves that the $L^{1}$-norm is conserved by Algorithm \ref{alg:density}.
-A plot of the $L^{1}$-norm is given in Figure \ref{fig:L1}.
-Finally, a convergence plot is depicted in Figure \ref{fig:convergence}.  
+A plot of the $L^{1}$-norm is given in Figure \ref{fig:L1} (page \pageref{fig:L1}).
+Finally, a convergence plot is depicted in Figure \ref{fig:convergence} (page \pageref{fig:convergence}).  
 Note the spectral convergence of Algorithm \ref{alg:density}.
 In terms of numerical accuracy, Algorithm \ref{alg:density} appears to have a lower coefficient of convergence.
 
-\begin{figure}[h!]
+\begin{figure}[p]
 	\hspace*{-1.2cm}
 	\centering
 	\includegraphics[width=0.8\textwidth]{./images/L1_plot.pdf}
@@ -1050,7 +1043,7 @@ In terms of numerical accuracy, Algorithm \ref{alg:density} appears to have a lo
 	\label{fig:L1}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[p]
 	\hspace*{-1.2cm}
 	\centering
 	\includegraphics[width=0.9\textwidth]{./images/convergence_plot.pdf}
@@ -1073,15 +1066,15 @@ Under the initial condition $h_{0} = f_{0} \cdot g_{0}  = \sin(x) \cos(x)$ the e
 One can compute $h$ by first multiplying the initial conditions and then using Algorithm \ref{alg:function} to evolve in time, or we may evolve each initial condition in time first, and multiply the outputs.
 If one uses Algorithm \ref{alg:function}, then both options, as a result of Theorem \ref{thm:algebra}, yield the same result up to time discretization error (which is obtained with error tolerance $1e-8$ in our code).
 In contrast, if one uses a standard spectral discretization, then these options yield different results with a discrepancy.
-This discrepancy between the order of operations for both discretization methods is depicted in Figure \ref{fig:discrepancy}.
+This discrepancy between the order of operations for both discretization methods is depicted in Figure \ref{fig:discrepancy} (page \pageref{fig:discrepancy}).
 
 Finally, the sup-norm is preserved by the solution of \eqref{eq:function pde}.
 As shown in Theorem \ref{thm:quantize}, the sup-norm is equivalent to the operator norm when the functions are represented as operators on $L^{2}(M)$.
 As proven by Theorem \ref{thm:norms}, the operator-norm is conserved by Algorithm \ref{alg:function}.
 In contrast, the sup-norm drifts over time under a standard discretization.  
-This is depicted in Figure \ref{fig:norms}
+This is depicted in Figure \ref{fig:norms} (page \pageref{fig:norms}).
 
-\begin{figure}[h!]
+\begin{figure}[p]
 	\hspace*{-1.2cm}
 	\includegraphics[width=1.15\textwidth]{./images/function_plots/discrepancy}
 	\caption{The discrepancy due to non-preservation of scalar products under a standard spectral Galerkin discretization. 
@@ -1089,7 +1082,7 @@ This is depicted in Figure \ref{fig:norms}
 	\label{fig:discrepancy}
 \end{figure}  
 
-\begin{figure}[h!]
+\begin{figure}[p]
 	\hspace*{-1.2cm}
 	\centering
 	\includegraphics[width=0.8\textwidth]{./images/L_inf_plot.pdf}
@@ -1116,13 +1109,13 @@ When $D> 0$ volume is no longer conserved and there is a non-uniform steady-stat
 For the following numerical experiment let $A=1.0,B=0.5,C=0.2,$ and $D=0.5$.
 As an initial condition consider a wrapped Gaussian distribution with anisotropic variance $\sigma= (0.2, 0.3, 0.3)$ centered at $(0,0,0)$.
 Equation \eqref{eq:density pde} is approximately solved using Algorithm \ref{alg:density}, Monte-Carlo, and a standard spectral method.
-The results of the $z$-marginal of these densities are illustrated in Figure \ref{fig:ABCD}.
+The results of the $z$-marginal of these densities are illustrated in Figure \ref{fig:ABCD} on page \pageref{fig:ABCD}.
 The top row depicts the results from using Algorithm \ref{alg:density} using $33$ modes along each dimension.
 The middle row depicts the results from using a Monte-Carlo method with $15^{3} = 3375$ particles as a benchmark computation.
 Finally, the bottom row depicts the results from using a standard Fourier based discretization of \eqref{eq:density pde} using 33 modes along each dimension.
 Notice that Algorithm \ref{alg:density} performs well when compared to the standard discretization approach.
 
-\begin{figure}[h!]
+\begin{figure}[p]
 	\centering
 	\includegraphics[width=1\textwidth]{./images/ABCD_flow.png}
 	\caption{An illustration of the performance of Algorithm \ref{alg:density} (top row), Monte Carlo (middle row) and a standard spectral Galerkin (bottom row) on the example described in Section \ref{sec:ABC_flow}.
