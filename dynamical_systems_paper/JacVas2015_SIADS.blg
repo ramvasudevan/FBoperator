@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: JacVas2015_SIADS.aux
+The style file: siam.bst
+Database file #1: hoj.bib.bib
+Warning--I didn't find a database entry for "Oksendal2003"
+Warning--I didn't find a database entry for "Evans2010"
+Warning--I didn't find a database entry for "Leveque1992"
+Warning--I didn't find a database entry for "Hebey1999"
+Warning--I didn't find a database entry for "Dirac2013"
+Warning--can't use both volume and number fields in Ulam1947
+You've used 39 entries,
+            2030 wiz_defined-function locations,
+            816 strings with 10671 characters,
+and the built_in function-call counts, 12135 in all, are:
+= -- 1118
+> -- 479
+< -- 0
++ -- 197
+- -- 152
+* -- 913
+:= -- 1903
+add.period$ -- 46
+call.type$ -- 39
+change.case$ -- 179
+chr.to.int$ -- 0
+cite$ -- 40
+duplicate$ -- 589
+empty$ -- 1008
+format.name$ -- 152
+if$ -- 2592
+int.to.chr$ -- 0
+int.to.str$ -- 39
+missing$ -- 56
+newline$ -- 127
+num.names$ -- 78
+pop$ -- 214
+preamble$ -- 1
+purify$ -- 154
+quote$ -- 0
+skip$ -- 444
+stack$ -- 0
+substring$ -- 753
+swap$ -- 211
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 118
+warning$ -- 1
+while$ -- 126
+width$ -- 41
+write$ -- 365
+(There were 6 warnings)

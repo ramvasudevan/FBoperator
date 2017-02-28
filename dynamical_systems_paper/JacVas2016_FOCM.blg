@@ -1,0 +1,81 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: JacVas2016_FOCM.aux
+The style file: siamplain.bst
+I found no \bibdata command---while reading file JacVas2016_FOCM.aux
+Warning--I didn't find a database entry for "Truesdell1991"
+Warning--I didn't find a database entry for "HenrionKorda2014"
+Warning--I didn't find a database entry for "Lee2006"
+Warning--I didn't find a database entry for "Bondia2001"
+Warning--I didn't find a database entry for "GelfandNaimark1943"
+Warning--I didn't find a database entry for "Evans2010"
+Warning--I didn't find a database entry for "Leveque1992"
+Warning--I didn't find a database entry for "Gottlieb2001"
+Warning--I didn't find a database entry for "Taylor1974"
+Warning--I didn't find a database entry for "Gottlieb1977numerical"
+Warning--I didn't find a database entry for "BudisicMohrMezic2012"
+Warning--I didn't find a database entry for "Mezic2005"
+Warning--I didn't find a database entry for "Rowley2009"
+Warning--I didn't find a database entry for "Schmid2010"
+Warning--I didn't find a database entry for "LasotaMackey1994"
+Warning--I didn't find a database entry for "Ulam1947"
+Warning--I didn't find a database entry for "FroylandJungeKoltai2013"
+Warning--I didn't find a database entry for "FroylandPadberg2009"
+Warning--I didn't find a database entry for "BittracherKoltaiJunge2015"
+Warning--I didn't find a database entry for "koltai2011thesis"
+Warning--I didn't find a database entry for "Ismagilov1975"
+Warning--I didn't find a database entry for "VershilGelfandGraev1975"
+Warning--I didn't find a database entry for "Meyer1998"
+Warning--I didn't find a database entry for "Balci2011"
+Warning--I didn't find a database entry for "Crane2013"
+Warning--I didn't find a database entry for "Conway1990"
+Warning--I didn't find a database entry for "BatesWeinstein1997"
+Warning--I didn't find a database entry for "GuilleminSternberg1970"
+Warning--I didn't find a database entry for "VODE"
+Warning--I didn't find a database entry for "Calvo1997"
+Warning--I didn't find a database entry for "Pasciak1980"
+Warning--I didn't find a database entry for "Chavel1984"
+Warning--I didn't find a database entry for "ArnoldKhesin1992"
+Warning--I didn't find a database entry for "MajdaBertozzi2002"
+You've used 0 entries,
+            2227 wiz_defined-function locations,
+            605 strings with 4901 characters,
+and the built_in function-call counts, 17 in all, are:
+= -- 0
+> -- 0
+< -- 0
++ -- 0
+- -- 0
+* -- 2
+:= -- 6
+add.period$ -- 0
+call.type$ -- 0
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 0
+duplicate$ -- 0
+empty$ -- 1
+format.name$ -- 0
+if$ -- 1
+int.to.chr$ -- 0
+int.to.str$ -- 0
+missing$ -- 0
+newline$ -- 3
+num.names$ -- 0
+pop$ -- 0
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 1
+stack$ -- 0
+substring$ -- 0
+swap$ -- 0
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 0
+width$ -- 0
+write$ -- 2
+(There was 1 error message)

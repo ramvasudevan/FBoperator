@@ -1,0 +1,191 @@
+\begin{thebibliography}{10}
+
+\bibitem{MTA}
+{\sc R~Abraham, J~E Marsden, and T~S Ratiu}, {\em Manifolds, Tensor Analysis,
+  and Applications}, vol.~75 of Applied Mathematical Sciences, Spinger,
+  3rd~ed., 2009.
+
+\bibitem{Balci2011}
+{\sc Nusret Balci, Becca Thomases, Michael Renardy, and Charles~R Doering},
+  {\em Symmetric factorization of the conformation tensor in viscoelastic fluid
+  models}, Journal of Non-Newtonian Fluid Mechanics, 166 (2011), pp.~546--553.
+
+\bibitem{Batchelor1999}
+{\sc G.~K. Batchelor}, {\em An introduction to fluid dynamics}, Cambridge
+  Mathematical Library, Cambridge University Press, Cambridge, paperback~ed.,
+  1999.
+
+\bibitem{BatesWeinstein1997}
+{\sc S.~Bates and A.~Weinstein}, {\em Lectures on the geometry of
+  quantization}, vol.~8 of Berkeley Mathematics Lecture Notes, American
+  Mathematical Society, Providence, RI, 1997.
+
+\bibitem{BittracherKoltaiJunge2015}
+{\sc Andreas Bittracher, P{\'e}ter Koltai, and Oliver Junge}, {\em
+  Pseudogenerators of spatial transfer operators}, SIAM Journal on Applied
+  Dynamical Systems, 14 (2015), pp.~1478--1517.
+
+\bibitem{Boyd2001}
+{\sc John~P. Boyd}, {\em Chebyshev and {F}ourier spectral methods}, Dover
+  Publications, Inc., Mineola, NY, second~ed., 2001.
+
+\bibitem{VODE}
+{\sc Peter~N. Brown, George~D. Byrne, and Alan~C. Hindmarsh}, {\em V{ODE}: a
+  variable-coefficient {ODE} solver}, SIAM J. Sci. Statist. Comput., 10 (1989),
+  pp.~1038--1051.
+
+\bibitem{BudisicMohrMezic2012}
+{\sc Marko Budi{\v s}i{\'c}, Ryan Mohr, and Igor Mezi{\'c}}, {\em Applied
+  koopmanism}, Chaos: An Interdisciplinary Journal of Nonlinear Science, 22
+  (2012), pp.~--.
+
+\bibitem{Calvo1997}
+{\sc Mari Calvo, Arieh Iserles, and Antonella Zanna}, {\em Numerical solution
+  of isospectral flows}, Mathematics of Computation of the American
+  Mathematical Society, 66 (1997), pp.~1461--1486.
+
+\bibitem{Chavel1984}
+{\sc Isaac Chavel}, {\em Eigenvalues in {R}iemannian geometry}, vol.~115 of
+  Pure and Applied Mathematics, Academic Press, Inc., Orlando, FL, 1984.
+\newblock Including a chapter by Burton Randol, With an appendix by Jozef
+  Dodziuk.
+
+\bibitem{Conway1990}
+{\sc John~B. Conway}, {\em A course in functional analysis}, vol.~96 of
+  Graduate Texts in Mathematics, Springer-Verlag, New York, second~ed., 1990.
+
+\bibitem{Crane2013}
+{\sc Keenan Crane, Ulrich Pinkall, and Peter Schr\"{o}der}, {\em Robust fairing
+  via conformal curvature flow}, ACM Trans. Graph., 32 (2013).
+
+\bibitem{FroylandJungeKoltai2013}
+{\sc G.~Froyland, O.~Junge, and P.~Koltai}, {\em Estimating long-term behavior
+  of flows without trajectory integration: the infinitesimal generator
+  approach}, SIAM J. Numer. Anal., 51 (2013), pp.~223--247.
+
+\bibitem{FroylandPadberg2009}
+{\sc G.~Froyland and K.~Padberg}, {\em Almost-invariant sets and invariant
+  manifolds---connecting probabilistic and geometric descriptions of coherent
+  structures in flows}, Phys. D, 238 (2009), pp.~1507--1523.
+
+\bibitem{GelfandNaimark1943}
+{\sc I.~Gelfand and M.~Neumark}, {\em On the imbedding of normed rings into the
+  ring of operators in {H}ilbert space}, Rec. Math. [Mat. Sbornik] N.S., 12(54)
+  (1943), pp.~197--213.
+
+\bibitem{Gottlieb2001}
+{\sc D.~Gottlieb and J.S. Hesthaven}, {\em Spectral methods for hyperbolic
+  problems}, Journal of Computational and Applied Mathematics, 128 (2001),
+  pp.~83 -- 131.
+\newblock Numerical Analysis 2000. Vol. VII: Partial Differential Equations.
+
+\bibitem{Bondia2001}
+{\sc Jos{\'e}~M. Gracia-Bond{\'{\i}}a, Joseph~C. V{\'a}rilly, and H{\'e}ctor
+  Figueroa}, {\em Elements of noncommutative geometry}, Birkh\"auser Advanced
+  Texts: Basler Lehrb\"ucher. [Birkh\"auser Advanced Texts: Basel Textbooks],
+  Birkh\"auser Boston, Inc., Boston, MA, 2001.
+
+\bibitem{GuilleminSternberg1970}
+{\sc V~Guillemin and S~Sternberg}, {\em Geometric Asymptotics}, vol.~14 of
+  Mathematical Surveys and Monographs, American Mathematical Society, 1970.
+
+\bibitem{HenrionKorda2014}
+{\sc D~Henrion and M~Korda}, {\em Convex computation of the region of
+  attraction of polynomial control systems}, IEEE Transactions on Automatic
+  Control, 59 (2014), pp.~297--312.
+
+\bibitem{Hormander2003}
+{\sc Lars H{\"o}rmander}, {\em The analysis of linear partial differential
+  operators. {I}}, Classics in Mathematics, Springer-Verlag, Berlin, 2003.
+\newblock Distribution theory and Fourier analysis, Reprint of the second
+  (1990) edition [Springer, Berlin; MR1065993 (91m:35001a)].
+
+\bibitem{MO_dense_charts}
+{\sc Richard~Montgomery (http://mathoverflow.net/users/2906/richard
+  montgomery)}, {\em Does every compact manifold exhibit an almost global
+  chart}.
+\newblock MathOverflow.
+\newblock URL:http://mathoverflow.net/q/177913 (version: 2014-08-06).
+
+\bibitem{Ismagilov1975}
+{\sc R.~S. Ismagilov}, {\em The unitary representations of the group of
+  diffeomorphisms of the space {$R^{n},$} {$n\geq 2$}}, Mat. Sb. (N.S.),
+  98(104) (1975), pp.~55--71, 157--158.
+
+\bibitem{koltai2011thesis}
+{\sc P{\'e}ter Koltai}, {\em Efficient approximation methods for the global
+  long-term behavior of dynamical systems: theory, algorithms and examples},
+  Logos Verlag Berlin GmbH, 2011.
+
+\bibitem{LasotaMackey1994}
+{\sc A.~Lasota and M.~C. Mackey}, {\em Chaos, Fractals, and Noise}, Applied
+  Mathematical Sciences, Springer Verlag, 1994.
+
+\bibitem{Lee2006}
+{\sc John~M Lee}, {\em Introduction to smooth manifolds}, vol.~218 of Graduate
+  Texts in Mathematics, Springer-Verlag, 2006.
+
+\bibitem{MajdaBertozzi2002}
+{\sc Andrew~J. Majda and Andrea~L. Bertozzi}, {\em Vorticity and incompressible
+  flow}, vol.~27 of Cambridge Texts in Applied Mathematics, Cambridge
+  University Press, Cambridge, 2002.
+
+\bibitem{Meyer1998}
+{\sc P.~A. Meyer}, {\em Quantum probability for probabilists}, vol.~1538 of
+  Lecture Notes in Mathematics, Springer-Verlag, Berlin, 1993.
+
+\bibitem{Mezic2005}
+{\sc I.~Mezi{\'c}}, {\em Spectral properties of dynamical systems, model
+  reduction and decompositions}, Nonlinear Dynam., 41 (2005), pp.~309--325.
+
+\bibitem{Parthasarathy2012}
+{\sc Kalyanapuram~R Parthasarathy}, {\em An introduction to quantum stochastic
+  calculus}, Springer Science \& Business Media, 2012.
+
+\bibitem{Pasciak1980}
+{\sc Joseph~E Pasciak}, {\em Spectral and pseudospectral methods for advection
+  equations}, Mathematics of Computation, 35 (1980), pp.~1081--1092.
+
+\bibitem{NumericalRecipes}
+{\sc William~H. Press, Saul~A. Teukolsky, William~T. Vetterling, and Brian~P.
+  Flannery}, {\em Numerical recipes}, Cambridge University Press, Cambridge,
+  third~ed., 2007.
+\newblock The art of scientific computing.
+
+\bibitem{Rowley2009}
+{\sc Clarence~W Rowley, Igor Mezi{\'c}, Shervin Bagheri, Philipp Schlatter, and
+  Dan~S Henningson}, {\em Spectral analysis of nonlinear flows}, Journal of
+  Fluid Mechanics, 641 (2009), pp.~115--127.
+
+\bibitem{Rudin1991}
+{\sc Walter Rudin}, {\em Functional analysis. international series in pure and
+  applied mathematics}, 1991.
+
+\bibitem{Sakai1996}
+{\sc Takashi Sakai}, {\em Riemannian geometry}, vol.~149 of Translations of
+  Mathematical Monographs, American Mathematical Society, Providence, RI, 1996.
+\newblock Translated from the 1992 Japanese original by the author.
+
+\bibitem{Schmid2010}
+{\sc P~J Schmid}, {\em Dynamic mode decomposition of numerical and experimental
+  data}, Journal of Fluid Mechanics, 656 (2010), pp.~5--28.
+
+\bibitem{Taylor1974}
+{\sc Michael Taylor}, {\em Pseudo differential operators}, Lecture Notes in
+  Mathematics, Vol. 416, Springer-Verlag, Berlin-New York, 1974.
+
+\bibitem{Truesdell1991}
+{\sc C.~Truesdell}, {\em A First Course in Rational Continuum Mechanics:
+  General Concepts}, Academic Press, 1991.
+
+\bibitem{Ulam1947}
+{\sc Stanislaw~M Ulam and John VONNEUMANN}, {\em On combination of stochastic
+  and deterministic processes-preliminary report}, in Bulletin of the American
+  Mathematical Society, vol.~53, AMER MATHEMATICAL SOC 201 CHARLES ST,
+  PROVIDENCE, RI 02940-2213, 1947, pp.~1120--1120.
+
+\bibitem{VershilGelfandGraev1975}
+{\sc A.~M. Vershik, I.~M. Gelfand, and M.~I. Graev}, {\em Representations of
+  the group of diffeomorphisms}, Uspehi Mat. Nauk, 30 (1975), pp.~1--50.
+
+\end{thebibliography}
